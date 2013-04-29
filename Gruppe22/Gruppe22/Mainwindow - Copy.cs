@@ -14,18 +14,14 @@ namespace Gruppe22
     /// <summary>
     /// This is the main type for your game
     /// </summary>
-    public class Game1 : Game
+    public class MainWindow : Game
     {
-        GraphicsDeviceManager graphics;
-        SpriteBatch spriteBatch;
+#region Private Fields
+        GraphicsDeviceManager _graphics;
+        SpriteBatch _spriteBatch;
+#endregion
 
-        public Game1()
-            : base()
-        {
-            graphics = new GraphicsDeviceManager(this);
-            Content.RootDirectory = "Content";
-        }
-
+#region Protected Methods (overrides)
         /// <summary>
         /// Allows the game to perform any initialization it needs to before starting to run.
         /// This is where it can query for any required services and load any non-graphic
@@ -46,7 +42,7 @@ namespace Gruppe22
         protected override void LoadContent()
         {
             // Create a new SpriteBatch, which can be used to draw textures.
-            spriteBatch = new SpriteBatch(GraphicsDevice);
+            _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
         }
@@ -83,9 +79,19 @@ namespace Gruppe22
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            // TODO: Add your drawing code here
 
             base.Draw(gameTime);
         }
+#endregion
+        
+        public MainWindow() : base()
+        {
+            Content.RootDirectory = "Content";
+            Window.Title = "Dungeon Crawler 2013";
+            Window.AllowUserResizing = true;
+            
+            _graphics = new GraphicsDeviceManager(this);
+        }
+
     }
 }

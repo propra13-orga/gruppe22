@@ -1,7 +1,6 @@
 ﻿#region Using Statements
 using System;
 using System.Collections.Generic;
-using System.Linq;
 #endregion
 
 namespace Gruppe22
@@ -18,7 +17,7 @@ namespace Gruppe22
         [STAThread]
         static void Main()
         {
-            using (var game = new Game1())
+            using (MainWindow game = new MainWindow())
                 game.Run();
         }
     }
