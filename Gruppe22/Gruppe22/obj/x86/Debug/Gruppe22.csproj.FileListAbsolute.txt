@@ -1,0 +1,10 @@
+C:\Users\beursken\Documents\GitHub\gruppe22\Gruppe22\Gruppe22\bin\WindowsGL\Debug\SDL.dll
+C:\Users\beursken\Documents\GitHub\gruppe22\Gruppe22\Gruppe22\bin\WindowsGL\Debug\Gruppe22.exe
+C:\Users\beursken\Documents\GitHub\gruppe22\Gruppe22\Gruppe22\bin\WindowsGL\Debug\Gruppe22.pdb
+C:\Users\beursken\Documents\GitHub\gruppe22\Gruppe22\Gruppe22\bin\WindowsGL\Debug\Lidgren.Network.dll
+C:\Users\beursken\Documents\GitHub\gruppe22\Gruppe22\Gruppe22\bin\WindowsGL\Debug\MonoGame.Framework.dll
+C:\Users\beursken\Documents\GitHub\gruppe22\Gruppe22\Gruppe22\bin\WindowsGL\Debug\OpenTK.dll
+C:\Users\beursken\Documents\GitHub\gruppe22\Gruppe22\Gruppe22\bin\WindowsGL\Debug\Tao.Sdl.dll
+C:\Users\beursken\Documents\GitHub\gruppe22\Gruppe22\Gruppe22\obj\x86\Debug\Gruppe22.csprojResolveAssemblyReference.cache
+C:\Users\beursken\Documents\GitHub\gruppe22\Gruppe22\Gruppe22\obj\x86\Debug\Gruppe22.exe
+C:\Users\beursken\Documents\GitHub\gruppe22\Gruppe22\Gruppe22\obj\x86\Debug\Gruppe22.pdb
