@@ -3,5 +3,5 @@
 *.dll
 *.cache
 *.pdb
-bin\*
-Debug\*
+bin/
+debug/
