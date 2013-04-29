@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Gruppe22
 {
-    class Potion
+    public class Potion
     {
     }
 }

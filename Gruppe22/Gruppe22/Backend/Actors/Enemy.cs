@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Gruppe22
 {
-    class Enemy
+    public class Enemy
     {
     }
 }

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Gruppe22.Frontend.UI
 {
-    class Notification
+    public class Notification
     {
     }
 }

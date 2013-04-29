@@ -4,7 +4,7 @@ using System.Text;
 using System.Xml;
 namespace Gruppe22
 {
-    class Map
+    public class Map
     {
         #region Private Fields
         /// <summary>

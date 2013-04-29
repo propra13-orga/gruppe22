@@ -8,7 +8,7 @@ namespace Gruppe22
     /// <summary>
     /// An abstract class representing a generic tile (i.e. blank floor)
     /// </summary>
-    class Tile : IDisposable
+    public class Tile : IDisposable
     {
         #region Delegates
         public delegate void OnEnter();

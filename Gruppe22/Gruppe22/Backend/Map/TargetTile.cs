@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Gruppe22
 {
-    class TargetTile : Tile
+    public class TargetTile : Tile
     {
     }
 }
