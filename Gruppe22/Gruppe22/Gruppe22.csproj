@@ -82,10 +82,19 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Content\LEGAL.txt" />
-    <Content Include="Content\Video Dungeon Crawl.mp3" />
+    <Content Include="Content\Video Dungeon Crawl.wav">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Icon.ico" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="Content\floor.xnb" />
+    <None Include="Content\player1.xnb" />
+    <None Include="Content\player2.xnb" />
+    <None Include="Content\wall1.xnb" />
+    <None Include="Content\wall2.xnb" />
+    <None Include="Content\wall3.xnb" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

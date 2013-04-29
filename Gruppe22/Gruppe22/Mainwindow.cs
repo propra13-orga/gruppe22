@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Storage;
 using Microsoft.Xna.Framework.GamerServices;
- using Microsoft.Xna.Framework.Media;
+using Microsoft.Xna.Framework.Media;
 using Microsoft.Xna.Framework.Audio;
 #endregion
 
@@ -18,13 +18,13 @@ namespace Gruppe22
     /// </summary>
     public class MainWindow : Game
     {
-#region Private Fields
+        #region Private Fields
         GraphicsDeviceManager _graphics;
         SpriteBatch _spriteBatch;
         Song _backMusic;
-#endregion
+        #endregion
 
-#region Protected Methods (overrides)
+        #region Protected Methods (overrides)
         /// <summary>
         /// Allows the game to perform any initialization it needs to before starting to run.
         /// This is where it can query for any required services and load any non-graphic
@@ -46,10 +46,10 @@ namespace Gruppe22
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-           _backMusic = Content.Load<Song>("Video Dungeon Crawl.mp3"); // *.mp3
+            _backMusic = Content.Load<Song>("Video Dungeon Crawl.wav"); // *.mp3
             MediaPlayer.Volume = 1.0f;
-          //  MediaPlayer.Play(_backMusic);
-            
+            MediaPlayer.Play(_backMusic);
+
             // TODO: use this.Content to load your game content here
         }
 
@@ -60,7 +60,7 @@ namespace Gruppe22
         protected override void UnloadContent()
         {
             // TODO: Unload any non ContentManager content here
-         //   _backMusic.Dispose();
+            _backMusic.Dispose();
             Content.Unload();
         }
 
@@ -73,7 +73,7 @@ namespace Gruppe22
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
-
+        
             // TODO: Add your update logic here
 
             base.Update(gameTime);
@@ -88,15 +88,17 @@ namespace Gruppe22
             GraphicsDevice.Clear(Color.Black);
             base.Draw(gameTime);
         }
-#endregion
-        
-        public MainWindow() : base()
+        #endregion
+
+        public MainWindow()
+            : base()
         {
             Content.RootDirectory = "Content";
             Window.Title = "Dungeon Crawler 2013";
-            Window.AllowUserResizing = true;
-            
+
             _graphics = new GraphicsDeviceManager(this);
+            _graphics.IsFullScreen = true;
+
         }
 
     }
