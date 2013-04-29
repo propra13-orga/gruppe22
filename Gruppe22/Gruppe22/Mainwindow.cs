@@ -46,7 +46,7 @@ namespace Gruppe22
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-           // _backMusic = Content.Load<Song>("Video Dungeon Crawl.mp3"); // *.mp3
+           _backMusic = Content.Load<Song>("Video Dungeon Crawl.mp3"); // *.mp3
             MediaPlayer.Volume = 1.0f;
           //  MediaPlayer.Play(_backMusic);
             
