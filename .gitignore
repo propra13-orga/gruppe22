@@ -4,3 +4,4 @@
 *.cache
 *.pdb
 bin\*
+Debug\*
