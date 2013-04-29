@@ -35,6 +35,27 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Backend\Actors\Actor.cs" />
+    <Compile Include="Backend\Actors\Enemy.cs" />
+    <Compile Include="Backend\Actors\NPC.cs" />
+    <Compile Include="Backend\Actors\Player.cs" />
+    <Compile Include="Backend\Items\Item.cs" />
+    <Compile Include="Backend\Items\Potion.cs" />
+    <Compile Include="Backend\Items\Weapon.cs" />
+    <Compile Include="Backend\Map\Map.cs" />
+    <Compile Include="Backend\Map\TargetTile.cs" />
+    <Compile Include="Backend\Map\TeleportTile.cs" />
+    <Compile Include="Backend\Map\Tile.cs" />
+    <Compile Include="Backend\Map\TrapTile.cs" />
+    <Compile Include="Backend\Map\WallTile.cs" />
+    <Compile Include="Frontend\Map\Actors.cs" />
+    <Compile Include="Frontend\Map\Mainmap.cs" />
+    <Compile Include="Frontend\Map\Minimap.cs" />
+    <Compile Include="Frontend\UI\Button.cs" />
+    <Compile Include="Frontend\UI\Menu.cs" />
+    <Compile Include="Frontend\UI\Notification.cs" />
+    <Compile Include="Frontend\UI\Statusbox.cs" />
+    <Compile Include="Frontend\UI\Window.cs" />
     <Compile Include="Mainwindow.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

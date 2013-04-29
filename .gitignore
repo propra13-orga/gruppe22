@@ -3,5 +3,6 @@
 *.dll
 *.cache
 *.pdb
-bin/
-debug/
+Gruppe22/bin/
+*/debug/
+Gruppe22/Gruppe22/obj/
