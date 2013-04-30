@@ -89,6 +89,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Content\floor.xnb" />
+    <None Include="Content\Minimap.xnb" />
     <None Include="Content\player1.xnb" />
     <None Include="Content\player2.xnb" />
     <None Include="Content\wall1.xnb" />
