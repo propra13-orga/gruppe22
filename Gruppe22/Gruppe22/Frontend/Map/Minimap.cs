@@ -9,9 +9,42 @@ namespace Gruppe22
 {
     public class Minimap
     {
-        public void Draw( SpriteBatch spriteBatch, Map map, Vector2 position, Rectangle rect)
+        #region Private Fields
+        GraphicsDeviceManager _graphics;
+        SpriteBatch _spriteBatch;
+        Texture2D _mapIcon;
+        Rectangle _paintRegion;
+        float _zoom = (float)1.0;
+        Rectangle _mapRegion;
+        Map _map;
+        #endregion
+
+        #region Public Methods
+        /// <summary>
+        /// LoadContent will be called once per game and is the place to load
+        /// all of your content.
+        /// </summary>
+        protected override void LoadContent()
         {
-            //spriteBatch.Draw()
         }
+
+        /// <summary>
+        /// Allows the game to run logic such as updating the world,
+        /// checking for collisions, gathering input, and playing audio.
+        /// </summary>
+        /// <param name="gameTime">Provides a snapshot of timing values.</param>
+        protected override void Update(GameTime gameTime)
+        {
+        }
+
+        /// <summary>
+        /// This is called when the game should draw itself.
+        /// </summary>
+        /// <param name="gameTime">Provides a snapshot of timing values.</param>
+        protected override void Draw(GameTime gameTime)
+        {
+            
+        }
+        #endregion
     }
 }
