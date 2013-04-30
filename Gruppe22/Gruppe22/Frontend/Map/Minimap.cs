@@ -24,7 +24,7 @@ namespace Gruppe22
         /// LoadContent will be called once per game and is the place to load
         /// all of your content.
         /// </summary>
-        protected override void LoadContent()
+        protected  void LoadContent()
         {
         }
 
@@ -33,7 +33,7 @@ namespace Gruppe22
         /// checking for collisions, gathering input, and playing audio.
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
-        protected override void Update(GameTime gameTime)
+        protected  void Update(GameTime gameTime)
         {
         }
 
@@ -41,7 +41,7 @@ namespace Gruppe22
         /// This is called when the game should draw itself.
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
-        protected override void Draw(GameTime gameTime)
+        protected  void Draw(GameTime gameTime)
         {
             
         }
