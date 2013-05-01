@@ -58,7 +58,7 @@ namespace Gruppe22
                     {
                         if (!_map[x, y].canEnter)
                         {
-                            _spriteBatch.Draw(_mapIcon, new Rectangle(_paintRegion.Left + x * 16, _paintRegion.Top + y * 16, 16, 16), new Rectangle(32, 0, 16, 16), Color.White);
+                            _spriteBatch.Draw(_mapIcon, new Rectangle(_paintRegion.Left + x * 16, _paintRegion.Top + y * 16, 15, 15), new Rectangle(32, 0, 16, 16), Color.White);
                         }
                         else
                         {
@@ -122,6 +122,8 @@ namespace Gruppe22
             _camera = new Camera();
             _spriteBatch = spriteBatch;
             _map = map;
+            _camera.zoom = (float)0.7;
+            _camera.Move(new Vector2(500, 20));
         }
     }
 }

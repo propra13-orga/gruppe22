@@ -22,7 +22,7 @@ namespace Gruppe22
         /// <summary>
         /// Internal value whether tile can be entered
         /// </summary>
-        private bool _canEnter;
+        private bool _canEnter=true;
 
         #endregion
 
@@ -48,6 +48,10 @@ namespace Gruppe22
                     ++count;
                 }
                 return result;
+            }
+            set
+            {
+                _canEnter = value;
             }
         }
 

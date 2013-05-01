@@ -113,6 +113,53 @@ namespace Gruppe22
             return result;
         }
 
+        public void DebugMap()
+        {
+            string output = "";
+            foreach(List<Tile> row in _tiles){
+                foreach(Tile tile in row){
+                    if (tile.canEnter)
+                    {
+                        output+="#";
+                    }
+                    else {
+                        output+=" ";
+                    }
+                }
+                System.Diagnostics.Debug.WriteLine(output);
+                output = "";
+
+            }
+        }
+
+        public bool FromString(string input)
+        {
+            int col = 0, row = 0;
+            foreach (char c in input)
+            {
+                switch (c)
+                {
+                    case '#':
+                        _tiles[col][row].canEnter = false;
+                        col += 1;
+                        break;
+                    case '\n':
+                        col = 0;
+                        row += 1;
+                        break;
+                    default:
+                        _tiles[col][row].canEnter = true;
+                        col += 1;
+
+                        break;
+                }
+
+            }
+
+            DebugMap();
+            return true;
+        }
+
         /// <summary>
         /// Write the current map to a file
         /// </summary>
@@ -161,7 +208,7 @@ namespace Gruppe22
             for (int y = 0; y < height; ++y)
             {
                 _tiles.Add(new List<Tile>());
-                for (int x = 0; x < height; ++x)
+                for (int x = 0; x < width; ++x)
                 {
                     _tiles[y].Add(new Tile());
                 }

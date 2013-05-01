@@ -23,7 +23,11 @@ namespace Gruppe22
         UpDown = 3,
         FourWay = 4,
         LeftClose = 13,
-        DownClose = 14
+        DownClose = 14,
+        RightClose = 16,
+        UpClose = 17,
+        Free = 15,
+        None = -1
     }
 
     /// <summary>
@@ -114,7 +118,7 @@ namespace Gruppe22
             rstate.ScissorTestEnable = true;
             try
             {
-                _spriteBatch.Begin(SpriteSortMode.BackToFront,
+                _spriteBatch.Begin(SpriteSortMode.Immediate,
                             BlendState.AlphaBlend,
                             null,
                             null,
@@ -124,7 +128,7 @@ namespace Gruppe22
 
                 _spriteBatch.GraphicsDevice.ScissorRectangle = _displayRect;
 
-                _drawFloor();
+                _drawFloor(_map.width, _map.height);
                 _drawWalls();
 
                 _spriteBatch.End();
@@ -150,59 +154,242 @@ namespace Gruppe22
         {
             switch (dir)
             {
-                case Direction.FourWay:
-                    _spriteBatch.Draw(_wall1, new Rectangle(x * 128 + 1 + (y % 2) * 64,
-                        y * 48 - 96, 128, 192), new Rectangle(384, 782, 128, 192), Color.White);
-                    break;
-                case Direction.LeftRight:
-                    _spriteBatch.Draw(_wall1, new Rectangle(x * 128 + 1 + (y % 2) * 64,
-                        y * 48 - 96, 128, 192), new Rectangle(0, 590, 128, 192), Color.White);
-                    break;
-                case Direction.UpDown:
-                    _spriteBatch.Draw(_wall1, new Rectangle(x * 128 + 1 + (y % 2) * 64,
-                        y * 48 - 96, 128, 192), new Rectangle(128, 590, 128, 192), Color.White);
-                    break;
-                case Direction.DownLeft:
-                    _spriteBatch.Draw(_wall1, new Rectangle(x * 128 + 1 + (y % 2) * 64,
-                       y * 48 - 96, 128, 192), new Rectangle(256, 590, 128, 192), Color.White);
-                    break;
-                case Direction.DownRight:
-                    _spriteBatch.Draw(_wall1, new Rectangle(x * 128 + 1 + (y % 2) * 64,
-                       y * 48 - 96, 128, 192), new Rectangle(384, 590, 128, 192), Color.White);
-                    break;
-                case Direction.UpRight:
-                    _spriteBatch.Draw(_wall1, new Rectangle(x * 128 + 1 + (y % 2) * 64,
-                       y * 48 - 96, 128, 192), new Rectangle(0, 782, 128, 192), Color.White);
-                    break;
-                case Direction.UpLeft:
-                    _spriteBatch.Draw(_wall1, new Rectangle(x * 128 + 1 + (y % 2) * 64,
-                       y * 48 - 96, 128, 192), new Rectangle(128, 782, 128, 192), Color.White);
-                    break;
-                case Direction.UpDownRight:
-                    _spriteBatch.Draw(_wall1, new Rectangle(x * 128 + 1 + (y % 2) * 64,
-                       y * 48 - 96, 128, 192), new Rectangle(512, 590, 128, 192), Color.White);
-                    break;
-                case Direction.UpDownLeft:
-                    _spriteBatch.Draw(_wall1, new Rectangle(x * 128 + 1 + (y % 2) * 64,
-                       y * 48 - 96, 128, 192), new Rectangle(640, 590, 128, 192), Color.White);
-                    break;
-                case Direction.LeftRightUp:
-                    _spriteBatch.Draw(_wall1, new Rectangle(x * 128 + 1 + (y % 2) * 64,
-                       y * 48 - 96, 128, 192), new Rectangle(768, 590, 128, 192), Color.White);
-                    break;
-                case Direction.LeftRightDown:
-                    _spriteBatch.Draw(_wall1, new Rectangle(x * 128 + 1 + (y % 2) * 64,
-                       y * 48 - 96, 128, 192), new Rectangle(896, 590, 128, 192), Color.White);
-                    break;
-                case Direction.LeftClose:
-                    _spriteBatch.Draw(_wall1, new Rectangle(x * 128 + 1 + (y % 2) * 64,
-                        y * 48 - 96, 128, 192), new Rectangle(128, 206, 128, 192), Color.White);
-                    break;
-                case Direction.DownClose:
-                    _spriteBatch.Draw(_wall1, new Rectangle(x * 128 + 1 + (y % 2) * 64,
-                        y * 48 - 96, 128, 192), new Rectangle(256, 205, 128, 192), Color.White);
+
+                case Direction.RightClose:
+                    _spriteBatch.Draw(_wall1, new Rectangle(x * 128 + 1,
+y * 48 - 96, 128, 192), new Rectangle(0, 206, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
                     break;
 
+                case Direction.UpClose:
+                    _spriteBatch.Draw(_wall1, new Rectangle(x * 128 + 53,
+y * 48 - 52, 22, 30), new Rectangle(148, 53, 22, 30), transparent ? new Color(Color.White, (float)0.5) : Color.White); 
+                    break;
+
+                case Direction.LeftClose: // Wall on current square connected to square to the left
+                    _spriteBatch.Draw(_wall1, new Rectangle(x * 128 + 1,
+    y * 48 - 96, 128, 192), new Rectangle(128, 206, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+
+                    break;
+
+                case Direction.DownClose: // Wall on current square connected to square below
+                    _spriteBatch.Draw(_wall1, new Rectangle(x * 128 + 53,
+y * 48 - 52, 23, 30), new Rectangle(148, 53, 22, 30), transparent ? new Color(Color.White, (float)0.5) : Color.White); 
+
+                    break;
+
+                case Direction.LeftRightUp: // Walls connected left, right and up
+                    _spriteBatch.Draw(_wall1, new Rectangle(x * 128 + 1,
+   y * 48 - 96, 128, 192), new Rectangle(768, 590, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+
+                    break;
+                case Direction.LeftRightDown: // Wall connected left right and down
+                    _spriteBatch.Draw(_wall1, new Rectangle(x * 128 + 1,
+   y * 48 - 96, 128, 192), new Rectangle(640, 384, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+
+                    break;
+                case Direction.UpDownLeft: // Walls on Up, Down and Left suqares
+                    _spriteBatch.Draw(_wall1, new Rectangle(x * 128 + 1,
+   y * 48 - 96, 128, 192), new Rectangle(512, 384, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+
+                    break;
+                case Direction.UpDownRight: // Walls on Up, Down and Right squares
+                    _spriteBatch.Draw(_wall1, new Rectangle(x * 128 + 1,
+   y * 48 - 96, 128, 192), new Rectangle(768, 384, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+
+                    break;
+                case Direction.UpRight: // Walls on Up and left square
+                    _spriteBatch.Draw(_wall1, new Rectangle(x * 128 + 1,
+   y * 48 - 96, 128, 192), new Rectangle(256, 384, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+
+                    break;
+                case Direction.UpLeft: // Walls on up and right square
+                    _spriteBatch.Draw(_wall1, new Rectangle(x * 128 + 1,
+y * 48 - 96, 128, 192), new Rectangle(384, 384, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+                    break;
+                case Direction.DownLeft: // Walls on left and down squares
+                    _spriteBatch.Draw(_wall1, new Rectangle(x * 128 + 1,
+   y * 48 - 96, 128, 192), new Rectangle(128, 384, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+
+                    break;
+                case Direction.DownRight: // Walls on right and down squares
+                    _spriteBatch.Draw(_wall1, new Rectangle(x * 128 + 1,
+   y * 48 - 96, 128, 192), new Rectangle(0, 384, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+                    break;
+
+                case Direction.LeftRight: // Walls on left and right neighboring squares
+                    _spriteBatch.Draw(_wall1, new Rectangle(x * 128 + 1,
+      y * 48 - 96, 128, 192), new Rectangle(322, 0, 126, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+                    /*_spriteBatch.Draw(_wall1, new Rectangle(x * 128 + 1 ,
+    y * 48 - 96, 128, 192), new Rectangle(0, 590, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);*/
+
+
+                    break;
+                case Direction.UpDown:// Walls on up and down neighboring squares
+                    //  _spriteBatch.Draw(_wall1, new Rectangle(x * 128 + 1 ,
+                    //    y * 48 - 96, 128, 192), new Rectangle(128, 590, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White); 
+
+                     _spriteBatch.Draw(_wall1, new Rectangle(x * 128 + 53,
+                    y * 48 - 82, 23, 30), new Rectangle(148, 53, 22, 30), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+                     _spriteBatch.Draw(_wall1, new Rectangle(x * 128 + 53,
+y * 48 - 52, 23, 30), new Rectangle(148, 53, 22, 30), transparent ? new Color(Color.White, (float)0.5) : Color.White); 
+
+                    break;
+
+                case Direction.FourWay: // Walls on all surrounding squares
+                    _spriteBatch.Draw(_wall1, new Rectangle(x * 128 + 1,
+   y * 48 - 96, 128, 192), new Rectangle(256, 768, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+
+                    break;
+
+                case Direction.Free: // Free standing wall (no connecting squares)
+                    _spriteBatch.Draw(_wall1, new Rectangle(x * 128 + 1,
+    y * 48 - 96, 128, 192), new Rectangle(0, 0, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+
+                    break;
+
+                case Direction.None: // No wall
+                    break;
+
+
+            }
+        }
+
+        public Direction GetWallStyle(int x = 0, int y = 0)
+        {
+            if (_map[x, y].canEnter) return Direction.None;
+
+
+            if (_map[x - 1, y].canEnter) // No wall left
+            {
+
+                // No wall blocks way to left
+
+                if (_map[x + 1, y].canEnter) // No wall right
+                {
+
+                    // No wall blocks way to left or right
+
+                    if (_map[x, y - 1].canEnter) // No wall up
+                    {
+                        // No wall blocks way up, left or right
+
+                        if (_map[x, y + 1].canEnter) // No wall down
+                        {
+                            // No wall blocks way up, down, left or right => this is a freestanding wall surrounded by walkable space
+                            return Direction.Free;
+                        }
+                        else // Wall Down (only)
+                        {
+                            // Wall only on current square and square above
+                            return Direction.DownClose;
+                        }
+                    }
+                    else // Wall up
+                    {
+                        if (_map[x, y + 1].canEnter) // No wall down
+                        {
+                            // Wall ony on current square and square below
+                            return Direction.UpClose;
+                        }
+                        else // Wall up and down
+                        {
+                            // Wall on current square and squares above and below
+                            return Direction.UpDown;
+                        }
+                    }
+                }
+                else // Wall right
+                {
+                    if (_map[x, y - 1].canEnter) // No wall up
+                    {
+                        if (_map[x, y + 1].canEnter) // No wall down
+                        {
+                            // Wall on current tile and right only, but not up or down
+                            return Direction.RightClose;
+                        }
+                        else // Wall down
+                        {
+                            // Wall right and down, but not left and up
+                            return Direction.DownRight;
+                        }
+                    }
+                    else // Wall up
+                    {
+                        // Wall up and right, but not left
+                        if (_map[x, y + 1].canEnter) // No wall down
+                        {
+                            // Wall up, right, but not left and down
+                            return Direction.UpRight;
+                        }
+                        else // Wall down
+                        {
+                            // Wall up, right and down, but not left
+                            return Direction.UpDownRight;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                if (_map[x + 1, y].canEnter) // No Wall right
+                {
+                    if (_map[x, y - 1].canEnter) // No wall up
+                    {
+                        if (_map[x, y + 1].canEnter) // No wall down
+                        {
+                            // Left and Right closed
+                            return Direction.LeftClose;
+                        }
+                        else  // Wall down
+                        {
+                            // Left and bottom closed
+                            return Direction.DownLeft;
+                        }
+                    }
+                    else // Wall up
+                    {
+                        if (_map[x, y + 1].canEnter) // No wall down
+                        {
+                            // Left and Up closed
+                            return Direction.UpLeft;
+                        }
+                        else // Wall down
+                        {
+                            // Left, Up and Down closed
+                            return Direction.UpDownLeft;
+                        }
+                    }
+                }
+                else // Wall Left and Right
+                {
+                    if (_map[x, y - 1].canEnter) // No wall up
+                    {
+                        if (_map[x, y + 1].canEnter) // No wall down
+                        {
+                            // Walls left and right only
+                            return Direction.LeftRight;
+                        }
+                        else // wall up
+                        {
+                            // All walls but not up
+                            return Direction.LeftRightDown;
+
+                        }
+                    }
+                    else
+                    {
+                        if (_map[x, y + 1].canEnter) // No wall down
+                        {
+                            // All walls but not down
+                            return Direction.LeftRightUp;
+                        }
+                        else // wall down
+                        {
+                            // Surrounded by walls
+                            return Direction.FourWay;
+                        }
+                    }
+                }
             }
         }
 
@@ -211,9 +398,25 @@ namespace Gruppe22
         /// </summary>
         private void _drawWalls()
         {
-            _drawWall(Direction.FourWay, 3, 3, false);
-            _drawWall(Direction.UpRight, 3, 4, false);
-            _drawWall(Direction.LeftClose, 4, 4, false);
+
+            for (int y = 0; y < _map.height; ++y)
+            {
+
+
+                for (int x = 0; x < _map.width; ++x)
+                {
+                    _drawWall(GetWallStyle(x, y), x, y, true);
+                }
+            }
+            /*
+               _drawWall(Direction.FourWay, 1, 3, false);
+               _drawWall(Direction.DownLeft, 2, 1, false);
+               _drawWall(Direction.LeftRight, 3, 1, false);
+               _drawWall(Direction.LeftRight, 2, 2, false);
+               _drawWall(Direction.UpRight, 3, 2, false);
+               */
+
+            //_drawWall(Direction.UpRight, 3, 4, false);
         }
 
         /// <summary>
@@ -327,6 +530,8 @@ namespace Gruppe22
             _displayRect = displayArea;
             _desaturateEffect = desaturate;
             _camera = new Camera();
+            _camera.zoom = (float)0.5;
+            _camera.Move(new Vector2(70, 110));
             _floor = floor;
             _wall1 = wall1;
             _wall2 = wall2;
