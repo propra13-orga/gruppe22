@@ -7,9 +7,25 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Gruppe22
 {
+    public enum Direction
+    {
+        LeftRightUp = 0,
+        LeftRightDown = 1,
+        UpDownLeft = 5,
+        UpDownRight = 6,
+        UpLeft = 7,
+        UpRight = 8,
+        DownLeft = 9,
+        DownRight = 10,
+        LeftRight = 2,
+        UpDown = 3,
+        FourWay = 4,
+        LeftClose = 13,
+        DownClose = 14
+    }
     public class Mainmap
     {
-        Texture2D _wall1, _wall2, _wall3, _floor;
+        Texture2D _wall1, _wall2, _floor;
         /// <summary>
         /// Output device
         /// </summary>
@@ -19,10 +35,103 @@ namespace Gruppe22
         /// </summary>
         SpriteBatch _spriteBatch;
         Rectangle _displayRect;
+        Camera _cam;
         Map _map;
 
+        public float Zoom
+        {
+            get
+            {
+                return _cam.zoom;
+            }
+            set
+            {
+                _cam.zoom = value;
+            }
+        }
 
-        private void _drawFloor(int hTiles = 5, int vTiles = 5)
+        public Vector2 Pos
+        {
+            get
+            {
+                return _cam.position;
+            }
+            set
+            {
+                _cam.position = value;
+            }
+        }
+
+        private void _drawWall(Direction dir, int x, int y, bool transparent)
+        {
+            switch (dir)
+            {
+                case Direction.FourWay:
+                    _spriteBatch.Draw(_wall1, new Rectangle(x * 128 + 1 + (y % 2) * 64,
+                        y * 48 - 96, 128, 192), new Rectangle(384, 782, 128, 192), Color.White);
+                    break;
+                case Direction.LeftRight:
+                    _spriteBatch.Draw(_wall1, new Rectangle(x * 128 + 1 + (y % 2) * 64,
+                        y * 48 - 96, 128, 192), new Rectangle(0, 590, 128, 192), Color.White);
+                    break;
+                case Direction.UpDown:
+                    _spriteBatch.Draw(_wall1, new Rectangle(x * 128 + 1 + (y % 2) * 64,
+                        y * 48 - 96, 128, 192), new Rectangle(128, 590, 128, 192), Color.White);
+                    break;
+
+                case Direction.DownLeft:
+                    _spriteBatch.Draw(_wall1, new Rectangle(x * 128 + 1 + (y % 2) * 64,
+                       y * 48 - 96, 128, 192), new Rectangle(256, 590, 128, 192), Color.White);
+
+                    break;
+                case Direction.DownRight:
+                    _spriteBatch.Draw(_wall1, new Rectangle(x * 128 + 1 + (y % 2) * 64,
+                       y * 48 - 96, 128, 192), new Rectangle(384, 590, 128, 192), Color.White);
+                    break;
+                case Direction.UpRight:
+                    _spriteBatch.Draw(_wall1, new Rectangle(x * 128 + 1 + (y % 2) * 64,
+                       y * 48 - 96, 128, 192), new Rectangle(0, 782, 128, 192), Color.White);
+                    break;
+                case Direction.UpLeft:
+                    _spriteBatch.Draw(_wall1, new Rectangle(x * 128 + 1 + (y % 2) * 64,
+                       y * 48 - 96, 128, 192), new Rectangle(128, 782, 128, 192), Color.White);
+                    break;
+                case Direction.UpDownRight:
+                    _spriteBatch.Draw(_wall1, new Rectangle(x * 128 + 1 + (y % 2) * 64,
+                       y * 48 - 96, 128, 192), new Rectangle(512, 590, 128, 192), Color.White);
+                    break;
+                case Direction.UpDownLeft:
+                    _spriteBatch.Draw(_wall1, new Rectangle(x * 128 + 1 + (y % 2) * 64,
+                       y * 48 - 96, 128, 192), new Rectangle(640, 590, 128, 192), Color.White);
+                    break;
+                case Direction.LeftRightUp:
+                    _spriteBatch.Draw(_wall1, new Rectangle(x * 128 + 1 + (y % 2) * 64,
+                       y * 48 - 96, 128, 192), new Rectangle(768, 590, 128, 192), Color.White);
+                    break;
+                case Direction.LeftRightDown:
+                    _spriteBatch.Draw(_wall1, new Rectangle(x * 128 + 1 + (y % 2) * 64,
+                       y * 48 - 96, 128, 192), new Rectangle(896, 590, 128, 192), Color.White);
+                    break;
+                case Direction.LeftClose:
+                    _spriteBatch.Draw(_wall1, new Rectangle(x * 128 + 1 + (y % 2) * 64,
+                        y * 48 - 96, 128, 192), new Rectangle(128, 206, 128, 192), Color.White);
+                    break;
+                case Direction.DownClose:
+                    _spriteBatch.Draw(_wall1, new Rectangle(x * 128 + 1 + (y % 2) * 64,
+                        y * 48 - 96, 128, 192), new Rectangle(256, 205, 128, 192), Color.White);
+                    break;
+
+            }
+        }
+
+        private void _drawWalls()
+        {
+
+            _drawWall(Direction.FourWay, 3, 3, false);
+            _drawWall(Direction.UpRight, 3, 4, false);
+            _drawWall(Direction.LeftClose, 4, 4, false);
+        }
+        private void _drawFloor(int hTiles = 52, int vTiles = 25)
         {
             for (int y = 0; y < vTiles; ++y)
             {
@@ -108,22 +217,42 @@ namespace Gruppe22
             }
         }
 
+        public void Move(Vector2 target)
+        {
+            _cam.Move(target);
+            System.Diagnostics.Debug.WriteLine(_cam.position.X + " / " + _cam.position.Y);
+        }
         public void Draw()
         {
-            _spriteBatch.Begin(SpriteSortMode.BackToFront, BlendState.AlphaBlend);
+            _spriteBatch.Begin(SpriteSortMode.BackToFront,
+                        BlendState.AlphaBlend,
+                        null,
+                        null,
+                        null,
+                        null,
+                        _cam.GetMatrix(_graphics));
+            
+            _spriteBatch.GraphicsDevice.RasterizerState.ScissorTestEnable = true;
+            _spriteBatch.GraphicsDevice.ScissorRectangle = new Rectangle(5, 5, 90, 90);
+
+            /*   _*/
             _drawFloor();
+            _drawWalls();
+
             _spriteBatch.End();
+
         }
 
-        public Mainmap(GraphicsDeviceManager graphics, SpriteBatch spriteBatch, Rectangle displayArea, Texture2D floor, Texture2D wall1, Texture2D wall2, Texture2D wall3, Map map)
+        public Mainmap(GraphicsDeviceManager graphics, SpriteBatch spriteBatch, Rectangle displayArea, Texture2D floor, Texture2D wall1, Texture2D wall2, Map map)
         {
             _graphics = graphics;
             _spriteBatch = spriteBatch;
             _displayRect = displayArea;
+            _cam = new Camera();
+//            _cam.zoom = (float)0.2;
             _floor = floor;
             _wall1 = wall1;
             _wall2 = wall2;
-            _wall3 = wall3;
             _map = map;
 
         }

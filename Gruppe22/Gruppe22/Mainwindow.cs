@@ -22,48 +22,47 @@ namespace Gruppe22
         /// <summary>
         /// Output device
         /// </summary>
-        GraphicsDeviceManager _graphics;
+        GraphicsDeviceManager _graphics = null;
         /// <summary>
         /// Main Sprite drawing algorithm
         /// </summary>
-        SpriteBatch _spriteBatch;
+        SpriteBatch _spriteBatch = null;
         /// <summary>
         /// Font to display information
         /// </summary>
-        SpriteFont _font;
+        SpriteFont _font = null;
 
         /// <summary>
         /// Images to use on the minimap
         /// </summary>
-        Texture2D _miniIcons;
+        Texture2D _miniIcons = null;
 
-        Texture2D _floor;
+        Texture2D _floor = null;
 
-        Texture2D _wall1;
-        Texture2D _wall2;
-        Texture2D _wall3;
+        Texture2D _wall1 = null;
+        Texture2D _wall2 = null;
 
 
-        Texture2D _player1;
-        Texture2D _player2;
+        Texture2D _player1 = null;
+        Texture2D _player2 = null;
         /// <summary>
         /// Textarea to display status information
         /// </summary>
-        Statusbox _statusBox;
+        Statusbox _statusBox = null;
 
 
         /// <summary>
         /// Minimap for Player 1
         /// </summary>
-        Minimap _miniMap1;
+        Minimap _miniMap1 = null;
         /// <summary>
         /// Main map for Player 1
         /// </summary>
-        Mainmap _mainMap1;
+        Mainmap _mainMap1 = null;
         /// <summary>
         /// Internal storage for Player 1
         /// </summary>
-        Map _map1;
+        Map _map1 = null;
 
         /// <summary>
         /// Background Music
@@ -100,7 +99,6 @@ namespace Gruppe22
 
             _wall1 = Content.Load<Texture2D>("wall1");
             _wall2 = Content.Load<Texture2D>("wall2");
-            _wall3 = Content.Load<Texture2D>("wall3");
             _floor = Content.Load<Texture2D>("floor");
             _player1 = Content.Load<Texture2D>("player1");
             _player2 = Content.Load<Texture2D>("player2");
@@ -108,9 +106,9 @@ namespace Gruppe22
             _miniIcons = Content.Load<Texture2D>("Minimap");
             _map1 = new Map(10, 10);
 
-            _miniMap1 = new Minimap(_graphics, _spriteBatch, new Rectangle(_graphics.PreferredBackBufferWidth - 210, 5, 200, 100), _miniIcons, _map1);
-            _mainMap1 = new Mainmap(_graphics, _spriteBatch, new Rectangle(0, 0, _graphics.PreferredBackBufferWidth - 220, _graphics.PreferredBackBufferHeight - 140), _floor, _wall1, _wall2, _wall3, _map1);
-            _statusBox = new Statusbox(_graphics, _spriteBatch, new Rectangle(40, _graphics.PreferredBackBufferHeight - 120, _graphics.PreferredBackBufferWidth - 20, 100), _font);
+            _miniMap1 = new Minimap(_graphics, _spriteBatch, new Rectangle(_graphics.GraphicsDevice.Viewport.Width - 210, 5, 200, 100), _miniIcons, _map1);
+            _mainMap1 = new Mainmap(_graphics, _spriteBatch, new Rectangle(0, 0, _graphics.GraphicsDevice.Viewport.Width - 220, _graphics.GraphicsDevice.Viewport.Height - 140), _floor, _wall1, _wall2, _map1);
+            _statusBox = new Statusbox(_graphics, _spriteBatch, new Rectangle(40, _graphics.GraphicsDevice.Viewport.Height - 120, _graphics.GraphicsDevice.Viewport.Width - 20, 100), _font);
 
             // TODO: use this.Content to load your game content here
         }
@@ -125,7 +123,7 @@ namespace Gruppe22
             _backMusic.Dispose();
             _wall1.Dispose();
             _wall2.Dispose();
-            _wall3.Dispose();
+
             _floor.Dispose();
             _player1.Dispose();
             _player2.Dispose();
@@ -145,6 +143,25 @@ namespace Gruppe22
             if (Keyboard.GetState().IsKeyDown(Keys.Enter))
                 _graphics.ToggleFullScreen();
 
+            if (Keyboard.GetState().IsKeyDown(Keys.PageUp))
+                _mainMap1.Zoom += (float)0.1;
+
+            if (Keyboard.GetState().IsKeyDown(Keys.PageDown))
+                _mainMap1.Zoom -= (float)0.1;
+
+            if (Keyboard.GetState().IsKeyDown(Keys.Right))
+                _mainMap1.Move(new Vector2(-1, 0));
+
+            if (Keyboard.GetState().IsKeyDown(Keys.Left))
+                _mainMap1.Move(new Vector2(1, 0));
+
+            if (Keyboard.GetState().IsKeyDown(Keys.Down))
+                _mainMap1.Move(new Vector2(0, -1));
+
+            if (Keyboard.GetState().IsKeyDown(Keys.Up))
+                _mainMap1.Move(new Vector2(0, 1));
+
+
             // TODO: Add your update logic here
 
             base.Update(gameTime);
@@ -157,9 +174,10 @@ namespace Gruppe22
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.Black);
-            _statusBox.Draw(gameTime);
-            _miniMap1.Draw(gameTime);
-            _mainMap1.Draw();
+            if (_miniMap1 != null) _miniMap1.Draw(gameTime);
+            if (_mainMap1 != null) _mainMap1.Draw();
+            if (_statusBox != null) _statusBox.Draw(gameTime);
+
             base.Draw(gameTime);
         }
         #endregion

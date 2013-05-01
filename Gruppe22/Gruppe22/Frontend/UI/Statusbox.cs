@@ -11,15 +11,16 @@ namespace Gruppe22
     public class Statusbox
     {
         #region Private Fields
-        GraphicsDeviceManager _graphics;
-        SpriteBatch _spriteBatch;
-        SpriteFont _font;
-        Rectangle _paintRegion;
+        GraphicsDeviceManager _graphics = null;
+        SpriteBatch _spriteBatch = null;
+        SpriteFont _font = null;
+        Rectangle _paintRegion = Rectangle.Empty;
         float _zoom = (float)1.0;
-        Rectangle _mapRegion;
-        Map _map;
+        Rectangle _mapRegion = Rectangle.Empty;
+        Map _map = null;
         #endregion
 
+        #region Public Methods
         /// <summary>
         /// This is called when the game should draw itself.
         /// </summary>
@@ -27,10 +28,17 @@ namespace Gruppe22
         public void Draw(GameTime gameTime)
         {
             _spriteBatch.Begin();
-            _spriteBatch.DrawString(_font, "Press Escape to quit", new Vector2(_paintRegion.Left + 5, _paintRegion.Top + 5), Color.White);
+            _spriteBatch.DrawString(_font, "Arrows to move map, PgUp/PgDown to zoom, Esc to quit", new Vector2(_paintRegion.Left + 5, _paintRegion.Top + 5), Color.White);
             _spriteBatch.End();
         }
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="graphics"></param>
+        /// <param name="spriteBatch"></param>
+        /// <param name="region"></param>
+        /// <param name="font"></param>
         public Statusbox(GraphicsDeviceManager graphics, SpriteBatch spriteBatch, Rectangle region, SpriteFont font)
         {
             _font = font;
@@ -38,5 +46,6 @@ namespace Gruppe22
             _spriteBatch = spriteBatch;
             _graphics = graphics;
         }
+        #endregion
     }
 }

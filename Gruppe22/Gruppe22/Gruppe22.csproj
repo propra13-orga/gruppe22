@@ -51,6 +51,7 @@
     <Compile Include="Backend\Map\TrapTile.cs" />
     <Compile Include="Backend\Map\WallTile.cs" />
     <Compile Include="Frontend\Map\Actors.cs" />
+    <Compile Include="Frontend\Map\Camera.cs" />
     <Compile Include="Frontend\Map\Mainmap.cs" />
     <Compile Include="Frontend\Map\Minimap.cs" />
     <Compile Include="Frontend\UI\Button.cs" />
@@ -107,13 +108,12 @@
     <Content Include="Content\player2.xnb">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\wall1.xnb">
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Content\Wall1.xnb">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\wall2.xnb">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="Content\wall3.xnb">
+    <Content Include="Content\Wall2.xnb">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
