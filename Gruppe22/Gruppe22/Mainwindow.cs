@@ -97,17 +97,19 @@ namespace Gruppe22
             _font = Content.Load<SpriteFont>("Font");
             MediaPlayer.Volume = (float)0.3;
             MediaPlayer.Play(_backMusic);
-            
+
             _wall1 = Content.Load<Texture2D>("wall1");
             _wall2 = Content.Load<Texture2D>("wall2");
             _wall3 = Content.Load<Texture2D>("wall3");
+            _floor = Content.Load<Texture2D>("floor");
             _player1 = Content.Load<Texture2D>("player1");
             _player2 = Content.Load<Texture2D>("player2");
             _player2 = Content.Load<Texture2D>("player2");
             _miniIcons = Content.Load<Texture2D>("Minimap");
             _map1 = new Map(10, 10);
 
-            _miniMap1 = new Minimap(_graphics, _spriteBatch, new Rectangle(_graphics.PreferredBackBufferWidth - 210, 5, 200, 100), _miniIcons,_map1);
+            _miniMap1 = new Minimap(_graphics, _spriteBatch, new Rectangle(_graphics.PreferredBackBufferWidth - 210, 5, 200, 100), _miniIcons, _map1);
+            _mainMap1 = new Mainmap(_graphics, _spriteBatch, new Rectangle(0, 0, _graphics.PreferredBackBufferWidth - 220, _graphics.PreferredBackBufferHeight - 140), _floor, _wall1, _wall2, _wall3, _map1);
             _statusBox = new Statusbox(_graphics, _spriteBatch, new Rectangle(40, _graphics.PreferredBackBufferHeight - 120, _graphics.PreferredBackBufferWidth - 20, 100), _font);
 
             // TODO: use this.Content to load your game content here
@@ -124,6 +126,7 @@ namespace Gruppe22
             _wall1.Dispose();
             _wall2.Dispose();
             _wall3.Dispose();
+            _floor.Dispose();
             _player1.Dispose();
             _player2.Dispose();
 
@@ -156,6 +159,7 @@ namespace Gruppe22
             GraphicsDevice.Clear(Color.Black);
             _statusBox.Draw(gameTime);
             _miniMap1.Draw(gameTime);
+            _mainMap1.Draw();
             base.Draw(gameTime);
         }
         #endregion
@@ -167,6 +171,8 @@ namespace Gruppe22
             Window.Title = "Dungeon Crawler 2013";
 
             _graphics = new GraphicsDeviceManager(this);
+            _graphics.PreferredBackBufferWidth = 1280;
+            _graphics.PreferredBackBufferWidth = 1024;
             //_graphics.IsFullScreen = true;
 
         }
