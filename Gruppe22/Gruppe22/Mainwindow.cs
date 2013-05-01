@@ -38,6 +38,7 @@ namespace Gruppe22
         Texture2D _miniIcons = null;
 
         Texture2D _floor = null;
+        int _mouseWheel = 0;
 
         Texture2D _wall1 = null;
         Texture2D _wall2 = null;
@@ -68,6 +69,8 @@ namespace Gruppe22
         /// Background Music
         /// </summary>
         Song _backMusic;
+
+        Vector2 _mousepos;
         #endregion
 
         #region Protected Methods (overrides)
@@ -160,7 +163,28 @@ namespace Gruppe22
 
             if (Keyboard.GetState().IsKeyDown(Keys.Up))
                 _mainMap1.Move(new Vector2(0, 1));
+            if(Mouse.GetState().ScrollWheelValue!=_mouseWheel){
+                _mainMap1.Zoom+=_mouseWheel-Mouse.GetState().ScrollWheelValue;
+                _mouseWheel=Mouse.GetState().ScrollWheelValue;
+            }
 
+
+            if (Mouse.GetState().LeftButton == ButtonState.Pressed)
+            {
+                if ((_mousepos.X >= 0) && (_mousepos.X >= 0)) {
+                    _mainMap1.Move(new Vector2(Mouse.GetState().X - _mousepos.X, Mouse.GetState().Y - _mousepos.Y));
+                }
+                                _mousepos.X = Mouse.GetState().X;
+                _mousepos.Y = Mouse.GetState().Y;
+
+
+            }
+            else
+            {
+                _mousepos.X = -1;
+                _mousepos.Y = -1;
+
+            }
 
             // TODO: Add your update logic here
 
@@ -174,8 +198,9 @@ namespace Gruppe22
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.Black);
-            if (_miniMap1 != null) _miniMap1.Draw(gameTime);
             if (_mainMap1 != null) _mainMap1.Draw();
+
+            if (_miniMap1 != null) _miniMap1.Draw(gameTime);
             if (_statusBox != null) _statusBox.Draw(gameTime);
 
             base.Draw(gameTime);

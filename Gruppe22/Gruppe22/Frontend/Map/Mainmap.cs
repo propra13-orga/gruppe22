@@ -35,18 +35,18 @@ namespace Gruppe22
         /// </summary>
         SpriteBatch _spriteBatch;
         Rectangle _displayRect;
-        Camera _cam;
+        Camera _camera;
         Map _map;
 
         public float Zoom
         {
             get
             {
-                return _cam.zoom;
+                return _camera.zoom;
             }
             set
             {
-                _cam.zoom = value;
+                _camera.zoom = value;
             }
         }
 
@@ -54,11 +54,11 @@ namespace Gruppe22
         {
             get
             {
-                return _cam.position;
+                return _camera.position;
             }
             set
             {
-                _cam.position = value;
+                _camera.position = value;
             }
         }
 
@@ -219,27 +219,38 @@ namespace Gruppe22
 
         public void Move(Vector2 target)
         {
-            _cam.Move(target);
-            System.Diagnostics.Debug.WriteLine(_cam.position.X + " / " + _cam.position.Y);
+            _camera.Move(target);
         }
+
+        /// <summary>
+        /// Draw the Map
+        /// </summary>
         public void Draw()
         {
+             
+            RasterizerState rstate = new RasterizerState();
+            rstate.ScissorTestEnable = true;
+
             _spriteBatch.Begin(SpriteSortMode.BackToFront,
                         BlendState.AlphaBlend,
                         null,
                         null,
+                        rstate,
+                        
                         null,
-                        null,
-                        _cam.GetMatrix(_graphics));
-            
-            _spriteBatch.GraphicsDevice.RasterizerState.ScissorTestEnable = true;
-            _spriteBatch.GraphicsDevice.ScissorRectangle = new Rectangle(5, 5, 90, 90);
+                        _camera.GetMatrix(_graphics));
+
+            _spriteBatch.GraphicsDevice.ScissorRectangle = _displayRect;
+
 
             /*   _*/
             _drawFloor();
             _drawWalls();
 
             _spriteBatch.End();
+            _spriteBatch.GraphicsDevice.RasterizerState.ScissorTestEnable = false;
+            rstate.Dispose();
+
 
         }
 
@@ -248,8 +259,7 @@ namespace Gruppe22
             _graphics = graphics;
             _spriteBatch = spriteBatch;
             _displayRect = displayArea;
-            _cam = new Camera();
-//            _cam.zoom = (float)0.2;
+            _camera = new Camera();
             _floor = floor;
             _wall1 = wall1;
             _wall2 = wall2;

@@ -27,9 +27,21 @@ namespace Gruppe22
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public void Draw(GameTime gameTime)
         {
-            _spriteBatch.Begin();
+            _spriteBatch.GraphicsDevice.ScissorRectangle = _paintRegion;
+            RasterizerState rstate = new RasterizerState();
+            rstate.ScissorTestEnable = true;
+
+            _spriteBatch.Begin(SpriteSortMode.BackToFront,
+                        BlendState.AlphaBlend,
+                        null,
+                        null,
+                        rstate,
+                        null);
             _spriteBatch.DrawString(_font, "Arrows to move map, PgUp/PgDown to zoom, Esc to quit", new Vector2(_paintRegion.Left + 5, _paintRegion.Top + 5), Color.White);
             _spriteBatch.End();
+            _spriteBatch.GraphicsDevice.RasterizerState.ScissorTestEnable = false;
+            rstate.Dispose();
+
         }
 
         /// <summary>

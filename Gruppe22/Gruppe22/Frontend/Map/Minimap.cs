@@ -10,13 +10,14 @@ namespace Gruppe22
     public class Minimap
     {
         #region Private Fields
-        GraphicsDeviceManager _graphics;
-        SpriteBatch _spriteBatch;
-        Texture2D _mapIcon;
-        Rectangle _paintRegion;
-        float _zoom = (float)1.0;
-        Rectangle _mapRegion;
-        Map _map;
+        private GraphicsDeviceManager _graphics;
+        private SpriteBatch _spriteBatch;
+        private Texture2D _mapIcon;
+        private Rectangle _paintRegion;
+        private float _zoom = (float)1.0;
+        private Rectangle _mapRegion;
+        private Map _map;
+        private Camera _camera;
         #endregion
 
         #region Public Methods
@@ -37,7 +38,18 @@ namespace Gruppe22
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public void Draw(GameTime gameTime)
         {
-            _spriteBatch.Begin();
+            _spriteBatch.GraphicsDevice.ScissorRectangle = _paintRegion;
+            RasterizerState rstate = new RasterizerState();
+            rstate.ScissorTestEnable = true;
+
+            _spriteBatch.Begin(SpriteSortMode.BackToFront,
+                  BlendState.AlphaBlend,
+                  null,
+                  null,
+                  rstate,
+
+                  null,
+                  _camera.GetMatrix(_graphics));
             if (_map != null)
             {
                 for (int y = 0; y < _map.height; ++y)
@@ -89,15 +101,25 @@ namespace Gruppe22
 
 
             _spriteBatch.End();
+            _spriteBatch.GraphicsDevice.RasterizerState.ScissorTestEnable = false;
+            rstate.Dispose();
         }
         #endregion
 
-
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="graphics"></param>
+        /// <param name="spriteBatch"></param>
+        /// <param name="region"></param>
+        /// <param name="mapIcons"></param>
+        /// <param name="map"></param>
         public Minimap(GraphicsDeviceManager graphics, SpriteBatch spriteBatch, Rectangle region, Texture2D mapIcons, Map map)
         {
             _mapIcon = mapIcons;
             _paintRegion = region;
             _graphics = graphics;
+            _camera = new Camera();
             _spriteBatch = spriteBatch;
             _map = map;
         }
