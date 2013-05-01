@@ -36,7 +36,7 @@ namespace Gruppe22
         /// Images to use on the minimap
         /// </summary>
         Texture2D _miniIcons = null;
-
+        int counter = 0;
         Texture2D _floor = null;
         int _mouseWheel = 0;
 
@@ -111,7 +111,7 @@ namespace Gruppe22
             _miniIcons = Content.Load<Texture2D>("Minimap");
             //_desaturateEffect = Content.Load<Effect>("normalmap");
             _map1 = new Map(15, 15);
-        /*    string str = 
+            string str =
                 "######.####.###\n" +
                 "###.##.####.###\n" +
                 "###.........###\n" +
@@ -119,8 +119,8 @@ namespace Gruppe22
                 "###.###.###.###\n" +
                 "#.............#\n" +
                 "#....##.#######\n" +
-                "#.#####.#######\n";*/
-            string str =
+                "#.#####.#######\n";
+            string str2 =
               "###############\n" +
               "#....#........#\n" +
               "#....#........#\n" +
@@ -131,11 +131,11 @@ namespace Gruppe22
               "######..#######\n";
 
             // _drawWall(Direction.LeftClose, 4, 3, false);
-  
+
             _map1.FromString(str);
 
             _miniMap1 = new Minimap(_graphics, _spriteBatch, new Rectangle(_graphics.GraphicsDevice.Viewport.Width - 210, 20, 200, 200), _miniIcons, _map1);
-            _mainMap1 = new Mainmap(_graphics, _spriteBatch, new Rectangle(0, 20, _graphics.GraphicsDevice.Viewport.Width - 220, _graphics.GraphicsDevice.Viewport.Height - 140), _floor, _wall1, _wall2, _desaturateEffect, _map1);
+            _mainMap1 = new Mainmap(_graphics, _spriteBatch, new Rectangle(0, 20, _graphics.GraphicsDevice.Viewport.Width - 220, _graphics.GraphicsDevice.Viewport.Height - 140), _floor, _wall1, _wall2, _desaturateEffect, _map1, _player1, _player2);
             _statusBox = new Statusbox(_graphics, _spriteBatch, new Rectangle(40, _graphics.GraphicsDevice.Viewport.Height - 120, _graphics.GraphicsDevice.Viewport.Width - 20, 100), _font);
 
             // TODO: use this.Content to load your game content here
@@ -212,9 +212,10 @@ namespace Gruppe22
                 _mousepos.Y = -1;
 
             }
-
+            counter += 1;
             // TODO: Add your update logic here
-
+            if (counter % 10 == 1)
+                _mainMap1.Update();
             base.Update(gameTime);
         }
 
@@ -243,7 +244,7 @@ namespace Gruppe22
             _graphics = new GraphicsDeviceManager(this);
             _graphics.PreferredBackBufferWidth = 1280;
             _graphics.PreferredBackBufferHeight = 1024;
-            _graphics.IsFullScreen = false; 
+            _graphics.IsFullScreen = false;
             _graphics.ApplyChanges();
             //_graphics.IsFullScreen = true;
 

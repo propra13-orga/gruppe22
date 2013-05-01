@@ -60,6 +60,8 @@ namespace Gruppe22
         /// The transformation-matrix used for zooming and panning the map
         /// </summary>
         private Camera _camera;
+
+        private List<ActorView> _actors;
         /// <summary>
         /// Internal reference to map data to be displayed
         /// </summary>
@@ -129,6 +131,10 @@ namespace Gruppe22
                 _spriteBatch.GraphicsDevice.ScissorRectangle = _displayRect;
 
                 _drawFloor(_map.width, _map.height);
+                foreach (ActorView actor in _actors)
+                {
+                    actor.Draw(_graphics, _spriteBatch);
+                }
                 _drawWalls();
 
                 _spriteBatch.End();
@@ -156,13 +162,13 @@ namespace Gruppe22
             {
 
                 case Direction.RightClose:
-                    _spriteBatch.Draw(_wall1, new Rectangle(x * 128 + 1,
-y * 48 - 96, 128, 192), new Rectangle(0, 206, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+                    _spriteBatch.Draw(_wall1, new Rectangle(x * 128 + 64,
+      y * 48 - 96, 64, 192), new Rectangle(322, 0, 63, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
                     break;
 
                 case Direction.UpClose:
                     _spriteBatch.Draw(_wall1, new Rectangle(x * 128 + 53,
-y * 48 - 52, 22, 30), new Rectangle(148, 53, 22, 30), transparent ? new Color(Color.White, (float)0.5) : Color.White); 
+y * 48 - 70, 23, 30), new Rectangle(148, 55, 22, 30), transparent ? new Color(Color.White, (float)0.5) : Color.White);
                     break;
 
                 case Direction.LeftClose: // Wall on current square connected to square to the left
@@ -173,13 +179,13 @@ y * 48 - 52, 22, 30), new Rectangle(148, 53, 22, 30), transparent ? new Color(Co
 
                 case Direction.DownClose: // Wall on current square connected to square below
                     _spriteBatch.Draw(_wall1, new Rectangle(x * 128 + 53,
-y * 48 - 52, 23, 30), new Rectangle(148, 53, 22, 30), transparent ? new Color(Color.White, (float)0.5) : Color.White); 
+y * 48 - 52, 23, 30), new Rectangle(148, 53, 22, 30), transparent ? new Color(Color.White, (float)0.5) : Color.White);
 
                     break;
 
                 case Direction.LeftRightUp: // Walls connected left, right and up
                     _spriteBatch.Draw(_wall1, new Rectangle(x * 128 + 1,
-   y * 48 - 96, 128, 192), new Rectangle(768, 590, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+   y * 48 - 96, 128, 192), new Rectangle(1152, 384, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
 
                     break;
                 case Direction.LeftRightDown: // Wall connected left right and down
@@ -228,10 +234,10 @@ y * 48 - 96, 128, 192), new Rectangle(384, 384, 128, 192), transparent ? new Col
                     //  _spriteBatch.Draw(_wall1, new Rectangle(x * 128 + 1 ,
                     //    y * 48 - 96, 128, 192), new Rectangle(128, 590, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White); 
 
-                     _spriteBatch.Draw(_wall1, new Rectangle(x * 128 + 53,
-                    y * 48 - 82, 23, 30), new Rectangle(148, 53, 22, 30), transparent ? new Color(Color.White, (float)0.5) : Color.White);
-                     _spriteBatch.Draw(_wall1, new Rectangle(x * 128 + 53,
-y * 48 - 52, 23, 30), new Rectangle(148, 53, 22, 30), transparent ? new Color(Color.White, (float)0.5) : Color.White); 
+                    _spriteBatch.Draw(_wall1, new Rectangle(x * 128 + 53,
+                   y * 48 - 82, 23, 30), new Rectangle(148, 53, 22, 30), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+                    _spriteBatch.Draw(_wall1, new Rectangle(x * 128 + 53,
+y * 48 - 52, 23, 30), new Rectangle(148, 53, 22, 30), transparent ? new Color(Color.White, (float)0.5) : Color.White);
 
                     break;
 
@@ -244,7 +250,6 @@ y * 48 - 52, 23, 30), new Rectangle(148, 53, 22, 30), transparent ? new Color(Co
                 case Direction.Free: // Free standing wall (no connecting squares)
                     _spriteBatch.Draw(_wall1, new Rectangle(x * 128 + 1,
     y * 48 - 96, 128, 192), new Rectangle(0, 0, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
-
                     break;
 
                 case Direction.None: // No wall
@@ -405,7 +410,7 @@ y * 48 - 52, 23, 30), new Rectangle(148, 53, 22, 30), transparent ? new Color(Co
 
                 for (int x = 0; x < _map.width; ++x)
                 {
-                    _drawWall(GetWallStyle(x, y), x, y, true);
+                    _drawWall(GetWallStyle(x, y), x, y, false);
                 }
             }
             /*
@@ -509,6 +514,14 @@ y * 48 - 52, 23, 30), new Rectangle(148, 53, 22, 30), transparent ? new Color(Co
                 }
             }
         }
+
+        public void Update()
+        {
+            foreach (ActorView actor in _actors)
+            {
+                actor.Update();
+            }
+        }
         #endregion
 
 
@@ -523,7 +536,7 @@ y * 48 - 52, 23, 30), new Rectangle(148, 53, 22, 30), transparent ? new Color(Co
         /// <param name="wall1">A set of tiles for the walls</param>
         /// <param name="wall2">A set of tiles for doors</param>
         /// <param name="map">Internal storage of map data</param>
-        public Mainmap(GraphicsDeviceManager graphics, SpriteBatch spriteBatch, Rectangle displayArea, Texture2D floor, Texture2D wall1, Texture2D wall2, Effect desaturate, Map map)
+        public Mainmap(GraphicsDeviceManager graphics, SpriteBatch spriteBatch, Rectangle displayArea, Texture2D floor, Texture2D wall1, Texture2D wall2, Effect desaturate, Map map, Texture2D player1, Texture2D player2)
         {
             _graphics = graphics;
             _spriteBatch = spriteBatch;
@@ -536,6 +549,8 @@ y * 48 - 52, 23, 30), new Rectangle(148, 53, 22, 30), transparent ? new Color(Co
             _wall1 = wall1;
             _wall2 = wall2;
             _map = map;
+            _actors = new List<ActorView>();
+            _actors.Add(new ActorView("Player", true, 7, 8, player1, player2));
 
         }
         #endregion
