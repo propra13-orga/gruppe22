@@ -105,9 +105,9 @@ namespace Gruppe22
             _player2 = Content.Load<Texture2D>("player2");
             _player2 = Content.Load<Texture2D>("player2");
             _miniIcons = Content.Load<Texture2D>("Minimap");
+            _map1 = new Map(10, 10);
 
-
-            _miniMap1 = new Minimap(_graphics, _spriteBatch, new Rectangle(_graphics.PreferredBackBufferWidth - 210, 5, 200, 100), _miniIcons);
+            _miniMap1 = new Minimap(_graphics, _spriteBatch, new Rectangle(_graphics.PreferredBackBufferWidth - 210, 5, 200, 100), _miniIcons,_map1);
             _statusBox = new Statusbox(_graphics, _spriteBatch, new Rectangle(40, _graphics.PreferredBackBufferHeight - 120, _graphics.PreferredBackBufferWidth - 20, 100), _font);
 
             // TODO: use this.Content to load your game content here

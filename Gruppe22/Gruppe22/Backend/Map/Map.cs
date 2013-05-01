@@ -20,6 +20,12 @@ namespace Gruppe22
         /// Internal current height
         /// </summary>
         private int _height;
+
+        /// <summary>
+        /// Blank tile returned when requesting tile outside map boundaries (i.e. negative values / values beyond width or height)
+        /// </summary>
+        private Tile _blankTile;
+
         #endregion
 
         #region Public Fields
@@ -50,24 +56,37 @@ namespace Gruppe22
             }
             set
             {
-                _height= value;
+                _height = value;
             }
         }
 
+
+        
         /// <summary>
         /// Get the tile at coordinates x and y
         /// </summary>
         /// <param name="x">The x-coordinate</param>
         /// <param name="y">The y-coordinate</param>
         /// <returns>The tile at the specified coordinates</returns>
-        public Tile this[int x, int y] 
+        public Tile this[int x, int y]
         {
-            get{
-                return _tiles[x][y];
+            get
+            {
+                if ((x < width) && (x > -1) && (y < height) && (y > -1))
+                {
+                    return _tiles[x][y];
+                }
+                else
+                {
+                    return _blankTile;
+                }
             }
             set
             {
-                _tiles[x][y] = value;
+                if ((x < width) && (x > -1) && (y < height) && (y > -1))
+                {
+                    _tiles[x][y] = value;
+                }
             }
         }
         #endregion
@@ -85,7 +104,7 @@ namespace Gruppe22
 
             try
             {
-                
+
             }
             finally
             {
@@ -134,17 +153,27 @@ namespace Gruppe22
         /// </summary>
         /// <param name="width">The width of the map</param>
         /// <param name="height">The height of the map</param>
-        public Map(int width=10, int height=10)
+        public Map(int width = 10, int height = 10)
         {
             _width = width;
             _height = height;
+            _tiles = new List<List<Tile>>();
+            for (int y = 0; y < height; ++y)
+            {
+                _tiles.Add(new List<Tile>());
+                for (int x = 0; x < height; ++x)
+                {
+                    _tiles[y].Add(new Tile());
+                }
+            }
+                _blankTile = new Tile();
         }
 
         /// <summary>
         /// Load a map from a file
         /// </summary>
         /// <param name="filename"></param>
-        public Map(string filename="")
+        public Map(string filename = "")
         {
             Load(filename);
         }

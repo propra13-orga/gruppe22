@@ -46,37 +46,37 @@ namespace Gruppe22
                     {
                         if (!_map[x, y].canEnter)
                         {
-                            _spriteBatch.Draw(_mapIcon, new Rectangle(10, 10, 16, 16), new Rectangle(0, 0, 16, 16), Color.White);
+                            _spriteBatch.Draw(_mapIcon, new Rectangle(x*16, y*16, 16, 16), new Rectangle(32, 0, 16, 16), Color.White);
                         }
                         else
                         {
                             if (_map[x, y].hasPlayer)
                             {
-                                _spriteBatch.Draw(_mapIcon, new Rectangle(10, 10, 16, 16), new Rectangle(0, 0, 16, 16), Color.White);
+                                _spriteBatch.Draw(_mapIcon, new Rectangle(x * 16, y * 16, 16, 16), new Rectangle(32, 16, 16, 16), Color.White);
                             }
                             else
                             {
                                 if (_map[x, y].hasEnemy)
                                 {
-                                    _spriteBatch.Draw(_mapIcon, new Rectangle(10, 10, 16, 16), new Rectangle(0, 0, 16, 16), Color.White);
+                                    _spriteBatch.Draw(_mapIcon, new Rectangle(x * 16, y * 16, 16, 16), new Rectangle(64, 16, 16, 16), Color.White);
                                 }
                                 else
                                 {
                                     if (_map[x, y].hasTreasure)
                                     {
-                                        _spriteBatch.Draw(_mapIcon, new Rectangle(10, 10, 16, 16), new Rectangle(0, 0, 16, 16), Color.White);
+                                        _spriteBatch.Draw(_mapIcon, new Rectangle(x * 16, y * 16, 16, 16), new Rectangle(64, 0, 16, 16), Color.White);
                                     }
                                     else
                                     {
                                         if (_map[x, y].hasTeleport)
                                         {
-                                            _spriteBatch.Draw(_mapIcon, new Rectangle(10, 10, 16, 16), new Rectangle(0, 0, 16, 16), Color.White);
+                                            _spriteBatch.Draw(_mapIcon, new Rectangle(x * 16, y * 16, 16, 16), new Rectangle(0, 16, 16, 16), Color.White);
                                         }
                                         else
                                         {
                                             if (_map[x, y].hasSpecial)
                                             {
-                                                _spriteBatch.Draw(_mapIcon, new Rectangle(10, 10, 16, 16), new Rectangle(0, 0, 16, 16), Color.White);
+                                                _spriteBatch.Draw(_mapIcon, new Rectangle(x * 16, y * 16, 16, 16), new Rectangle(48, 0, 16, 16), Color.White);
                                             }
                                         }
                                     }
@@ -93,12 +93,13 @@ namespace Gruppe22
         #endregion
 
 
-        public Minimap(GraphicsDeviceManager graphics, SpriteBatch spriteBatch, Rectangle region, Texture2D mapIcons)
+        public Minimap(GraphicsDeviceManager graphics, SpriteBatch spriteBatch, Rectangle region, Texture2D mapIcons, Map map)
         {
             _mapIcon = mapIcons;
             _paintRegion = region;
             _graphics = graphics;
             _spriteBatch = spriteBatch;
+            _map = map;
         }
     }
 }
