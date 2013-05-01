@@ -4,7 +4,7 @@ using System.Text;
 using System.Xml;
 namespace Gruppe22
 {
-    public class Map
+    public class Map : IDisposable
     {
         #region Private Fields
         /// <summary>
@@ -61,7 +61,7 @@ namespace Gruppe22
         }
 
 
-        
+
         /// <summary>
         /// Get the tile at coordinates x and y
         /// </summary>
@@ -166,7 +166,7 @@ namespace Gruppe22
                     _tiles[y].Add(new Tile());
                 }
             }
-                _blankTile = new Tile();
+            _blankTile = new Tile();
         }
 
         /// <summary>
@@ -176,6 +176,19 @@ namespace Gruppe22
         public Map(string filename = "")
         {
             Load(filename);
+        }
+
+        public void Dispose()
+        {
+            for (int y = 0; y < height; ++y)
+            {
+                for (int x = 0; x < height; ++x)
+                {
+                    _tiles[0][0].Dispose();
+                }
+                _tiles[0].Clear();
+            }
+            _tiles.Clear();
         }
         #endregion
     }

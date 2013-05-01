@@ -180,6 +180,7 @@ namespace Gruppe22
         public void Dispose()
         {
             _overlay.Clear();
+            
         }
         #endregion
     }

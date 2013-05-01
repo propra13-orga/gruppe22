@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Gruppe22
 {
+    /// <summary>
+    /// Different wall-directions
+    /// </summary>
     public enum Direction
     {
         LeftRightUp = 0,
@@ -23,21 +25,47 @@ namespace Gruppe22
         LeftClose = 13,
         DownClose = 14
     }
+
+    /// <summary>
+    /// The core display of the current part of the dungeon
+    /// </summary>
     public class Mainmap
     {
-        Texture2D _wall1, _wall2, _floor;
+        #region Private Fields
+        /// <summary>
+        /// A graphical effect used depending on player health
+        /// </summary>
+        private Effect _desaturateEffect;
+        /// <summary>
+        /// Textures used under and on the map
+        /// </summary>
+        private Texture2D _wall1, _wall2, _floor;
         /// <summary>
         /// Output device
         /// </summary>
-        GraphicsDeviceManager _graphics;
+        private GraphicsDeviceManager _graphics;
         /// <summary>
         /// Main Sprite drawing algorithm
         /// </summary>
-        SpriteBatch _spriteBatch;
-        Rectangle _displayRect;
-        Camera _camera;
-        Map _map;
+        private SpriteBatch _spriteBatch;
+        /// <summary>
+        /// The area used for the map (employed e.g. in splitscreen-mode)
+        /// </summary>
+        private Rectangle _displayRect;
+        /// <summary>
+        /// The transformation-matrix used for zooming and panning the map
+        /// </summary>
+        private Camera _camera;
+        /// <summary>
+        /// Internal reference to map data to be displayed
+        /// </summary>
+        private Map _map;
+        #endregion
 
+        #region Public Fields
+        /// <summary>
+        /// Current zoom level
+        /// </summary>
         public float Zoom
         {
             get
@@ -50,6 +78,9 @@ namespace Gruppe22
             }
         }
 
+        /// <summary>
+        /// CUrrent position of the map
+        /// </summary>
         public Vector2 Pos
         {
             get
@@ -61,7 +92,60 @@ namespace Gruppe22
                 _camera.position = value;
             }
         }
+        #endregion
 
+        #region Public Methods
+        /// <summary>
+        /// Move the camera by a specified number of pixels (pass through to camera)
+        /// </summary>
+        /// <param name="target"></param>
+        public void Move(Vector2 target)
+        {
+            _camera.Move(target);
+        }
+
+        /// <summary>
+        /// Draw the Map
+        /// </summary>
+        public void Draw()
+        {
+            RasterizerState rstate = new RasterizerState();
+
+            rstate.ScissorTestEnable = true;
+            try
+            {
+                _spriteBatch.Begin(SpriteSortMode.BackToFront,
+                            BlendState.AlphaBlend,
+                            null,
+                            null,
+                            rstate,
+                            _desaturateEffect,
+                            _camera.GetMatrix(_graphics));
+
+                _spriteBatch.GraphicsDevice.ScissorRectangle = _displayRect;
+
+                _drawFloor();
+                _drawWalls();
+
+                _spriteBatch.End();
+                _spriteBatch.GraphicsDevice.RasterizerState.ScissorTestEnable = false;
+            }
+            finally
+            {
+                rstate.Dispose();
+            }
+        }
+        #endregion
+
+        #region Private Methods
+
+        /// <summary>
+        /// Display a wall
+        /// </summary>
+        /// <param name="dir">Squares the wall connects to</param>
+        /// <param name="x">Horizontal position</param>
+        /// <param name="y">Vertical position</param>
+        /// <param name="transparent"></param>
         private void _drawWall(Direction dir, int x, int y, bool transparent)
         {
             switch (dir)
@@ -78,11 +162,9 @@ namespace Gruppe22
                     _spriteBatch.Draw(_wall1, new Rectangle(x * 128 + 1 + (y % 2) * 64,
                         y * 48 - 96, 128, 192), new Rectangle(128, 590, 128, 192), Color.White);
                     break;
-
                 case Direction.DownLeft:
                     _spriteBatch.Draw(_wall1, new Rectangle(x * 128 + 1 + (y % 2) * 64,
                        y * 48 - 96, 128, 192), new Rectangle(256, 590, 128, 192), Color.White);
-
                     break;
                 case Direction.DownRight:
                     _spriteBatch.Draw(_wall1, new Rectangle(x * 128 + 1 + (y % 2) * 64,
@@ -124,13 +206,21 @@ namespace Gruppe22
             }
         }
 
+        /// <summary>
+        /// Display all walls on the current map
+        /// </summary>
         private void _drawWalls()
         {
-
             _drawWall(Direction.FourWay, 3, 3, false);
             _drawWall(Direction.UpRight, 3, 4, false);
             _drawWall(Direction.LeftClose, 4, 4, false);
         }
+
+        /// <summary>
+        /// Display the floor (using "rugged edges" to hide isometric-pattern)
+        /// </summary>
+        /// <param name="hTiles">Number of vertical Tiles</param>
+        /// <param name="vTiles">Number of horizontal Tiles</param>
         private void _drawFloor(int hTiles = 52, int vTiles = 25)
         {
             for (int y = 0; y < vTiles; ++y)
@@ -216,49 +306,26 @@ namespace Gruppe22
                 }
             }
         }
+        #endregion
 
-        public void Move(Vector2 target)
-        {
-            _camera.Move(target);
-        }
 
+        #region Constructor
         /// <summary>
-        /// Draw the Map
+        /// Create the visible version of the game map
         /// </summary>
-        public void Draw()
-        {
-             
-            RasterizerState rstate = new RasterizerState();
-            rstate.ScissorTestEnable = true;
-
-            _spriteBatch.Begin(SpriteSortMode.BackToFront,
-                        BlendState.AlphaBlend,
-                        null,
-                        null,
-                        rstate,
-                        
-                        null,
-                        _camera.GetMatrix(_graphics));
-
-            _spriteBatch.GraphicsDevice.ScissorRectangle = _displayRect;
-
-
-            /*   _*/
-            _drawFloor();
-            _drawWalls();
-
-            _spriteBatch.End();
-            _spriteBatch.GraphicsDevice.RasterizerState.ScissorTestEnable = false;
-            rstate.Dispose();
-
-
-        }
-
-        public Mainmap(GraphicsDeviceManager graphics, SpriteBatch spriteBatch, Rectangle displayArea, Texture2D floor, Texture2D wall1, Texture2D wall2, Map map)
+        /// <param name="graphics">The core graphics device manager</param>
+        /// <param name="spriteBatch">A sprite batch used for drawing</param>
+        /// <param name="displayArea">The area on wich the map will be placed</param>
+        /// <param name="floor">The textures used for the floor</param>
+        /// <param name="wall1">A set of tiles for the walls</param>
+        /// <param name="wall2">A set of tiles for doors</param>
+        /// <param name="map">Internal storage of map data</param>
+        public Mainmap(GraphicsDeviceManager graphics, SpriteBatch spriteBatch, Rectangle displayArea, Texture2D floor, Texture2D wall1, Texture2D wall2, Effect desaturate, Map map)
         {
             _graphics = graphics;
             _spriteBatch = spriteBatch;
             _displayRect = displayArea;
+            _desaturateEffect = desaturate;
             _camera = new Camera();
             _floor = floor;
             _wall1 = wall1;
@@ -266,5 +333,7 @@ namespace Gruppe22
             _map = map;
 
         }
+        #endregion
+
     }
 }

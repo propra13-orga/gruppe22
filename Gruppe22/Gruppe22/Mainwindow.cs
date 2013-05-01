@@ -46,6 +46,8 @@ namespace Gruppe22
 
         Texture2D _player1 = null;
         Texture2D _player2 = null;
+
+        Effect _desaturateEffect = null;
         /// <summary>
         /// Textarea to display status information
         /// </summary>
@@ -107,10 +109,11 @@ namespace Gruppe22
             _player2 = Content.Load<Texture2D>("player2");
             _player2 = Content.Load<Texture2D>("player2");
             _miniIcons = Content.Load<Texture2D>("Minimap");
+            //_desaturateEffect = Content.Load<Effect>("normalmap");
             _map1 = new Map(10, 10);
 
             _miniMap1 = new Minimap(_graphics, _spriteBatch, new Rectangle(_graphics.GraphicsDevice.Viewport.Width - 210, 5, 200, 100), _miniIcons, _map1);
-            _mainMap1 = new Mainmap(_graphics, _spriteBatch, new Rectangle(0, 0, _graphics.GraphicsDevice.Viewport.Width - 220, _graphics.GraphicsDevice.Viewport.Height - 140), _floor, _wall1, _wall2, _map1);
+            _mainMap1 = new Mainmap(_graphics, _spriteBatch, new Rectangle(0, 0, _graphics.GraphicsDevice.Viewport.Width - 220, _graphics.GraphicsDevice.Viewport.Height - 140), _floor, _wall1, _wall2, _desaturateEffect, _map1);
             _statusBox = new Statusbox(_graphics, _spriteBatch, new Rectangle(40, _graphics.GraphicsDevice.Viewport.Height - 120, _graphics.GraphicsDevice.Viewport.Width - 20, 100), _font);
 
             // TODO: use this.Content to load your game content here
@@ -163,18 +166,20 @@ namespace Gruppe22
 
             if (Keyboard.GetState().IsKeyDown(Keys.Up))
                 _mainMap1.Move(new Vector2(0, 1));
-            if(Mouse.GetState().ScrollWheelValue!=_mouseWheel){
-                _mainMap1.Zoom+=_mouseWheel-Mouse.GetState().ScrollWheelValue;
-                _mouseWheel=Mouse.GetState().ScrollWheelValue;
+            if (Mouse.GetState().ScrollWheelValue != _mouseWheel)
+            {
+                _mainMap1.Zoom += _mouseWheel - Mouse.GetState().ScrollWheelValue;
+                _mouseWheel = Mouse.GetState().ScrollWheelValue;
             }
 
 
             if (Mouse.GetState().LeftButton == ButtonState.Pressed)
             {
-                if ((_mousepos.X >= 0) && (_mousepos.X >= 0)) {
+                if ((_mousepos.X >= 0) && (_mousepos.X >= 0))
+                {
                     _mainMap1.Move(new Vector2(Mouse.GetState().X - _mousepos.X, Mouse.GetState().Y - _mousepos.Y));
                 }
-                                _mousepos.X = Mouse.GetState().X;
+                _mousepos.X = Mouse.GetState().X;
                 _mousepos.Y = Mouse.GetState().Y;
 
 
