@@ -50,6 +50,92 @@ namespace Gruppe22
                 return result;
             }
         }
+
+        /// <summary>
+        /// Determine whether a player is standing on the current tile
+        /// </summary>
+        public bool hasPlayer
+        {
+            get
+            {
+                bool result = false;
+                int count = 0;
+                while ((result) && (count < _overlay.Count))
+                {
+                    result = ((_overlay[count] is ActorTile)&&(((ActorTile)_overlay[count]).actorType==ActorType.Player));
+                    ++count;
+                }
+                return result;
+            }
+        }
+
+
+        /// <summary>
+        /// Determine whether an enemy is standing on the current tile
+        /// </summary>
+        public bool hasEnemy
+        {
+            get
+            {
+                bool result = false;
+                int count = 0;
+                while ((result) && (count < _overlay.Count))
+                {
+                    result = ((_overlay[count] is ActorTile) && (((ActorTile)_overlay[count]).actorType == ActorType.Enemy));
+                    ++count;
+                }
+                return result;
+            }
+        }
+
+
+        /// <summary>
+        /// Determine whether the current tile contains a teleporter
+        /// </summary>
+        public bool hasTeleport
+        {
+            get
+            {
+                bool result = false;
+                int count = 0;
+                while ((result) && (count < _overlay.Count))
+                {
+                    result = ((_overlay[count] is TeleportTile));
+                    ++count;
+                }
+                return result;
+            }
+        }
+
+        /// <summary>
+        /// Determine whether there is a treasure on the current tile
+        /// </summary>
+        public bool hasTreasure
+        {
+            get
+            {
+                bool result = false;
+                int count = 0;
+                while ((result) && (count < _overlay.Count))
+                {
+                    result = ((_overlay[count] is ItemTile) && (((ItemTile)_overlay[count]).itemType == ItemType.Treasure));
+                    ++count;
+                }
+                return result;
+            }
+        }
+
+        /// <summary>
+        /// Determine whether the current tile contains a "special" feature
+        /// </summary>
+        public bool hasSpecial
+        {
+            get
+            {
+                bool result = false;                
+                return result;
+            }
+        }
         #endregion
 
         #region Public methods

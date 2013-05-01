@@ -5,20 +5,18 @@ using System.Text;
 
 namespace Gruppe22
 {
-    public enum ItemType
+    public class ItemTile : Tile
     {
-        Treasure = 0,
-        Potion = 1,
-        Weapon = 2
-    }
-    public class Item
-    {
-        private ItemType _itemType;
+        Item _item;
+        public Item item
+        {
+            get { return _item; }
+        }
         public ItemType itemType
         {
             get
             {
-                return _itemType;
+                return _item.itemType;
             }
         }
     }

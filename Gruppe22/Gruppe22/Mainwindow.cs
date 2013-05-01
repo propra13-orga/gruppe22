@@ -19,8 +19,55 @@ namespace Gruppe22
     public class MainWindow : Game
     {
         #region Private Fields
+        /// <summary>
+        /// Output device
+        /// </summary>
         GraphicsDeviceManager _graphics;
+        /// <summary>
+        /// Main Sprite drawing algorithm
+        /// </summary>
         SpriteBatch _spriteBatch;
+        /// <summary>
+        /// Font to display information
+        /// </summary>
+        SpriteFont _font;
+
+        /// <summary>
+        /// Images to use on the minimap
+        /// </summary>
+        Texture2D _miniIcons;
+
+        Texture2D _floor;
+
+        Texture2D _wall1;
+        Texture2D _wall2;
+        Texture2D _wall3;
+
+
+        Texture2D _player1;
+        Texture2D _player2;
+        /// <summary>
+        /// Textarea to display status information
+        /// </summary>
+        Statusbox _statusBox;
+
+
+        /// <summary>
+        /// Minimap for Player 1
+        /// </summary>
+        Minimap _miniMap1;
+        /// <summary>
+        /// Main map for Player 1
+        /// </summary>
+        Mainmap _mainMap1;
+        /// <summary>
+        /// Internal storage for Player 1
+        /// </summary>
+        Map _map1;
+
+        /// <summary>
+        /// Background Music
+        /// </summary>
         Song _backMusic;
         #endregion
 
@@ -46,9 +93,22 @@ namespace Gruppe22
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-            _backMusic = Content.Load<Song>("Video Dungeon Crawl.wav"); // *.mp3
-            MediaPlayer.Volume = 1.0f;
+            _backMusic = Content.Load<Song>("Video Dungeon Crawl.wav"); // Todo: *.mp3
+            _font = Content.Load<SpriteFont>("Font");
+            MediaPlayer.Volume = (float)0.3;
             MediaPlayer.Play(_backMusic);
+            
+            _wall1 = Content.Load<Texture2D>("wall1");
+            _wall2 = Content.Load<Texture2D>("wall2");
+            _wall3 = Content.Load<Texture2D>("wall3");
+            _player1 = Content.Load<Texture2D>("player1");
+            _player2 = Content.Load<Texture2D>("player2");
+            _player2 = Content.Load<Texture2D>("player2");
+            _miniIcons = Content.Load<Texture2D>("Minimap");
+
+
+            _miniMap1 = new Minimap(_graphics, _spriteBatch, new Rectangle(_graphics.PreferredBackBufferWidth - 210, 5, 200, 100), _miniIcons);
+            _statusBox = new Statusbox(_graphics, _spriteBatch, new Rectangle(40, _graphics.PreferredBackBufferHeight - 120, _graphics.PreferredBackBufferWidth - 20, 100), _font);
 
             // TODO: use this.Content to load your game content here
         }
@@ -61,6 +121,12 @@ namespace Gruppe22
         {
             // TODO: Unload any non ContentManager content here
             _backMusic.Dispose();
+            _wall1.Dispose();
+            _wall2.Dispose();
+            _wall3.Dispose();
+            _player1.Dispose();
+            _player2.Dispose();
+
             Content.Unload();
         }
 
@@ -73,7 +139,9 @@ namespace Gruppe22
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
-        
+            if (Keyboard.GetState().IsKeyDown(Keys.Enter))
+                _graphics.ToggleFullScreen();
+
             // TODO: Add your update logic here
 
             base.Update(gameTime);
@@ -86,6 +154,8 @@ namespace Gruppe22
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.Black);
+            _statusBox.Draw(gameTime);
+            _miniMap1.Draw(gameTime);
             base.Draw(gameTime);
         }
         #endregion
@@ -97,7 +167,7 @@ namespace Gruppe22
             Window.Title = "Dungeon Crawler 2013";
 
             _graphics = new GraphicsDeviceManager(this);
-            _graphics.IsFullScreen = true;
+            //_graphics.IsFullScreen = true;
 
         }
 

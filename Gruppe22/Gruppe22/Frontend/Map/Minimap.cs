@@ -20,20 +20,14 @@ namespace Gruppe22
         #endregion
 
         #region Public Methods
-        /// <summary>
-        /// LoadContent will be called once per game and is the place to load
-        /// all of your content.
-        /// </summary>
-        protected  void LoadContent()
-        {
-        }
+
 
         /// <summary>
         /// Allows the game to run logic such as updating the world,
         /// checking for collisions, gathering input, and playing audio.
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
-        protected  void Update(GameTime gameTime)
+        public void Update(GameTime gameTime)
         {
         }
 
@@ -41,10 +35,70 @@ namespace Gruppe22
         /// This is called when the game should draw itself.
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
-        protected  void Draw(GameTime gameTime)
+        public void Draw(GameTime gameTime)
         {
-            
+            _spriteBatch.Begin();
+            if (_map != null)
+            {
+                for (int y = 0; y < _map.height; ++y)
+                {
+                    for (int x = 0; x < _map.height; ++x)
+                    {
+                        if (!_map[x, y].canEnter)
+                        {
+                            _spriteBatch.Draw(_mapIcon, new Rectangle(10, 10, 16, 16), new Rectangle(0, 0, 16, 16), Color.White);
+                        }
+                        else
+                        {
+                            if (_map[x, y].hasPlayer)
+                            {
+                                _spriteBatch.Draw(_mapIcon, new Rectangle(10, 10, 16, 16), new Rectangle(0, 0, 16, 16), Color.White);
+                            }
+                            else
+                            {
+                                if (_map[x, y].hasEnemy)
+                                {
+                                    _spriteBatch.Draw(_mapIcon, new Rectangle(10, 10, 16, 16), new Rectangle(0, 0, 16, 16), Color.White);
+                                }
+                                else
+                                {
+                                    if (_map[x, y].hasTreasure)
+                                    {
+                                        _spriteBatch.Draw(_mapIcon, new Rectangle(10, 10, 16, 16), new Rectangle(0, 0, 16, 16), Color.White);
+                                    }
+                                    else
+                                    {
+                                        if (_map[x, y].hasTeleport)
+                                        {
+                                            _spriteBatch.Draw(_mapIcon, new Rectangle(10, 10, 16, 16), new Rectangle(0, 0, 16, 16), Color.White);
+                                        }
+                                        else
+                                        {
+                                            if (_map[x, y].hasSpecial)
+                                            {
+                                                _spriteBatch.Draw(_mapIcon, new Rectangle(10, 10, 16, 16), new Rectangle(0, 0, 16, 16), Color.White);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+
+            _spriteBatch.End();
         }
         #endregion
+
+
+        public Minimap(GraphicsDeviceManager graphics, SpriteBatch spriteBatch, Rectangle region, Texture2D mapIcons)
+        {
+            _mapIcon = mapIcons;
+            _paintRegion = region;
+            _graphics = graphics;
+            _spriteBatch = spriteBatch;
+        }
     }
 }

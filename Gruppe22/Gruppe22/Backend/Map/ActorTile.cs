@@ -5,20 +5,18 @@ using System.Text;
 
 namespace Gruppe22
 {
-    public enum ActorType
+    public class ActorTile : Tile
     {
-        Player = 0,
-        NPC = 1,
-        Enemy = 2
-    }
-    public class Actor
-    {
-        ActorType _actorType;
+        Actor _actor;
+        public Actor actor
+        {
+            get { return _actor; }
+        }
         public ActorType actorType
         {
             get
             {
-                return _actorType;
+                return _actor.actorType;
             }
         }
     }
