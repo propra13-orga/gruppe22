@@ -261,8 +261,8 @@ namespace Gruppe22
             Window.Title = "Dungeon Crawler 2013";
 
             _graphics = new GraphicsDeviceManager(this);
-            _graphics.PreferredBackBufferWidth = 1280;
-            _graphics.PreferredBackBufferHeight = 1024;
+            _graphics.PreferredBackBufferWidth = 600;
+            _graphics.PreferredBackBufferHeight = 400;
             _graphics.IsFullScreen = false;
             _graphics.ApplyChanges();
             //_graphics.IsFullScreen = true;
