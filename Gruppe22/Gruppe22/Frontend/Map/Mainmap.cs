@@ -33,7 +33,7 @@ namespace Gruppe22
     /// <summary>
     /// The core display of the current part of the dungeon
     /// </summary>
-    public class Mainmap
+    public class Mainmap:Zoomable
     {
         #region Private Fields
         /// <summary>
@@ -52,14 +52,7 @@ namespace Gruppe22
         /// Main Sprite drawing algorithm
         /// </summary>
         private SpriteBatch _spriteBatch;
-        /// <summary>
-        /// The area used for the map (employed e.g. in splitscreen-mode)
-        /// </summary>
-        private Rectangle _displayRect;
-        /// <summary>
-        /// The transformation-matrix used for zooming and panning the map
-        /// </summary>
-        private Camera _camera;
+
 
         private List<ActorView> _actors;
         /// <summary>
@@ -68,47 +61,9 @@ namespace Gruppe22
         private Map _map;
         #endregion
 
-        #region Public Fields
-        /// <summary>
-        /// Current zoom level
-        /// </summary>
-        public float Zoom
-        {
-            get
-            {
-                return _camera.zoom;
-            }
-            set
-            {
-                _camera.zoom = value;
-            }
-        }
-
-        /// <summary>
-        /// CUrrent position of the map
-        /// </summary>
-        public Vector2 Pos
-        {
-            get
-            {
-                return _camera.position;
-            }
-            set
-            {
-                _camera.position = value;
-            }
-        }
-        #endregion
 
         #region Public Methods
-        /// <summary>
-        /// Move the camera by a specified number of pixels (pass through to camera)
-        /// </summary>
-        /// <param name="target"></param>
-        public void Move(Vector2 target)
-        {
-            _camera.Move(target);
-        }
+
 
         /// <summary>
         /// Draw the Map
@@ -626,9 +581,9 @@ namespace Gruppe22
             _spriteBatch = spriteBatch;
             _displayRect = displayArea;
             _desaturateEffect = desaturate;
-            _camera = new Camera();
+            _camera = new Camera(new Vector2(displayArea.Width / 2, displayArea.Height / 2));
             _camera.zoom = (float)0.5;
-            _camera.Move(new Vector2(70, 110));
+            //_camera.Move(new Vector2(70, 110));
             _floor = floor;
             _wall1 = wall1;
             _wall2 = wall2;

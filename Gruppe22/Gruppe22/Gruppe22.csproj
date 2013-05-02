@@ -87,7 +87,9 @@
     <Compile Include="Frontend\UI\Menu.cs" />
     <Compile Include="Frontend\UI\Notification.cs" />
     <Compile Include="Frontend\UI\Statusbox.cs" />
+    <Compile Include="Frontend\UI\UIElement.cs" />
     <Compile Include="Frontend\UI\Window.cs" />
+    <Compile Include="Frontend\UI\Zoomable.cs" />
     <Compile Include="Mainwindow.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

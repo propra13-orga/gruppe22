@@ -42,7 +42,7 @@ namespace Gruppe22
 
         Texture2D _wall1 = null;
         Texture2D _wall2 = null;
-
+        UIElement _currentObject = null;
 
         Texture2D _player1 = null;
         Texture2D _player2 = null;
@@ -138,7 +138,7 @@ namespace Gruppe22
               "#.....#.......#\n" +
               "#.....#.......#\n" +
               "###############\n";
-            
+
 
             // _drawWall(Direction.LeftClose, 4, 3, false);
 
@@ -176,51 +176,60 @@ namespace Gruppe22
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
+            _currentObject = _mainMap1;
+            /*
+
+            if (Mouse.GetState().LeftButton == ButtonState.Released)
+            {
+                if (_miniMap1.IsHit(Mouse.GetState().X, Mouse.GetState().Y))
+                {
+                    _currentObject = _miniMap1;
+                }
+                else
+                    if (_mainMap1.IsHit(Mouse.GetState().X, Mouse.GetState().Y))
+                    {
+                        _currentObject = _mainMap1;
+                    }
+                    else
+                        if (_statusBox.IsHit(Mouse.GetState().X, Mouse.GetState().Y))
+                        {
+                            _currentObject = _statusBox;
+                        }
+                        else
+                        { _currentObject = null; }
+            }*/
+
+
+
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
             if (Keyboard.GetState().IsKeyDown(Keys.Enter))
                 _graphics.ToggleFullScreen();
 
-            if (Keyboard.GetState().IsKeyDown(Keys.PageUp))
-                _mainMap1.Zoom += (float)0.1;
-
-            if (Keyboard.GetState().IsKeyDown(Keys.PageDown))
-                _mainMap1.Zoom -= (float)0.1;
-
-            if (Keyboard.GetState().IsKeyDown(Keys.Right))
-                _mainMap1.Move(new Vector2(-1, 0));
-
-            if (Keyboard.GetState().IsKeyDown(Keys.Left))
-                _mainMap1.Move(new Vector2(1, 0));
-
-            if (Keyboard.GetState().IsKeyDown(Keys.Down))
-                _mainMap1.Move(new Vector2(0, -1));
-
-            if (Keyboard.GetState().IsKeyDown(Keys.Up))
-                _mainMap1.Move(new Vector2(0, 1));
-            if (Mouse.GetState().ScrollWheelValue != _mouseWheel)
+            if (_currentObject != null)
             {
-                _mainMap1.Zoom += _mouseWheel - Mouse.GetState().ScrollWheelValue;
-                _mouseWheel = Mouse.GetState().ScrollWheelValue;
-            }
-
-
-            if (Mouse.GetState().LeftButton == ButtonState.Pressed)
-            {
-                if ((_mousepos.X >= 0) && (_mousepos.X >= 0))
+                if (Mouse.GetState().ScrollWheelValue != _mouseWheel)
                 {
-                    _mainMap1.Move(new Vector2(Mouse.GetState().X - _mousepos.X, Mouse.GetState().Y - _mousepos.Y));
+                    _mainMap1.ScrollWheel(_mouseWheel - Mouse.GetState().ScrollWheelValue);
+                    _mouseWheel = Mouse.GetState().ScrollWheelValue;
                 }
-                _mousepos.X = Mouse.GetState().X;
-                _mousepos.Y = Mouse.GetState().Y;
 
 
-            }
-            else
-            {
-                _mousepos.X = -1;
-                _mousepos.Y = -1;
-
+                if (Mouse.GetState().LeftButton == ButtonState.Pressed)
+                {
+                    if (_mousepos.X != -1)
+                    {
+                        _mainMap1.MoveContent(new Vector2(Mouse.GetState().X - _mousepos.X, Mouse.GetState().Y - _mousepos.Y));
+                    }
+                    _mousepos.X = Mouse.GetState().X;
+                    _mousepos.Y = Mouse.GetState().Y;
+                }
+                else
+                {
+                    _mousepos.X = -1;
+                    _mousepos.Y = -1;
+                }
+                _mainMap1.HandleKey();
             }
             counter += 1;
             // TODO: Add your update logic here

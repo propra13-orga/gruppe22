@@ -8,16 +8,12 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Gruppe22
 {
-    public class Statusbox
+    public class Statusbox : UIElement
     {
         #region Private Fields
         GraphicsDeviceManager _graphics = null;
         SpriteBatch _spriteBatch = null;
         SpriteFont _font = null;
-        Rectangle _paintRegion = Rectangle.Empty;
-        float _zoom = (float)1.0;
-        Rectangle _mapRegion = Rectangle.Empty;
-        Map _map = null;
         #endregion
 
         #region Public Methods
@@ -27,7 +23,7 @@ namespace Gruppe22
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public void Draw(GameTime gameTime)
         {
-            _spriteBatch.GraphicsDevice.ScissorRectangle = _paintRegion;
+            _spriteBatch.GraphicsDevice.ScissorRectangle = _displayRect;
             RasterizerState rstate = new RasterizerState();
             rstate.ScissorTestEnable = true;
             try
@@ -38,7 +34,7 @@ namespace Gruppe22
                             null,
                             rstate,
                             null);
-                _spriteBatch.DrawString(_font, "Arrows to move map, PgUp/PgDown to zoom, Esc to quit", new Vector2(_paintRegion.Left + 5, _paintRegion.Top + 5), Color.White);
+                _spriteBatch.DrawString(_font, "Arrows to move map, PgUp/PgDown to zoom, Esc to quit", new Vector2(_displayRect.Left + 5, _displayRect.Top + 5), Color.White);
                 _spriteBatch.End();
                 _spriteBatch.GraphicsDevice.RasterizerState.ScissorTestEnable = false;
             }
@@ -47,6 +43,10 @@ namespace Gruppe22
                 rstate.Dispose();
             }
 
+        }
+        public bool IsHit(int x, int y)
+        {
+            return _displayRect.Contains(x, y);
         }
 
         /// <summary>
@@ -59,7 +59,7 @@ namespace Gruppe22
         public Statusbox(GraphicsDeviceManager graphics, SpriteBatch spriteBatch, Rectangle region, SpriteFont font)
         {
             _font = font;
-            _paintRegion = region;
+            _displayRect = region;
             _spriteBatch = spriteBatch;
             _graphics = graphics;
         }

@@ -14,6 +14,7 @@ namespace Gruppe22
         private float _zoom = (float)1.0;
         private Matrix _transform = Matrix.Identity;
         private Vector2 _position = Vector2.Zero;
+        private Vector2 _center = Vector2.Zero;
         #endregion
 
         #region public Fields
@@ -47,6 +48,11 @@ namespace Gruppe22
             _position += amount;
         }
 
+
+        public void ResetCenter(Vector2 center)
+        {
+            _center = center;
+        }
         /// <summary>
         /// Get a transformation matrix moving a camera to the specified position and zoom level
         /// </summary>
@@ -54,8 +60,14 @@ namespace Gruppe22
         /// <returns></returns>
         public Matrix GetMatrix(GraphicsDeviceManager _graphics)
         {
-            return Matrix.CreateTranslation(new Vector3(_position, 0)) * Matrix.CreateScale(_zoom);
+            return Matrix.CreateTranslation(new Vector3(_position, 0)) * Matrix.CreateScale(_zoom) * Matrix.CreateTranslation(new Vector3(_center, 0));
         }
         #endregion
+
+        public Camera(Vector2 center)
+        {
+            _center = center;
+            _position = new Vector2(-center.X-40,-center.Y);
+        }
     }
 }
