@@ -110,8 +110,8 @@ namespace Gruppe22
             _player2 = Content.Load<Texture2D>("player2");
             _miniIcons = Content.Load<Texture2D>("Minimap");
             //_desaturateEffect = Content.Load<Effect>("normalmap");
-            _map1 = new Map(15, 15);
-            string str =
+            _map1 = new Map(15, 8);
+            string str4 =
                 "######.####.###\n" +
                 "###.##.####.###\n" +
                 "###.........###\n" +
@@ -120,15 +120,25 @@ namespace Gruppe22
                 "#.............#\n" +
                 "#....##.#######\n" +
                 "#.#####.#######\n";
-            string str2 =
+            string str =
               "###############\n" +
               "#....#........#\n" +
               "#....#........#\n" +
-              "###############\n" +
+              "#..############\n" +
               "#....#..#.....#\n" +
-              "######..#######\n" +
+              "#.####..#######\n" +
               "#....#..#.....#\n" +
               "######..#######\n";
+            string str1 =
+              "###############\n" +
+              "#.....#.......#\n" +
+              "#.....#.......#\n" +
+              "###.........###\n" +
+              "#.............#\n" +
+              "#.....#.......#\n" +
+              "#.....#.......#\n" +
+              "###############\n";
+            
 
             // _drawWall(Direction.LeftClose, 4, 3, false);
 

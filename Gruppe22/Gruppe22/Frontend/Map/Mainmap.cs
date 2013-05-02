@@ -156,75 +156,65 @@ namespace Gruppe22
         /// <param name="x">Horizontal position</param>
         /// <param name="y">Vertical position</param>
         /// <param name="transparent"></param>
-        private void _drawWall(Direction dir, int x, int y, bool transparent)
+        private void _drawWall(Direction dir, Rectangle target, bool transparent)
         {
+
+#if OLD
+
             switch (dir)
             {
 
                 case Direction.RightClose:
-                    _spriteBatch.Draw(_wall1, new Rectangle(x * 128 + 64,
-      y * 48 - 96, 64, 192), new Rectangle(322, 0, 63, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+                    _spriteBatch.Draw(_wall1, target, new Rectangle(322, 0, 63, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
                     break;
 
                 case Direction.UpClose:
-                    _spriteBatch.Draw(_wall1, new Rectangle(x * 128 + 53,
-y * 48 - 70, 23, 30), new Rectangle(148, 55, 22, 30), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+                    _spriteBatch.Draw(_wall1, target, new Rectangle(148, 55, 22, 30), transparent ? new Color(Color.White, (float)0.5) : Color.White);
                     break;
 
                 case Direction.LeftClose: // Wall on current square connected to square to the left
-                    _spriteBatch.Draw(_wall1, new Rectangle(x * 128 + 1,
-    y * 48 - 96, 128, 192), new Rectangle(128, 206, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+                    _spriteBatch.Draw(_wall1, target, new Rectangle(128, 206, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
 
                     break;
 
                 case Direction.DownClose: // Wall on current square connected to square below
-                    _spriteBatch.Draw(_wall1, new Rectangle(x * 128 + 53,
-y * 48 - 52, 23, 30), new Rectangle(148, 53, 22, 30), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+                    _spriteBatch.Draw(_wall1, target, new Rectangle(148, 53, 22, 30), transparent ? new Color(Color.White, (float)0.5) : Color.White);
 
                     break;
 
                 case Direction.LeftRightUp: // Walls connected left, right and up
-                    _spriteBatch.Draw(_wall1, new Rectangle(x * 128 + 1,
-   y * 48 - 96, 128, 192), new Rectangle(1152, 384, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+                    _spriteBatch.Draw(_wall1, target, new Rectangle(1152, 384, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
 
                     break;
                 case Direction.LeftRightDown: // Wall connected left right and down
-                    _spriteBatch.Draw(_wall1, new Rectangle(x * 128 + 1,
-   y * 48 - 96, 128, 192), new Rectangle(640, 384, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+                    _spriteBatch.Draw(_wall1, target, new Rectangle(640, 384, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
 
                     break;
                 case Direction.UpDownLeft: // Walls on Up, Down and Left suqares
-                    _spriteBatch.Draw(_wall1, new Rectangle(x * 128 + 1,
-   y * 48 - 96, 128, 192), new Rectangle(512, 384, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+                    _spriteBatch.Draw(_wall1, target, new Rectangle(512, 384, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
 
                     break;
                 case Direction.UpDownRight: // Walls on Up, Down and Right squares
-                    _spriteBatch.Draw(_wall1, new Rectangle(x * 128 + 1,
-   y * 48 - 96, 128, 192), new Rectangle(768, 384, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+                    _spriteBatch.Draw(_wall1, target, new Rectangle(768, 384, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
 
                     break;
                 case Direction.UpRight: // Walls on Up and left square
-                    _spriteBatch.Draw(_wall1, new Rectangle(x * 128 + 1,
-   y * 48 - 96, 128, 192), new Rectangle(256, 384, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+                    _spriteBatch.Draw(_wall1, target, new Rectangle(256, 384, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
 
                     break;
                 case Direction.UpLeft: // Walls on up and right square
-                    _spriteBatch.Draw(_wall1, new Rectangle(x * 128 + 1,
-y * 48 - 96, 128, 192), new Rectangle(384, 384, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+                    _spriteBatch.Draw(_wall1, target, new Rectangle(384, 384, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
                     break;
                 case Direction.DownLeft: // Walls on left and down squares
-                    _spriteBatch.Draw(_wall1, new Rectangle(x * 128 + 1,
-   y * 48 - 96, 128, 192), new Rectangle(128, 384, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+                    _spriteBatch.Draw(_wall1, target, new Rectangle(128, 384, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
 
                     break;
                 case Direction.DownRight: // Walls on right and down squares
-                    _spriteBatch.Draw(_wall1, new Rectangle(x * 128 + 1,
-   y * 48 - 96, 128, 192), new Rectangle(0, 384, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+                    _spriteBatch.Draw(_wall1, target, new Rectangle(0, 384, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
                     break;
 
                 case Direction.LeftRight: // Walls on left and right neighboring squares
-                    _spriteBatch.Draw(_wall1, new Rectangle(x * 128 + 1,
-      y * 48 - 96, 128, 192), new Rectangle(322, 0, 126, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+                    _spriteBatch.Draw(_wall1, target, new Rectangle(322, 0, 126, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
                     /*_spriteBatch.Draw(_wall1, new Rectangle(x * 128 + 1 ,
     y * 48 - 96, 128, 192), new Rectangle(0, 590, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);*/
 
@@ -234,22 +224,18 @@ y * 48 - 96, 128, 192), new Rectangle(384, 384, 128, 192), transparent ? new Col
                     //  _spriteBatch.Draw(_wall1, new Rectangle(x * 128 + 1 ,
                     //    y * 48 - 96, 128, 192), new Rectangle(128, 590, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White); 
 
-                    _spriteBatch.Draw(_wall1, new Rectangle(x * 128 + 53,
-                   y * 48 - 82, 23, 30), new Rectangle(148, 53, 22, 30), transparent ? new Color(Color.White, (float)0.5) : Color.White);
-                    _spriteBatch.Draw(_wall1, new Rectangle(x * 128 + 53,
-y * 48 - 52, 23, 30), new Rectangle(148, 53, 22, 30), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+                    _spriteBatch.Draw(_wall1, target, new Rectangle(148, 53, 22, 30), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+                    _spriteBatch.Draw(_wall1, target, new Rectangle(148, 53, 22, 30), transparent ? new Color(Color.White, (float)0.5) : Color.White);
 
                     break;
 
                 case Direction.FourWay: // Walls on all surrounding squares
-                    _spriteBatch.Draw(_wall1, new Rectangle(x * 128 + 1,
-   y * 48 - 96, 128, 192), new Rectangle(256, 768, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+                    _spriteBatch.Draw(_wall1, target, new Rectangle(256, 768, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
 
                     break;
 
                 case Direction.Free: // Free standing wall (no connecting squares)
-                    _spriteBatch.Draw(_wall1, new Rectangle(x * 128 + 1,
-    y * 48 - 96, 128, 192), new Rectangle(0, 0, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+                    _spriteBatch.Draw(_wall1, target, new Rectangle(0, 0, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
                     break;
 
                 case Direction.None: // No wall
@@ -257,6 +243,81 @@ y * 48 - 52, 23, 30), new Rectangle(148, 53, 22, 30), transparent ? new Color(Co
 
 
             }
+#else
+            switch (dir)
+            {
+                case Direction.UpRight: // Walls on Up and left square
+                    _spriteBatch.Draw(_wall1, target, new Rectangle(0, 768, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+                    break;
+
+                case Direction.UpLeft: // Walls on up and right square
+                    _spriteBatch.Draw(_wall1, target, new Rectangle(128, 768, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+                    break;
+
+                case Direction.DownLeft: // Walls on left and down squares
+                    _spriteBatch.Draw(_wall1, target, new Rectangle(256, 576, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+                    break;
+
+                case Direction.DownRight: // Walls on right and down squares
+                    _spriteBatch.Draw(_wall1, target, new Rectangle(384, 576, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+                    break;
+
+                case Direction.LeftRight: // Walls on left and right neighboring squares
+                    _spriteBatch.Draw(_wall1, target, new Rectangle(0, 576, 126, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+                    break;
+
+                case Direction.UpDown:// Walls on up and down neighboring squares
+                    _spriteBatch.Draw(_wall1, target, new Rectangle(128, 576, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+                    break;
+
+                case Direction.FourWay: // Walls on all surrounding squares
+                    _spriteBatch.Draw(_wall1, target, new Rectangle(384, 768, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+                    break;
+
+                case Direction.RightClose:
+                    _spriteBatch.Draw(_wall1, target, new Rectangle(256, 192, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+                    break;
+
+                case Direction.UpClose:
+                    _spriteBatch.Draw(_wall1, target, new Rectangle(128, 192, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+                    break;
+
+                case Direction.LeftClose: // Wall on current square connected to square to the left
+                    _spriteBatch.Draw(_wall1, target, new Rectangle(384, 192, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+                    break;
+
+                case Direction.DownClose: // Wall on current square connected to square below
+                    _spriteBatch.Draw(_wall1, target, new Rectangle(0, 192, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+                    break;
+
+                case Direction.LeftRightUp: // Walls connected left, right and up
+
+                    _spriteBatch.Draw(_wall1, target, new Rectangle(640, 576, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+
+                    break;
+
+                case Direction.LeftRightDown: // Wall connected left right and down
+                    _spriteBatch.Draw(_wall1, target, new Rectangle(768, 576, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+                    break;
+
+                case Direction.UpDownLeft: // Walls on Up, Down and Left suqares
+                    _spriteBatch.Draw(_wall1, target, new Rectangle(896, 576, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+                    break;
+
+                case Direction.UpDownRight: // Walls on Up, Down and Right squares
+                    _spriteBatch.Draw(_wall1, target, new Rectangle(512, 576, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+                    break;
+
+                case Direction.Free: // Free standing wall (no connecting squares)
+                    //  _spriteBatch.Draw(_wall1, target, new Rectangle(0, 0, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+                    break;
+
+                case Direction.None: // No wall
+                    break;
+
+
+            }
+#endif
         }
 
         public Direction GetWallStyle(int x = 0, int y = 0)
@@ -398,6 +459,18 @@ y * 48 - 52, 23, 30), new Rectangle(148, 53, 22, 30), transparent ? new Color(Co
             }
         }
 
+
+        private Rectangle _tileRect(Vector2 coords, bool tall = false)
+        {
+#if OLD
+            return new Rectangle((int)coords.X * 128 + 1,
+(int)coords.Y * 48 - 96, 128, 192);
+#else
+            return new Rectangle((int)coords.X * 64 + ((int)coords.Y) * 64
+                                    , (int)coords.Y * 48 - (int)coords.X * 48, 128, tall ? 192 : 96);
+
+#endif
+        }
         /// <summary>
         /// Display all walls on the current map
         /// </summary>
@@ -410,7 +483,7 @@ y * 48 - 52, 23, 30), new Rectangle(148, 53, 22, 30), transparent ? new Color(Co
 
                 for (int x = 0; x < _map.width; ++x)
                 {
-                    _drawWall(GetWallStyle(x, y), x, y, false);
+                    _drawWall(GetWallStyle(x, y), _tileRect(new Vector2(x + 1, y - 1), true), false);
                 }
             }
             /*
@@ -431,6 +504,8 @@ y * 48 - 52, 23, 30), new Rectangle(148, 53, 22, 30), transparent ? new Color(Co
         /// <param name="vTiles">Number of horizontal Tiles</param>
         private void _drawFloor(int hTiles = 52, int vTiles = 25)
         {
+#if OLD
+       
             for (int y = 0; y < vTiles; ++y)
             {
                 for (int x = 0; x < hTiles; ++x)
@@ -513,6 +588,15 @@ y * 48 - 52, 23, 30), new Rectangle(148, 53, 22, 30), transparent ? new Color(Co
 
                 }
             }
+#else
+                 for (int y = 0; y < vTiles; ++y)
+            {
+                for (int x = 0; x < hTiles; ++x)
+                {
+                    _spriteBatch.Draw(_floor, _tileRect(new Vector2(x, y)), new Rectangle(512, 384, 128, 96), Color.White);
+                }
+            }
+#endif
         }
 
         public void Update()
@@ -550,7 +634,7 @@ y * 48 - 52, 23, 30), new Rectangle(148, 53, 22, 30), transparent ? new Color(Co
             _wall2 = wall2;
             _map = map;
             _actors = new List<ActorView>();
-            _actors.Add(new ActorView("Player", true, 7, 8, player1, player2));
+            _actors.Add(new ActorView("Player", true, 2, 2, player1, player2));
 
         }
         #endregion

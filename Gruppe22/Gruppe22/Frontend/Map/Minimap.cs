@@ -54,7 +54,7 @@ namespace Gruppe22
             {
                 for (int y = 0; y < _map.height; ++y)
                 {
-                    for (int x = 0; x < _map.height; ++x)
+                    for (int x = 0; x < _map.width; ++x)
                     {
                         if (!_map[x, y].canEnter)
                         {

@@ -74,7 +74,7 @@ namespace Gruppe22
             {
                 if ((x < width) && (x > -1) && (y < height) && (y > -1))
                 {
-                    return _tiles[x][y];
+                    return _tiles[y][x];
                 }
                 else
                 {
@@ -85,7 +85,7 @@ namespace Gruppe22
             {
                 if ((x < width) && (x > -1) && (y < height) && (y > -1))
                 {
-                    _tiles[x][y] = value;
+                    _tiles[y][x] = value;
                 }
             }
         }
@@ -116,14 +116,17 @@ namespace Gruppe22
         public void DebugMap()
         {
             string output = "";
-            foreach(List<Tile> row in _tiles){
-                foreach(Tile tile in row){
+            foreach (List<Tile> row in _tiles)
+            {
+                foreach (Tile tile in row)
+                {
                     if (tile.canEnter)
                     {
-                        output+="#";
+                        output += "#";
                     }
-                    else {
-                        output+=" ";
+                    else
+                    {
+                        output += " ";
                     }
                 }
                 System.Diagnostics.Debug.WriteLine(output);
@@ -140,7 +143,8 @@ namespace Gruppe22
                 switch (c)
                 {
                     case '#':
-                        _tiles[col][row].canEnter = false;
+                        if ((col < _width) && (row < height))
+                            _tiles[row][col].canEnter = false;
                         col += 1;
                         break;
                     case '\n':
@@ -148,7 +152,8 @@ namespace Gruppe22
                         row += 1;
                         break;
                     default:
-                        _tiles[col][row].canEnter = true;
+                        if ((col < _width) && (row < height))
+                            _tiles[row][col].canEnter = true;
                         col += 1;
 
                         break;
