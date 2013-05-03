@@ -259,17 +259,10 @@ namespace Gruppe22
         {
             Content.RootDirectory = "Content";
             Window.Title = "Dungeon Crawler 2013";
-
             _graphics = new GraphicsDeviceManager(this);
-            _graphics.PreferredBackBufferWidth = 600;
-            _graphics.PreferredBackBufferHeight = 400;
-            _graphics.PreferredBackBufferHeight = 480;
-            _graphics.IsFullScreen = true;
-=======
-            _graphics.PreferredBackBufferWidth = 600;
-            _graphics.PreferredBackBufferHeight = 400;
+            _graphics.PreferredBackBufferWidth = 1280;
+            _graphics.PreferredBackBufferHeight = 600;
             _graphics.IsFullScreen = false;
->>>>>>> 9f9f0678d300463cd1d13c7b022a238f2e864248
             _graphics.ApplyChanges();
             //_graphics.IsFullScreen = true;
 
