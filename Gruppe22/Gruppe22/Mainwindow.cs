@@ -31,7 +31,10 @@ namespace Gruppe22
         /// Font to display information
         /// </summary>
         SpriteFont _font = null;
-
+        /// <summary>
+        /// Main UI-Window
+        /// </summary>
+        Window _window;
         /// <summary>
         /// Images to use on the minimap
         /// </summary>
@@ -102,6 +105,9 @@ namespace Gruppe22
             MediaPlayer.Volume = (float)0.3;
             MediaPlayer.Play(_backMusic);
 
+            _window = new Window(_graphics);
+            _window.LoadContent(Content);
+
             _wall1 = Content.Load<Texture2D>("wall1");
             _wall2 = Content.Load<Texture2D>("wall2");
             _floor = Content.Load<Texture2D>("floor");
@@ -165,7 +171,7 @@ namespace Gruppe22
             _floor.Dispose();
             _player1.Dispose();
             _player2.Dispose();
-
+            //TODO: Die eigenen Typen (z.B. Button) brauchen eine UnloadContent-Methode, die hier aufgerufen wird!
             Content.Unload();
         }
 
@@ -244,27 +250,28 @@ namespace Gruppe22
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
+            //TODO: spriteBach.Begin() und End() nur hier, sonst Konflikt!
             GraphicsDevice.Clear(Color.Black);
+            
             if (_mainMap1 != null) _mainMap1.Draw();
-
             if (_miniMap1 != null) _miniMap1.Draw(gameTime);
             if (_statusBox != null) _statusBox.Draw(gameTime);
-
+            _window.Draw(_spriteBatch);
             base.Draw(gameTime);
         }
         #endregion
 
-        public MainWindow()
-            : base()
+        public MainWindow() : base()
         {
+            //IsMouseVisible = false;
             Content.RootDirectory = "Content";
             Window.Title = "Dungeon Crawler 2013";
             _graphics = new GraphicsDeviceManager(this);
-            _graphics.PreferredBackBufferWidth = 1280;
-            _graphics.PreferredBackBufferHeight = 600;
-            _graphics.IsFullScreen = false;
+            _graphics.PreferredBackBufferWidth = 1366;
+            _graphics.PreferredBackBufferHeight = 768;
+            //_graphics.IsFullScreen = false;
             _graphics.ApplyChanges();
-            //_graphics.IsFullScreen = true;
+            _graphics.IsFullScreen = true;
 
         }
 
