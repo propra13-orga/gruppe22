@@ -28,6 +28,7 @@ namespace Gruppe22
             }
             set
             {
+                if((value>0.4)&&(value<4.0))
                 _camera.zoom = value;
             }
         }

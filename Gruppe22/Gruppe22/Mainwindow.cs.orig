@@ -9,9 +9,7 @@ using Microsoft.Xna.Framework.Storage;
 using Microsoft.Xna.Framework.GamerServices;
 using Microsoft.Xna.Framework.Media;
 using Microsoft.Xna.Framework.Audio;
-using Microsoft.Xna.Framework;
 #endregion
-
 
 namespace Gruppe22
 {
@@ -256,7 +254,6 @@ namespace Gruppe22
         }
         #endregion
 
-
         public MainWindow()
             : base()
         {
@@ -264,15 +261,19 @@ namespace Gruppe22
             Window.Title = "Dungeon Crawler 2013";
 
             _graphics = new GraphicsDeviceManager(this);
-            _graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height-200;
-            _graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width-40;
+<<<<<<< HEAD
+<<<<<<< HEAD
+            _graphics.PreferredBackBufferWidth = 640;
+            _graphics.PreferredBackBufferHeight = 480;
+            _graphics.IsFullScreen = true;
+=======
+=======
+>>>>>>> 9f9f0678d300463cd1d13c7b022a238f2e864248
+            _graphics.PreferredBackBufferWidth = 600;
+            _graphics.PreferredBackBufferHeight = 400;
             _graphics.IsFullScreen = false;
-
-            Type type = typeof(OpenTKGameWindow);
-            System.Reflection.FieldInfo field = type.GetField("window", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-            OpenTK.GameWindow window = (OpenTK.GameWindow)field.GetValue(this.Window);
-            window.X = 0;
-            window.Y=0;
+>>>>>>> 9f9f0678d300463cd1d13c7b022a238f2e864248
+            _graphics.ApplyChanges();
             //_graphics.IsFullScreen = true;
 
         }

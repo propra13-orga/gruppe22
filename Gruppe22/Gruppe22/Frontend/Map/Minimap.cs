@@ -121,11 +121,10 @@ namespace Gruppe22
             _mapIcon = mapIcons;
             _displayRect = region;
             _graphics = graphics;
-            _camera = new Camera(new Vector2(region.Width/2,region.Height/2));
+            _camera = new Camera(new Vector2(-10,-10));
+            //_camera.zoom = (float) 0.9;
             _spriteBatch = spriteBatch;
             _map = map;
-            _camera.zoom = (float)0.7;
-            _camera.Move(new Vector2(500, 20));
         }
     }
 }

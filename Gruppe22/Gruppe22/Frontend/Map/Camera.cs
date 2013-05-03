@@ -67,7 +67,6 @@ namespace Gruppe22
         public Camera(Vector2 center)
         {
             _center = center;
-            _position = new Vector2(-center.X-40,-center.Y);
         }
     }
 }
