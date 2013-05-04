@@ -51,6 +51,12 @@ namespace Gruppe22
             _startButton.LoadContent(Content);
         }
 
+        public void UnloadContent()
+        {
+            _background.Dispose();
+            _startButton.UnloadContent();
+        }
+
         public bool Update(GameTime gameTime)
         { 
             //TODO: Main-UI action, GameTime for effects

@@ -55,6 +55,13 @@ namespace Gruppe22
             this._tBmouseon = Content.Load<Texture2D>(_bmouseon);
         }
 
+        public void UnloadContent()
+        {
+            _tBmouseon.Dispose();
+            _tBpressed.Dispose();
+            _tButton.Dispose();
+        }
+
         public bool Update(GameTime gameTime)
         {
             if (Mouse.GetState().X > _dest.Location.X && Mouse.GetState().X < _dest.Location.X + _width &&

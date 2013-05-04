@@ -167,10 +167,11 @@ namespace Gruppe22
             _backMusic.Dispose();
             _wall1.Dispose();
             _wall2.Dispose();
-
             _floor.Dispose();
             _player1.Dispose();
             _player2.Dispose();
+            _graphics.Dispose();
+            _spriteBatch.Dispose();
             //TODO: Die eigenen Typen (z.B. Button) brauchen eine UnloadContent-Methode, die hier aufgerufen wird!
             Content.Unload();
         }
@@ -182,67 +183,76 @@ namespace Gruppe22
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            if (_window != null && _window.Update(gameTime) == false)
-                _window = null;
-            _currentObject = _mainMap1;
-            /*
-
-            if (Mouse.GetState().LeftButton == ButtonState.Released)
+            if (_window != null)
             {
-                if (_miniMap1.IsHit(Mouse.GetState().X, Mouse.GetState().Y))
+                if (_window.Update(gameTime) == false)
                 {
-                    _currentObject = _miniMap1;
+                    _window.UnloadContent();
+                    _window = null;
                 }
-                else
-                    if (_mainMap1.IsHit(Mouse.GetState().X, Mouse.GetState().Y))
+            }
+            else
+            {
+                _currentObject = _mainMap1;
+                /*
+
+                if (Mouse.GetState().LeftButton == ButtonState.Released)
+                {
+                    if (_miniMap1.IsHit(Mouse.GetState().X, Mouse.GetState().Y))
                     {
-                        _currentObject = _mainMap1;
+                        _currentObject = _miniMap1;
                     }
                     else
-                        if (_statusBox.IsHit(Mouse.GetState().X, Mouse.GetState().Y))
+                        if (_mainMap1.IsHit(Mouse.GetState().X, Mouse.GetState().Y))
                         {
-                            _currentObject = _statusBox;
+                            _currentObject = _mainMap1;
                         }
                         else
-                        { _currentObject = null; }
-            }*/
+                            if (_statusBox.IsHit(Mouse.GetState().X, Mouse.GetState().Y))
+                            {
+                                _currentObject = _statusBox;
+                            }
+                            else
+                            { _currentObject = null; }
+                }*/
 
 
 
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-                Exit();
-            if (Keyboard.GetState().IsKeyDown(Keys.Enter))
-                _graphics.ToggleFullScreen();
+                if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+                    Exit();
+                if (Keyboard.GetState().IsKeyDown(Keys.Enter))
+                    _graphics.ToggleFullScreen();
 
-            if (_currentObject != null)
-            {
-                if (Mouse.GetState().ScrollWheelValue != _mouseWheel)
+                if (_currentObject != null)
                 {
-                    _mainMap1.ScrollWheel(_mouseWheel - Mouse.GetState().ScrollWheelValue);
-                    _mouseWheel = Mouse.GetState().ScrollWheelValue;
-                }
-
-
-                if (Mouse.GetState().LeftButton == ButtonState.Pressed)
-                {
-                    if (_mousepos.X != -1)
+                    if (Mouse.GetState().ScrollWheelValue != _mouseWheel)
                     {
-                        _mainMap1.MoveContent(new Vector2(Mouse.GetState().X - _mousepos.X, Mouse.GetState().Y - _mousepos.Y));
+                        _mainMap1.ScrollWheel(_mouseWheel - Mouse.GetState().ScrollWheelValue);
+                        _mouseWheel = Mouse.GetState().ScrollWheelValue;
                     }
-                    _mousepos.X = Mouse.GetState().X;
-                    _mousepos.Y = Mouse.GetState().Y;
+
+
+                    if (Mouse.GetState().LeftButton == ButtonState.Pressed)
+                    {
+                        if (_mousepos.X != -1)
+                        {
+                            _mainMap1.MoveContent(new Vector2(Mouse.GetState().X - _mousepos.X, Mouse.GetState().Y - _mousepos.Y));
+                        }
+                        _mousepos.X = Mouse.GetState().X;
+                        _mousepos.Y = Mouse.GetState().Y;
+                    }
+                    else
+                    {
+                        _mousepos.X = -1;
+                        _mousepos.Y = -1;
+                    }
+                    _mainMap1.HandleKey();
                 }
-                else
-                {
-                    _mousepos.X = -1;
-                    _mousepos.Y = -1;
-                }
-                _mainMap1.HandleKey();
+                counter += 1;
+                // TODO: Add your update logic here
+                if (counter % 10 == 1)
+                    _mainMap1.Update();
             }
-            counter += 1;
-            // TODO: Add your update logic here
-            if (counter % 10 == 1)
-                _mainMap1.Update();
             base.Update(gameTime);
         }
 
@@ -272,9 +282,9 @@ namespace Gruppe22
             _graphics = new GraphicsDeviceManager(this);
             _graphics.PreferredBackBufferWidth = 1366;
             _graphics.PreferredBackBufferHeight = 768;
-            _graphics.IsFullScreen = false;
+            //_graphics.IsFullScreen = false;
             _graphics.ApplyChanges();
-            //_graphics.IsFullScreen = true;
+            _graphics.IsFullScreen = true;
 
         }
 
