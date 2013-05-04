@@ -182,6 +182,8 @@ namespace Gruppe22
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
+            if (_window != null && _window.Update(gameTime) == false)
+                _window = null;
             _currentObject = _mainMap1;
             /*
 
@@ -256,7 +258,7 @@ namespace Gruppe22
             if (_mainMap1 != null) _mainMap1.Draw();
             if (_miniMap1 != null) _miniMap1.Draw(gameTime);
             if (_statusBox != null) _statusBox.Draw(gameTime);
-            _window.Draw(_spriteBatch);
+            if (_window != null) _window.Draw(_spriteBatch); //TODO: Objekt vernünftig löschen
             base.Draw(gameTime);
         }
         #endregion
@@ -266,12 +268,13 @@ namespace Gruppe22
             //IsMouseVisible = false;
             Content.RootDirectory = "Content";
             Window.Title = "Dungeon Crawler 2013";
+            Window.AllowUserResizing = true;
             _graphics = new GraphicsDeviceManager(this);
             _graphics.PreferredBackBufferWidth = 1366;
             _graphics.PreferredBackBufferHeight = 768;
-            //_graphics.IsFullScreen = false;
+            _graphics.IsFullScreen = false;
             _graphics.ApplyChanges();
-            _graphics.IsFullScreen = true;
+            //_graphics.IsFullScreen = true;
 
         }
 

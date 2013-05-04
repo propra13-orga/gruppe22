@@ -25,6 +25,12 @@ namespace Gruppe22
         private int _width, _heigth;
 
         /// <summary>
+        /// UI-Children
+        /// </summary>
+        private Button _startButton;
+
+
+        /// <summary>
         /// Constructor
         /// </summary>
         public Window(GraphicsDeviceManager graphics)
@@ -34,6 +40,7 @@ namespace Gruppe22
             this._width = _graphics.PreferredBackBufferWidth;
             this._heigth = _graphics.PreferredBackBufferHeight;
             this._dest = new Rectangle(0, 0, _width, _heigth);
+            this._startButton = new Button(graphics, "startButton1", "startButton2", "startButton2", new Vector2((float)(_width - 100) / 2.0f, (float)_heigth / 2.0f), 100, 30);
         }
 
 #region Public Gamesystem-Methods
@@ -41,11 +48,15 @@ namespace Gruppe22
         public void LoadContent(ContentManager Content)
         {
             _background = Content.Load<Texture2D>("startwindow");
+            _startButton.LoadContent(Content);
         }
 
-        public void Update(GameTime gameTime)
+        public bool Update(GameTime gameTime)
         { 
             //TODO: Main-UI action, GameTime for effects
+            if (_startButton.Update(gameTime) == false)
+                return false;
+            return true;
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -53,6 +64,7 @@ namespace Gruppe22
             spriteBatch.Begin();
             spriteBatch.Draw(_background, _dest, _src, Color.DarkSlateGray);
             spriteBatch.End();
+            _startButton.Draw(spriteBatch);
         }
 
 #endregion
