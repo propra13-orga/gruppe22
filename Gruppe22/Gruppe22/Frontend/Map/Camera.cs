@@ -46,7 +46,8 @@ namespace Gruppe22
         {
             get
             {
-                return Matrix.CreateTranslation(new Vector3(_position, 0)) * Matrix.CreateScale(_zoom) * Matrix.CreateTranslation(new Vector3(_center, 0));
+                return Matrix.CreateTranslation(new Vector3(_position, 0)) * Matrix.CreateScale(_zoom)* Matrix.CreateTranslation(new Vector3(_center, 0));
+
             }
         }
         #endregion

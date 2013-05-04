@@ -102,8 +102,8 @@ namespace Gruppe22
               "#....#..#.....#\n" +
               "######..#######\n",
             str1 =
-              "###############\n" +
-              "#.....#.......#\n" +
+              "...############\n" +
+              "......#.......#\n" +
               "#.....#.......#\n" +
               "###.........###\n" +
               "#.............#\n" +
@@ -111,7 +111,7 @@ namespace Gruppe22
               "#.....#.......#\n" +
               "###############\n";
             _map1 = new Map(15, 8);
-            _map1.FromString(str);
+            _map1.FromString(str1);
             _interfaceElements = new List<UIElement>();
 
             base.Initialize();

@@ -37,7 +37,7 @@ namespace Gruppe22
               _spriteBatch.Draw(_background, _displayRect, new Rectangle(39, 6, 1, 1), Color.White);
                 _spriteBatch.Draw(_background, new Rectangle(_displayRect.X + 2, _displayRect.Y + 2, _displayRect.Width - 4, _displayRect.Height - 4), new Rectangle(39, 6, 1, 1), Color.Black);
 
-                string text="Use Arrow-keys to move map, PgUp/PgDown to zoom, Esc to open menu";
+                string text="Use Arrow-keys to move map, PgUp/PgDown to zoom, W/A/S/D to walk, Esc to open menu";
                 Vector2 _textPos = _font.MeasureString(text);
 
                 _spriteBatch.DrawString(_font, text, new Vector2(_displayRect.Left + (_displayRect.Width - _textPos.X) / 2, _displayRect.Top + (_displayRect.Height - _textPos.Y) / 2), Color.White);

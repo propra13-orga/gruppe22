@@ -81,8 +81,9 @@ namespace Gruppe22
                             _camera.matrix);
 
                 _spriteBatch.GraphicsDevice.ScissorRectangle = _displayRect;
-
                 _drawFloor(_map.width, _map.height);
+
+
                 foreach (ActorView actor in _actors)
                 {
                     actor.Draw(gametime);
@@ -96,6 +97,10 @@ namespace Gruppe22
             {
                 rstate.Dispose();
             }
+            if (_actors[0].isMoving)
+                _camera.position = new Vector2(-68 -
+         ((_actors[0].position.X * 64 + _actors[0].position.Y * 64)), -96 -
+         (((_actors[0].position.Y * 48 - _actors[0].position.X * 48))));
         }
         #endregion
 
@@ -374,6 +379,7 @@ namespace Gruppe22
                     _spriteBatch.Draw(_environment[1].animationTexture, _tileRect(new Vector2(x, y)), new Rectangle(512, 384, 128, 96), Color.White);
                 }
             }
+            //TODO: Reimplement rugged tiles
         }
 
         public override void Update(GameTime gameTime)
@@ -396,38 +402,33 @@ namespace Gruppe22
                 switch (dir)
                 {
                     case Direction.UpLeft:
-                        _actors[0].Move(new Vector2(-1.0f, 0));
+                        if (_map[(int)_actors[0].position.X - 1, (int)_actors[0].position.Y].canEnter)
+                            _actors[0].Move(new Vector2(-1.0f, 0));
                         break;
                     case Direction.DownRight:
-                        _actors[0].Move(new Vector2(1.0f, 0));
+                        if (_map[(int)_actors[0].position.X + 1, (int)_actors[0].position.Y].canEnter)
+                            _actors[0].Move(new Vector2(1.0f, 0));
                         break;
                     case Direction.DownLeft:
-                        _actors[0].Move(new Vector2(0, 1.0f));
+                        if (_map[(int)_actors[0].position.X, (int)_actors[0].position.Y + 1].canEnter)
+                            _actors[0].Move(new Vector2(0, 1.0f));
                         break;
                     case Direction.UpRight:
-                        _actors[0].Move(new Vector2(0, -1.0f));
+                        if (_map[(int)_actors[0].position.X, (int)_actors[0].position.Y - 1].canEnter)
+                            _actors[0].Move(new Vector2(0, -1.0f));
                         break;
                 }
-/*                _camera.position = new Vector2(
-                    ((_actors[0].position.X * 64 + _actors[0].position.Y * 64)) + _displayRect.Width / 2,
-                    ((_displayRect.Height - (_actors[0].position.Y * 48 - _actors[0].position.X * 48))));*/
-                System.Diagnostics.Debug.WriteLine("");
 
-                System.Diagnostics.Debug.WriteLine("");
-
-                System.Diagnostics.Debug.WriteLine("---------");
-
-                System.Diagnostics.Debug.WriteLine("Kachel:"+(_actors[0].position.X * 64 + _actors[0].position.Y * 64).ToString() + "/" + (_actors[0].position.Y * 48 - _actors[0].position.X*48).ToString());
-
-                System.Diagnostics.Debug.WriteLine("Kamera:"+_camera.position.X + "/" + _camera.position.Y);
-                System.Diagnostics.Debug.WriteLine("Kachel:" + (_camera.position.X - (_actors[0].position.X * 64 + _actors[0].position.Y * 64)).ToString() + "/" + (_camera.position.Y-(_actors[0].position.Y * 48 - _actors[0].position.X * 48)).ToString());
-
-                System.Diagnostics.Debug.WriteLine("Größe:" + _displayRect.Width + "/" + _displayRect.Height);
-                System.Diagnostics.Debug.WriteLine("---------");
 
             }
 
         }
+
+        public override void MoveContent(Vector2 difference)
+        {
+            if (!_actors[0].isMoving) base.MoveContent(difference);
+        }
+
 
         public override void HandleKey()
         {
@@ -477,19 +478,16 @@ namespace Gruppe22
             // Create list of actors
             _actors = new List<ActorView>();
             TileObject player = new TileObject(_content, 96, 96);
-            player.AddAnimation("Walk", new Vector2(0, 0), -1, 8, 1);
-            player.AddAnimation("Walk", new Vector2(0, 96), -1, 8, 1);
+            player.AddAnimation("Stand", new Vector2(0, 0), -1, 1, 1);
+
 
             player.AddAnimation("Walk", new Vector2(0, 192), -1, 8, 1);
 
-            player.AddAnimation("Walk", new Vector2(0, 288), -1, 8, 1);
-
-            player.AddAnimation("Walk", new Vector2(0, 384), -1, 8, 1);
+            player.AddAnimation("Walk", new Vector2(0, 576), -1, 8, 1);
 
             player.AddAnimation("Walk", new Vector2(0, 480), -1, 8, 1);
 
-            player.AddAnimation("Walk", new Vector2(0, 576), -1, 8, 1);
-            player.AddAnimation("Walk", new Vector2(0, 672), -1, 8, 1);
+            player.AddAnimation("Walk", new Vector2(0, 288), -1, 8, 1);
 
             player.AddAnimation("Walk", new Vector2(0, 768), -1, 8, 1);
 

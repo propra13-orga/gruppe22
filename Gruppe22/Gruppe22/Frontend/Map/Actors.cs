@@ -48,13 +48,20 @@ namespace Gruppe22
         {
             _target.X += _position.X + difference.X;
             _target.Y += _position.Y + difference.Y;
+            if (_target.X > _position.X) { animationStyle = 1; }
+            else
+                if (_target.X < _position.X) { animationStyle = 2; }
+                else
+                    if (_target.Y > _position.Y) { animationStyle = 3; }
+                    else
+                        if (_target.Y < _position.Y) { animationStyle = 4; }
         }
 
         public void Update(GameTime gametime)
         {
             if (_target != Vector2.Zero)
             {
-                if ((Math.Abs(_target.X-_position.X)>0.1)||(Math.Abs(_target.Y-_position.Y)>0.1))
+                if ((Math.Abs(_target.X - _position.X) > 0.1) || (Math.Abs(_target.Y - _position.Y) > 0.1))
                 {
                     if (_target.X > _position.X) { _position.X += 0.1f; }
                     if (_target.X < _position.X) { _position.X -= 0.1f; }
@@ -63,7 +70,10 @@ namespace Gruppe22
                 }
                 else
                 {
+                    _position.Y=(int)_target.Y;
+                    _position.X = (int)_target.X;
                     _target = Vector2.Zero;
+                    if ((animationStyle > 0) && (animationStyle < 5)) animationStyle = 0;
                 }
             }
             _sprite.NextAnimation();
@@ -74,7 +84,7 @@ namespace Gruppe22
             if (_sprite.isValid)
             {
 
-                _spriteBatch.Draw(_sprite.animationTexture, new Rectangle((int)(_position.X * 64 + _position.Y * 64), (int)(_position.Y * 48 - _position.X * 48), 192, 192), _sprite.animationRect, Color.White);
+                _spriteBatch.Draw(_sprite.animationTexture, new Rectangle((int)((_position.X) * 64 + (_position.Y - 1) * 64)+30, (int)((_position.Y) * 48 - (_position.X) * 48) - 80, 192, 192), _sprite.animationRect, Color.White);
             }
             //            _position.X += 0.1f;
         }
