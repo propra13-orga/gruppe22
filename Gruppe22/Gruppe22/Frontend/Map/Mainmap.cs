@@ -50,6 +50,7 @@ namespace Gruppe22
         /// </summary>
         private Map _map;
         private int _lastCheck = 0;
+        private Texture2D _background = null;
         #endregion
 
 
@@ -65,6 +66,11 @@ namespace Gruppe22
             rstate.ScissorTestEnable = true;
             try
             {
+                _spriteBatch.Begin();
+                _spriteBatch.Draw(_background, _displayRect, new Rectangle(39, 6, 1, 1), Color.White);
+                _spriteBatch.Draw(_background, new Rectangle(_displayRect.X + 2, _displayRect.Y + 2, _displayRect.Width - 4, _displayRect.Height - 4), new Rectangle(39, 6, 1, 1), Color.Black);
+
+                _spriteBatch.End();
                 _spriteBatch.Begin(SpriteSortMode.Immediate,
                             BlendState.AlphaBlend,
                             null,
@@ -428,6 +434,8 @@ namespace Gruppe22
 
 
             _actors.Add(new ActorView(spriteBatch, "Player", true, new Vector2(2, 2), player));
+            _background = _content.Load<Texture2D>("Minimap");
+
         }
         #endregion
 

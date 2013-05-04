@@ -24,6 +24,10 @@ namespace Gruppe22
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         public override void Draw(GameTime gameTime)
         {
+            _spriteBatch.Begin();
+            _spriteBatch.Draw(_mapIcon, _displayRect, new Rectangle(39, 6, 1, 1), Color.White);
+            _spriteBatch.Draw(_mapIcon, new Rectangle(_displayRect.X + 2, _displayRect.Y + 2, _displayRect.Width - 4, _displayRect.Height - 4), new Rectangle(39, 6, 1, 1), Color.Black);
+            _spriteBatch.End();
             _spriteBatch.GraphicsDevice.ScissorRectangle = _displayRect;
             RasterizerState rstate = new RasterizerState();
             rstate.ScissorTestEnable = true;
