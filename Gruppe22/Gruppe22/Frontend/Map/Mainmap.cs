@@ -4,6 +4,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 namespace Gruppe22
 {
@@ -377,15 +378,75 @@ namespace Gruppe22
 
         public override void Update(GameTime gameTime)
         {
-//            System.Diagnostics.Debug.WriteLine();
-            if (Math.Abs(gameTime.TotalGameTime.Milliseconds/10-_lastCheck) >7)
+            //            System.Diagnostics.Debug.WriteLine();
+            if (Math.Abs(gameTime.TotalGameTime.Milliseconds / 10 - _lastCheck) > 7)
             {
-                _lastCheck = gameTime.TotalGameTime.Milliseconds/10;
+                _lastCheck = gameTime.TotalGameTime.Milliseconds / 10;
                 foreach (ActorView actor in _actors)
                 {
                     actor.Update(gameTime);
                 }
             }
+        }
+
+        public void MovePlayer(Direction dir)
+        {
+            if (!_actors[0].isMoving)
+            {
+                switch (dir)
+                {
+                    case Direction.UpLeft:
+                        _actors[0].Move(new Vector2(-1.0f, 0));
+                        break;
+                    case Direction.DownRight:
+                        _actors[0].Move(new Vector2(1.0f, 0));
+                        break;
+                    case Direction.DownLeft:
+                        _actors[0].Move(new Vector2(0, 1.0f));
+                        break;
+                    case Direction.UpRight:
+                        _actors[0].Move(new Vector2(0, -1.0f));
+                        break;
+                }
+/*                _camera.position = new Vector2(
+                    ((_actors[0].position.X * 64 + _actors[0].position.Y * 64)) + _displayRect.Width / 2,
+                    ((_displayRect.Height - (_actors[0].position.Y * 48 - _actors[0].position.X * 48))));*/
+                System.Diagnostics.Debug.WriteLine("");
+
+                System.Diagnostics.Debug.WriteLine("");
+
+                System.Diagnostics.Debug.WriteLine("---------");
+
+                System.Diagnostics.Debug.WriteLine("Kachel:"+(_actors[0].position.X * 64 + _actors[0].position.Y * 64).ToString() + "/" + (_actors[0].position.Y * 48 - _actors[0].position.X*48).ToString());
+
+                System.Diagnostics.Debug.WriteLine("Kamera:"+_camera.position.X + "/" + _camera.position.Y);
+                System.Diagnostics.Debug.WriteLine("Kachel:" + (_camera.position.X - (_actors[0].position.X * 64 + _actors[0].position.Y * 64)).ToString() + "/" + (_camera.position.Y-(_actors[0].position.Y * 48 - _actors[0].position.X * 48)).ToString());
+
+                System.Diagnostics.Debug.WriteLine("Größe:" + _displayRect.Width + "/" + _displayRect.Height);
+                System.Diagnostics.Debug.WriteLine("---------");
+
+            }
+
+        }
+
+        public override void HandleKey()
+        {
+
+            if (!_actors[0].isMoving)
+            {
+                if (Keyboard.GetState().IsKeyDown(Keys.W))
+                    MovePlayer(Direction.UpRight);
+
+                if (Keyboard.GetState().IsKeyDown(Keys.A))
+                    MovePlayer(Direction.UpLeft);
+
+                if (Keyboard.GetState().IsKeyDown(Keys.D))
+                    MovePlayer(Direction.DownRight);
+
+                if (Keyboard.GetState().IsKeyDown(Keys.S))
+                    MovePlayer(Direction.DownLeft);
+            }
+            base.HandleKey();
         }
         #endregion
 
@@ -433,9 +494,8 @@ namespace Gruppe22
             player.AddAnimation("Walk", new Vector2(0, 768), -1, 8, 1);
 
 
-            _actors.Add(new ActorView(spriteBatch, "Player", true, new Vector2(2, 2), player));
+            _actors.Add(new ActorView(spriteBatch, "Player", true, new Vector2(0, 0), player));
             _background = _content.Load<Texture2D>("Minimap");
-
         }
         #endregion
 
