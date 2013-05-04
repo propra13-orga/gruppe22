@@ -49,6 +49,7 @@ namespace Gruppe22
         /// Internal reference to map data to be displayed
         /// </summary>
         private Map _map;
+        private int _lastCheck = 0;
         #endregion
 
 
@@ -370,9 +371,14 @@ namespace Gruppe22
 
         public override void Update(GameTime gameTime)
         {
-            foreach (ActorView actor in _actors)
+//            System.Diagnostics.Debug.WriteLine();
+            if (Math.Abs(gameTime.TotalGameTime.Milliseconds/10-_lastCheck) >7)
             {
-                actor.Update(gameTime);
+                _lastCheck = gameTime.TotalGameTime.Milliseconds/10;
+                foreach (ActorView actor in _actors)
+                {
+                    actor.Update(gameTime);
+                }
             }
         }
         #endregion
@@ -403,8 +409,24 @@ namespace Gruppe22
 
             // Create list of actors
             _actors = new List<ActorView>();
-            TileObject player = new TileObject(_content, 128, 128);
-            player.AddAnimation("player1", new Vector2(0, 0), -1, 5, 1);
+            TileObject player = new TileObject(_content, 96, 96);
+            player.AddAnimation("Walk", new Vector2(0, 0), -1, 8, 1);
+            player.AddAnimation("Walk", new Vector2(0, 96), -1, 8, 1);
+
+            player.AddAnimation("Walk", new Vector2(0, 192), -1, 8, 1);
+
+            player.AddAnimation("Walk", new Vector2(0, 288), -1, 8, 1);
+
+            player.AddAnimation("Walk", new Vector2(0, 384), -1, 8, 1);
+
+            player.AddAnimation("Walk", new Vector2(0, 480), -1, 8, 1);
+
+            player.AddAnimation("Walk", new Vector2(0, 576), -1, 8, 1);
+            player.AddAnimation("Walk", new Vector2(0, 672), -1, 8, 1);
+
+            player.AddAnimation("Walk", new Vector2(0, 768), -1, 8, 1);
+
+
             _actors.Add(new ActorView(spriteBatch, "Player", true, new Vector2(2, 2), player));
         }
         #endregion
