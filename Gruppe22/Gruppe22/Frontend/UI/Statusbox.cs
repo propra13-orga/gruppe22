@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
 
@@ -11,8 +12,6 @@ namespace Gruppe22
     public class Statusbox : UIElement
     {
         #region Private Fields
-        GraphicsDeviceManager _graphics = null;
-        SpriteBatch _spriteBatch = null;
         SpriteFont _font = null;
         #endregion
 
@@ -21,7 +20,7 @@ namespace Gruppe22
         /// This is called when the game should draw itself.
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
-        public void Draw(GameTime gameTime)
+        public override void Draw(GameTime gameTime)
         {
             _spriteBatch.GraphicsDevice.ScissorRectangle = _displayRect;
             RasterizerState rstate = new RasterizerState();
@@ -44,25 +43,16 @@ namespace Gruppe22
             }
 
         }
-        public bool IsHit(int x, int y)
+        public override bool IsHit(int x, int y)
         {
             return _displayRect.Contains(x, y);
         }
 
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <param name="graphics"></param>
-        /// <param name="spriteBatch"></param>
-        /// <param name="region"></param>
-        /// <param name="font"></param>
-        public Statusbox(GraphicsDeviceManager graphics, SpriteBatch spriteBatch, Rectangle region, SpriteFont font)
-        {
-            _font = font;
-            _displayRect = region;
-            _spriteBatch = spriteBatch;
-            _graphics = graphics;
-        }
         #endregion
+
+        public Statusbox(SpriteBatch spriteBatch, ContentManager content, Rectangle displayRect) : base(spriteBatch, content, displayRect) {
+            _font = _content.Load<SpriteFont>("Font");
+        }
+
     }
 }

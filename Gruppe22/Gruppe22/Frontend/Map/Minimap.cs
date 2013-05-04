@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace Gruppe22
@@ -10,10 +11,7 @@ namespace Gruppe22
     public class Minimap : Zoomable
     {
         #region Private Fields
-        private GraphicsDeviceManager _graphics;
-        private SpriteBatch _spriteBatch;
         private Texture2D _mapIcon;
-        private Rectangle _mapRegion;
         private Map _map;
         #endregion
 
@@ -21,24 +19,10 @@ namespace Gruppe22
 
 
         /// <summary>
-        /// Allows the game to run logic such as updating the world,
-        /// checking for collisions, gathering input, and playing audio.
-        /// </summary>
-        /// <param name="gameTime">Provides a snapshot of timing values.</param>
-        public void Update(GameTime gameTime)
-        {
-        }
-
-        public bool IsHit(int x, int y)
-        {
-            return _displayRect.Contains(x, y);
-        }
-
-        /// <summary>
         /// This is called when the game should draw itself.
         /// </summary>
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
-        public void Draw(GameTime gameTime)
+        public override void Draw(GameTime gameTime)
         {
             _spriteBatch.GraphicsDevice.ScissorRectangle = _displayRect;
             RasterizerState rstate = new RasterizerState();
@@ -51,7 +35,7 @@ namespace Gruppe22
                   rstate,
 
                   null,
-                  _camera.GetMatrix(_graphics));
+                  _camera.matrix);
             if (_map != null)
             {
                 for (int y = 0; y < _map.height; ++y)
@@ -116,15 +100,11 @@ namespace Gruppe22
         /// <param name="region"></param>
         /// <param name="mapIcons"></param>
         /// <param name="map"></param>
-        public Minimap(GraphicsDeviceManager graphics, SpriteBatch spriteBatch, Rectangle region, Texture2D mapIcons, Map map)
+        public Minimap(SpriteBatch spriteBatch, ContentManager content, Rectangle region, Map map)
+            : base(spriteBatch, content, region)
         {
-            _mapIcon = mapIcons;
-            _displayRect = region;
-            _graphics = graphics;
-            _camera = new Camera(new Vector2(-10,-10));
-            //_camera.zoom = (float) 0.9;
-            _spriteBatch = spriteBatch;
             _map = map;
+            _mapIcon = _content.Load<Texture2D>("Minimap");
         }
     }
 }

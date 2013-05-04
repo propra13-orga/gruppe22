@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 namespace Gruppe22
@@ -28,8 +30,8 @@ namespace Gruppe22
             }
             set
             {
-                if((value>0.4)&&(value<4.0))
-                _camera.zoom = value;
+                if ((value > 0.4) && (value < 4.0))
+                    _camera.zoom = value;
             }
         }
 
@@ -51,20 +53,20 @@ namespace Gruppe22
 
         #region Public Methods
 
-        public void MoveContent(Vector2 difference)
+        public override void MoveContent(Vector2 difference)
         {
             Move(difference);
             base.MoveContent(difference);
         }
 
 
-        public new void ScrollWheel(int Difference)
+        public override void ScrollWheel(int Difference)
         {
             Zoom += Difference / 10;
             base.ScrollWheel(Difference);
         }
 
-        public new void HandleKey()
+        public override void HandleKey()
         {
             if (Keyboard.GetState().IsKeyDown(Keys.PageUp))
                 Zoom += (float)0.1;
@@ -92,6 +94,20 @@ namespace Gruppe22
         public void Move(Vector2 target)
         {
             _camera.Move(target);
+        }
+        #endregion
+
+        #region Constructor
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="spriteBatch"></param>
+        /// <param name="content"></param>
+        /// <param name="displayRect"></param>
+        public Zoomable(SpriteBatch spriteBatch, ContentManager content, Rectangle displayRect)
+            : base(spriteBatch, content, displayRect)
+        {
+            _camera = new Camera(new Vector2(displayRect.Width / 2, displayRect.Height / 2));
         }
         #endregion
     }

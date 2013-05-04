@@ -36,6 +36,19 @@ namespace Gruppe22
             get { return _position; }
             set { _position = value; }
         }
+
+        /// <summary>
+        /// Get a transformation matrix moving a camera to the specified position and zoom level
+        /// </summary>
+        /// <param name="_graphics">The device to use for calculating the matrix</param>
+        /// <returns></returns>
+        public Matrix matrix
+        {
+            get
+            {
+                return Matrix.CreateTranslation(new Vector3(_position, 0)) * Matrix.CreateScale(_zoom) * Matrix.CreateTranslation(new Vector3(_center, 0));
+            }
+        }
         #endregion
 
         #region Public Methods
@@ -53,15 +66,7 @@ namespace Gruppe22
         {
             _center = center;
         }
-        /// <summary>
-        /// Get a transformation matrix moving a camera to the specified position and zoom level
-        /// </summary>
-        /// <param name="_graphics">The device to use for calculating the matrix</param>
-        /// <returns></returns>
-        public Matrix GetMatrix(GraphicsDeviceManager _graphics)
-        {
-            return Matrix.CreateTranslation(new Vector3(_position, 0)) * Matrix.CreateScale(_zoom) * Matrix.CreateTranslation(new Vector3(_center, 0));
-        }
+
         #endregion
 
         public Camera(Vector2 center)
