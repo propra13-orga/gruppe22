@@ -18,10 +18,15 @@ using System.Threading.Tasks;
 
 namespace Gruppe22
 {
+    public enum Events
+    {
+        StartGame = 1,
+        EndGame = 2
+    }
     /// <summary>
     /// This is the main type for your game
     /// </summary>
-    public class MainWindow : Game
+    public class MainWindow : Game, IHandleEvent
     {
         #region Private Fields
         /// <summary>
@@ -63,6 +68,11 @@ namespace Gruppe22
         /// Internal storage for Player 2
         /// </summary>
         private Map _map2 = null;
+
+        /// <summary>
+        /// Whether the game is paused (for menus etc.)
+        /// </summary>
+        private bool _paused = false;
 
         #endregion
 
@@ -115,25 +125,61 @@ namespace Gruppe22
             // Create a new SpriteBatch, which can be used to draw textures.
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            _interfaceElements.Add(new Minimap(_spriteBatch, Content, new Rectangle(_graphics.GraphicsDevice.Viewport.Width - 210, 20, 200, 200), _map1));
-                        _interfaceElements.Add(new Mainmap(_spriteBatch, Content, new Rectangle(0, 20, _graphics.GraphicsDevice.Viewport.Width - 220, _graphics.GraphicsDevice.Viewport.Height - 140), _map1));
-                        _interfaceElements.Add(new Statusbox(_spriteBatch, Content, new Rectangle(40, _graphics.GraphicsDevice.Viewport.Height - 120, _graphics.GraphicsDevice.Viewport.Width - 20, 100)));
+            _interfaceElements.Add(new Minimap(this, _spriteBatch, Content, new Rectangle(_graphics.GraphicsDevice.Viewport.Width - 210, 20, 200, 200), _map1));
+            _interfaceElements.Add(new Mainmap(this, _spriteBatch, Content, new Rectangle(0, 20, _graphics.GraphicsDevice.Viewport.Width - 220, _graphics.GraphicsDevice.Viewport.Height - 140), _map1));
+            _interfaceElements.Add(new Statusbox(this, _spriteBatch, Content, new Rectangle(40, _graphics.GraphicsDevice.Viewport.Height - 120, _graphics.GraphicsDevice.Viewport.Width - 20, 100)));
+
 
 
             // _backMusic = Content.Load<Song>("Video Dungeon Crawl.wav"); // Todo: *.mp3
             // _font = Content.Load<SpriteFont>("Font");
             // MediaPlayer.Volume = (float)0.3;
             // MediaPlayer.Play(_backMusic);
-
+            ShowMenu();
         }
 
         /// <summary>
-        /// UnloadContent will be called once per game and is the place to unload
-        /// all content.
+        /// Display Main Menu
+        /// </summary>
+        public void ShowMenu()
+        {
+            _paused = true;
+            Window _mainMenu = new Window(this, _spriteBatch, Content, new Rectangle(10, 10, GraphicsDevice.Viewport.Width - 20, GraphicsDevice.Viewport.Height - 20));
+            _mainMenu.AddChild(new Button(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 100) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) - 60, 200, 40), "startbutton1","startbutton2","startbutton2", Events.StartGame));
+            _mainMenu.AddChild(new Button(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 100) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) + 20, 200, 40), "Spiel beenden", Events.EndGame));
+
+            _interfaceElements.Add(_mainMenu);
+            _focus = _interfaceElements[_interfaceElements.Count - 1];
+        }
+
+        /// <summary>
+        /// Unload all managed content which has not been disposed of elsewhere
         /// </summary>
         protected override void UnloadContent()
         {
             Content.Unload();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="eventID"></param>
+        /// <param name="data"></param>
+        public void HandleEvent(UIElement sender, Events eventID, int data)
+        {
+            switch (eventID)
+            {
+                case Events.StartGame:
+                    _focus.Dispose();
+                    _interfaceElements.Remove(_focus);
+                    _focus=null;
+                    _paused = false;
+                    break;
+                case Events.EndGame:
+                    Exit();
+                    break;
+            }
         }
 
         /// <summary>
@@ -143,47 +189,55 @@ namespace Gruppe22
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            foreach (UIElement element in _interfaceElements)
+            try
             {
-                if (element.IsHit(Mouse.GetState().X, Mouse.GetState().Y))
+                foreach (UIElement element in _interfaceElements)
                 {
-                    _focus = element;
-                }
-                element.Update(gameTime);
-            }
-
-
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-                Exit();
-
-            if (Keyboard.GetState().IsKeyDown(Keys.Enter))
-                _graphics.ToggleFullScreen();
-
-            if (_focus != null)
-            {
-                if (Mouse.GetState().ScrollWheelValue != _mouseWheel)
-                {
-                    _focus.ScrollWheel(_mouseWheel - Mouse.GetState().ScrollWheelValue);
-                    _mouseWheel = Mouse.GetState().ScrollWheelValue;
-                }
-
-
-                if (Mouse.GetState().LeftButton == ButtonState.Pressed)
-                {
-                    if (_mousepos.X != -1)
+                    if (element.IsHit(Mouse.GetState().X, Mouse.GetState().Y))
                     {
-                        _focus.MoveContent(new Vector2(Mouse.GetState().X - _mousepos.X, Mouse.GetState().Y - _mousepos.Y));
+                        if (!_focus.holdFocus)
+                        {
+                            _focus = element;
+                        }
                     }
-                    _mousepos.X = Mouse.GetState().X;
-                    _mousepos.Y = Mouse.GetState().Y;
+                    if (!_paused || element.ignorePause)
+                        element.Update(gameTime);
                 }
-                else
+
+
+                if ((!_paused) && (GamePad.GetState(PlayerIndex.One).Buttons.Start == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape)))
+                    ShowMenu();
+
+                //            if (Keyboard.GetState().IsKeyDown(Keys.Enter))
+                //                _graphics.ToggleFullScreen();
+
+                if (_focus != null)
                 {
-                    _mousepos.X = -1;
-                    _mousepos.Y = -1;
+                    if (Mouse.GetState().ScrollWheelValue != _mouseWheel)
+                    {
+                        _focus.ScrollWheel(_mouseWheel - Mouse.GetState().ScrollWheelValue);
+                        _mouseWheel = Mouse.GetState().ScrollWheelValue;
+                    }
+
+
+                    if (Mouse.GetState().LeftButton == ButtonState.Pressed)
+                    {
+                        if (_mousepos.X != -1)
+                        {
+                            _focus.MoveContent(new Vector2(Mouse.GetState().X - _mousepos.X, Mouse.GetState().Y - _mousepos.Y));
+                        }
+                        _mousepos.X = Mouse.GetState().X;
+                        _mousepos.Y = Mouse.GetState().Y;
+                    }
+                    else
+                    {
+                        _mousepos.X = -1;
+                        _mousepos.Y = -1;
+                    }
+                    _focus.HandleKey();
                 }
-                _focus.HandleKey();
             }
+            catch { }
             base.Update(gameTime);
         }
 
@@ -253,13 +307,15 @@ namespace Gruppe22
             }
             return true;
         }
+
         #endregion
 
         #region Constructor
         /// <summary>
         /// Constructor
         /// </summary>
-        public MainWindow(): base()
+        public MainWindow()
+            : base()
         {
             Content.RootDirectory = "Content";
             Window.Title = "Dungeon Crawler 2013";

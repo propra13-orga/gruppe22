@@ -100,8 +100,8 @@ namespace Gruppe22
         /// <param name="region"></param>
         /// <param name="mapIcons"></param>
         /// <param name="map"></param>
-        public Minimap(SpriteBatch spriteBatch, ContentManager content, Rectangle region, Map map)
-            : base(spriteBatch, content, region)
+        public Minimap(IHandleEvent parent, SpriteBatch spriteBatch, ContentManager content, Rectangle region, Map map)
+            : base(parent, spriteBatch, content, region)
         {
             _map = map;
             _mapIcon = _content.Load<Texture2D>("Minimap");

@@ -61,7 +61,6 @@ namespace Gruppe22
         public override void Draw(GameTime gametime)
         {
             RasterizerState rstate = new RasterizerState();
-            System.Diagnostics.Debug.WriteLine("DDD");
             rstate.ScissorTestEnable = true;
             try
             {
@@ -122,7 +121,7 @@ namespace Gruppe22
                     break;
 
                 case Direction.LeftRight: // Walls on left and right neighboring squares
-                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(0, 576, 126, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(0, 576, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
                     break;
 
                 case Direction.UpDown:// Walls on up and down neighboring squares
@@ -333,7 +332,7 @@ namespace Gruppe22
         {
 
             return new Rectangle((int)coords.X * 64 + ((int)coords.Y) * 64
-                                    , (int)coords.Y * 48 - (int)coords.X * 48, 128, tall ? 192 : 96);
+                                    , (int)coords.Y * 48 - (int)coords.X * 48, 130, tall ? 194 : 98);
         }
 
         /// <summary>
@@ -390,8 +389,8 @@ namespace Gruppe22
         /// <param name="wall1">A set of tiles for the walls</param>
         /// <param name="wall2">A set of tiles for doors</param>
         /// <param name="map">Internal storage of map data</param>
-        public Mainmap(SpriteBatch spriteBatch, ContentManager content, Rectangle displayArea, Map map)
-            : base(spriteBatch, content, displayArea)
+        public Mainmap(IHandleEvent parent, SpriteBatch spriteBatch, ContentManager content, Rectangle displayArea, Map map)
+            : base(parent, spriteBatch, content, displayArea)
         {
             _map = map;
 
@@ -404,8 +403,8 @@ namespace Gruppe22
 
             // Create list of actors
             _actors = new List<ActorView>();
-            TileObject player = new TileObject(_content, 128, 192);
-            player.AddAnimation("player1", new Vector2(0, 0), -1, 1, 5);
+            TileObject player = new TileObject(_content, 128, 128);
+            player.AddAnimation("player1", new Vector2(0, 0), -1, 5, 1);
             _actors.Add(new ActorView(spriteBatch, "Player", true, new Vector2(2, 2), player));
         }
         #endregion

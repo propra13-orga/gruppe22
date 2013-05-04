@@ -183,7 +183,7 @@ namespace Gruppe22
         public void NextAnimation()
         {
 
-            if ((_currentAnimation + 1 > _animations.Count) || (_animations[_currentAnimation] == null) || (_currentPhase + 1 > _animations[_currentAnimation].Count))
+            if ((_currentAnimation + 1 > _animations.Count) || (_animations[_currentAnimation] == null) || (_currentPhase + 2 > _animations[_currentAnimation].Count))
             {
                 if (_loop) _currentPhase = 0;
             }

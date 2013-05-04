@@ -9,10 +9,15 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Gruppe22
 {
+
+    public interface IHandleEvent
+    {
+        void HandleEvent(UIElement sender, Events eventID, int data);
+    }
     /// <summary>
     /// 
     /// </summary>
-    public class UIElement
+    public class UIElement : IHandleEvent, IDisposable
     {
         #region Private (Protected) Fields
         /// <summary>
@@ -25,6 +30,9 @@ namespace Gruppe22
         /// </summary>
         protected Rectangle _displayRect;
 
+
+        protected IHandleEvent _parent;
+
         /// <summary>
         /// A reference to the game's Contentmanager
         /// </summary>
@@ -32,7 +40,26 @@ namespace Gruppe22
 
         #endregion
 
+        #region Public Fields
+
+        public virtual bool ignorePause
+        {
+            get { return false; }
+        }
+
+        public virtual bool holdFocus
+        {
+            get { return false; }
+        }
+        #endregion
+
         #region Public Methods
+
+        public virtual void HandleEvent(UIElement sender, Events eventID, int data)
+        {
+            _parent.HandleEvent(sender, eventID, data);
+        }
+
 
         /// <summary>
         /// Check whether a pixel is part of the window
@@ -69,7 +96,6 @@ namespace Gruppe22
         /// <param name="gameTime"></param>
         public virtual void Draw(GameTime gameTime)
         {
-            System.Diagnostics.Debug.WriteLine("1");
         }
 
         /// <summary>
@@ -97,6 +123,11 @@ namespace Gruppe22
         {
 
         }
+
+        public virtual void Dispose(){
+        
+        }
+
         #endregion
 
         #region Constructor
@@ -106,12 +137,14 @@ namespace Gruppe22
         /// <param name="spriteBatch"></param>
         /// <param name="content"></param>
         /// <param name="displayRect"></param>
-        public UIElement(SpriteBatch spriteBatch, ContentManager content, Rectangle displayRect)
+        public UIElement(IHandleEvent parent, SpriteBatch spriteBatch, ContentManager content, Rectangle displayRect)
         {
             _displayRect = displayRect;
             _spriteBatch = spriteBatch;
             _content = content;
+            _parent = parent;
         }
+
         #endregion
     }
 }

@@ -160,8 +160,6 @@ namespace Gruppe22
                 }
 
             }
-
-            DebugMap();
             return true;
         }
 

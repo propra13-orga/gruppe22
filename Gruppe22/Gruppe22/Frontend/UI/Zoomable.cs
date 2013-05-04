@@ -104,8 +104,8 @@ namespace Gruppe22
         /// <param name="spriteBatch"></param>
         /// <param name="content"></param>
         /// <param name="displayRect"></param>
-        public Zoomable(SpriteBatch spriteBatch, ContentManager content, Rectangle displayRect)
-            : base(spriteBatch, content, displayRect)
+        public Zoomable(IHandleEvent parent, SpriteBatch spriteBatch, ContentManager content, Rectangle displayRect)
+            : base(parent, spriteBatch, content, displayRect)
         {
             _camera = new Camera(new Vector2(displayRect.Width / 2, displayRect.Height / 2));
         }

@@ -50,7 +50,9 @@ namespace Gruppe22
 
         #endregion
 
-        public Statusbox(SpriteBatch spriteBatch, ContentManager content, Rectangle displayRect) : base(spriteBatch, content, displayRect) {
+        public Statusbox(IHandleEvent parent, SpriteBatch spriteBatch, ContentManager content, Rectangle displayRect)
+            : base(parent,spriteBatch, content, displayRect)
+        {
             _font = _content.Load<SpriteFont>("Font");
         }
 
