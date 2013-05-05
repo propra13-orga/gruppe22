@@ -74,6 +74,7 @@ namespace Gruppe22
         /// </summary>
         private bool _paused = false;
 
+        private int _lastCheck = 0;
         #endregion
 
         #region Protected Methods (overrides)
@@ -234,7 +235,12 @@ namespace Gruppe22
                         _mousepos.X = -1;
                         _mousepos.Y = -1;
                     }
-                    _focus.HandleKey();
+                    if (Math.Abs(gameTime.TotalGameTime.Milliseconds / 10 - _lastCheck) > 7)
+                    {
+                        _focus.HandleKey();
+                        _lastCheck = gameTime.TotalGameTime.Milliseconds / 10;
+
+                    }
                 }
             }
             catch { }

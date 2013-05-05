@@ -52,6 +52,7 @@ namespace Gruppe22
         private Map _map;
         private int _lastCheck = 0;
         private Texture2D _background = null;
+        private Keys _lastKey;
         #endregion
 
 
@@ -97,10 +98,7 @@ namespace Gruppe22
             {
                 rstate.Dispose();
             }
-            if (_actors[0].isMoving)
-                _camera.position = new Vector2(-68 -
-         ((_actors[0].position.X * 64 + _actors[0].position.Y * 64)), -96 -
-         (((_actors[0].position.Y * 48 - _actors[0].position.X * 48))));
+
         }
         #endregion
 
@@ -385,7 +383,11 @@ namespace Gruppe22
         public override void Update(GameTime gameTime)
         {
             //            System.Diagnostics.Debug.WriteLine();
-            if (Math.Abs(gameTime.TotalGameTime.Milliseconds / 10 - _lastCheck) > 7)
+            if (_actors[0].isMoving)
+                _camera.position = new Vector2(-38 -
+         ((_actors[0].position.X * 64 + _actors[0].position.Y * 64)), -30 -
+         (((_actors[0].position.Y * 48 - _actors[0].position.X * 48))));
+            if (Math.Abs(gameTime.TotalGameTime.Milliseconds / 10 - _lastCheck) > 1)
             {
                 _lastCheck = gameTime.TotalGameTime.Milliseconds / 10;
                 foreach (ActorView actor in _actors)
@@ -397,36 +399,38 @@ namespace Gruppe22
 
         public void MovePlayer(Direction dir)
         {
-            if (!_actors[0].isMoving)
+            //  if (!_actors[0].isMoving)
+            //    {
+            switch (dir)
             {
-                switch (dir)
-                {
-                    case Direction.UpLeft:
-                        if (_map[(int)_actors[0].position.X - 1, (int)_actors[0].position.Y].canEnter)
-                            _actors[0].Move(new Vector2(-1.0f, 0));
-                        break;
-                    case Direction.DownRight:
-                        if (_map[(int)_actors[0].position.X + 1, (int)_actors[0].position.Y].canEnter)
-                            _actors[0].Move(new Vector2(1.0f, 0));
-                        break;
-                    case Direction.DownLeft:
-                        if (_map[(int)_actors[0].position.X, (int)_actors[0].position.Y + 1].canEnter)
-                            _actors[0].Move(new Vector2(0, 1.0f));
-                        break;
-                    case Direction.UpRight:
-                        if (_map[(int)_actors[0].position.X, (int)_actors[0].position.Y - 1].canEnter)
-                            _actors[0].Move(new Vector2(0, -1.0f));
-                        break;
-                }
+                case Direction.UpLeft:
 
-
+                    if (((int)_actors[0].target.X > 0) && (_map[(int)_actors[0].target.X - 1, (int)_actors[0].target.Y].canEnter))
+                        _actors[0].Move(new Vector2(-1.0f, 0));
+                    break;
+                case Direction.DownRight:
+                    if (((int)_actors[0].target.X < _map.width - 1) && (_map[(int)_actors[0].target.X + 1, (int)_actors[0].target.Y].canEnter))
+                        _actors[0].Move(new Vector2(1.0f, 0));
+                    break;
+                case Direction.DownLeft:
+                    if (((int)_actors[0].target.Y < _map.height - 1) && (_map[(int)_actors[0].target.X, (int)_actors[0].target.Y + 1].canEnter))
+                        _actors[0].Move(new Vector2(0, 1.0f));
+                    break;
+                case Direction.UpRight:
+                    if (((int)_actors[0].target.Y > 0) && (_map[(int)_actors[0].target.X, (int)_actors[0].target.Y - 1].canEnter))
+                        _actors[0].Move(new Vector2(0, -1.0f));
+                    break;
             }
+
+
+            // }
 
         }
 
         public override void MoveContent(Vector2 difference)
         {
-            if (!_actors[0].isMoving) base.MoveContent(difference);
+            // if (!_actors[0].isMoving) 
+            base.MoveContent(difference);
         }
 
 
@@ -436,16 +440,32 @@ namespace Gruppe22
             if (!_actors[0].isMoving)
             {
                 if (Keyboard.GetState().IsKeyDown(Keys.W))
+                {
+
                     MovePlayer(Direction.UpRight);
+                    _lastKey = Keys.W;
+
+                }
 
                 if (Keyboard.GetState().IsKeyDown(Keys.A))
+                {
+
                     MovePlayer(Direction.UpLeft);
+                    _lastKey = Keys.A;
+
+                }
 
                 if (Keyboard.GetState().IsKeyDown(Keys.D))
+                {
                     MovePlayer(Direction.DownRight);
+                    _lastKey = Keys.D;
+                }
 
                 if (Keyboard.GetState().IsKeyDown(Keys.S))
+                {
                     MovePlayer(Direction.DownLeft);
+                    _lastKey = Keys.S;
+                }
             }
             base.HandleKey();
         }

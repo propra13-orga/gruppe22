@@ -217,6 +217,7 @@ namespace Gruppe22
                 }
             }
             _blankTile = new Tile();
+            //_blankTile.canEnter = false;
         }
 
         /// <summary>
