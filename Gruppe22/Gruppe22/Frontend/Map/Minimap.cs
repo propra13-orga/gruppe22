@@ -110,6 +110,8 @@ namespace Gruppe22
             _map = map;
             _mapIcon = _content.Load<Texture2D>("Minimap");
             _camera.position = new Vector2(-region.Width / 2, -region.Height / 2);
+            _map.DebugMap();
+
         }
     }
 }

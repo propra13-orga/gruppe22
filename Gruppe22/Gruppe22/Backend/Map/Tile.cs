@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Xml;
 
-namespace Gruppe22 
+namespace Gruppe22
 {
     /// <summary>
     /// An abstract class representing a generic tile (i.e. blank floor)
@@ -22,11 +22,38 @@ namespace Gruppe22
         /// <summary>
         /// Internal value whether tile can be entered
         /// </summary>
-        private bool _canEnter=true;
+        private bool _canEnter = true;
 
+
+        private bool _connected = false;
+        private Connection _connection = Connection.Invalid;
         #endregion
 
         #region Public Fields
+
+        public bool connected
+        {
+            get
+            {
+                return _connected;
+            }
+            set
+            {
+                _connected = value;
+            }
+        }
+
+        public Connection connection
+        {
+            get
+            {
+                return _connection;
+            }
+            set
+            {
+                _connection = value;
+            }
+        }
 
         /// <summary>
         /// An event handler for entering the field
@@ -66,7 +93,7 @@ namespace Gruppe22
                 int count = 0;
                 while ((result) && (count < _overlay.Count))
                 {
-                    result = ((_overlay[count] is ActorTile)&&(((ActorTile)_overlay[count]).actorType==ActorType.Player));
+                    result = ((_overlay[count] is ActorTile) && (((ActorTile)_overlay[count]).actorType == ActorType.Player));
                     ++count;
                 }
                 return result;
@@ -136,7 +163,7 @@ namespace Gruppe22
         {
             get
             {
-                bool result = false;                
+                bool result = false;
                 return result;
             }
         }
@@ -144,7 +171,7 @@ namespace Gruppe22
 
         #region Public methods
 
-        
+
         /// <summary>
         /// Write Tile data to an XML-file
         /// </summary>
@@ -169,13 +196,16 @@ namespace Gruppe22
         #endregion
 
         #region Constructors
+
+
         /// <summary>
         /// An empty constructor (setting default values)
         /// </summary>
-        public Tile()
+        public Tile(bool canEnter = true)
             : base()
         {
             _overlay = new List<Tile>();
+            _canEnter = canEnter;
         }
 
         /// <summary>
@@ -184,7 +214,7 @@ namespace Gruppe22
         public void Dispose()
         {
             _overlay.Clear();
-            
+
         }
         #endregion
     }

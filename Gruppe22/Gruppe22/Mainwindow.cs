@@ -111,8 +111,12 @@ namespace Gruppe22
               "#.....#.......#\n" +
               "#.....#.......#\n" +
               "###############\n";
-            _map1 = new Map(15, 8);
-            _map1.FromString(str1);
+            //_map1 = new Map(15, 8);
+            //_map1.FromString(str1);
+            Random r = new Random();
+            _map1 = new Map(r.Next(8) + 6, r.Next(8) + 6);
+            _map1.GenerateMaze();
+            _map1.ClearWalls();
             _interfaceElements = new List<UIElement>();
 
             base.Initialize();
@@ -146,7 +150,7 @@ namespace Gruppe22
         {
             _paused = true;
             Window _mainMenu = new Window(this, _spriteBatch, Content, new Rectangle(10, 10, GraphicsDevice.Viewport.Width - 20, GraphicsDevice.Viewport.Height - 20));
-            _mainMenu.AddChild(new Button(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 100) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) - 60, 200, 40), "startbutton1","startbutton2","startbutton2", Events.StartGame));
+            _mainMenu.AddChild(new Button(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 100) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) - 60, 200, 40), "startbutton1", "startbutton2", "startbutton2", Events.StartGame));
             _mainMenu.AddChild(new Button(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 100) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) + 20, 200, 40), "Spiel beenden", Events.EndGame));
 
             _interfaceElements.Add(_mainMenu);
@@ -174,7 +178,7 @@ namespace Gruppe22
                 case Events.StartGame:
                     _focus.Dispose();
                     _interfaceElements.Remove(_focus);
-                    _focus=null;
+                    _focus = null;
                     _paused = false;
                     break;
                 case Events.EndGame:

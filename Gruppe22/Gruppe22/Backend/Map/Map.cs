@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Xml;
+
 namespace Gruppe22
 {
     public class Map : IDisposable
@@ -91,7 +92,199 @@ namespace Gruppe22
         }
         #endregion
 
+        #region Private Methods
+        /// <summary>
+        /// Get the next tile based on included Connection info
+        /// </summary>
+        /// <param name="current">The start field</param>
+        /// <returns>The next field or null if field would be beyond map</returns>
+        private Path _Walk(Path current)
+        {
+            Path result = new Path(current.x, current.y, Connection.None);
+
+            switch (current.dir)
+            {
+                case Connection.Up:
+                    result.y -= 2;
+                    break;
+                case Connection.Right:
+                    result.x += 2;
+                    break;
+                case Connection.Down:
+                    result.y += 2;
+                    break;
+                case Connection.Left:
+                    result.x -= 2;
+                    break;
+            };
+
+            if ((result.x >= 1) && (result.x <= 2 * _width) && (result.y >= 0) && (result.y <= 2 * _height))
+                return result;
+            return null;
+        }
+
+        private void _NextTile(ref Path pos)
+        {
+            int count = 0;
+            while ((_tiles[pos.y][pos.x].connected) && (count < _width * _height))
+            {
+                count += 1;
+                pos.x += 2;
+                if (pos.x > _width * 2)
+                {
+                    pos.x = 1;
+                    pos.y += 2;
+                };
+                if (pos.y > _height * 2)
+                {
+                    pos.y = 1;
+                    pos.x = 1;
+                }
+            }
+            if (count >= _width * _height)
+            {
+                pos.x = -1;
+                pos.y = -1;
+            }
+        }
+        #endregion
+
         #region Public Methods
+
+
+        /// <summary>
+        /// Create a grid of walls
+        /// </summary>
+        public void ClearMaze()
+        {
+            foreach (List<Tile> row in _tiles)
+            {
+                row.Clear();
+            }
+            _tiles.Clear();
+            for (int row = 0; row < _height * 2 + 1; row++)
+            {
+                _tiles.Add(new List<Tile>());
+                for (int col = 0; col < _width * 2 + 1; col++)
+                {
+                    _tiles[row].Add(new Tile(
+                        (row % 2 == 1)
+                        && (col % 2 == 1))
+                        );
+                }
+            }
+        }
+
+
+        public void ClearWalls(int number = -1)
+        {
+            if (number < 0)
+            {
+                number = ((width / 2) * (height / 2)) / 4;
+            };
+            Random r = new Random();
+
+            for (int i = 0; i < number; ++i)
+            {
+                int count = 0;
+                Path pos = new Path(2 + r.Next(_width / 2 - 2) * 2, 2 + r.Next(_height / 2 - 2) * 2);
+                while ((pos.x > 0) && (_tiles[pos.y][pos.x].canEnter))
+                {
+                    count += 1;
+                    pos.x += 2;
+                    if (pos.x > _width - 2)
+                    {
+                        pos.x = 2;
+                        pos.y += 2;
+                    };
+                    if (pos.y > _height - 2)
+                    {
+                        pos.y = 2;
+                        pos.x = 2;
+                    }
+                }
+
+                if (count >= _width * _height)
+                {
+                    pos.x = -1;
+                    pos.y = -1;
+                }
+                _tiles[pos.y][pos.x].canEnter = true;
+                System.Diagnostics.Debug.WriteLine("Remove Wall at " + pos.x + "/" + pos.y);
+            }
+        }
+
+        /// <summary>
+        /// Create a new maze
+        /// </summary>
+        /// <param name="slow"></param>
+        public void GenerateMaze()
+        {
+            ClearMaze();
+
+            Random r = new Random();
+
+            Path originPos = new Path(1 + r.Next(_width - 1) * 2, 1 + r.Next(_height - 1) * 2);
+            Path currentPos = new Path(1 + r.Next(_width - 1) * 2, 1 + r.Next(_height - 1) * 2);
+
+            _tiles[originPos.y][originPos.x].connected = true;
+            _tiles[originPos.y][originPos.x].canEnter = true;
+            int remaining = _width * _height - 1;
+
+            Path startPos = originPos;
+            while ((currentPos.x > -1) && (remaining > 0))
+            {
+                _NextTile(ref startPos);
+                currentPos = startPos;
+
+                while ((currentPos.x > 0) && (!_tiles[currentPos.y][currentPos.x].connected))
+                {
+                    currentPos.dir = (Connection)r.Next(4) + 1;
+                    Path next = _Walk(currentPos);
+                    int dirCount = 0;
+                    while ((next == null) && (dirCount < 4))
+                    {
+                        dirCount += 1;
+                        currentPos.dir += 1;
+                        if (currentPos.dir == Connection.Invalid)
+                            currentPos.dir = Connection.Up;
+                        next = _Walk(currentPos);
+                    }
+                    if (dirCount == 4) break;
+                    _tiles[currentPos.y][currentPos.x].connection = currentPos.dir;
+                    currentPos = next;
+                }
+                Path endPos = currentPos;
+                currentPos = startPos;
+                while ((currentPos.x != endPos.x) || (currentPos.y != endPos.y))
+                {
+                    _tiles[currentPos.y][currentPos.x].connected = true;
+                    switch (_tiles[currentPos.y][currentPos.x].connection)
+                    {
+                        case Connection.Left:
+                            _tiles[currentPos.y][currentPos.x - 1].canEnter = true;
+                            break;
+                        case Connection.Right:
+                            _tiles[currentPos.y][currentPos.x + 1].canEnter = true;
+                            break;
+                        case Connection.Up:
+                            _tiles[currentPos.y - 1][currentPos.x].canEnter = true;
+                            break;
+                        case Connection.Down:
+                            _tiles[currentPos.y + 1][currentPos.x].canEnter = true;
+                            break;
+                    }
+                    currentPos.dir = _tiles[currentPos.y][currentPos.x].connection;
+                    _tiles[currentPos.y][currentPos.x].connection = Connection.Invalid;
+                    currentPos = _Walk(currentPos);
+                    startPos = new Path(1 + r.Next(_width - 1) * 2, 1 + r.Next(_height - 1) * 2);
+                    --remaining;
+                }
+            }
+            _width = _width * 2 + 1;
+            _height = _height * 2 + 1;
+        }
+
         /// <summary>
         /// Load a map from a file
         /// </summary>

@@ -514,7 +514,7 @@ namespace Gruppe22
             player.AddAnimation("Walk", new Vector2(0, 768), -1, 8, 1);
 
 
-            _actors.Add(new ActorView(spriteBatch, "Player", true, new Vector2(0, 0), player));
+            _actors.Add(new ActorView(spriteBatch, "Player", true, new Vector2(1, 1), player));
             _background = _content.Load<Texture2D>("Minimap");
         }
         #endregion
