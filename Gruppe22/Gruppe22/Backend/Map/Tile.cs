@@ -152,7 +152,12 @@ namespace Gruppe22
         /// <returns>true if write is successful</returns>
         public bool Save(XmlTextWriter target)
         {
-            throw new NotImplementedException("Das muss noch jemand machen");
+            target.WriteStartElement("tile");
+            foreach (Tile tile in _overlay)
+            {
+                throw new NotImplementedException("Das muss noch jemand machen");
+            }
+            target.WriteEndElement();
             return true;
         }
 
