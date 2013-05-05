@@ -84,12 +84,7 @@ namespace Gruppe22
                 _spriteBatch.GraphicsDevice.ScissorRectangle = _displayRect;
                 _drawFloor(_map.width, _map.height);
 
-
-                foreach (ActorView actor in _actors)
-                {
-                    actor.Draw(gametime);
-                }
-                _drawWalls();
+                _drawWalls(gametime);
 
                 _spriteBatch.End();
                 _spriteBatch.GraphicsDevice.RasterizerState.ScissorTestEnable = false;
@@ -349,16 +344,24 @@ namespace Gruppe22
         /// <summary>
         /// Display all walls on the current map
         /// </summary>
-        private void _drawWalls()
+        private void _drawWalls(GameTime gametime)
         {
 
             for (int y = 0; y < _map.height; ++y)
             {
 
 
-                for (int x = 0; x < _map.width; ++x)
+                for (int x = _map.width; x > -1; --x)
                 {
                     _drawWall(GetWallStyle(x, y), _tileRect(new Vector2(x + 1, y - 1), true), false);
+
+                    foreach (ActorView actor in _actors)
+                    {
+                        if (((int)actor.position.X == x) && ((int)actor.position.Y == y))
+                        {
+                            actor.Draw(gametime);
+                        }
+                    }
                 }
             }
         }
@@ -382,7 +385,6 @@ namespace Gruppe22
 
         public override void Update(GameTime gameTime)
         {
-            //            System.Diagnostics.Debug.WriteLine();
             if (_actors[0].isMoving)
                 _camera.position = new Vector2(-38 -
          ((_actors[0].position.X * 64 + _actors[0].position.Y * 64)), -30 -
