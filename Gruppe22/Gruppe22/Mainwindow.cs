@@ -94,14 +94,17 @@ namespace Gruppe22
                 "#....##.#######\n" +
                 "#.#####.#######\n",
              str =
-              "###############\n" +
-              "#....#........#\n" +
-              "#....#........#\n" +
-              "#..############\n" +
-              "#....#..#.....#\n" +
-              "#.####..#######\n" +
-              "#....#..#.....#\n" +
-              "######..#######\n",
+              "...............\n" +
+              "...............\n" +
+              "...#######.....\n" +
+              "......#.......\n" +
+              ".....#........\n" +
+              "....#...#.....\n" +
+              ".....#....#...\n" +
+              "......#........\n" +
+              "...######......\n" +
+              "...............\n",
+
             str1 =
               "...############\n" +
               "......#.......#\n" +
@@ -111,13 +114,13 @@ namespace Gruppe22
               "#.....#.......#\n" +
               "#.....#.......#\n" +
               "###############\n";
-            //_map1 = new Map(15, 8);
-            //_map1.FromString(str1);
-            Random r = new Random();
-            _map1 = new Map(r.Next(20) + 6, r.Next(20) + 6);
-            _map1.ClearMaze();
-           // _map1.GenerateMaze();
-          //  _map1.ClearWalls();
+            _map1 = new Map(15, 10);
+            _map1.FromString(str);
+            //Random r = new Random();
+            //_map1 = new Map(r.Next(20) + 6, r.Next(20) + 6);
+            //_map1.ClearMaze();
+            // _map1.GenerateMaze();
+            //  _map1.ClearWalls();
             _interfaceElements = new List<UIElement>();
 
             base.Initialize();
@@ -174,7 +177,7 @@ namespace Gruppe22
         /// <param name="data"></param>
         public void HandleEvent(UIElement sender, Events eventID, int data)
         {
-           
+
             switch (eventID)
             {
                 case Events.StartGame:

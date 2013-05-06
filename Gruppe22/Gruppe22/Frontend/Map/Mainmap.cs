@@ -29,7 +29,41 @@ namespace Gruppe22
         RightClose = 16,
         UpClose = 17,
         Free = 15,
-        None = -1
+        None = -1,
+
+        LeftRightUpDiag = 20,
+        LeftRightDownDiag = 21,
+        UpDownLeftDiag = 22,
+        UpDownRightDiag = 23,
+        UpLeftDiag = 24,
+        UpRightDiag = 25,
+        DownLeftDiag = 26,
+        DownRightDiag = 27,
+        LeftRightDiag = 28,
+        UpDownDiag = 29,
+        FourWayDiag = 30,
+        LeftCloseDiag = 31,
+        DownCloseDiag = 32,
+        RightCloseDiag = 33,
+        UpCloseDiag = 34,
+        FourDiag = 35,
+
+
+        DiagUpClose,
+        DiagDownClose,
+        DiagUpDownClose,
+        DiagUpClose2,
+        DiagDownClose2,
+        DiagUpDownClose2,
+
+        DiagLeftClose,
+        DiagRightClose,
+        DiagLeftRightClose,
+
+        DiagLeftClose2,
+        DiagRightClose2,
+        DiagLeftRightClose2
+
     }
 
     /// <summary>
@@ -173,10 +207,134 @@ namespace Gruppe22
                     break;
 
                 case Direction.Free: // Free standing wall (no connecting squares)
-                    //  _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(0, 0, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+                    _spriteBatch.Draw(_environment[2].animationTexture, target, new Rectangle(1920, 0, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
                     break;
 
                 case Direction.None: // No wall
+                    break;
+
+
+
+
+
+                /* Diagonale Mauern */
+
+
+
+
+
+                case Direction.UpRightDiag: // Done
+                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(681, 835, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+                    break;
+
+                case Direction.UpLeftDiag: // Done
+                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(321, 0, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+                    break;
+
+                case Direction.DownLeftDiag: // Done
+                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(384, 384, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+                    break;
+
+                case Direction.DownRightDiag: // Done
+                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(128, 384, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+                    break;
+
+                case Direction.UpDownLeftDiag: // Done
+                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(640, 384, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+                    break;
+
+                case Direction.UpDownDiag:// Done
+                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(0, 384, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+                    break;
+
+                case Direction.FourDiag: // Done
+                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(256, 768, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+                    break;
+
+                case Direction.RightCloseDiag: // Done (Imperfect)
+                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(681, 820, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+                    break;
+
+                case Direction.UpCloseDiag: // Done
+                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(257, 0, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+                    break;
+
+                case Direction.LeftCloseDiag: // Done
+                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(385, 0, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+                    break;
+
+                case Direction.DownCloseDiag: // Done
+                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(136, 0, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+                    break;
+
+                case Direction.LeftRightUpDiag: // Done
+                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(896, 384, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+                    break;
+
+                case Direction.LeftRightDownDiag: // Done
+                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(768, 384, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+                    break;
+
+                case Direction.LeftRightDiag: // Done
+                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(256, 384, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+                    break;
+
+                case Direction.UpDownRightDiag: // Done
+                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(512, 384, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+                    break;
+
+
+
+                case Direction.DiagUpClose: // Done
+                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(640, 192, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+                    break;
+                case Direction.DiagUpDownClose: // Done
+                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(640, 192, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(896, 0, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+                    break;
+                case Direction.DiagDownClose: // Done
+                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(896, 0, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+                    break;
+
+
+
+                case Direction.DiagUpClose2: // Done
+                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(512, 192, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+                    break;
+                case Direction.DiagUpDownClose2: // Done
+                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(512, 192, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(640, 0, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+                    break;
+                case Direction.DiagDownClose2: // Done
+                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(768, 0, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+                    break;
+
+
+                    //TODO: Connectors
+
+
+                case Direction.DiagLeftClose: // Done
+                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(512, 192, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+                    break;
+                case Direction.DiagLeftRightClose: // Done
+                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(512, 192, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(640, 0, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+                    break;
+                case Direction.DiagRightClose: // Done
+                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(768, 0, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+                    break;
+
+                //TODO: Connectors
+
+                case Direction.DiagLeftClose2: // Done
+                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(512, 192, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+                    break;
+                case Direction.DiagLeftRightClose2: // Done
+                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(512, 192, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(640, 0, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+                    break;
+                case Direction.DiagRightClose2: // Done
+                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(768, 0, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
                     break;
 
 
@@ -210,13 +368,160 @@ namespace Gruppe22
 
                         if (_map[x, y + 1].canEnter) // No wall down
                         {
-                            // No wall blocks way up, down, left or right => this is a freestanding wall surrounded by walkable space
-                            return Direction.Free;
+                            // No wall blocks way up, down, left or right => this is a freestanding wall surrounded by walkable space OR only connected by diagonals
+                            if (!_map[x + 1, y + 1].canEnter)   // Down Right diagonal
+                            {
+                                if (!_map[x + 1, y - 1].canEnter) // Down Right + Up Right diagonal
+                                {
+                                    if (!_map[x - 1, y + 1].canEnter) // Down Right + Up Right + Down Left diagonal
+                                    {
+                                        if (!_map[x - 1, y - 1].canEnter) // Down Right +Up Right + Down Left + Up Left diagonal
+                                        {
+                                            return Direction.FourDiag;
+                                        }
+                                        else // (not down left) Down Right +Up Right + Down Left 
+                                        {
+                                            return Direction.LeftRightDownDiag;
+                                        }
+                                    }
+                                    else // (not down left)
+                                    {
+                                        if (!_map[x - 1, y - 1].canEnter) // Down Right  + Up right + Up Left diagonal (not up right)
+                                        {
+                                            return Direction.LeftRightUpDiag;
+                                        }
+                                        else // Down Right  + Up right diagonal (not up right, up left)
+                                        {
+                                            return Direction.LeftRightDiag;
+                                        }
+                                    }
+                                }
+                                else // Not up right
+                                {
+                                    if (!_map[x - 1, y + 1].canEnter) // Down Right  + Down Left diagonal
+                                    {
+                                        if (!_map[x - 1, y - 1].canEnter) // Down Right + Down Left + Up Left diagonal
+                                        {
+                                            return Direction.UpDownLeftDiag;
+                                        }
+                                        else // Down Right + Down Left diagonal 
+                                        {
+                                            return Direction.UpDownDiag;
+
+                                        }
+                                    }
+                                    else // Not down left
+                                    {
+                                        if (!_map[x - 1, y - 1].canEnter) // Down Right + Up Left diagonal
+                                        {
+                                            return Direction.UpLeftDiag;
+                                        }
+                                        else // Not up left: Down right only
+                                        {
+                                            return Direction.UpCloseDiag;
+                                        }
+                                    }
+                                }
+                            }
+
+                            else // not down right
+                            {
+                                if (!_map[x + 1, y - 1].canEnter) //  Up Right diagonal
+                                {
+                                    if (!_map[x - 1, y + 1].canEnter) // Up Right + Down Left diagonal
+                                    {
+                                        if (!_map[x - 1, y - 1].canEnter) // Up Right + Down Left + Up Left diagonal
+                                        {
+                                            return Direction.UpDownRightDiag;
+                                        }
+                                        else // Up Right + Down Left 
+                                        {
+                                            return Direction.UpRightDiag;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (!_map[x - 1, y - 1].canEnter) // Up Right + Up Left diagonal
+                                        {
+                                            return Direction.DownLeftDiag;
+                                        }
+                                        else
+                                        {
+                                            return Direction.DownCloseDiag;
+                                        }
+                                    }
+                                }
+                                else // not up right
+                                {
+
+                                    if (!_map[x - 1, y + 1].canEnter) //  Down Left diagonal
+                                    {
+                                        if (!_map[x - 1, y - 1].canEnter) // Down Left + Up Left diagonal
+                                        {
+                                            return Direction.DownRightDiag;
+                                        }
+                                        else
+                                        {
+                                            return Direction.RightCloseDiag;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (!_map[x - 1, y - 1].canEnter) //  Up Left diagonal
+                                        {
+                                            return Direction.LeftCloseDiag;
+                                        }
+                                        else
+                                        {
+                                            return Direction.Free; // Keine Mauer weit und breit?
+                                        }
+                                    }
+                                }
+                            }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                         }
                         else // Wall Down (only)
                         {
                             // Wall only on current square and square above
-                            return Direction.DownClose;
+
+                            // auf Diagonalen testen
+
+                            if (!_map[x + 1, y - 1].canEnter)
+                            {
+                                if (!_map[x - 1, y - 1].canEnter)
+                                {
+                                    return Direction.DiagUpDownClose2;
+                                }
+                                else
+                                {
+                                    return Direction.DiagUpClose2;
+                                }
+                            }
+                            else
+                            {
+                                if (!_map[x - 1, y - 1].canEnter)
+                                {
+                                    return Direction.DiagDownClose2;
+                                }
+                                else
+                                {
+                                    return Direction.DownClose;
+                                }
+                            }
+
                         }
                     }
                     else // Wall up
@@ -224,7 +529,33 @@ namespace Gruppe22
                         if (_map[x, y + 1].canEnter) // No wall down
                         {
                             // Wall ony on current square and square below
-                            return Direction.UpClose;
+
+
+                            // auf Diagonalen testen
+
+                            if (!_map[x + 1, y + 1].canEnter)
+                            {
+                                if (!_map[x - 1, y + 1].canEnter)
+                                {
+                                    return Direction.DiagUpDownClose;
+                                }
+                                else
+                                {
+                                    return Direction.DiagUpClose;
+                                }
+                            }
+                            else
+                            {
+                                if (!_map[x - 1, y + 1].canEnter)
+                                {
+                                    return Direction.DiagDownClose;
+                                }
+                                else
+                                {
+                                    return Direction.UpClose;
+                                }
+                            }
+
                         }
                         else // Wall up and down
                         {
@@ -240,8 +571,32 @@ namespace Gruppe22
                         if (_map[x, y + 1].canEnter) // No wall down
                         {
                             // Wall on current tile and right only, but not up or down
-                            return Direction.RightClose;
-                        }
+
+                            // auf Diagonalen testen
+
+                            if (!_map[x - 1, y + 1].canEnter)
+                            {
+                                if (!_map[x - 1, y - 1].canEnter)
+                                {
+                                    return Direction.DiagLeftRightClose2;
+                                }
+                                else
+                                {
+                                    return Direction.DiagLeftClose2;
+                                }
+                            }
+                            else
+                            {
+                                if (!_map[x - 1, y - 1].canEnter)
+                                {
+                                    return Direction.DiagRightClose2;
+                                }
+                                else
+                                {
+                                    return Direction.RightClose;
+                                }
+                            }
+                                                    }
                         else // Wall down
                         {
                             // Wall right and down, but not left and up
@@ -273,7 +628,31 @@ namespace Gruppe22
                         if (_map[x, y + 1].canEnter) // No wall down
                         {
                             // Left and Right closed
-                            return Direction.LeftClose;
+
+                            // auf Diagonalen testen
+
+                            if (!_map[x - 1, y + 1].canEnter)
+                            {
+                                if (!_map[x - 1, y - 1].canEnter)
+                                {
+                                    return Direction.DiagLeftRightClose;
+                                }
+                                else
+                                {
+                                    return Direction.DiagLeftClose;
+                                }
+                            }
+                            else
+                            {
+                                if (!_map[x - 1, y - 1].canEnter)
+                                {
+                                    return Direction.DiagRightClose;
+                                }
+                                else
+                                {
+                                    return Direction.LeftClose;
+                                }
+                            }
                         }
                         else  // Wall down
                         {
@@ -496,6 +875,8 @@ namespace Gruppe22
             _environment[0].AddAnimation("Wall1", new Vector2(0, 0));
             _environment.Add(new TileObject(_content, 128, 192));
             _environment[1].AddAnimation("Floor", new Vector2(0, 0));
+            _environment.Add(new TileObject(_content, 128, 192));
+            _environment[2].AddAnimation("column", new Vector2(0, 0));
 
             // Create list of actors
             _actors = new List<ActorView>();

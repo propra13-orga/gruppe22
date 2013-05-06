@@ -140,9 +140,7 @@
     <Content Include="Content\startwindow.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Video Dungeon Crawl.wav">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
+    <Content Include="Content\Video Dungeon Crawl.wma" />
     <Content Include="Icon.ico" />
   </ItemGroup>
   <ItemGroup>
@@ -209,6 +207,21 @@
     <Content Include="Content\walk.xnb">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="Content\Aniarrow.xnb" />
+    <None Include="Content\Chest.xnb" />
+    <Content Include="Content\column.xnb">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Include="Content\fields.xnb" />
+    <None Include="Content\items.xnb" />
+    <None Include="Content\sattack.xnb" />
+    <None Include="Content\shit.xnb" />
+    <None Include="Content\skill.xnb" />
+    <None Include="Content\spikefield.xnb" />
+    <None Include="Content\sWalk.xnb" />
+    <None Include="Content\Video Dungeon Crawl.xnb" />
+    <None Include="Content\wall3.xnb" />
+    <None Include="Content\walls.xnb" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
