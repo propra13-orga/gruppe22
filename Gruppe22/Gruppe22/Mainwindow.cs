@@ -114,9 +114,9 @@ namespace Gruppe22
             //_map1 = new Map(15, 8);
             //_map1.FromString(str1);
             Random r = new Random();
-            _map1 = new Map(r.Next(8) + 6, r.Next(8) + 6);
+            _map1 = new Map(r.Next(20) + 6, r.Next(20) + 6);
             _map1.GenerateMaze();
-            _map1.ClearWalls();
+          //  _map1.ClearWalls();
             _interfaceElements = new List<UIElement>();
 
             base.Initialize();
