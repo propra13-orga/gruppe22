@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.Xna.Framework;
 
 namespace Gruppe22
 {
@@ -12,7 +13,36 @@ namespace Gruppe22
         /// Path to the .xml for the next Room
         /// </summary>
         String _nextRoom;
-        
+        /// <summary>
+        /// Spawn position for the next room
+        /// </summary>
+        Vector2 _nextPlayerPos;
+        #endregion
+
+        #region Public Fields
+        public String nextRoom
+        {
+            get
+            {
+                return _nextRoom;
+            }
+            set
+            {
+                _nextRoom = value;
+            }
+        }
+
+        public Vector2 nextPlayerPos
+        {
+            get
+            {
+                return _nextPlayerPos;
+            }
+            set
+            {
+                _nextPlayerPos = value;
+            }
+        }
         #endregion
     }
 }

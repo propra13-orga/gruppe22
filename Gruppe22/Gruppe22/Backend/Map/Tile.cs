@@ -179,14 +179,15 @@ namespace Gruppe22
         /// </summary>
         /// <param name="file">An XMLTextWriter containing data for the tile</param>
         /// <returns>true if write is successful</returns>
-        public bool Save(XmlTextWriter target)
+        public bool Save(XmlTextWriter target, XmlSerializer serializer)
         {
-            target.WriteStartElement("tile");
+            /*target.WriteStartElement("tile");
             foreach (Tile tile in _overlay)
             {
                 throw new NotImplementedException("Das muss noch jemand machen");
             }
             target.WriteEndElement();
+             */
             return true;
         }
 
@@ -215,7 +216,7 @@ namespace Gruppe22
             _canEnter = canEnter;
         }
 
-#region iXMLSerializer
+        #region iXMLSerializer
 
         /// <summary>
         /// Returns null as no validation is performed according to MSDN-documentation
@@ -245,7 +246,7 @@ namespace Gruppe22
             throw new System.NotImplementedException();
         }
 
-#endregion
+        #endregion
         /// <summary>
         /// Clean up Tile
         /// </summary>

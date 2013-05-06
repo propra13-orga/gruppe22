@@ -13,5 +13,19 @@ namespace Gruppe22
         /// </summary>
         private int _damage;
         #endregion
+
+        #region Public Fields
+        public int damage
+        {
+            get
+            {
+                return _damage;
+            }
+            set
+            {
+                _damage = value;
+            }
+        }
+        #endregion
     }
 }
