@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Gruppe22
 {
-    public class Player
+    public class Player:Actor
     {
     }
 }

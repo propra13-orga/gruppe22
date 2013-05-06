@@ -115,7 +115,8 @@ namespace Gruppe22
             //_map1.FromString(str1);
             Random r = new Random();
             _map1 = new Map(r.Next(20) + 6, r.Next(20) + 6);
-            _map1.GenerateMaze();
+            _map1.ClearMaze();
+           // _map1.GenerateMaze();
           //  _map1.ClearWalls();
             _interfaceElements = new List<UIElement>();
 
@@ -173,6 +174,7 @@ namespace Gruppe22
         /// <param name="data"></param>
         public void HandleEvent(UIElement sender, Events eventID, int data)
         {
+           
             switch (eventID)
             {
                 case Events.StartGame:

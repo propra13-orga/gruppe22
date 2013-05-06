@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Gruppe22
 {
-    public class NPC
+    public class NPC : Actor
     {
     }
 }
