@@ -303,7 +303,7 @@ namespace Gruppe22
                     break;
                 case Direction.DiagUpDownClose2: // Done
                     _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(512, 192, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
-                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(640, 0, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(768, 0, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
                     break;
                 case Direction.DiagDownClose2: // Done
                     _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(768, 0, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
@@ -314,27 +314,29 @@ namespace Gruppe22
 
 
                 case Direction.DiagLeftClose: // Done
-                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(512, 192, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(640, 0, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
                     break;
                 case Direction.DiagLeftRightClose: // Done
-                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(512, 192, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(896, 192, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
                     _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(640, 0, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
                     break;
                 case Direction.DiagRightClose: // Done
-                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(768, 0, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(896, 192, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
                     break;
 
                 //TODO: Connectors
 
                 case Direction.DiagLeftClose2: // Done
-                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(512, 192, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(512, 0, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
                     break;
                 case Direction.DiagLeftRightClose2: // Done
-                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(512, 192, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
-                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(640, 0, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
-                    break;
+
+                   _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(768, 192, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+                   _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(512, 0, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+ 
+                   break;
                 case Direction.DiagRightClose2: // Done
-                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(768, 0, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+                   _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(768, 192, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
                     break;
 
 
@@ -631,9 +633,9 @@ namespace Gruppe22
 
                             // auf Diagonalen testen
 
-                            if (!_map[x - 1, y + 1].canEnter)
+                            if (!_map[x + 1, y + 1].canEnter)
                             {
-                                if (!_map[x - 1, y - 1].canEnter)
+                                if (!_map[x + 1, y - 1].canEnter)
                                 {
                                     return Direction.DiagLeftRightClose;
                                 }
@@ -644,7 +646,7 @@ namespace Gruppe22
                             }
                             else
                             {
-                                if (!_map[x - 1, y - 1].canEnter)
+                                if (!_map[x + 1, y - 1].canEnter)
                                 {
                                     return Direction.DiagRightClose;
                                 }

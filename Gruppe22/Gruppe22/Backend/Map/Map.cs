@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Xml;
+using System.Xml.Serialization;
 
 namespace Gruppe22
 {
@@ -374,7 +375,8 @@ namespace Gruppe22
                     target.WriteStartElement("row");
                     foreach (Tile tile in row)
                     {
-                        result = tile.Save(target);
+                        XmlSerializer x=new XmlSerializer(typeof(Map));
+                        result = tile.Save(target,x);
                         if (result == false) break;
                     }
                     target.WriteEndElement();
