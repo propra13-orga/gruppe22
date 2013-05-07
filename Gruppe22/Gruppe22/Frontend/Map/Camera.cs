@@ -24,7 +24,12 @@ namespace Gruppe22
         public float zoom
         {
             get { return _zoom; }
-            set { _zoom = value; if (_zoom < 0.1) _zoom = (float)0.1; }
+            set
+            {
+                _zoom = value;
+
+                if (_zoom < 0.1) _zoom = (float)0.1;
+            }
         }
 
 
@@ -46,7 +51,7 @@ namespace Gruppe22
         {
             get
             {
-                return Matrix.CreateTranslation(new Vector3(_position, 0)) * Matrix.CreateScale(_zoom)* Matrix.CreateTranslation(new Vector3(_center, 0));
+                return Matrix.CreateTranslation(new Vector3(_position, 0)) * Matrix.CreateScale(_zoom) * Matrix.CreateTranslation(new Vector3(_center, 0));
 
             }
         }

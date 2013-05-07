@@ -53,7 +53,7 @@ namespace Gruppe22
 
         #region Public Methods
 
-        public override void MoveContent(Vector2 difference)
+        public override void MoveContent(Vector2 difference, int _lastCheck=0)
         {
             Move(difference);
             base.MoveContent(difference);
@@ -62,11 +62,11 @@ namespace Gruppe22
 
         public override void ScrollWheel(int Difference)
         {
-            Zoom += Difference / 10;
+            Zoom -= Difference ;
             base.ScrollWheel(Difference);
         }
 
-        public override void HandleKey()
+        public override void HandleKey(int _lastCheck=-1)
         {
             if (Keyboard.GetState().IsKeyDown(Keys.PageUp))
                 Zoom += (float)0.1;
@@ -107,7 +107,8 @@ namespace Gruppe22
         public Zoomable(IHandleEvent parent, SpriteBatch spriteBatch, ContentManager content, Rectangle displayRect)
             : base(parent, spriteBatch, content, displayRect)
         {
-            _camera = new Camera(new Vector2(displayRect.Width / 2, displayRect.Height / 2));
+            _camera = new Camera(new Vector2(displayRect.Width / 2+displayRect.Left, displayRect.Height / 2+displayRect.Top));
+            _camera.position = new Vector2(-displayRect.Left, -displayRect.Top);
         }
         #endregion
     }

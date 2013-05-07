@@ -115,7 +115,7 @@ namespace Gruppe22
                             null,
                             _camera.matrix);
 
-                _spriteBatch.GraphicsDevice.ScissorRectangle = _displayRect;
+                _spriteBatch.GraphicsDevice.ScissorRectangle = new Rectangle(_displayRect.Left + 5, _displayRect.Top + 5, _displayRect.Width - 10, _displayRect.Height - 10);
                 _drawFloor(_map.width, _map.height);
 
                 _drawWalls(gametime);
@@ -310,7 +310,7 @@ namespace Gruppe22
                     break;
 
 
-                    //TODO: Connectors
+                //TODO: Connectors
 
 
                 case Direction.DiagLeftClose: // Done
@@ -331,12 +331,12 @@ namespace Gruppe22
                     break;
                 case Direction.DiagLeftRightClose2: // Done
 
-                   _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(768, 192, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
-                   _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(512, 0, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
- 
-                   break;
+                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(768, 192, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(512, 0, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+
+                    break;
                 case Direction.DiagRightClose2: // Done
-                   _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(768, 192, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(768, 192, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
                     break;
 
 
@@ -598,7 +598,7 @@ namespace Gruppe22
                                     return Direction.RightClose;
                                 }
                             }
-                                                    }
+                        }
                         else // Wall down
                         {
                             // Wall right and down, but not left and up
@@ -810,14 +810,14 @@ namespace Gruppe22
 
         }
 
-        public override void MoveContent(Vector2 difference)
+        public override void MoveContent(Vector2 difference, int _lastCheck = 0)
         {
             // if (!_actors[0].isMoving) 
             base.MoveContent(difference);
         }
 
 
-        public override void HandleKey()
+        public override void HandleKey(int _lastCheck = -1)
         {
 
             if (!_actors[0].isMoving)

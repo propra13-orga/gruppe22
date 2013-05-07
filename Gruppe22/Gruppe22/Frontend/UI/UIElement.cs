@@ -61,6 +61,11 @@ namespace Gruppe22
         }
 
 
+        public virtual void MouseClick(int X, int Y, int _lastCheck)
+        {
+
+        }
+
         /// <summary>
         /// Check whether a pixel is part of the window
         /// </summary>
@@ -102,7 +107,7 @@ namespace Gruppe22
         /// 
         /// </summary>
         /// <param name="difference"></param>
-        public virtual void MoveContent(Vector2 difference)
+        public virtual void MoveContent(Vector2 difference, int _lastCheck=0)
         {
 
         }
@@ -119,13 +124,14 @@ namespace Gruppe22
         /// <summary>
         /// 
         /// </summary>
-        public virtual void HandleKey()
+        public virtual void HandleKey(int lastCheck = 0)
         {
 
         }
 
-        public virtual void Dispose(){
-        
+        public virtual void Dispose()
+        {
+
         }
 
         #endregion

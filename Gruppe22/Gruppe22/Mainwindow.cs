@@ -44,6 +44,8 @@ namespace Gruppe22
         /// </summary>
         private int _mouseWheel = 0;
 
+
+        bool _dragging = false;
         /// <summary>
         /// Current position of mouse on screen
         /// </summary>
@@ -73,7 +75,7 @@ namespace Gruppe22
         /// Whether the game is paused (for menus etc.)
         /// </summary>
         private bool _paused = false;
-
+        private Keys _lastKey = Keys.A;
         private int _lastCheck = 0;
         #endregion
 
@@ -83,44 +85,11 @@ namespace Gruppe22
         /// </summary>
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
-            string str4 =
-                "######.####.###\n" +
-                "###.##.####.###\n" +
-                "###.........###\n" +
-                "###.###.###.###\n" +
-                "###.###.###.###\n" +
-                "#.............#\n" +
-                "#....##.#######\n" +
-                "#.#####.#######\n",
-             str =
-              "...............\n" +
-              "...............\n" +
-              "...#.#.#.......\n" +
-              "..#..#..#......\n" +
-              "...#.#.#.......\n" +
-              "....###........\n" +
-              "...#.#.#.......\n" +
-              "..#..#..#......\n" +
-              "...#...#.......\n" +
-              "...............\n",
-
-            str1 =
-              "...............\n" +
-              "...............\n" +
-              "#....#.........\n" +
-              ".##...#....#...\n" +
-              "...##.#..##....\n" +
-              ".##..####......\n" +
-              "#.....#..##....\n" +
-              ".....#.....#...\n";
-           // _map1 = new Map(15, 10);
-            //_map1.FromString(str1);
             Random r = new Random();
             _map1 = new Map(r.Next(20) + 6, r.Next(20) + 6);
             _map1.ClearMaze();
-             _map1.GenerateMaze();
-              _map1.ClearWalls();
+            _map1.GenerateMaze();
+            _map1.ClearWalls();
             _interfaceElements = new List<UIElement>();
 
             base.Initialize();
@@ -137,7 +106,7 @@ namespace Gruppe22
             _interfaceElements.Add(new Minimap(this, _spriteBatch, Content, new Rectangle(_graphics.GraphicsDevice.Viewport.Width - 230, 20, 210, 200), _map1));
             _interfaceElements.Add(new Mainmap(this, _spriteBatch, Content, new Rectangle(20, 20, _graphics.GraphicsDevice.Viewport.Width - 260, _graphics.GraphicsDevice.Viewport.Height - 160), _map1));
             _interfaceElements.Add(new Statusbox(this, _spriteBatch, Content, new Rectangle(20, _graphics.GraphicsDevice.Viewport.Height - 120, _graphics.GraphicsDevice.Viewport.Width - 260, 100)));
-
+            (_interfaceElements[2] as Statusbox).AddLine("Welcome to this highly innovative Dungeon Crawler!\nYou can scroll in this status window.\nUse A-S-D-W to move your character.\n Use Arrow keys (or drag mouse) to scroll map or minimap\n Press ESC to display Game Menu.");
 
 
             // _backMusic = Content.Load<Song>("Video Dungeon Crawl.wav"); // Todo: *.mp3
@@ -154,8 +123,8 @@ namespace Gruppe22
         {
             _paused = true;
             Window _mainMenu = new Window(this, _spriteBatch, Content, new Rectangle(10, 10, GraphicsDevice.Viewport.Width - 20, GraphicsDevice.Viewport.Height - 20));
-            _mainMenu.AddChild(new Button(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 100) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) - 60, 200, 40), "startbutton1", "startbutton2", "startbutton2", Events.StartGame));
-            _mainMenu.AddChild(new Button(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 100) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) + 20, 200, 40), "Spiel beenden", Events.EndGame));
+            _mainMenu.AddChild(new Button(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) - 60, 300, 60), "Spiel starten / fortsetzen", Events.StartGame));
+            _mainMenu.AddChild(new Button(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 150) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) + 20, 300, 60), "Spiel beenden", Events.EndGame));
 
             _interfaceElements.Add(_mainMenu);
             _focus = _interfaceElements[_interfaceElements.Count - 1];
@@ -201,22 +170,27 @@ namespace Gruppe22
         {
             try
             {
+
                 foreach (UIElement element in _interfaceElements)
                 {
-                    if (element.IsHit(Mouse.GetState().X, Mouse.GetState().Y))
+
+                    if (!_dragging)
                     {
-                        if (!_focus.holdFocus)
+                        if (element.IsHit(Mouse.GetState().X, Mouse.GetState().Y))
                         {
-                            _focus = element;
+                            if ((_focus==null)||(!_focus.holdFocus))
+                            {
+                                _focus = element;
+                            }
                         }
                     }
+
                     if (!_paused || element.ignorePause)
                         element.Update(gameTime);
                 }
 
 
-                if ((!_paused) && (GamePad.GetState(PlayerIndex.One).Buttons.Start == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape)))
-                    ShowMenu();
+
 
                 //            if (Keyboard.GetState().IsKeyDown(Keys.Enter))
                 //                _graphics.ToggleFullScreen();
@@ -225,8 +199,10 @@ namespace Gruppe22
                 {
                     if (Mouse.GetState().ScrollWheelValue != _mouseWheel)
                     {
-                        _focus.ScrollWheel(_mouseWheel - Mouse.GetState().ScrollWheelValue);
+
+                        int Difference = _mouseWheel - Mouse.GetState().ScrollWheelValue;
                         _mouseWheel = Mouse.GetState().ScrollWheelValue;
+                        _focus.ScrollWheel(Difference / Math.Abs(Difference));
                     }
 
 
@@ -234,7 +210,8 @@ namespace Gruppe22
                     {
                         if (_mousepos.X != -1)
                         {
-                            _focus.MoveContent(new Vector2(Mouse.GetState().X - _mousepos.X, Mouse.GetState().Y - _mousepos.Y));
+                            _dragging = true;
+                            _focus.MoveContent(new Vector2(Mouse.GetState().X - _mousepos.X, Mouse.GetState().Y - _mousepos.Y), Math.Abs(gameTime.TotalGameTime.Milliseconds - _lastCheck));
                         }
                         _mousepos.X = Mouse.GetState().X;
                         _mousepos.Y = Mouse.GetState().Y;
@@ -243,12 +220,37 @@ namespace Gruppe22
                     {
                         _mousepos.X = -1;
                         _mousepos.Y = -1;
+                        _dragging = false;
                     }
-                    if (Math.Abs(gameTime.TotalGameTime.Milliseconds / 10 - _lastCheck) > 7)
-                    {
-                        _focus.HandleKey();
-                        _lastCheck = gameTime.TotalGameTime.Milliseconds / 10;
 
+                    if (Math.Abs(gameTime.TotalGameTime.Milliseconds - _lastCheck) > 100)
+                    {
+                        _lastCheck = gameTime.TotalGameTime.Milliseconds;
+                    }
+
+                    if (Mouse.GetState().LeftButton == ButtonState.Pressed)
+                    {
+                        _focus.MouseClick((int)_mousepos.X, (int)_mousepos.Y, Math.Abs(gameTime.TotalGameTime.Milliseconds - _lastCheck));
+                    }
+
+                    _focus.HandleKey(Math.Abs(gameTime.TotalGameTime.Milliseconds - _lastCheck));
+
+
+                    if (_lastCheck > 90)
+                    {
+                        if ((GamePad.GetState(PlayerIndex.One).Buttons.Start == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape)))
+                        {
+                            if (_lastKey != Keys.Escape)
+                            {
+                                _lastKey = Keys.Escape;
+                                if (!_paused) ShowMenu();
+                                else HandleEvent(null, Events.StartGame, 0);
+                            }
+                        }
+                        else
+                        {
+                            _lastKey = Keys.A;
+                        }
                     }
                 }
             }
@@ -265,10 +267,6 @@ namespace Gruppe22
             GraphicsDevice.Clear(Color.Black);
             foreach (UIElement element in _interfaceElements)
             {
-                if (element.IsHit(Mouse.GetState().X, Mouse.GetState().Y))
-                {
-                    _focus = element;
-                }
                 element.Draw(gameTime);
             }
             base.Draw(gameTime);
@@ -338,8 +336,11 @@ namespace Gruppe22
             _graphics = new GraphicsDeviceManager(this);
             _graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height - 200;
             _graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width - 40;
+            //_graphics.PreferredBackBufferHeight = 640;
+            //_graphics.PreferredBackBufferWidth = 480;
+
             _graphics.IsFullScreen = false;
-            Window.AllowUserResizing = true;
+            Window.AllowUserResizing = false;
             Type type = typeof(OpenTKGameWindow);
 
             // Move window to top left corner of the screen
