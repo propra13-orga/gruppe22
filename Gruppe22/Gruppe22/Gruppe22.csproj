@@ -92,10 +92,19 @@
     <Compile Include="Frontend\Map\Minimap.cs" />
     <Compile Include="Frontend\Map\VisibleObject.cs" />
     <Compile Include="Frontend\Map\Tileset.cs" />
+    <Compile Include="Frontend\UI\AboutWindow.cs" />
     <Compile Include="Frontend\UI\Button.cs" />
+    <Compile Include="Frontend\UI\CheckBox.cs" />
+    <Compile Include="Frontend\UI\FileDialog.cs" />
     <Compile Include="Frontend\UI\Menu.cs" />
     <Compile Include="Frontend\UI\Notification.cs" />
+    <Compile Include="Frontend\UI\NumberEntry.cs" />
+    <Compile Include="Frontend\UI\Progressbar.cs" />
+    <Compile Include="Frontend\UI\ScrollArea.cs" />
+    <Compile Include="Frontend\UI\SettingsWindow.cs" />
     <Compile Include="Frontend\UI\Statusbox.cs" />
+    <Compile Include="Frontend\UI\TextInput.cs" />
+    <Compile Include="Frontend\UI\ToolTip.cs" />
     <Compile Include="Frontend\UI\UIElement.cs" />
     <Compile Include="Frontend\UI\Window.cs" />
     <Compile Include="Frontend\UI\Zoomable.cs" />
@@ -128,6 +137,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="column.bmp" />
+    <Content Include="Content\Light.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\startButton2.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

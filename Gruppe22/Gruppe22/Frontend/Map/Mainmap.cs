@@ -85,8 +85,10 @@ namespace Gruppe22
         /// </summary>
         private Map _map;
         private int _lastCheck = 0;
+        private int _renderScope = 8;
         private Texture2D _background = null;
         private Keys _lastKey;
+        private Texture2D _circle = null;
         #endregion
 
 
@@ -119,8 +121,38 @@ namespace Gruppe22
                 _drawFloor(_map.width, _map.height);
 
                 _drawWalls(gametime);
+                _spriteBatch.End();
+
+
+                BlendState blendState = new BlendState();
+                blendState.AlphaDestinationBlend = Blend.SourceColor;
+                blendState.ColorDestinationBlend = Blend.SourceColor;
+                blendState.AlphaSourceBlend = Blend.Zero;
+                blendState.ColorSourceBlend = Blend.Zero;
+                _spriteBatch.Begin(SpriteSortMode.Deferred, blendState, null,
+                            null,
+                            rstate,
+                            null,
+                            _camera.matrix);
+                _spriteBatch.Draw(_circle, new Rectangle(
+                    (int)(_actors[0].position.X * 64 + _actors[0].position.Y * 64) - 480,
+                    (int)(_actors[0].position.Y * 48 - _actors[0].position.X * 48) - 500, 1000, 1000), Color.White);
+
+                _spriteBatch.Draw(_background, new Rectangle( // von oben
+                    (int)(_actors[0].position.X * 64 + _actors[0].position.Y * 64) - 980,
+                    (int)(_actors[0].position.Y * 48 - _actors[0].position.X * 48) - 2000, 1500, 1500), new Rectangle(0, 0, 1, 1), Color.White);
+                _spriteBatch.Draw(_background, new Rectangle( // von unten
+                    (int)(_actors[0].position.X * 64 + _actors[0].position.Y * 64) - 980,
+                    (int)(_actors[0].position.Y * 48 - _actors[0].position.X * 48) + 500, 1500, 1500), new Rectangle(0, 0, 1, 1), Color.White);
+                _spriteBatch.Draw(_background, new Rectangle(
+                    (int)(_actors[0].position.X * 64 + _actors[0].position.Y * 64) - 1580,
+                    (int)(_actors[0].position.Y * 48 - _actors[0].position.X * 48) - 1000, 1100, 3000), new Rectangle(0, 0, 1, 1), Color.White);
+                _spriteBatch.Draw(_background, new Rectangle(
+                    (int)(_actors[0].position.X * 64 + _actors[0].position.Y * 64) + 520,
+                    (int)(_actors[0].position.Y * 48 - _actors[0].position.X * 48) - 1000, 1500, 3000), new Rectangle(0, 0, 1, 1), Color.White);
 
                 _spriteBatch.End();
+
                 _spriteBatch.GraphicsDevice.RasterizerState.ScissorTestEnable = false;
             }
             finally
@@ -728,11 +760,9 @@ namespace Gruppe22
         private void _drawWalls(GameTime gametime)
         {
 
-            for (int y = 0; y < _map.height; ++y)
+            for (int y = (Math.Max((int)_actors[0].position.Y - _renderScope, 0)); y <= (Math.Min((int)_actors[0].position.Y + _renderScope, _map.height)); ++y)
             {
-
-
-                for (int x = _map.width; x > -1; --x)
+                for (int x = (Math.Min((int)_actors[0].position.X + _renderScope, _map.width)); x >= (Math.Max((int)_actors[0].position.X - _renderScope, 0)); --x)
                 {
                     _drawWall(GetWallStyle(x, y), _tileRect(new Vector2(x + 1, y - 1), true), false);
 
@@ -754,9 +784,9 @@ namespace Gruppe22
         /// <param name="vTiles">Number of horizontal Tiles</param>
         private void _drawFloor(int hTiles = 52, int vTiles = 25)
         {
-            for (int y = 0; y < vTiles; ++y)
+            for (int y = (Math.Max((int)_actors[0].position.Y - _renderScope, 0)); y <= (Math.Min((int)_actors[0].position.Y + _renderScope, vTiles)); ++y)
             {
-                for (int x = 0; x < hTiles; ++x)
+                for (int x = (Math.Max((int)_actors[0].position.X - _renderScope, 0)); x <= (Math.Min((int)_actors[0].position.X + _renderScope, hTiles)); ++x)
                 {
                     _spriteBatch.Draw(_environment[1].animationTexture, _tileRect(new Vector2(x, y)), new Rectangle(512, 384, 128, 96), Color.White);
                 }
@@ -899,6 +929,8 @@ namespace Gruppe22
 
             _actors.Add(new ActorView(spriteBatch, "Player", true, new Vector2(1, 1), player));
             _background = _content.Load<Texture2D>("Minimap");
+            _circle = _content.Load<Texture2D>("Light");
+
         }
         #endregion
 
