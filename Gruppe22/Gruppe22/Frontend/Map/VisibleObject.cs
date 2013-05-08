@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Xml.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -11,7 +12,7 @@ namespace Gruppe22
     /// <summary>
     /// An animation phase
     /// </summary>
-    public class VisibleObject
+    public class VisibleObject : IXmlSerializable
     {
         #region Private Fields
         private string _srcFile = "";
@@ -48,12 +49,54 @@ namespace Gruppe22
             _texture = _content.Load<Texture2D>(_srcFile);
         }
         #endregion
+
+        /// <summary>
+        /// Useless function from the IXmlSerializable-Interface
+        /// </summary>
+        /// <returns>null</returns>
+        public System.Xml.Schema.XmlSchema GetSchema()
+        {
+            return null;
+        }
+
+        /// <summary>
+        /// Get object from an XML-stream
+        /// </summary>
+        /// <param name="reader">The reader containing the object</param>
+        public void ReadXml(System.Xml.XmlReader reader)
+        {
+            reader.MoveToContent();
+            _clipRect.X = Int32.Parse(reader.GetAttribute("x"));
+            _clipRect.Y = Int32.Parse(reader.GetAttribute("y"));
+            _clipRect.Width = Int32.Parse(reader.GetAttribute("width"));
+            _clipRect.Height = Int32.Parse(reader.GetAttribute("height"));
+            _srcFile = reader.GetAttribute("file");
+            Boolean isEmptyElement = reader.IsEmptyElement; 
+            reader.ReadStartElement();
+            if (!isEmptyElement) 
+            {
+                reader.ReadEndElement();
+            }
+        }
+
+        /// <summary>
+        /// Dump object to an XML-stream
+        /// </summary>
+        /// <param name="writer">The XML-stream to which the object will be dumped</param>
+        public void WriteXml(System.Xml.XmlWriter writer)
+        {
+            writer.WriteAttributeString("x", _clipRect.X.ToString());
+            writer.WriteAttributeString("y", _clipRect.Y.ToString());
+            writer.WriteAttributeString("width", _clipRect.Width.ToString());
+            writer.WriteAttributeString("height", _clipRect.Height.ToString());
+            writer.WriteAttributeString("file", _srcFile.ToString());
+        }
     }
 
     /// <summary>
     /// All animations used in displaying a specific tile
     /// </summary>
-    public class TileObject
+    public class TileObject : IXmlSerializable
     {
 
         #region Private Fields
@@ -280,5 +323,66 @@ namespace Gruppe22
             _animations = new List<List<VisibleObject>>();
         }
         #endregion
+
+        /// <summary>
+        /// Useless function from the IXmlSerializable-Interface
+        /// </summary>
+        /// <returns>null</returns>
+        public System.Xml.Schema.XmlSchema GetSchema()
+        {
+            return null;
+        }
+
+        /// <summary>
+        /// Get XML-data from a file
+        /// </summary>
+        /// <param name="reader">The file from which data will be read</param>
+        public void ReadXml(System.Xml.XmlReader reader)
+        {
+            XmlSerializer visibleSerializer = new XmlSerializer(typeof(VisibleObject));
+            reader.MoveToContent();
+            Boolean isEmptyElement = reader.IsEmptyElement; 
+            reader.ReadStartElement();
+            if (isEmptyElement) return;
+
+            _width = Int32.Parse(reader.ReadElementString("width"));
+            _height = Int32.Parse(reader.ReadElementString("height"));
+            _loop = Boolean.Parse(reader.ReadElementString("loop"));
+            
+            reader.ReadStartElement("animations");
+            while (reader.NodeType != System.Xml.XmlNodeType.EndElement)
+            {
+                reader.ReadStartElement("phase");
+                VisibleObject temp = (VisibleObject)visibleSerializer.Deserialize(reader);
+                reader.ReadEndElement();
+                reader.MoveToContent();
+            }
+            reader.ReadEndElement();
+            reader.ReadEndElement();
+
+        }
+        
+        /// <summary>
+        /// Dump the whole group of animations to an XML-file
+        /// </summary>
+        /// <param name="writer">The file used to write the data</param>
+        public void WriteXml(System.Xml.XmlWriter writer)
+        {
+            writer.WriteElementString("width", _width.ToString());
+            writer.WriteElementString("height", _height.ToString());
+            writer.WriteElementString("loop", _loop.ToString());
+            foreach (List<VisibleObject> visibles in _animations)
+            {
+                writer.WriteStartElement("animations");
+                foreach (VisibleObject visible in visibles)
+                {
+                    writer.WriteStartElement("phase");
+                    visible.WriteXml(writer);
+                    writer.WriteEndElement();
+                }
+                writer.WriteEndElement();
+            }
+
+        }
     }
 }
