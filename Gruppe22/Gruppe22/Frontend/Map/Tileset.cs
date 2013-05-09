@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Xml.Serialization;
+using Microsoft.Xna.Framework;
 
 namespace Gruppe22
 {
@@ -66,6 +67,27 @@ namespace Gruppe22
             }
             reader.ReadEndElement();
             reader.ReadEndElement();
+        }
+
+        public void Add(string filename, Direction direction, Rectangle cutOut)
+        {
+            _walls.Add(new TileObject(null, cutOut.Width, cutOut.Height));
+            _walls[(int)direction].AddAnimation(filename, new Vector2(cutOut.Left, cutOut.Top), -1, 1, 1, false);
+        }
+
+
+        public void Save(string filename = "bla.xml")
+        {
+            System.Xml.XmlTextWriter writer = new System.Xml.XmlTextWriter(filename, Encoding.Unicode);
+            WriteXml(writer);
+            writer.Close();
+        }
+
+        public void Load(string filename = "bla.xml")
+        {
+            System.Xml.XmlTextReader reader = new System.Xml.XmlTextReader(filename);
+            ReadXml(reader);
+            reader.Close();
         }
 
         /// <summary>

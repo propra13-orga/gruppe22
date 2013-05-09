@@ -222,9 +222,7 @@ namespace Gruppe22
                     break;
 
                 case Direction.LeftRightUp: // Walls connected left, right and up
-
                     _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(640, 576, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
-
                     break;
 
                 case Direction.LeftRightDown: // Wall connected left right and down
@@ -242,19 +240,6 @@ namespace Gruppe22
                 case Direction.Free: // Free standing wall (no connecting squares)
                     _spriteBatch.Draw(_environment[2].animationTexture, target, new Rectangle(1920, 0, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
                     break;
-
-                case Direction.None: // No wall
-                    break;
-
-
-
-
-
-                /* Diagonale Mauern */
-
-
-
-
 
                 case Direction.UpRightDiag: // Done
                     _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(681, 835, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
@@ -316,63 +301,60 @@ namespace Gruppe22
                     _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(512, 384, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
                     break;
 
-
-
                 case Direction.DiagUpClose: // Done
                     _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(640, 192, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
                     break;
+
                 case Direction.DiagUpDownClose: // Done
-                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(640, 192, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
-                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(896, 0, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+                    _drawWall(Direction.DiagUpClose, target, transparent);
+                    _drawWall(Direction.DiagDownClose, target, transparent);
                     break;
+
                 case Direction.DiagDownClose: // Done
                     _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(896, 0, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
                     break;
 
-
-
                 case Direction.DiagUpClose2: // Done
                     _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(512, 192, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
                     break;
+
                 case Direction.DiagUpDownClose2: // Done
-                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(512, 192, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
-                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(768, 0, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+                    _drawWall(Direction.DiagUpClose2, target, transparent);
+                    _drawWall(Direction.DiagDownClose2, target, transparent);
                     break;
+
                 case Direction.DiagDownClose2: // Done
                     _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(768, 0, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
                     break;
 
-
-                //TODO: Connectors
-
-
                 case Direction.DiagLeftClose: // Done
                     _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(640, 0, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
                     break;
+
                 case Direction.DiagLeftRightClose: // Done
-                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(896, 192, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
-                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(640, 0, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+                    _drawWall(Direction.DiagRightClose, target, transparent);
+                    _drawWall(Direction.DiagLeftClose, target, transparent);
                     break;
+
                 case Direction.DiagRightClose: // Done
                     _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(896, 192, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
                     break;
 
-                //TODO: Connectors
-
                 case Direction.DiagLeftClose2: // Done
                     _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(512, 0, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
                     break;
+
                 case Direction.DiagLeftRightClose2: // Done
-
-                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(768, 192, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
-                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(512, 0, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
-
+                    _drawWall(Direction.DiagRightClose2, target, transparent);
+                    _drawWall(Direction.DiagLeftClose2, target, transparent);
                     break;
+
                 case Direction.DiagRightClose2: // Done
                     _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(768, 192, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
                     break;
 
-
+                case Direction.None: // No wall
+                    break;
             }
         }
 
@@ -834,8 +816,8 @@ namespace Gruppe22
                         _actors[0].Move(new Vector2(0, -1.0f));
                     break;
 
-                    // Diagonal movement
-                    // TODO: Check for diagonal walls - doh :-(
+                // Diagonal movement
+                // TODO: Check for diagonal walls - doh :-(
                 case Direction.UpLeftDiag:
                     if (((int)_actors[0].target.X > 0) && ((int)_actors[0].target.Y < _map.height - 1) && (_map[(int)_actors[0].target.X - 1, (int)_actors[0].target.Y + 1].canEnter)
                         )
@@ -867,6 +849,82 @@ namespace Gruppe22
             base.MoveContent(difference);
         }
 
+
+        /// <summary>
+        /// Temporary function - work on dynamic tileset description syntax
+        /// </summary>
+        public void CreateTextureList()
+        {
+            Tileset _tiles = new Tileset();
+            _tiles.Add("Wall1", Direction.UpRight, new Rectangle(0, 768, 128, 192));
+            _tiles.Add("Wall1", Direction.UpLeft, new Rectangle(128, 768, 128, 192));
+            _tiles.Add("Wall1", Direction.DownLeft,
+                    new Rectangle(256, 576, 128, 192));
+            _tiles.Add("Wall1", Direction.DownRight, new Rectangle(384, 576, 128, 192));
+            _tiles.Add("Wall1", Direction.LeftRight, new Rectangle(0, 576, 128, 192));
+            _tiles.Add("Wall1", Direction.UpDown, new Rectangle(128, 576, 128, 192));
+            _tiles.Add("Wall1", Direction.FourWay, new Rectangle(384, 768, 128, 192));
+            _tiles.Add("Wall1", Direction.RightClose, new Rectangle(256, 192, 128, 192));
+            _tiles.Add("Wall1", Direction.UpClose, new Rectangle(128, 192, 128, 192));
+            _tiles.Add("Wall1", Direction.LeftClose, new Rectangle(384, 192, 128, 192));
+            _tiles.Add("Wall1", Direction.DownClose, new Rectangle(0, 192, 128, 192));
+            _tiles.Add("Wall1", Direction.LeftRightUp,
+            new Rectangle(640, 576, 128, 192));
+            _tiles.Add("Wall1", Direction.LeftRightDown,
+            new Rectangle(768, 576, 128, 192));
+            _tiles.Add("Wall1", Direction.UpDownLeft,
+            new Rectangle(896, 576, 128, 192));
+            _tiles.Add("Wall1", Direction.UpDownRight,
+            new Rectangle(512, 576, 128, 192));
+            _tiles.Add("Wall1", Direction.UpRightDiag,
+            new Rectangle(681, 835, 128, 192));
+            _tiles.Add("Wall1", Direction.UpLeftDiag,
+            new Rectangle(321, 0, 128, 192));
+            _tiles.Add("Wall1", Direction.DownLeftDiag,
+            new Rectangle(384, 384, 128, 192));
+            _tiles.Add("Wall1", Direction.DownRightDiag,
+            new Rectangle(128, 384, 128, 192));
+            _tiles.Add("Wall1", Direction.UpDownLeftDiag,
+            new Rectangle(640, 384, 128, 192));
+            _tiles.Add("Wall1", Direction.UpDownDiag,
+            new Rectangle(0, 384, 128, 192));
+            _tiles.Add("Wall1", Direction.FourDiag,
+            new Rectangle(256, 768, 128, 192));
+            _tiles.Add("Wall1", Direction.RightCloseDiag,
+            new Rectangle(681, 820, 128, 192));
+            _tiles.Add("Wall1", Direction.UpCloseDiag,
+            new Rectangle(257, 0, 128, 192));
+            _tiles.Add("Wall1", Direction.LeftCloseDiag,
+            new Rectangle(385, 0, 128, 192));
+            _tiles.Add("Wall1", Direction.DownCloseDiag,
+            new Rectangle(136, 0, 128, 192));
+            _tiles.Add("Wall1", Direction.LeftRightUpDiag,
+            new Rectangle(896, 384, 128, 192));
+            _tiles.Add("Wall1", Direction.LeftRightDownDiag,
+            new Rectangle(768, 384, 128, 192));
+            _tiles.Add("Wall1", Direction.LeftRightDiag,
+            new Rectangle(256, 384, 128, 192));
+            _tiles.Add("Wall1", Direction.UpDownRightDiag,
+            new Rectangle(512, 384, 128, 192));
+            _tiles.Add("Wall1", Direction.DiagUpClose,
+            new Rectangle(640, 192, 128, 192));
+            _tiles.Add("Wall1", Direction.DiagDownClose,
+            new Rectangle(896, 0, 128, 192));
+            _tiles.Add("Wall1", Direction.DiagUpClose2,
+            new Rectangle(512, 192, 128, 192));
+            _tiles.Add("Wall1", Direction.DiagDownClose2,
+            new Rectangle(768, 0, 128, 192));
+            _tiles.Add("Wall1", Direction.DiagLeftClose,
+            new Rectangle(640, 0, 128, 192));
+            _tiles.Add("Wall1", Direction.DiagRightClose,
+            new Rectangle(896, 192, 128, 192));
+            _tiles.Add("Wall1", Direction.DiagLeftClose2,
+            new Rectangle(512, 0, 128, 192));
+            _tiles.Add("Wall1", Direction.DiagRightClose2,
+            new Rectangle(768, 192, 128, 192));
+            _tiles.Add("Column", Direction.Free, new Rectangle(1920, 0, 128, 192));
+            _tiles.Save();
+        }
 
         public override void HandleKey(int _lastCheck = -1)
         {
