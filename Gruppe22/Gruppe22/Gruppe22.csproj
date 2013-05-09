@@ -137,9 +137,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="column.bmp" />
-    <Content Include="Content\Light.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="Content\startButton2.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -229,6 +226,9 @@
     </Content>
     <None Include="Content\fields.xnb" />
     <None Include="Content\items.xnb" />
+    <Content Include="Content\Light.xnb">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="Content\sattack.xnb" />
     <None Include="Content\shit.xnb" />
     <None Include="Content\skill.xnb" />

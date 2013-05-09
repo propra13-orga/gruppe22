@@ -73,15 +73,65 @@ namespace Gruppe22
                 if (Math.Abs(_target.Y - _position.Y) < 0.1) { _position.Y = (int)_target.Y; _target.Y = _position.Y; };
                 if (!_target.Equals(_position))
                 {
-                    if (_target.X > _position.X) { _position.X += 0.05f; animationStyle = 1; }
-                    else
-                        if (_target.X < _position.X) { _position.X -= 0.05f; animationStyle = 2; }
-                        else
-                            if (_target.Y > _position.Y) { _position.Y += 0.05f; animationStyle = 3; }
-                            else
-                                if (_target.Y < _position.Y) { _position.Y -= 0.05f; animationStyle = 4; }
-                    _sprite.NextAnimation();
+                    if (_target.X > _position.X)
+                    {
 
+                        if (target.Y > position.Y)
+                        {
+                            _position.X += 0.1f;
+                            if (Math.Abs(_target.X - _position.X) < Math.Abs(_target.Y - _position.Y)) _position.Y += 0.1f;
+                            animationStyle = 5;
+                        }
+                        else
+                        {
+                            if (target.Y < position.Y)
+                            {
+                                _position.X += 0.1f;
+                                if (Math.Abs(_target.X - _position.X) < Math.Abs(_target.Y - _position.Y)) _position.Y -= 0.1f;
+
+                                animationStyle = 6;
+                            }
+                            else
+                            {
+                                _position.X += 0.1f;
+                                animationStyle = 1;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (_target.X < _position.X)
+                        {
+                            if (target.Y > position.Y)
+                            {
+                                _position.X -= 0.1f;
+                                if (Math.Abs(_target.X - _position.X) < Math.Abs(_target.Y - _position.Y)) _position.Y += 0.1f;
+
+                                animationStyle = 7;
+                            }
+                            else
+                            {
+                                if (target.Y < position.Y)
+                                {
+                                    _position.X -= 0.1f;
+                                    if (Math.Abs(_target.X - _position.X) < Math.Abs(_target.Y - _position.Y)) _position.Y -= 0.1f;
+                                    animationStyle = 8;
+                                }
+                                else
+                                {
+                                    _position.X -= 0.1f;
+                                    animationStyle = 2;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if (_target.Y > _position.Y) { _position.Y += 0.1f; animationStyle = 3; }
+                            else
+                                if (_target.Y < _position.Y) { _position.Y -= 0.1f; animationStyle = 4; }
+                        }
+                    }
+                    _sprite.NextAnimation();
                 }
             }
         }
@@ -91,7 +141,7 @@ namespace Gruppe22
             if (_sprite.isValid)
             {
 
-                _spriteBatch.Draw(_sprite.animationTexture, new Rectangle((int)((_position.X) * 64 + (_position.Y - 1) * 64) + 30, (int)((_position.Y) * 48 - (_position.X) * 48) - 50, 144, 144), _sprite.animationRect, Color.White);
+                _spriteBatch.Draw(_sprite.animationTexture, new Rectangle((int)((_position.X) * 64 + (_position.Y - 1) * 64) + 27, (int)((_position.Y) * 48 - (_position.X) * 48) - 60, 144, 144), _sprite.animationRect, Color.White);
             }
             //            _position.X += 0.1f;
         }

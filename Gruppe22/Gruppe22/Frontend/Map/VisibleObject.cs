@@ -71,9 +71,9 @@ namespace Gruppe22
             _clipRect.Width = Int32.Parse(reader.GetAttribute("width"));
             _clipRect.Height = Int32.Parse(reader.GetAttribute("height"));
             _srcFile = reader.GetAttribute("file");
-            Boolean isEmptyElement = reader.IsEmptyElement; 
+            Boolean isEmptyElement = reader.IsEmptyElement;
             reader.ReadStartElement();
-            if (!isEmptyElement) 
+            if (!isEmptyElement)
             {
                 reader.ReadEndElement();
             }
@@ -155,7 +155,11 @@ namespace Gruppe22
             }
             set
             {
-                _currentAnimation = value;
+                if (_currentAnimation != value)
+                {
+                    _currentAnimation = value;
+                    _currentPhase = 0;
+                }
             }
         }
 
@@ -180,6 +184,7 @@ namespace Gruppe22
                 if ((_currentAnimation < _animations.Count) && (_currentPhase < _animations[_currentAnimation].Count))
                 {
                     _animations[_currentAnimation][_currentPhase].src = value;
+
                 };
             }
         }
@@ -297,15 +302,6 @@ namespace Gruppe22
 
         }
 
-        public void DeleteAnimation(int animation = -1, int phase = -1)
-        {
-
-        }
-
-        public void MoveAnimation(int animation = -1, int phase = -1, int to = -1)
-        {
-
-        }
         #endregion
 
         #region Constructor
@@ -341,14 +337,14 @@ namespace Gruppe22
         {
             XmlSerializer visibleSerializer = new XmlSerializer(typeof(VisibleObject));
             reader.MoveToContent();
-            Boolean isEmptyElement = reader.IsEmptyElement; 
+            Boolean isEmptyElement = reader.IsEmptyElement;
             reader.ReadStartElement();
             if (isEmptyElement) return;
 
             _width = Int32.Parse(reader.ReadElementString("width"));
             _height = Int32.Parse(reader.ReadElementString("height"));
             _loop = Boolean.Parse(reader.ReadElementString("loop"));
-            
+
             reader.ReadStartElement("animations");
             while (reader.NodeType != System.Xml.XmlNodeType.EndElement)
             {
@@ -361,7 +357,7 @@ namespace Gruppe22
             reader.ReadEndElement();
 
         }
-        
+
         /// <summary>
         /// Dump the whole group of animations to an XML-file
         /// </summary>

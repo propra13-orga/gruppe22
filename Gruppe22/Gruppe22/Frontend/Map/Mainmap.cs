@@ -85,9 +85,9 @@ namespace Gruppe22
         /// </summary>
         private Map _map;
         private int _lastCheck = 0;
-        private int _renderScope = 8;
+        private int _renderScope = 7;
         private Texture2D _background = null;
-        private Keys _lastKey;
+        private Keys _lastKey = Keys.None;
         private Texture2D _circle = null;
         #endregion
 
@@ -135,21 +135,22 @@ namespace Gruppe22
                             null,
                             _camera.matrix);
                 _spriteBatch.Draw(_circle, new Rectangle(
-                    (int)(_actors[0].position.X * 64 + _actors[0].position.Y * 64) - 480,
-                    (int)(_actors[0].position.Y * 48 - _actors[0].position.X * 48) - 500, 1000, 1000), Color.White);
+                    (int)(_actors[0].position.X * 64 + _actors[0].position.Y * 64) - 1060,
+                    (int)(_actors[0].position.Y * 48 - _actors[0].position.X * 48) - 1200, 2300, 2300), Color.White);
 
-                _spriteBatch.Draw(_background, new Rectangle( // von oben
-                    (int)(_actors[0].position.X * 64 + _actors[0].position.Y * 64) - 980,
-                    (int)(_actors[0].position.Y * 48 - _actors[0].position.X * 48) - 2000, 1500, 1500), new Rectangle(0, 0, 1, 1), Color.White);
-                _spriteBatch.Draw(_background, new Rectangle( // von unten
-                    (int)(_actors[0].position.X * 64 + _actors[0].position.Y * 64) - 980,
-                    (int)(_actors[0].position.Y * 48 - _actors[0].position.X * 48) + 500, 1500, 1500), new Rectangle(0, 0, 1, 1), Color.White);
-                _spriteBatch.Draw(_background, new Rectangle(
-                    (int)(_actors[0].position.X * 64 + _actors[0].position.Y * 64) - 1580,
-                    (int)(_actors[0].position.Y * 48 - _actors[0].position.X * 48) - 1000, 1100, 3000), new Rectangle(0, 0, 1, 1), Color.White);
-                _spriteBatch.Draw(_background, new Rectangle(
-                    (int)(_actors[0].position.X * 64 + _actors[0].position.Y * 64) + 520,
-                    (int)(_actors[0].position.Y * 48 - _actors[0].position.X * 48) - 1000, 1500, 3000), new Rectangle(0, 0, 1, 1), Color.White);
+
+                /* _spriteBatch.Draw(_background, new Rectangle( // von oben
+                                (int)(_actors[0].position.X * 64 + _actors[0].position.Y * 64) - 980,
+                                (int)(_actors[0].position.Y * 48 - _actors[0].position.X * 48) - 2000, 1500, 1500), new Rectangle(0, 0, 1, 1), Color.White);
+                            _spriteBatch.Draw(_background, new Rectangle( // von unten
+                                (int)(_actors[0].position.X * 64 + _actors[0].position.Y * 64) - 980,
+                                (int)(_actors[0].position.Y * 48 - _actors[0].position.X * 48) + 500, 1500, 1500), new Rectangle(0, 0, 1, 1), Color.White);
+                            _spriteBatch.Draw(_background, new Rectangle(
+                                (int)(_actors[0].position.X * 64 + _actors[0].position.Y * 64) - 1580,
+                                (int)(_actors[0].position.Y * 48 - _actors[0].position.X * 48) - 1000, 1100, 3000), new Rectangle(0, 0, 1, 1), Color.White);
+                            _spriteBatch.Draw(_background, new Rectangle(
+                                (int)(_actors[0].position.X * 64 + _actors[0].position.Y * 64) + 520,
+                                (int)(_actors[0].position.Y * 48 - _actors[0].position.X * 48) - 1000, 1500, 3000), new Rectangle(0, 0, 1, 1), Color.White);*/
 
                 _spriteBatch.End();
 
@@ -817,7 +818,6 @@ namespace Gruppe22
             switch (dir)
             {
                 case Direction.UpLeft:
-
                     if (((int)_actors[0].target.X > 0) && (_map[(int)_actors[0].target.X - 1, (int)_actors[0].target.Y].canEnter))
                         _actors[0].Move(new Vector2(-1.0f, 0));
                     break;
@@ -833,11 +833,32 @@ namespace Gruppe22
                     if (((int)_actors[0].target.Y > 0) && (_map[(int)_actors[0].target.X, (int)_actors[0].target.Y - 1].canEnter))
                         _actors[0].Move(new Vector2(0, -1.0f));
                     break;
+
+                    // Diagonal movement
+                    // TODO: Check for diagonal walls - doh :-(
+                case Direction.UpLeftDiag:
+                    if (((int)_actors[0].target.X > 0) && ((int)_actors[0].target.Y < _map.height - 1) && (_map[(int)_actors[0].target.X - 1, (int)_actors[0].target.Y + 1].canEnter)
+                        )
+                        _actors[0].Move(new Vector2(-1.0f, 1.0f));
+                    break;
+                case Direction.DownRightDiag:
+                    if (((int)_actors[0].target.X < _map.width - 1) && ((int)_actors[0].target.Y > 0) &&
+                        (_map[(int)_actors[0].target.X + 1, (int)_actors[0].target.Y - 1].canEnter)
+                        )
+                        _actors[0].Move(new Vector2(1.0f, -1.0f));
+                    break;
+                case Direction.DownLeftDiag:
+                    if (((int)_actors[0].target.Y < _map.height - 1) && ((int)_actors[0].target.X < _map.width - 1) &&
+                        (_map[(int)_actors[0].target.X + 1, (int)_actors[0].target.Y + 1].canEnter))
+                        _actors[0].Move(new Vector2(1.0f, 1.0f));
+                    break;
+                case Direction.UpRightDiag:
+                    if (((int)_actors[0].target.Y > 0) &&
+                        ((int)_actors[0].target.X > 0) &&
+                        (_map[(int)_actors[0].target.X - 1, (int)_actors[0].target.Y - 1].canEnter))
+                        _actors[0].Move(new Vector2(-1.0f, -1.0f));
+                    break;
             }
-
-
-            // }
-
         }
 
         public override void MoveContent(Vector2 difference, int _lastCheck = 0)
@@ -877,6 +898,35 @@ namespace Gruppe22
                 if (Keyboard.GetState().IsKeyDown(Keys.S))
                 {
                     MovePlayer(Direction.DownLeft);
+                    _lastKey = Keys.S;
+                }
+
+
+                if (Keyboard.GetState().IsKeyDown(Keys.Q))
+                {
+                    MovePlayer(Direction.UpRightDiag);
+                    _lastKey = Keys.Q;
+                }
+
+
+                if (Keyboard.GetState().IsKeyDown(Keys.E))
+                {
+                    MovePlayer(Direction.DownRightDiag);
+                    _lastKey = Keys.E;
+                }
+
+
+                if (Keyboard.GetState().IsKeyDown(Keys.Y))
+                {
+                    MovePlayer(Direction.UpLeftDiag);
+                    _lastKey = Keys.Y;
+                }
+
+
+
+                if (Keyboard.GetState().IsKeyDown(Keys.C))
+                {
+                    MovePlayer(Direction.DownLeftDiag);
                     _lastKey = Keys.S;
                 }
             }
@@ -924,7 +974,14 @@ namespace Gruppe22
 
             player.AddAnimation("Walk", new Vector2(0, 288), -1, 8, 1);
 
-            player.AddAnimation("Walk", new Vector2(0, 768), -1, 8, 1);
+
+            player.AddAnimation("Walk", new Vector2(0, 0), -1, 8, 1);
+
+            player.AddAnimation("Walk", new Vector2(0, 96), -1, 8, 1);
+
+            player.AddAnimation("Walk", new Vector2(0, 384), -1, 8, 1);
+
+            player.AddAnimation("Walk", new Vector2(0, 672), -1, 8, 1);
 
 
             _actors.Add(new ActorView(spriteBatch, "Player", true, new Vector2(1, 1), player));
