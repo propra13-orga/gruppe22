@@ -9,11 +9,11 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Gruppe22
 {
-    class ToolTip:Notification
+    class ToolTip : Notification
     {
 
-        public ToolTip(IHandleEvent parent, SpriteBatch spriteBatch, ContentManager content, Rectangle displayRect)
-            : base(parent, spriteBatch, content, displayRect)
+        public ToolTip(IHandleEvent parent, SpriteBatch spriteBatch, ContentManager content, Rectangle displayRect, string text)
+            : base(parent, spriteBatch, content, displayRect, text, NotificationStyle.Default, -1)
         {
         }
     }

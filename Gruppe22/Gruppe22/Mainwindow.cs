@@ -21,7 +21,8 @@ namespace Gruppe22
     public enum Events
     {
         StartGame = 1,
-        EndGame = 2
+        EndGame = 2,
+        HideNotification = 3
     }
     /// <summary>
     /// This is the main type for your game
@@ -122,9 +123,18 @@ namespace Gruppe22
         public void ShowMenu()
         {
             _paused = true;
-            Window _mainMenu = new Window(this, _spriteBatch, Content, new Rectangle(10, 10, GraphicsDevice.Viewport.Width - 20, GraphicsDevice.Viewport.Height - 20));
-            _mainMenu.AddChild(new Button(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) - 60, 300, 60), "Spiel starten / fortsetzen", Events.StartGame));
-            _mainMenu.AddChild(new Button(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 150) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) + 20, 300, 60), "Spiel beenden", Events.EndGame));
+            Window _mainMenu = new Window(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 220) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) - 200, 350, 500));
+
+            _mainMenu.AddChild(new Button(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) - 180, 300, 60), "Spiel fortsetzen", Events.StartGame));
+            _mainMenu.AddChild(new Button(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) - 100, 300, 60), "Spiel neu starten", Events.StartGame));
+
+            _mainMenu.AddChild(new Button(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) - 20, 300, 60), "Einstellungen", Events.StartGame));
+
+            _mainMenu.AddChild(new Button(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) + 120, 300, 60), "Rechtliches", Events.StartGame));
+
+            _mainMenu.AddChild(new Button(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) + 220, 300, 60), "Spiel beenden", Events.EndGame));
+
+          //  _mainMenu.AddChild(new ProgressBar(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) + 80, 300, 30), ProgressStyle.Block,100,2));
 
             _interfaceElements.Add(_mainMenu);
             _focus = _interfaceElements[_interfaceElements.Count - 1];
@@ -168,6 +178,8 @@ namespace Gruppe22
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
+         /*   ((ProgressBar)
+                ((Window)_interfaceElements[_interfaceElements.Count - 1]).children[((Window)_interfaceElements[_interfaceElements.Count - 1]).children.Count - 1]).value += 1;*/
             try
             {
 
@@ -178,7 +190,7 @@ namespace Gruppe22
                     {
                         if (element.IsHit(Mouse.GetState().X, Mouse.GetState().Y))
                         {
-                            if ((_focus==null)||(!_focus.holdFocus))
+                            if ((_focus == null) || (!_focus.holdFocus))
                             {
                                 _focus = element;
                             }

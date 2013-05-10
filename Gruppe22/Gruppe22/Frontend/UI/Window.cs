@@ -35,6 +35,11 @@ namespace Gruppe22
             get { return true; }
         }
 
+        public List<UIElement> children
+        {
+            get { return _children; }
+        }
+
         #endregion
 
 
@@ -70,7 +75,7 @@ namespace Gruppe22
             _spriteBatch.Draw(_background, new Rectangle(_displayRect.X + _displayRect.Width - 2, _displayRect.Y, 2, _displayRect.Height), new Rectangle(39, 6, 1, 1), Color.White);
             _spriteBatch.Draw(_background, new Rectangle(_displayRect.X, _displayRect.Y, 2, _displayRect.Height), new Rectangle(39, 6, 1, 1), Color.White);
             _spriteBatch.Draw(_background, new Rectangle(_displayRect.X, _displayRect.Y + _displayRect.Height - 2, _displayRect.Width, 2), new Rectangle(39, 6, 1, 1), Color.White);
-            _spriteBatch.Draw(_background, _displayRect, new Rectangle(39, 6, 1, 1), new Color(Color.DarkSlateGray, 0.6f));
+            _spriteBatch.Draw(_background, _displayRect, new Rectangle(39, 6, 1, 1), new Color(Color.Black, 0.6f));
             _spriteBatch.End();
 
             foreach (UIElement child in _children)

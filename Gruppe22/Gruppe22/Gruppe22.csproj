@@ -96,6 +96,7 @@
     <Compile Include="Frontend\UI\Button.cs" />
     <Compile Include="Frontend\UI\CheckBox.cs" />
     <Compile Include="Frontend\UI\FileDialog.cs" />
+    <Compile Include="Frontend\UI\Grid.cs" />
     <Compile Include="Frontend\UI\Menu.cs" />
     <Compile Include="Frontend\UI\Notification.cs" />
     <Compile Include="Frontend\UI\NumberEntry.cs" />

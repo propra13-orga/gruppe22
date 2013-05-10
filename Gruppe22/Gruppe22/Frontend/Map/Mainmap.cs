@@ -102,6 +102,11 @@ namespace Gruppe22
         {
             RasterizerState rstate = new RasterizerState();
             rstate.ScissorTestEnable = true;
+            BlendState blendState = new BlendState();
+            blendState.AlphaDestinationBlend = Blend.SourceColor;
+            blendState.ColorDestinationBlend = Blend.SourceColor;
+            blendState.AlphaSourceBlend = Blend.Zero;
+            blendState.ColorSourceBlend = Blend.Zero;
             try
             {
                 _spriteBatch.Begin();
@@ -124,11 +129,6 @@ namespace Gruppe22
                 _spriteBatch.End();
 
 
-                BlendState blendState = new BlendState();
-                blendState.AlphaDestinationBlend = Blend.SourceColor;
-                blendState.ColorDestinationBlend = Blend.SourceColor;
-                blendState.AlphaSourceBlend = Blend.Zero;
-                blendState.ColorSourceBlend = Blend.Zero;
                 _spriteBatch.Begin(SpriteSortMode.Deferred, blendState, null,
                             null,
                             rstate,
@@ -154,11 +154,13 @@ namespace Gruppe22
 
                 _spriteBatch.End();
 
+
                 _spriteBatch.GraphicsDevice.RasterizerState.ScissorTestEnable = false;
             }
             finally
             {
                 rstate.Dispose();
+                blendState.Dispose();
             }
 
         }
