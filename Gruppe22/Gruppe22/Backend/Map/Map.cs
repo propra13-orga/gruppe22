@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Xml;
-using System.Xml.Serialization;
 
 namespace Gruppe22
 {
@@ -300,10 +299,31 @@ namespace Gruppe22
             {
                 while (reader.Read())
                 {
+                    if (reader.IsStartElement() && reader.Name.Equals("map"))
+                    {
+                        _height = Convert.ToInt32(reader.GetAttribute("height"));
+                        _width = Convert.ToInt32(reader.GetAttribute("width"));
+                        int y = 0;
+                        while (reader.Name.Equals("Row"))
+                        {
+                            _tiles.Add(new List<Tile>());
+                            int x = 0;
+                            while (reader.Name.Equals("Tile"))
+                            {
+                                // das müsste eigentlich in Tile Load()
+                                _tiles[y].Add(new Tile());
+                                _tiles[y][x].canEnter = Convert.ToBoolean(reader.GetAttribute("canEnter"));
+                                _tiles[y][x].connected = Convert.ToBoolean(reader.GetAttribute("connected"));
+                                string con = reader.GetAttribute("connection");
+                                if (con.Equals("invalid"))
+                                    _tiles[y][x].connection = Connection.Invalid;
+
+                            }
+                            y++;
+                        }
+                    }
+                    else result = false;
                 }
-
-                reader.MoveToContent();
-
             }
             finally
             {
@@ -371,15 +391,18 @@ namespace Gruppe22
         {
             bool result = true;
             XmlTextWriter target = new XmlTextWriter(filename, Encoding.UTF8);
-            //XmlSerializer x = new XmlSerializer(typeof(Tile));
             try
             {
                 target.WriteStartDocument();
                 target.WriteDocType("GameMap", null, null, null);
-                target.WriteStartElement("rows");
+
+                target.WriteStartElement("map");
+                target.WriteAttributeString("height", Convert.ToString(_height));
+                target.WriteAttributeString("width", Convert.ToString(_width));
+
                 foreach (List<Tile> row in _tiles)
                 {
-                    target.WriteStartElement("row");
+                    target.WriteStartElement("Row");
                     foreach (Tile tile in row)
                     {
                         result = tile.Save(target);
@@ -388,6 +411,7 @@ namespace Gruppe22
                     target.WriteEndElement();
                     if (result == false) break;
                 };
+
                 target.WriteEndElement();
                 target.WriteEndDocument();
                 
@@ -417,6 +441,7 @@ namespace Gruppe22
                 for (int x = 0; x < width; ++x)
                 {
                     _tiles[y].Add(new Tile());
+                    //_tiles[y][x].AddToOverlay(new FloorTile());
                 }
             }
             _blankTile = new Tile();
