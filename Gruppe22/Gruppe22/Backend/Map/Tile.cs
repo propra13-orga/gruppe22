@@ -10,13 +10,16 @@ namespace Gruppe22
     /// <summary>
     /// An abstract class representing a generic tile (i.e. blank floor)
     /// </summary>
-    public class Tile : IDisposable, IXmlSerializable
+    public class Tile : IHandleEvent, IDisposable, IXmlSerializable
     {
         #region Delegates
         public delegate void OnEnter();
         #endregion
 
         #region Private Fields
+
+        private IHandleEvent _parent;
+
         /// <summary>
         /// Fields displayed (and checked) on top of the current field
         /// </summary>
@@ -173,6 +176,10 @@ namespace Gruppe22
 
         #region Public methods
 
+        public void HandleEvent(UIElement sender, Events eventID, int data)
+        {
+            throw new NotImplementedException();
+        }
 
         /// <summary>
         /// Write Tile data to an XML-file

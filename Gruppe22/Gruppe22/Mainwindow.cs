@@ -21,7 +21,8 @@ namespace Gruppe22
     public enum Events
     {
         StartGame = 1,
-        EndGame = 2
+        EndGame = 2,
+        ChangeMap = 3
     }
     /// <summary>
     /// This is the main type for your game
@@ -157,6 +158,9 @@ namespace Gruppe22
                     break;
                 case Events.EndGame:
                     Exit();
+                    break;
+                case Events.ChangeMap:
+                    //TODO: Lade neue Karte
                     break;
             }
         }

@@ -6,9 +6,11 @@ using System.Xml.Serialization;
 
 namespace Gruppe22
 {
-    public class Map : IDisposable
+    public class Map : IHandleEvent, IDisposable
     {
         #region Private Fields
+        private IHandleEvent _parent;
+
         /// <summary>
         /// A two dimensional list of tiles
         /// </summary>
@@ -152,6 +154,10 @@ namespace Gruppe22
 
         #region Public Methods
 
+        public void HandleEvent(UIElement sender, Events eventID, int data)
+        {
+            _parent.HandleEvent(sender, eventID, data);
+        }
 
         /// <summary>
         /// Create a grid of walls
