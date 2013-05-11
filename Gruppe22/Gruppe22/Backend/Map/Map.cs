@@ -335,34 +335,6 @@ namespace Gruppe22
             }
         }
 
-        public bool FromString(string input)
-        {
-            int col = 0, row = 0;
-            foreach (char c in input)
-            {
-                switch (c)
-                {
-                    case '#':
-                        if ((col < _width) && (row < height))
-                            _tiles[row][col].canEnter = false;
-                        col += 1;
-                        break;
-                    case '\n':
-                        col = 0;
-                        row += 1;
-                        break;
-                    default:
-                        if ((col < _width) && (row < height))
-                            _tiles[row][col].canEnter = true;
-                        col += 1;
-
-                        break;
-                }
-
-            }
-            return true;
-        }
-
         /// <summary>
         /// Write the current map to a file
         /// </summary>
@@ -371,29 +343,12 @@ namespace Gruppe22
         public bool Save(string filename)
         {
             bool result = true;
-            XmlTextWriter target = new XmlTextWriter(filename, Encoding.UTF8);
+            XmlWriter xmlw = XmlWriter.Create(filename);
             try
             {
-                target.WriteStartDocument();
-                target.WriteDocType("GameMap", null, null, null);
-                foreach (List<Tile> row in _tiles)
-                {
-                    target.WriteStartElement("row");
-                    foreach (Tile tile in row)
-                    {
-                        XmlSerializer x=new XmlSerializer(typeof(Map));
-                        result = tile.Save(target,x);
-                        if (result == false) break;
-                    }
-                    target.WriteEndElement();
-                    if (result == false) break;
-                };
-                target.WriteEndDocument();
+                xmlw.WriteDocType("GameMap", "NULL", "NULL", "NULL");
             }
-            finally
-            {
-                target.Close();
-            }
+            finally { xmlw.Close(); }
             return result;
         }
         #endregion

@@ -10,7 +10,7 @@ namespace Gruppe22
     /// <summary>
     /// An abstract class representing a generic tile (i.e. blank floor)
     /// </summary>
-    public class Tile : IHandleEvent, IDisposable, IXmlSerializable
+    public class Tile : IHandleEvent, IDisposable
     {
         #region Delegates
         public delegate void OnEnter();
@@ -181,12 +181,13 @@ namespace Gruppe22
             throw new NotImplementedException();
         }
 
+        
+
         /// <summary>
-        /// Write Tile data to an XML-file
+        /// Save the Map.
         /// </summary>
-        /// <param name="file">An XMLTextWriter containing data for the tile</param>
         /// <returns>true if write is successful</returns>
-        public bool Save(XmlTextWriter target, XmlSerializer serializer)
+        public bool Save()
         {
             /*target.WriteStartElement("tile");
             foreach (Tile tile in _overlay)
@@ -203,7 +204,7 @@ namespace Gruppe22
         /// </summary>
         /// <param name="file">An XMlTextreader containing data for the tile</param>
         /// <returns>true if read is successful</returns>
-        public bool Load(XmlTextReader source)
+        public bool Load()
         {
             throw new NotImplementedException("Das muss noch jemand machen");
             return true;
@@ -223,37 +224,6 @@ namespace Gruppe22
             _canEnter = canEnter;
         }
 
-        #region iXMLSerializer
-
-        /// <summary>
-        /// Returns null as no validation is performed according to MSDN-documentation
-        /// </summary>
-        /// <returns></returns>
-        public XmlSchema GetSchema()
-        {
-            return null;
-        }
-
-        /// <summary>
-        /// Write the tile to a XML-file
-        /// </summary>
-        /// <param name="writer"></param>
-        public void WriteXml(XmlWriter writer)
-        {
-            throw new System.NotImplementedException();
-        }
-
-      
-        /// <summary>
-        /// Read the tile from a XML-file
-        /// </summary>
-        /// <param name="reader"></param>
-        public void ReadXml(XmlReader reader)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        #endregion
         /// <summary>
         /// Clean up Tile
         /// </summary>
