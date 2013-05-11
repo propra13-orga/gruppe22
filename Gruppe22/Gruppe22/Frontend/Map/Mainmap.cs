@@ -89,11 +89,22 @@ namespace Gruppe22
         private Texture2D _background = null;
         private Keys _lastKey = Keys.None;
         private Texture2D _circle = null;
+        private Vector2 _highlightedTile;
+        private List<Vector2> _path;
         #endregion
 
 
         #region Public Methods
 
+        public Vector2 GetMousePos(Vector2 coords)
+        {
+            Vector2 realPos = Vector2.Transform(coords, Matrix.Invert(_camera.matrix));
+            Vector2 result = Vector2.Zero;
+            //_tileRect(new Vector2(x, y));
+            _highlightedTile = _pos2Tile(realPos);
+            System.Diagnostics.Debug.WriteLine(realPos.ToString() + "/" + realPos.ToString());
+            return result;
+        }
 
         /// <summary>
         /// Draw the Map
@@ -739,6 +750,21 @@ namespace Gruppe22
                                     , (int)coords.Y * 48 - (int)coords.X * 48, 130, tall ? 194 : 98);
         }
 
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="coords"></param>
+        /// <param name="tall"></param>
+        /// <returns></returns>
+        private Vector2 _pos2Tile(Vector2 coords, bool tall = false)
+        {
+            coords.X -= 32;
+            coords.Y -= 48;
+            return new Vector2((coords.X / 128 - coords.Y / 96)
+                                    , (coords.X / 128 + coords.Y / 96));
+        }
+
         /// <summary>
         /// Display all walls on the current map
         /// </summary>
@@ -773,7 +799,15 @@ namespace Gruppe22
             {
                 for (int x = (Math.Max((int)_actors[0].position.X - _renderScope, 0)); x <= (Math.Min((int)_actors[0].position.X + _renderScope, hTiles)); ++x)
                 {
-                    _spriteBatch.Draw(_environment[1].animationTexture, _tileRect(new Vector2(x, y)), new Rectangle(512, 384, 128, 96), Color.White);
+                    if ((y == (int)_highlightedTile.Y) && (x == (int)_highlightedTile.X))
+                    {
+                        _spriteBatch.Draw(_environment[1].animationTexture, _tileRect(new Vector2(x, y)), new Rectangle(512, 384, 128, 96), Color.Red);
+                    }
+                    else
+                    {
+                        _spriteBatch.Draw(_environment[1].animationTexture, _tileRect(new Vector2(x, y)), new Rectangle(512, 384, 128, 96), Color.White);
+
+                    }
                 }
             }
             //TODO: Reimplement rugged tiles
@@ -781,6 +815,71 @@ namespace Gruppe22
 
         public override void Update(GameTime gameTime)
         {
+            GetMousePos(new Vector2(Mouse.GetState().X, Mouse.GetState().Y));
+            if (Mouse.GetState().LeftButton == ButtonState.Pressed)
+            {
+                if (!_actors[0].isMoving)
+                {
+                    if (_highlightedTile.X < _actors[0].position.X)
+                    {
+                        if (_highlightedTile.Y < _actors[0].position.Y)
+                        {
+                            _actors[0].Move(new Vector2(-1.0f, -1.0f));
+                        }
+                        else
+                        {
+                            if (_highlightedTile.Y > _actors[0].position.Y)
+                            {
+                                _actors[0].Move(new Vector2(-1.0f, 1.0f));
+                            }
+                            else
+                            {
+                                _actors[0].Move(new Vector2(-1.0f, 0.0f));
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if (_highlightedTile.X > _actors[0].position.X)
+                        {
+
+                            if (_highlightedTile.Y < _actors[0].position.Y)
+                            {
+                                _actors[0].Move(new Vector2(1.0f, -1.0f));
+                            }
+                            else
+                            {
+                                if (_highlightedTile.Y > _actors[0].position.Y)
+                                {
+                                    _actors[0].Move(new Vector2(1.0f, 1.0f));
+                                }
+                                else
+                                {
+                                    _actors[0].Move(new Vector2(1.0f, 0.0f));
+                                }
+                            }
+                        }
+                        else
+                        {
+                            if (_highlightedTile.Y < _actors[0].position.Y)
+                            {
+                                _actors[0].Move(new Vector2(0.0f, -1.0f));
+                            }
+                            else
+                            {
+                                if (_highlightedTile.Y > _actors[0].position.Y)
+                                {
+                                    _actors[0].Move(new Vector2(0.0f, 1.0f));
+                                }
+                                else
+                                {
+                                    _actors[0].Move(new Vector2(0.0f, 0.0f));
+                                }
+                            }
+                        }
+                    }
+                }
+            }
             if (_actors[0].isMoving)
                 _camera.position = new Vector2(-38 -
          ((_actors[0].position.X * 64 + _actors[0].position.Y * 64)), -30 -

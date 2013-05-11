@@ -32,7 +32,6 @@ namespace Gruppe22
             }
         }
 
-
         /// <summary>
         /// Get or set the camera's position
         /// </summary>
