@@ -174,8 +174,8 @@ namespace Gruppe22
         #region Public methods
 
         public void AddToOverlay(Tile newtile)
-        {
-            _overlay.Add(newtile);
+        {            
+            _overlay.Add(new FloorTile());
         }
 
         /// <summary>
@@ -186,12 +186,10 @@ namespace Gruppe22
         public virtual bool Save(XmlTextWriter writer)
         {
             writer.WriteStartElement("Tile");
-            string canE = "nichts";
-            if (canEnter) canE = "true";
-            else canE = "false";
-            writer.WriteAttributeString("canEnter", canE);
+            writer.WriteAttributeString("canEnter", Convert.ToString(canEnter));
             foreach (Tile tile in _overlay)
             {
+                writer.WriteAttributeString("test ist", "etwas da"); // testing
                 tile.Save(writer);
             }
             writer.WriteEndElement();

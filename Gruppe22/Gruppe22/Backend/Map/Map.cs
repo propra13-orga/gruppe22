@@ -287,7 +287,7 @@ namespace Gruppe22
         }
 
         /// <summary>
-        /// Load a map from a file
+        /// Read a map from a file
         /// </summary>
         /// <param name="filename">The filename to read from</param>
         /// <returns>true if read was successful</returns>
@@ -298,6 +298,10 @@ namespace Gruppe22
 
             try
             {
+                while (reader.Read())
+                {
+                }
+
                 reader.MoveToContent();
 
             }
@@ -413,11 +417,10 @@ namespace Gruppe22
                 for (int x = 0; x < width; ++x)
                 {
                     _tiles[y].Add(new Tile());
-                    _tiles[y][x].AddToOverlay(new FloorTile());
                 }
             }
             _blankTile = new Tile();
-            _tiles[2][2].AddToOverlay(new TeleportTile("bla.xml", new Coords(1, 4))); // testing
+            //_tiles[2][2].AddToOverlay(new TeleportTile("bla.xml", new Coords(1, 4))); // testing
             //_blankTile.canEnter = false;
         }
 

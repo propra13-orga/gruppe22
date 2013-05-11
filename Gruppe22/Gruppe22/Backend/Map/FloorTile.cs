@@ -10,16 +10,17 @@ namespace Gruppe22
 {
     class FloorTile : Tile
     {
-
-
         public override bool Save(XmlTextWriter writer)
         {
             writer.WriteStartElement("Floortile");
-            writer.WriteEndElement();
-            
+            writer.WriteAttributeString("canEnter", Convert.ToString(canEnter));
+            writer.WriteEndElement();            
             return true;
         }
         #region Constructor
+        /// <summary>
+        /// You can always walk over a Floor
+        /// </summary>
         public FloorTile()
         {
             canEnter = true;
