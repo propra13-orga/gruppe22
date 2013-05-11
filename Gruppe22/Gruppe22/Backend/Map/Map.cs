@@ -296,20 +296,34 @@ namespace Gruppe22
         /// </summary>
         /// <param name="filename">The filename to read from</param>
         /// <returns>true if read was successful</returns>
-        public bool Load(string filename)
+        public void Load(string filename)
         {
-            bool result = true;
-            XmlTextReader source = new XmlTextReader(filename);
-
-            try
-            {
-
+            XmlReader xmlr = XmlReader.Create(filename);
+            xmlr.Read();//xml
+            xmlr.Read();//GameMap
+            _width = int.Parse(xmlr.GetAttribute("width"));
+            _height = int.Parse(xmlr.GetAttribute("height"));
+            _tiles = new List<List<Tile>>();
+            for (int r = 0; r < _height; r++)
+            { // Add Rows
+                xmlr.Read();//row
+                //TODO: dynamisches einlesen von overlay-Tiles
+                _tiles.Add(new List<Tile>());
+                for (int j = 0; j < _width; j++)
+                { // Add Tiles and overlay-Tiles
+                    xmlr.Read();
+                    switch (xmlr.Name)
+                    {
+                        case "Tile":
+                            _tiles[r].Add(new Tile(Convert.ToBoolean(xmlr.GetAttribute("canEnter"))));
+                            break;
+                        default:
+                            j--;
+                            break;
+                    }
+                }
             }
-            finally
-            {
-                source.Close();
-            }
-            return result;
+            xmlr.Close();
         }
 
         public void DebugMap()
@@ -339,17 +353,17 @@ namespace Gruppe22
         /// </summary>
         /// <param name="filename">The filename to write to</param>
         /// <returns>true if writing was successful</returns>
-        public bool Save(string filename)
+        public void Save(string filename)
         {
-            bool result = true;
             XmlWriter xmlw = XmlWriter.Create(filename);
             xmlw.WriteStartDocument();
             xmlw.WriteStartElement("GameMap");
             xmlw.WriteAttributeString("width", _width.ToString());
             xmlw.WriteAttributeString("height", _height.ToString());
+            //_tiles[0][0].overlay.Add(new TeleportTile("map2.xml", new Microsoft.Xna.Framework.Vector2(0,0)));//test
             foreach (List<Tile> ltiles in _tiles)
             {
-                xmlw.WriteStartElement("row");
+                xmlw.WriteStartElement("Row");
                 foreach (Tile tile in ltiles)
                 {
                     tile.Save(xmlw);
@@ -359,7 +373,6 @@ namespace Gruppe22
             xmlw.WriteEndElement();
             xmlw.WriteEndDocument();
             xmlw.Close();
-            return result;
         }
         #endregion
 
@@ -392,6 +405,7 @@ namespace Gruppe22
         /// <param name="filename"></param>
         public Map(string filename = "")
         {
+            _blankTile = new Tile();
             Load(filename);
         }
 

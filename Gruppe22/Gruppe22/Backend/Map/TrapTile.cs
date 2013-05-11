@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Xml;
 
 namespace Gruppe22
 {
@@ -27,5 +28,18 @@ namespace Gruppe22
             }
         }
         #endregion
+
+        public override void Save(XmlWriter xmlw)
+        {
+            xmlw.WriteStartElement("TrapTile");
+            xmlw.WriteAttributeString("canEnter", Convert.ToString(canEnter));
+            xmlw.WriteAttributeString("connected", Convert.ToString(connected));
+            xmlw.WriteAttributeString("connection", Convert.ToString(connection));
+            foreach (Tile tile in overlay)
+            {
+                tile.Save(xmlw);
+            }
+            xmlw.WriteEndElement();
+        }
     }
 }

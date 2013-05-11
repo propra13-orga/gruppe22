@@ -87,12 +87,13 @@ namespace Gruppe22
         protected override void Initialize()
         {
             Random r = new Random();
-            _map1 = new Map(r.Next(20) + 6, r.Next(20) + 6);
+            _map1 = new Map(r.Next(1) + 6, r.Next(1) + 6); //kleinere Map
             _map1.ClearMaze();
             _map1.GenerateMaze();
             _map1.ClearWalls();
             _map1.Save("test.xml");
-            Exit();//TODO:Löschen
+            _map1 = new Map("test.xml"); // TEST!!!
+            //Exit();//TODO:Löschen
             _interfaceElements = new List<UIElement>();
             base.Initialize();
         }

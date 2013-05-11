@@ -36,6 +36,8 @@ namespace Gruppe22
 
         #region Public Fields
 
+        public List<Tile> overlay { get { return _overlay; } } //Referenz! Nicht schreibgeschützt?!
+
         public bool connected
         {
             get
