@@ -91,8 +91,9 @@ namespace Gruppe22
             _map1.ClearMaze();
             _map1.GenerateMaze();
             _map1.ClearWalls();
+            _map1.Save("test.xml");
+            Exit();//TODO:Löschen
             _interfaceElements = new List<UIElement>();
-
             base.Initialize();
         }
 

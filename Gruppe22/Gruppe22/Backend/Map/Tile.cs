@@ -187,16 +187,17 @@ namespace Gruppe22
         /// Save the Map.
         /// </summary>
         /// <returns>true if write is successful</returns>
-        public bool Save()
+        public virtual void Save(XmlWriter xmlw)
         {
-            /*target.WriteStartElement("tile");
+            xmlw.WriteStartElement("Tile");
+            xmlw.WriteAttributeString("canEnter", Convert.ToString(_canEnter));
+            xmlw.WriteAttributeString("connected", Convert.ToString(_connected));
+            xmlw.WriteAttributeString("connection", Convert.ToString(_connection));
             foreach (Tile tile in _overlay)
             {
-                throw new NotImplementedException("Das muss noch jemand machen");
+                tile.Save(xmlw);
             }
-            target.WriteEndElement();
-             */
-            return true;
+            xmlw.WriteEndElement();
         }
 
         /// <summary>
@@ -204,10 +205,9 @@ namespace Gruppe22
         /// </summary>
         /// <param name="file">An XMlTextreader containing data for the tile</param>
         /// <returns>true if read is successful</returns>
-        public bool Load()
+        public void Load()
         {
             throw new NotImplementedException("Das muss noch jemand machen");
-            return true;
         }
         #endregion
 

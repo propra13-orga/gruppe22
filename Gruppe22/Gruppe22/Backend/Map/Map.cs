@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Xml;
-using System.Xml.Serialization;
 
 namespace Gruppe22
 {
@@ -344,11 +343,22 @@ namespace Gruppe22
         {
             bool result = true;
             XmlWriter xmlw = XmlWriter.Create(filename);
-            try
+            xmlw.WriteStartDocument();
+            xmlw.WriteStartElement("GameMap");
+            xmlw.WriteAttributeString("width", _width.ToString());
+            xmlw.WriteAttributeString("height", _height.ToString());
+            foreach (List<Tile> ltiles in _tiles)
             {
-                xmlw.WriteDocType("GameMap", "NULL", "NULL", "NULL");
+                xmlw.WriteStartElement("row");
+                foreach (Tile tile in ltiles)
+                {
+                    tile.Save(xmlw);
+                }
+                xmlw.WriteEndElement();
             }
-            finally { xmlw.Close(); }
+            xmlw.WriteEndElement();
+            xmlw.WriteEndDocument();
+            xmlw.Close();
             return result;
         }
         #endregion
