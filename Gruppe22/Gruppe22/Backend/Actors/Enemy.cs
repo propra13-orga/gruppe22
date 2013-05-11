@@ -7,5 +7,13 @@ namespace Gruppe22
 {
     public class Enemy : Actor
     {
+
+        /// <summary>
+        /// Constuctor. 
+        /// </summary>
+        public Enemy(int health, int armour, int damage)
+            : base(ActorType.Enemy, health, armour, damage)
+        {
+        }
     }
 }
