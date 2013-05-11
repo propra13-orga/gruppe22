@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Xml;
+using System.Xml.Schema;
 
 namespace Gruppe22
 {
@@ -27,5 +29,11 @@ namespace Gruppe22
             }
         }
         #endregion
+
+        public override bool Save(XmlTextWriter writer)
+        {
+            writer.WriteAttributeString("Schaden", damage.ToString());
+            return true;
+        }
     }
 }

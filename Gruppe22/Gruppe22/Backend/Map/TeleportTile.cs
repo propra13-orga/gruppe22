@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
+using System.Xml;
+using System.Xml.Schema;
 
 namespace Gruppe22
 {
@@ -38,10 +40,24 @@ namespace Gruppe22
             {
                 return _nextPlayerPos;
             }
-            set
-            {
-                _nextPlayerPos = value;
-            }
+        }
+        #endregion
+
+        public override bool Save(XmlTextWriter writer)
+        {
+            writer.WriteStartElement("TeleportTile");
+            writer.WriteAttributeString("Ziel", nextRoom);
+            string zipo=nextPlayerPos.x+" "+nextPlayerPos.y;
+            writer.WriteAttributeString("ZielPosition", zipo);
+            writer.WriteEndElement();
+            return true;
+        }
+
+        #region Constructor
+        public TeleportTile(string nextXml, Coords pos)
+        {
+            _nextRoom = nextXml;
+            _nextPlayerPos = pos;
         }
         #endregion
     }

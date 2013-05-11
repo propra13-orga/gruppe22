@@ -92,7 +92,7 @@ namespace Gruppe22
             _map1.GenerateMaze();
             _map1.ClearWalls();
             _interfaceElements = new List<UIElement>();
-
+            _map1.Save("test.xml");
             base.Initialize();
         }
 

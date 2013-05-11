@@ -294,15 +294,16 @@ namespace Gruppe22
         public bool Load(string filename)
         {
             bool result = true;
-            XmlTextReader source = new XmlTextReader(filename);
+            XmlTextReader reader = new XmlTextReader(filename);
 
             try
             {
+                reader.MoveToContent();
 
             }
             finally
             {
-                source.Close();
+                reader.Close();
             }
             return result;
         }
@@ -366,23 +367,26 @@ namespace Gruppe22
         {
             bool result = true;
             XmlTextWriter target = new XmlTextWriter(filename, Encoding.UTF8);
+            //XmlSerializer x = new XmlSerializer(typeof(Tile));
             try
             {
                 target.WriteStartDocument();
                 target.WriteDocType("GameMap", null, null, null);
+                target.WriteStartElement("rows");
                 foreach (List<Tile> row in _tiles)
                 {
                     target.WriteStartElement("row");
                     foreach (Tile tile in row)
                     {
-                        XmlSerializer x=new XmlSerializer(typeof(Map));
-                        result = tile.Save(target,x);
+                        result = tile.Save(target);
                         if (result == false) break;
                     }
                     target.WriteEndElement();
                     if (result == false) break;
                 };
+                target.WriteEndElement();
                 target.WriteEndDocument();
+                
             }
             finally
             {
@@ -409,9 +413,11 @@ namespace Gruppe22
                 for (int x = 0; x < width; ++x)
                 {
                     _tiles[y].Add(new Tile());
+                    _tiles[y][x].AddToOverlay(new FloorTile());
                 }
             }
             _blankTile = new Tile();
+            _tiles[2][2].AddToOverlay(new TeleportTile("bla.xml", new Coords(1, 4))); // testing
             //_blankTile.canEnter = false;
         }
 

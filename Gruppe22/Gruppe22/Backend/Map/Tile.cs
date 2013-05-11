@@ -173,21 +173,28 @@ namespace Gruppe22
 
         #region Public methods
 
+        public void AddToOverlay(Tile newtile)
+        {
+            _overlay.Add(newtile);
+        }
 
         /// <summary>
         /// Write Tile data to an XML-file
         /// </summary>
         /// <param name="file">An XMLTextWriter containing data for the tile</param>
         /// <returns>true if write is successful</returns>
-        public bool Save(XmlTextWriter target, XmlSerializer serializer)
+        public virtual bool Save(XmlTextWriter writer)
         {
-            /*target.WriteStartElement("tile");
+            writer.WriteStartElement("Tile");
+            string canE = "nichts";
+            if (canEnter) canE = "true";
+            else canE = "false";
+            writer.WriteAttributeString("canEnter", canE);
             foreach (Tile tile in _overlay)
             {
-                throw new NotImplementedException("Das muss noch jemand machen");
+                tile.Save(writer);
             }
-            target.WriteEndElement();
-             */
+            writer.WriteEndElement();
             return true;
         }
 
@@ -198,14 +205,12 @@ namespace Gruppe22
         /// <returns>true if read is successful</returns>
         public bool Load(XmlTextReader source)
         {
-            throw new NotImplementedException("Das muss noch jemand machen");
+            
             return true;
         }
         #endregion
 
         #region Constructors
-
-
         /// <summary>
         /// An empty constructor (setting default values)
         /// </summary>
