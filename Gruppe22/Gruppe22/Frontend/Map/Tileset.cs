@@ -4,18 +4,74 @@ using System.Linq;
 using System.Text;
 using System.Xml.Serialization;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 
 namespace Gruppe22
 {
-    public class Tileset : IXmlSerializable
+
+    /// <summary>
+    /// Different wall-directions
+    /// </summary>
+    public enum WallDir
     {
+        None,
+        LeftRightUp,
+        LeftRightDown,
+        UpDownLeft,
+        UpDownRight,
+        UpLeft,
+        UpRight,
+        DownLeft,
+        DownRight,
+        LeftRight,
+        UpDown,
+        FourWay,
+        LeftClose,
+        DownClose,
+        RightClose,
+        UpClose,
+        Free,
+        LeftRightUpDiag,
+        LeftRightDownDiag,
+        UpDownLeftDiag,
+        UpDownRightDiag,
+        UpLeftDiag,
+        UpRightDiag,
+        DownLeftDiag,
+        DownRightDiag,
+        LeftRightDiag,
+        UpDownDiag,
+        FourWayDiag,
+        LeftCloseDiag,
+        DownCloseDiag,
+        RightCloseDiag,
+        UpCloseDiag,
+        FourDiag,
+        DiagUpClose,
+        DiagDownClose,
+        DiagUpDownClose,
+        DiagUpClose2,
+        DiagDownClose2,
+        DiagUpDownClose2,
+        DiagLeftClose,
+        DiagRightClose,
+        DiagLeftRightClose,
+        DiagLeftClose2,
+        DiagRightClose2,
+        DiagLeftRightClose2
+    }
+
+    public class WallTiles : IXmlSerializable
+    {
+        #region Private Fields
         private string _fileName = "";
         private List<TileObject> _walls;
-        private List<TileObject> _floor;
         private int _width = 0;
         private int _height = 0;
+        private ContentManager _content = null;
+        #endregion
 
-
+        #region Public Methods
         /// <summary>
         /// Useless function required by IXmlSerializable
         /// </summary>
@@ -55,7 +111,7 @@ namespace Gruppe22
                 reader.MoveToContent();
             }
             reader.ReadEndElement();
-
+/*
             reader.ReadStartElement("floors");
             while (reader.NodeType != System.Xml.XmlNodeType.EndElement)
             {
@@ -66,10 +122,11 @@ namespace Gruppe22
                 reader.MoveToContent();
             }
             reader.ReadEndElement();
+ */
             reader.ReadEndElement();
         }
 
-        public void Add(string filename, Direction direction, Rectangle cutOut)
+        public void Add(string filename, WallDir direction, Rectangle cutOut)
         {
             _walls.Add(new TileObject(null, cutOut.Width, cutOut.Height));
             _walls[(int)direction].AddAnimation(filename, new Vector2(cutOut.Left, cutOut.Top), -1, 1, 1, false);
@@ -107,6 +164,7 @@ namespace Gruppe22
 
             }
             writer.WriteEndElement();
+            /*
             writer.WriteStartElement("floors");
             foreach (TileObject floor in _floor)
             {
@@ -115,6 +173,25 @@ namespace Gruppe22
                 writer.WriteEndElement();
             }
             writer.WriteEndElement();
+*/
         }
+        #endregion
+
+        #region Constructor
+
+
+        public WallTiles(ContentManager content, int width, int height, string fileName = "")
+        {
+            _walls = new List<TileObject>();
+            _width = width;
+            _height = height;
+            _content = content;
+            for (int i = 0; i < (int)Enum.GetValues(typeof(WallDir)).Cast<WallDir>().Max(); ++i)
+            {
+                _walls.Add(new TileObject(_content, _width, _height));
+            }
+
+        }
+        #endregion
     }
 }

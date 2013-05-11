@@ -16,7 +16,7 @@ namespace Gruppe22
         /// <summary>
         /// Spawn position for the next room
         /// </summary>
-        Vector2 _nextPlayerPos;
+        Coords _nextPlayerPos;
         #endregion
 
         #region Public Fields
@@ -32,7 +32,7 @@ namespace Gruppe22
             }
         }
 
-        public Vector2 nextPlayerPos
+        public Coords nextPlayerPos
         {
             get
             {

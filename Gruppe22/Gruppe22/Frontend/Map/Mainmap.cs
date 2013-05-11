@@ -8,62 +8,17 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Gruppe22
 {
-    /// <summary>
-    /// Different wall-directions
-    /// </summary>
+
     public enum Direction
     {
-        LeftRightUp = 0,
-        LeftRightDown = 1,
-        UpDownLeft = 5,
-        UpDownRight = 6,
-        UpLeft = 7,
-        UpRight = 8,
-        DownLeft = 9,
-        DownRight = 10,
-        LeftRight = 2,
-        UpDown = 3,
-        FourWay = 4,
-        LeftClose = 13,
-        DownClose = 14,
-        RightClose = 16,
-        UpClose = 17,
-        Free = 15,
-        None = -1,
-
-        LeftRightUpDiag = 20,
-        LeftRightDownDiag = 21,
-        UpDownLeftDiag = 22,
-        UpDownRightDiag = 23,
-        UpLeftDiag = 24,
-        UpRightDiag = 25,
-        DownLeftDiag = 26,
-        DownRightDiag = 27,
-        LeftRightDiag = 28,
-        UpDownDiag = 29,
-        FourWayDiag = 30,
-        LeftCloseDiag = 31,
-        DownCloseDiag = 32,
-        RightCloseDiag = 33,
-        UpCloseDiag = 34,
-        FourDiag = 35,
-
-
-        DiagUpClose,
-        DiagDownClose,
-        DiagUpDownClose,
-        DiagUpClose2,
-        DiagDownClose2,
-        DiagUpDownClose2,
-
-        DiagLeftClose,
-        DiagRightClose,
-        DiagLeftRightClose,
-
-        DiagLeftClose2,
-        DiagRightClose2,
-        DiagLeftRightClose2
-
+        Up,
+        Down,
+        Left,
+        Right,
+        UpRight,
+        UpLeft,
+        DownRight,
+        DownLeft
     }
 
     /// <summary>
@@ -89,22 +44,13 @@ namespace Gruppe22
         private Texture2D _background = null;
         private Keys _lastKey = Keys.None;
         private Texture2D _circle = null;
-        private Vector2 _highlightedTile;
+        private Coords _highlightedTile;
         private List<Vector2> _path;
         #endregion
 
 
         #region Public Methods
 
-        public Vector2 GetMousePos(Vector2 coords)
-        {
-            Vector2 realPos = Vector2.Transform(coords, Matrix.Invert(_camera.matrix));
-            Vector2 result = Vector2.Zero;
-            //_tileRect(new Vector2(x, y));
-            _highlightedTile = _pos2Tile(realPos);
-            System.Diagnostics.Debug.WriteLine(realPos.ToString() + "/" + realPos.ToString());
-            return result;
-        }
 
         /// <summary>
         /// Draw the Map
@@ -180,193 +126,203 @@ namespace Gruppe22
         #region Private Methods
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="coords"></param>
+        private void _UpdateMouse(Vector2 coords)
+        {
+            Vector2 realPos = Vector2.Transform(coords, Matrix.Invert(_camera.matrix));
+            _highlightedTile = _pos2Tile(realPos);
+        }
+
+        /// <summary>
         /// Display a wall
         /// </summary>
         /// <param name="dir">Squares the wall connects to</param>
         /// <param name="x">Horizontal position</param>
         /// <param name="y">Vertical position</param>
         /// <param name="transparent"></param>
-        private void _drawWall(Direction dir, Rectangle target, bool transparent)
+        private void _drawWall(WallDir dir, Rectangle target, bool transparent)
         {
             switch (dir)
             {
-                case Direction.UpRight: // Walls on Up and left square
+                case WallDir.UpRight: // Walls on Up and left square
                     _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(0, 768, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
                     break;
 
-                case Direction.UpLeft: // Walls on up and right square
+                case WallDir.UpLeft: // Walls on up and right square
                     _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(128, 768, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
                     break;
 
-                case Direction.DownLeft: // Walls on left and down squares
+                case WallDir.DownLeft: // Walls on left and down squares
                     _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(256, 576, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
                     break;
 
-                case Direction.DownRight: // Walls on right and down squares
+                case WallDir.DownRight: // Walls on right and down squares
                     _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(384, 576, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
                     break;
 
-                case Direction.LeftRight: // Walls on left and right neighboring squares
+                case WallDir.LeftRight: // Walls on left and right neighboring squares
                     _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(0, 576, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
                     break;
 
-                case Direction.UpDown:// Walls on up and down neighboring squares
+                case WallDir.UpDown:// Walls on up and down neighboring squares
                     _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(128, 576, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
                     break;
 
-                case Direction.FourWay: // Walls on all surrounding squares
+                case WallDir.FourWay: // Walls on all surrounding squares
                     _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(384, 768, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
                     break;
 
-                case Direction.RightClose:
+                case WallDir.RightClose:
                     _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(256, 192, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
                     break;
 
-                case Direction.UpClose:
+                case WallDir.UpClose:
                     _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(128, 192, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
                     break;
 
-                case Direction.LeftClose: // Wall on current square connected to square to the left
+                case WallDir.LeftClose: // Wall on current square connected to square to the left
                     _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(384, 192, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
                     break;
 
-                case Direction.DownClose: // Wall on current square connected to square below
+                case WallDir.DownClose: // Wall on current square connected to square below
                     _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(0, 192, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
                     break;
 
-                case Direction.LeftRightUp: // Walls connected left, right and up
+                case WallDir.LeftRightUp: // Walls connected left, right and up
                     _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(640, 576, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
                     break;
 
-                case Direction.LeftRightDown: // Wall connected left right and down
+                case WallDir.LeftRightDown: // Wall connected left right and down
                     _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(768, 576, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
                     break;
 
-                case Direction.UpDownLeft: // Walls on Up, Down and Left suqares
+                case WallDir.UpDownLeft: // Walls on Up, Down and Left suqares
                     _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(896, 576, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
                     break;
 
-                case Direction.UpDownRight: // Walls on Up, Down and Right squares
+                case WallDir.UpDownRight: // Walls on Up, Down and Right squares
                     _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(512, 576, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
                     break;
 
-                case Direction.Free: // Free standing wall (no connecting squares)
+                case WallDir.Free: // Free standing wall (no connecting squares)
                     _spriteBatch.Draw(_environment[2].animationTexture, target, new Rectangle(1920, 0, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
                     break;
 
-                case Direction.UpRightDiag: // Done
+                case WallDir.UpRightDiag: // Done
                     _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(681, 835, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
                     break;
 
-                case Direction.UpLeftDiag: // Done
+                case WallDir.UpLeftDiag: // Done
                     _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(321, 0, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
                     break;
 
-                case Direction.DownLeftDiag: // Done
+                case WallDir.DownLeftDiag: // Done
                     _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(384, 384, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
                     break;
 
-                case Direction.DownRightDiag: // Done
+                case WallDir.DownRightDiag: // Done
                     _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(128, 384, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
                     break;
 
-                case Direction.UpDownLeftDiag: // Done
+                case WallDir.UpDownLeftDiag: // Done
                     _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(640, 384, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
                     break;
 
-                case Direction.UpDownDiag:// Done
+                case WallDir.UpDownDiag:// Done
                     _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(0, 384, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
                     break;
 
-                case Direction.FourDiag: // Done
+                case WallDir.FourDiag: // Done
                     _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(256, 768, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
                     break;
 
-                case Direction.RightCloseDiag: // Done (Imperfect)
+                case WallDir.RightCloseDiag: // Done (Imperfect)
                     _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(681, 820, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
                     break;
 
-                case Direction.UpCloseDiag: // Done
+                case WallDir.UpCloseDiag: // Done
                     _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(257, 0, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
                     break;
 
-                case Direction.LeftCloseDiag: // Done
+                case WallDir.LeftCloseDiag: // Done
                     _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(385, 0, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
                     break;
 
-                case Direction.DownCloseDiag: // Done
+                case WallDir.DownCloseDiag: // Done
                     _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(136, 0, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
                     break;
 
-                case Direction.LeftRightUpDiag: // Done
+                case WallDir.LeftRightUpDiag: // Done
                     _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(896, 384, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
                     break;
 
-                case Direction.LeftRightDownDiag: // Done
+                case WallDir.LeftRightDownDiag: // Done
                     _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(768, 384, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
                     break;
 
-                case Direction.LeftRightDiag: // Done
+                case WallDir.LeftRightDiag: // Done
                     _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(256, 384, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
                     break;
 
-                case Direction.UpDownRightDiag: // Done
+                case WallDir.UpDownRightDiag: // Done
                     _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(512, 384, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
                     break;
 
-                case Direction.DiagUpClose: // Done
+                case WallDir.DiagUpClose: // Done
                     _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(640, 192, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
                     break;
 
-                case Direction.DiagUpDownClose: // Done
-                    _drawWall(Direction.DiagUpClose, target, transparent);
-                    _drawWall(Direction.DiagDownClose, target, transparent);
+                case WallDir.DiagUpDownClose: // Done
+                    _drawWall(WallDir.DiagUpClose, target, transparent);
+                    _drawWall(WallDir.DiagDownClose, target, transparent);
                     break;
 
-                case Direction.DiagDownClose: // Done
+                case WallDir.DiagDownClose: // Done
                     _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(896, 0, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
                     break;
 
-                case Direction.DiagUpClose2: // Done
+                case WallDir.DiagUpClose2: // Done
                     _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(512, 192, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
                     break;
 
-                case Direction.DiagUpDownClose2: // Done
-                    _drawWall(Direction.DiagUpClose2, target, transparent);
-                    _drawWall(Direction.DiagDownClose2, target, transparent);
+                case WallDir.DiagUpDownClose2: // Done
+                    _drawWall(WallDir.DiagUpClose2, target, transparent);
+                    _drawWall(WallDir.DiagDownClose2, target, transparent);
                     break;
 
-                case Direction.DiagDownClose2: // Done
+                case WallDir.DiagDownClose2: // Done
                     _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(768, 0, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
                     break;
 
-                case Direction.DiagLeftClose: // Done
+                case WallDir.DiagLeftClose: // Done
                     _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(640, 0, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
                     break;
 
-                case Direction.DiagLeftRightClose: // Done
-                    _drawWall(Direction.DiagRightClose, target, transparent);
-                    _drawWall(Direction.DiagLeftClose, target, transparent);
+                case WallDir.DiagLeftRightClose: // Done
+                    _drawWall(WallDir.DiagRightClose, target, transparent);
+                    _drawWall(WallDir.DiagLeftClose, target, transparent);
                     break;
 
-                case Direction.DiagRightClose: // Done
+                case WallDir.DiagRightClose: // Done
                     _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(896, 192, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
                     break;
 
-                case Direction.DiagLeftClose2: // Done
+                case WallDir.DiagLeftClose2: // Done
                     _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(512, 0, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
                     break;
 
-                case Direction.DiagLeftRightClose2: // Done
-                    _drawWall(Direction.DiagRightClose2, target, transparent);
-                    _drawWall(Direction.DiagLeftClose2, target, transparent);
+                case WallDir.DiagLeftRightClose2: // Done
+                    _drawWall(WallDir.DiagRightClose2, target, transparent);
+                    _drawWall(WallDir.DiagLeftClose2, target, transparent);
                     break;
 
-                case Direction.DiagRightClose2: // Done
+                case WallDir.DiagRightClose2: // Done
                     _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(768, 192, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
                     break;
 
-                case Direction.None: // No wall
+                case WallDir.None: // No wall
                     break;
             }
         }
@@ -377,9 +333,9 @@ namespace Gruppe22
         /// <param name="x"></param>
         /// <param name="y"></param>
         /// <returns></returns>
-        public Direction GetWallStyle(int x = 0, int y = 0)
+        public WallDir GetWallStyle(int x = 0, int y = 0)
         {
-            if (_map[x, y].canEnter) return Direction.None;
+            if (_map[x, y].canEnter) return WallDir.None;
 
 
             if (_map[x - 1, y].canEnter) // No wall left
@@ -407,22 +363,22 @@ namespace Gruppe22
                                     {
                                         if (!_map[x - 1, y - 1].canEnter) // Down Right +Up Right + Down Left + Up Left diagonal
                                         {
-                                            return Direction.FourDiag;
+                                            return WallDir.FourDiag;
                                         }
                                         else // (not down left) Down Right +Up Right + Down Left 
                                         {
-                                            return Direction.LeftRightDownDiag;
+                                            return WallDir.LeftRightDownDiag;
                                         }
                                     }
                                     else // (not down left)
                                     {
                                         if (!_map[x - 1, y - 1].canEnter) // Down Right  + Up right + Up Left diagonal (not up right)
                                         {
-                                            return Direction.LeftRightUpDiag;
+                                            return WallDir.LeftRightUpDiag;
                                         }
                                         else // Down Right  + Up right diagonal (not up right, up left)
                                         {
-                                            return Direction.LeftRightDiag;
+                                            return WallDir.LeftRightDiag;
                                         }
                                     }
                                 }
@@ -432,11 +388,11 @@ namespace Gruppe22
                                     {
                                         if (!_map[x - 1, y - 1].canEnter) // Down Right + Down Left + Up Left diagonal
                                         {
-                                            return Direction.UpDownLeftDiag;
+                                            return WallDir.UpDownLeftDiag;
                                         }
                                         else // Down Right + Down Left diagonal 
                                         {
-                                            return Direction.UpDownDiag;
+                                            return WallDir.UpDownDiag;
 
                                         }
                                     }
@@ -444,11 +400,11 @@ namespace Gruppe22
                                     {
                                         if (!_map[x - 1, y - 1].canEnter) // Down Right + Up Left diagonal
                                         {
-                                            return Direction.UpLeftDiag;
+                                            return WallDir.UpLeftDiag;
                                         }
                                         else // Not up left: Down right only
                                         {
-                                            return Direction.UpCloseDiag;
+                                            return WallDir.UpCloseDiag;
                                         }
                                     }
                                 }
@@ -462,22 +418,22 @@ namespace Gruppe22
                                     {
                                         if (!_map[x - 1, y - 1].canEnter) // Up Right + Down Left + Up Left diagonal
                                         {
-                                            return Direction.UpDownRightDiag;
+                                            return WallDir.UpDownRightDiag;
                                         }
                                         else // Up Right + Down Left 
                                         {
-                                            return Direction.UpRightDiag;
+                                            return WallDir.UpRightDiag;
                                         }
                                     }
                                     else
                                     {
                                         if (!_map[x - 1, y - 1].canEnter) // Up Right + Up Left diagonal
                                         {
-                                            return Direction.DownLeftDiag;
+                                            return WallDir.DownLeftDiag;
                                         }
                                         else
                                         {
-                                            return Direction.DownCloseDiag;
+                                            return WallDir.DownCloseDiag;
                                         }
                                     }
                                 }
@@ -488,22 +444,22 @@ namespace Gruppe22
                                     {
                                         if (!_map[x - 1, y - 1].canEnter) // Down Left + Up Left diagonal
                                         {
-                                            return Direction.DownRightDiag;
+                                            return WallDir.DownRightDiag;
                                         }
                                         else
                                         {
-                                            return Direction.RightCloseDiag;
+                                            return WallDir.RightCloseDiag;
                                         }
                                     }
                                     else
                                     {
                                         if (!_map[x - 1, y - 1].canEnter) //  Up Left diagonal
                                         {
-                                            return Direction.LeftCloseDiag;
+                                            return WallDir.LeftCloseDiag;
                                         }
                                         else
                                         {
-                                            return Direction.Free; // Keine Mauer weit und breit?
+                                            return WallDir.Free; // Keine Mauer weit und breit?
                                         }
                                     }
                                 }
@@ -533,22 +489,22 @@ namespace Gruppe22
                             {
                                 if (!_map[x - 1, y - 1].canEnter)
                                 {
-                                    return Direction.DiagUpDownClose2;
+                                    return WallDir.DiagUpDownClose2;
                                 }
                                 else
                                 {
-                                    return Direction.DiagUpClose2;
+                                    return WallDir.DiagUpClose2;
                                 }
                             }
                             else
                             {
                                 if (!_map[x - 1, y - 1].canEnter)
                                 {
-                                    return Direction.DiagDownClose2;
+                                    return WallDir.DiagDownClose2;
                                 }
                                 else
                                 {
-                                    return Direction.DownClose;
+                                    return WallDir.DownClose;
                                 }
                             }
 
@@ -567,22 +523,22 @@ namespace Gruppe22
                             {
                                 if (!_map[x - 1, y + 1].canEnter)
                                 {
-                                    return Direction.DiagUpDownClose;
+                                    return WallDir.DiagUpDownClose;
                                 }
                                 else
                                 {
-                                    return Direction.DiagUpClose;
+                                    return WallDir.DiagUpClose;
                                 }
                             }
                             else
                             {
                                 if (!_map[x - 1, y + 1].canEnter)
                                 {
-                                    return Direction.DiagDownClose;
+                                    return WallDir.DiagDownClose;
                                 }
                                 else
                                 {
-                                    return Direction.UpClose;
+                                    return WallDir.UpClose;
                                 }
                             }
 
@@ -590,7 +546,7 @@ namespace Gruppe22
                         else // Wall up and down
                         {
                             // Wall on current square and squares above and below
-                            return Direction.UpDown;
+                            return WallDir.UpDown;
                         }
                     }
                 }
@@ -608,29 +564,29 @@ namespace Gruppe22
                             {
                                 if (!_map[x - 1, y - 1].canEnter)
                                 {
-                                    return Direction.DiagLeftRightClose2;
+                                    return WallDir.DiagLeftRightClose2;
                                 }
                                 else
                                 {
-                                    return Direction.DiagLeftClose2;
+                                    return WallDir.DiagLeftClose2;
                                 }
                             }
                             else
                             {
                                 if (!_map[x - 1, y - 1].canEnter)
                                 {
-                                    return Direction.DiagRightClose2;
+                                    return WallDir.DiagRightClose2;
                                 }
                                 else
                                 {
-                                    return Direction.RightClose;
+                                    return WallDir.RightClose;
                                 }
                             }
                         }
                         else // Wall down
                         {
                             // Wall right and down, but not left and up
-                            return Direction.DownRight;
+                            return WallDir.DownRight;
                         }
                     }
                     else // Wall up
@@ -639,12 +595,12 @@ namespace Gruppe22
                         if (_map[x, y + 1].canEnter) // No wall down
                         {
                             // Wall up, right, but not left and down
-                            return Direction.UpRight;
+                            return WallDir.UpRight;
                         }
                         else // Wall down
                         {
                             // Wall up, right and down, but not left
-                            return Direction.UpDownRight;
+                            return WallDir.UpDownRight;
                         }
                     }
                 }
@@ -665,29 +621,29 @@ namespace Gruppe22
                             {
                                 if (!_map[x + 1, y - 1].canEnter)
                                 {
-                                    return Direction.DiagLeftRightClose;
+                                    return WallDir.DiagLeftRightClose;
                                 }
                                 else
                                 {
-                                    return Direction.DiagLeftClose;
+                                    return WallDir.DiagLeftClose;
                                 }
                             }
                             else
                             {
                                 if (!_map[x + 1, y - 1].canEnter)
                                 {
-                                    return Direction.DiagRightClose;
+                                    return WallDir.DiagRightClose;
                                 }
                                 else
                                 {
-                                    return Direction.LeftClose;
+                                    return WallDir.LeftClose;
                                 }
                             }
                         }
                         else  // Wall down
                         {
                             // Left and bottom closed
-                            return Direction.DownLeft;
+                            return WallDir.DownLeft;
                         }
                     }
                     else // Wall up
@@ -695,12 +651,12 @@ namespace Gruppe22
                         if (_map[x, y + 1].canEnter) // No wall down
                         {
                             // Left and Up closed
-                            return Direction.UpLeft;
+                            return WallDir.UpLeft;
                         }
                         else // Wall down
                         {
                             // Left, Up and Down closed
-                            return Direction.UpDownLeft;
+                            return WallDir.UpDownLeft;
                         }
                     }
                 }
@@ -711,12 +667,12 @@ namespace Gruppe22
                         if (_map[x, y + 1].canEnter) // No wall down
                         {
                             // Walls left and right only
-                            return Direction.LeftRight;
+                            return WallDir.LeftRight;
                         }
                         else // wall up
                         {
                             // All walls but not up
-                            return Direction.LeftRightDown;
+                            return WallDir.LeftRightDown;
 
                         }
                     }
@@ -725,12 +681,12 @@ namespace Gruppe22
                         if (_map[x, y + 1].canEnter) // No wall down
                         {
                             // All walls but not down
-                            return Direction.LeftRightUp;
+                            return WallDir.LeftRightUp;
                         }
                         else // wall down
                         {
                             // Surrounded by walls
-                            return Direction.FourWay;
+                            return WallDir.FourWay;
                         }
                     }
                 }
@@ -757,12 +713,12 @@ namespace Gruppe22
         /// <param name="coords"></param>
         /// <param name="tall"></param>
         /// <returns></returns>
-        private Vector2 _pos2Tile(Vector2 coords, bool tall = false)
+        private Coords _pos2Tile(Vector2 coords, bool tall = false)
         {
             coords.X -= 32;
             coords.Y -= 48;
-            return new Vector2((coords.X / 128 - coords.Y / 96)
-                                    , (coords.X / 128 + coords.Y / 96));
+            return new Coords((int)(coords.X / 128 - coords.Y / 96)
+                                    , (int)(coords.X / 128 + coords.Y / 96));
         }
 
         /// <summary>
@@ -799,7 +755,7 @@ namespace Gruppe22
             {
                 for (int x = (Math.Max((int)_actors[0].position.X - _renderScope, 0)); x <= (Math.Min((int)_actors[0].position.X + _renderScope, hTiles)); ++x)
                 {
-                    if ((y == (int)_highlightedTile.Y) && (x == (int)_highlightedTile.X))
+                    if ((y == (int)_highlightedTile.y) && (x == (int)_highlightedTile.x))
                     {
                         _spriteBatch.Draw(_environment[1].animationTexture, _tileRect(new Vector2(x, y)), new Rectangle(512, 384, 128, 96), Color.Red);
                     }
@@ -815,65 +771,65 @@ namespace Gruppe22
 
         public override void Update(GameTime gameTime)
         {
-            GetMousePos(new Vector2(Mouse.GetState().X, Mouse.GetState().Y));
-            if (Mouse.GetState().LeftButton == ButtonState.Pressed)
+            if (IsHit(Mouse.GetState().X, Mouse.GetState().Y))
             {
-                if (!_actors[0].isMoving)
-                {
-                    if (_highlightedTile.X < _actors[0].position.X)
-                    {
-                        if (_highlightedTile.Y < _actors[0].position.Y)
-                        {
-                            _actors[0].Move(new Vector2(-1.0f, -1.0f));
-                        }
-                        else
-                        {
-                            if (_highlightedTile.Y > _actors[0].position.Y)
-                            {
-                                _actors[0].Move(new Vector2(-1.0f, 1.0f));
-                            }
-                            else
-                            {
-                                _actors[0].Move(new Vector2(-1.0f, 0.0f));
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if (_highlightedTile.X > _actors[0].position.X)
-                        {
+                _UpdateMouse(new Vector2(Mouse.GetState().X, Mouse.GetState().Y));
 
-                            if (_highlightedTile.Y < _actors[0].position.Y)
+                if (Mouse.GetState().LeftButton == ButtonState.Pressed)
+                {
+                    if (!_actors[0].isMoving)
+                    {
+                        if (_highlightedTile.x < _actors[0].position.X)
+                        {
+                            if (_highlightedTile.y < _actors[0].position.Y)
                             {
-                                _actors[0].Move(new Vector2(1.0f, -1.0f));
+                                MovePlayer(Direction.UpLeft);
                             }
                             else
                             {
-                                if (_highlightedTile.Y > _actors[0].position.Y)
+                                if (_highlightedTile.y > _actors[0].position.Y)
                                 {
-                                    _actors[0].Move(new Vector2(1.0f, 1.0f));
+                                    MovePlayer(Direction.DownLeft);
                                 }
                                 else
                                 {
-                                    _actors[0].Move(new Vector2(1.0f, 0.0f));
+                                    MovePlayer(Direction.Left);
                                 }
                             }
                         }
                         else
                         {
-                            if (_highlightedTile.Y < _actors[0].position.Y)
+                            if (_highlightedTile.x > _actors[0].position.X)
                             {
-                                _actors[0].Move(new Vector2(0.0f, -1.0f));
-                            }
-                            else
-                            {
-                                if (_highlightedTile.Y > _actors[0].position.Y)
+
+                                if (_highlightedTile.y < _actors[0].position.Y)
                                 {
-                                    _actors[0].Move(new Vector2(0.0f, 1.0f));
+                                    MovePlayer(Direction.UpRight);
                                 }
                                 else
                                 {
-                                    _actors[0].Move(new Vector2(0.0f, 0.0f));
+                                    if (_highlightedTile.y > _actors[0].position.Y)
+                                    {
+                                        MovePlayer(Direction.DownRight);
+                                    }
+                                    else
+                                    {
+                                        MovePlayer(Direction.Right);
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                if (_highlightedTile.y < _actors[0].position.Y)
+                                {
+                                    MovePlayer(Direction.Up);
+                                }
+                                else
+                                {
+                                    if (_highlightedTile.y > _actors[0].position.Y)
+                                    {
+                                        MovePlayer(Direction.Down);
+                                    }
                                 }
                             }
                         }
@@ -900,42 +856,42 @@ namespace Gruppe22
             //    {
             switch (dir)
             {
-                case Direction.UpLeft:
+                case Direction.Left:
                     if (((int)_actors[0].target.X > 0) && (_map[(int)_actors[0].target.X - 1, (int)_actors[0].target.Y].canEnter))
                         _actors[0].Move(new Vector2(-1.0f, 0));
                     break;
-                case Direction.DownRight:
+                case Direction.Right:
                     if (((int)_actors[0].target.X < _map.width - 1) && (_map[(int)_actors[0].target.X + 1, (int)_actors[0].target.Y].canEnter))
                         _actors[0].Move(new Vector2(1.0f, 0));
                     break;
-                case Direction.DownLeft:
+                case Direction.Down:
                     if (((int)_actors[0].target.Y < _map.height - 1) && (_map[(int)_actors[0].target.X, (int)_actors[0].target.Y + 1].canEnter))
                         _actors[0].Move(new Vector2(0, 1.0f));
                     break;
-                case Direction.UpRight:
+                case Direction.Up:
                     if (((int)_actors[0].target.Y > 0) && (_map[(int)_actors[0].target.X, (int)_actors[0].target.Y - 1].canEnter))
                         _actors[0].Move(new Vector2(0, -1.0f));
                     break;
 
                 // Diagonal movement
                 // TODO: Check for diagonal walls - doh :-(
-                case Direction.UpLeftDiag:
+                case Direction.DownLeft:
                     if (((int)_actors[0].target.X > 0) && ((int)_actors[0].target.Y < _map.height - 1) && (_map[(int)_actors[0].target.X - 1, (int)_actors[0].target.Y + 1].canEnter)
                         )
                         _actors[0].Move(new Vector2(-1.0f, 1.0f));
                     break;
-                case Direction.DownRightDiag:
+                case Direction.UpRight:
                     if (((int)_actors[0].target.X < _map.width - 1) && ((int)_actors[0].target.Y > 0) &&
                         (_map[(int)_actors[0].target.X + 1, (int)_actors[0].target.Y - 1].canEnter)
                         )
                         _actors[0].Move(new Vector2(1.0f, -1.0f));
                     break;
-                case Direction.DownLeftDiag:
+                case Direction.DownRight:
                     if (((int)_actors[0].target.Y < _map.height - 1) && ((int)_actors[0].target.X < _map.width - 1) &&
                         (_map[(int)_actors[0].target.X + 1, (int)_actors[0].target.Y + 1].canEnter))
                         _actors[0].Move(new Vector2(1.0f, 1.0f));
                     break;
-                case Direction.UpRightDiag:
+                case Direction.UpLeft:
                     if (((int)_actors[0].target.Y > 0) &&
                         ((int)_actors[0].target.X > 0) &&
                         (_map[(int)_actors[0].target.X - 1, (int)_actors[0].target.Y - 1].canEnter))
@@ -956,74 +912,74 @@ namespace Gruppe22
         /// </summary>
         public void CreateTextureList()
         {
-            Tileset _tiles = new Tileset();
-            _tiles.Add("Wall1", Direction.UpRight, new Rectangle(0, 768, 128, 192));
-            _tiles.Add("Wall1", Direction.UpLeft, new Rectangle(128, 768, 128, 192));
-            _tiles.Add("Wall1", Direction.DownLeft,
+            WallTiles _tiles = new WallTiles(_content, 128, 192, "");
+            _tiles.Add("Wall1", WallDir.UpRight, new Rectangle(0, 768, 128, 192));
+            _tiles.Add("Wall1", WallDir.UpLeft, new Rectangle(128, 768, 128, 192));
+            _tiles.Add("Wall1", WallDir.DownLeft,
                     new Rectangle(256, 576, 128, 192));
-            _tiles.Add("Wall1", Direction.DownRight, new Rectangle(384, 576, 128, 192));
-            _tiles.Add("Wall1", Direction.LeftRight, new Rectangle(0, 576, 128, 192));
-            _tiles.Add("Wall1", Direction.UpDown, new Rectangle(128, 576, 128, 192));
-            _tiles.Add("Wall1", Direction.FourWay, new Rectangle(384, 768, 128, 192));
-            _tiles.Add("Wall1", Direction.RightClose, new Rectangle(256, 192, 128, 192));
-            _tiles.Add("Wall1", Direction.UpClose, new Rectangle(128, 192, 128, 192));
-            _tiles.Add("Wall1", Direction.LeftClose, new Rectangle(384, 192, 128, 192));
-            _tiles.Add("Wall1", Direction.DownClose, new Rectangle(0, 192, 128, 192));
-            _tiles.Add("Wall1", Direction.LeftRightUp,
+            _tiles.Add("Wall1", WallDir.DownRight, new Rectangle(384, 576, 128, 192));
+            _tiles.Add("Wall1", WallDir.LeftRight, new Rectangle(0, 576, 128, 192));
+            _tiles.Add("Wall1", WallDir.UpDown, new Rectangle(128, 576, 128, 192));
+            _tiles.Add("Wall1", WallDir.FourWay, new Rectangle(384, 768, 128, 192));
+            _tiles.Add("Wall1", WallDir.RightClose, new Rectangle(256, 192, 128, 192));
+            _tiles.Add("Wall1", WallDir.UpClose, new Rectangle(128, 192, 128, 192));
+            _tiles.Add("Wall1", WallDir.LeftClose, new Rectangle(384, 192, 128, 192));
+            _tiles.Add("Wall1", WallDir.DownClose, new Rectangle(0, 192, 128, 192));
+            _tiles.Add("Wall1", WallDir.LeftRightUp,
             new Rectangle(640, 576, 128, 192));
-            _tiles.Add("Wall1", Direction.LeftRightDown,
+            _tiles.Add("Wall1", WallDir.LeftRightDown,
             new Rectangle(768, 576, 128, 192));
-            _tiles.Add("Wall1", Direction.UpDownLeft,
+            _tiles.Add("Wall1", WallDir.UpDownLeft,
             new Rectangle(896, 576, 128, 192));
-            _tiles.Add("Wall1", Direction.UpDownRight,
+            _tiles.Add("Wall1", WallDir.UpDownRight,
             new Rectangle(512, 576, 128, 192));
-            _tiles.Add("Wall1", Direction.UpRightDiag,
+            _tiles.Add("Wall1", WallDir.UpRightDiag,
             new Rectangle(681, 835, 128, 192));
-            _tiles.Add("Wall1", Direction.UpLeftDiag,
+            _tiles.Add("Wall1", WallDir.UpLeftDiag,
             new Rectangle(321, 0, 128, 192));
-            _tiles.Add("Wall1", Direction.DownLeftDiag,
+            _tiles.Add("Wall1", WallDir.DownLeftDiag,
             new Rectangle(384, 384, 128, 192));
-            _tiles.Add("Wall1", Direction.DownRightDiag,
+            _tiles.Add("Wall1", WallDir.DownRightDiag,
             new Rectangle(128, 384, 128, 192));
-            _tiles.Add("Wall1", Direction.UpDownLeftDiag,
+            _tiles.Add("Wall1", WallDir.UpDownLeftDiag,
             new Rectangle(640, 384, 128, 192));
-            _tiles.Add("Wall1", Direction.UpDownDiag,
+            _tiles.Add("Wall1", WallDir.UpDownDiag,
             new Rectangle(0, 384, 128, 192));
-            _tiles.Add("Wall1", Direction.FourDiag,
+            _tiles.Add("Wall1", WallDir.FourDiag,
             new Rectangle(256, 768, 128, 192));
-            _tiles.Add("Wall1", Direction.RightCloseDiag,
+            _tiles.Add("Wall1", WallDir.RightCloseDiag,
             new Rectangle(681, 820, 128, 192));
-            _tiles.Add("Wall1", Direction.UpCloseDiag,
+            _tiles.Add("Wall1", WallDir.UpCloseDiag,
             new Rectangle(257, 0, 128, 192));
-            _tiles.Add("Wall1", Direction.LeftCloseDiag,
+            _tiles.Add("Wall1", WallDir.LeftCloseDiag,
             new Rectangle(385, 0, 128, 192));
-            _tiles.Add("Wall1", Direction.DownCloseDiag,
+            _tiles.Add("Wall1", WallDir.DownCloseDiag,
             new Rectangle(136, 0, 128, 192));
-            _tiles.Add("Wall1", Direction.LeftRightUpDiag,
+            _tiles.Add("Wall1", WallDir.LeftRightUpDiag,
             new Rectangle(896, 384, 128, 192));
-            _tiles.Add("Wall1", Direction.LeftRightDownDiag,
+            _tiles.Add("Wall1", WallDir.LeftRightDownDiag,
             new Rectangle(768, 384, 128, 192));
-            _tiles.Add("Wall1", Direction.LeftRightDiag,
+            _tiles.Add("Wall1", WallDir.LeftRightDiag,
             new Rectangle(256, 384, 128, 192));
-            _tiles.Add("Wall1", Direction.UpDownRightDiag,
+            _tiles.Add("Wall1", WallDir.UpDownRightDiag,
             new Rectangle(512, 384, 128, 192));
-            _tiles.Add("Wall1", Direction.DiagUpClose,
+            _tiles.Add("Wall1", WallDir.DiagUpClose,
             new Rectangle(640, 192, 128, 192));
-            _tiles.Add("Wall1", Direction.DiagDownClose,
+            _tiles.Add("Wall1", WallDir.DiagDownClose,
             new Rectangle(896, 0, 128, 192));
-            _tiles.Add("Wall1", Direction.DiagUpClose2,
+            _tiles.Add("Wall1", WallDir.DiagUpClose2,
             new Rectangle(512, 192, 128, 192));
-            _tiles.Add("Wall1", Direction.DiagDownClose2,
+            _tiles.Add("Wall1", WallDir.DiagDownClose2,
             new Rectangle(768, 0, 128, 192));
-            _tiles.Add("Wall1", Direction.DiagLeftClose,
+            _tiles.Add("Wall1", WallDir.DiagLeftClose,
             new Rectangle(640, 0, 128, 192));
-            _tiles.Add("Wall1", Direction.DiagRightClose,
+            _tiles.Add("Wall1", WallDir.DiagRightClose,
             new Rectangle(896, 192, 128, 192));
-            _tiles.Add("Wall1", Direction.DiagLeftClose2,
+            _tiles.Add("Wall1", WallDir.DiagLeftClose2,
             new Rectangle(512, 0, 128, 192));
-            _tiles.Add("Wall1", Direction.DiagRightClose2,
+            _tiles.Add("Wall1", WallDir.DiagRightClose2,
             new Rectangle(768, 192, 128, 192));
-            _tiles.Add("Column", Direction.Free, new Rectangle(1920, 0, 128, 192));
+            _tiles.Add("Column", WallDir.Free, new Rectangle(1920, 0, 128, 192));
             _tiles.Save();
         }
 
@@ -1035,7 +991,7 @@ namespace Gruppe22
                 if (Keyboard.GetState().IsKeyDown(Keys.W))
                 {
 
-                    MovePlayer(Direction.UpRight);
+                    MovePlayer(Direction.Up);
                     _lastKey = Keys.W;
 
                 }
@@ -1043,41 +999,41 @@ namespace Gruppe22
                 if (Keyboard.GetState().IsKeyDown(Keys.A))
                 {
 
-                    MovePlayer(Direction.UpLeft);
+                    MovePlayer(Direction.Left);
                     _lastKey = Keys.A;
 
                 }
 
                 if (Keyboard.GetState().IsKeyDown(Keys.D))
                 {
-                    MovePlayer(Direction.DownRight);
+                    MovePlayer(Direction.Right);
                     _lastKey = Keys.D;
                 }
 
                 if (Keyboard.GetState().IsKeyDown(Keys.S))
                 {
-                    MovePlayer(Direction.DownLeft);
+                    MovePlayer(Direction.Down);
                     _lastKey = Keys.S;
                 }
 
 
                 if (Keyboard.GetState().IsKeyDown(Keys.Q))
                 {
-                    MovePlayer(Direction.UpRightDiag);
+                    MovePlayer(Direction.UpLeft);
                     _lastKey = Keys.Q;
                 }
 
 
                 if (Keyboard.GetState().IsKeyDown(Keys.E))
                 {
-                    MovePlayer(Direction.DownRightDiag);
+                    MovePlayer(Direction.UpRight);
                     _lastKey = Keys.E;
                 }
 
 
                 if (Keyboard.GetState().IsKeyDown(Keys.Y))
                 {
-                    MovePlayer(Direction.UpLeftDiag);
+                    MovePlayer(Direction.DownLeft);
                     _lastKey = Keys.Y;
                 }
 
@@ -1085,7 +1041,7 @@ namespace Gruppe22
 
                 if (Keyboard.GetState().IsKeyDown(Keys.C))
                 {
-                    MovePlayer(Direction.DownLeftDiag);
+                    MovePlayer(Direction.DownRight);
                     _lastKey = Keys.S;
                 }
             }
@@ -1146,7 +1102,8 @@ namespace Gruppe22
             _actors.Add(new ActorView(spriteBatch, "Player", true, new Vector2(1, 1), player));
             _background = _content.Load<Texture2D>("Minimap");
             _circle = _content.Load<Texture2D>("Light");
-
+            _highlightedTile = new Coords(-1, -1);
+            //CreateTextureList();
         }
         #endregion
 
