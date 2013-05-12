@@ -29,6 +29,8 @@ namespace Gruppe22
 
         #endregion
 
+        int _test = 0;
+
         #region Public Fields
 
         /// <summary>
@@ -304,20 +306,14 @@ namespace Gruppe22
                         _height = Convert.ToInt32(reader.GetAttribute("height"));
                         _width = Convert.ToInt32(reader.GetAttribute("width"));
                         int y = 0;
-                        while (reader.Name.Equals("Row"))
+                        while (reader.Name.Equals("row"))
                         {
                             _tiles.Add(new List<Tile>());
                             int x = 0;
-                            while (reader.Name.Equals("Tile"))
+                            while (reader.Name.Equals("tile"))
                             {
-                                // das müsste eigentlich in Tile Load()
                                 _tiles[y].Add(new Tile());
-                                _tiles[y][x].canEnter = Convert.ToBoolean(reader.GetAttribute("canEnter"));
-                                _tiles[y][x].connected = Convert.ToBoolean(reader.GetAttribute("connected"));
-                                string con = reader.GetAttribute("connection");
-                                if (con.Equals("invalid"))
-                                    _tiles[y][x].connection = Connection.Invalid;
-
+                                _tiles[y][x].Load(reader);
                             }
                             y++;
                         }
@@ -331,7 +327,7 @@ namespace Gruppe22
             }
             return result;
         }
-
+        
         public void DebugMap()
         {
             string output = "";
@@ -381,7 +377,6 @@ namespace Gruppe22
             }
             return true;
         }
-
         /// <summary>
         /// Write the current map to a file
         /// </summary>
@@ -399,13 +394,16 @@ namespace Gruppe22
                 target.WriteStartElement("map");
                 target.WriteAttributeString("height", Convert.ToString(_height));
                 target.WriteAttributeString("width", Convert.ToString(_width));
+                target.WriteAttributeString("test", Convert.ToString(_test));
 
                 foreach (List<Tile> row in _tiles)
                 {
-                    target.WriteStartElement("Row");
+                    target.WriteStartElement("row");
                     foreach (Tile tile in row)
                     {
+                        target.WriteStartElement("tile");
                         result = tile.Save(target);
+                        target.WriteEndElement();
                         if (result == false) break;
                     }
                     target.WriteEndElement();
@@ -440,12 +438,11 @@ namespace Gruppe22
                 _tiles.Add(new List<Tile>());
                 for (int x = 0; x < width; ++x)
                 {
-                    _tiles[y].Add(new Tile());
-                    //_tiles[y][x].AddToOverlay(new FloorTile());
+                    _tiles[y].Add(new FloorTile());
+                    //_test+=_tiles[y][x].AddToOverlay(new Tile());
                 }
             }
             _blankTile = new Tile();
-            //_tiles[2][2].AddToOverlay(new TeleportTile("bla.xml", new Coords(1, 4))); // testing
             //_blankTile.canEnter = false;
         }
 

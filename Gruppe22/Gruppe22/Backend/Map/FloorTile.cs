@@ -12,9 +12,8 @@ namespace Gruppe22
     {
         public override bool Save(XmlTextWriter writer)
         {
-            writer.WriteStartElement("Floortile");
             writer.WriteAttributeString("canEnter", Convert.ToString(canEnter));
-            writer.WriteEndElement();            
+            writer.WriteValue("Floor");
             return true;
         }
         #region Constructor

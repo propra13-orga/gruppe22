@@ -14,7 +14,7 @@ namespace Gruppe22
         /// <summary>
         /// Path to the .xml for the next Room
         /// </summary>
-        String _nextRoom;
+        string _nextRoom;
         /// <summary>
         /// Spawn position for the next room
         /// </summary>
@@ -43,15 +43,33 @@ namespace Gruppe22
         }
         #endregion
 
+        #region XML SaveLoad
+        /// <summary>
+        /// see Tile.cs
+        /// </summary>
+        /// <param name="writer"></param>
+        /// <returns></returns>
         public override bool Save(XmlTextWriter writer)
         {
-            writer.WriteStartElement("TeleportTile");
             writer.WriteAttributeString("Ziel", nextRoom);
-            string zipo=nextPlayerPos.x+" "+nextPlayerPos.y;
-            writer.WriteAttributeString("ZielPosition", zipo);
-            writer.WriteEndElement();
+            writer.WriteAttributeString("x", Convert.ToString(_nextPlayerPos.x));
+            writer.WriteAttributeString("y", Convert.ToString(_nextPlayerPos.y));
+            writer.WriteValue("Teleport");
             return true;
         }
+        public bool Load(XmlTextReader reader)
+        {
+            canEnter = Convert.ToBoolean(reader.GetAttribute("canEnter"));
+            connected = Convert.ToBoolean(reader.GetAttribute("connected"));
+            string con = reader.GetAttribute("connection");
+            if (con.Equals("invalid"))
+                connection = Connection.Invalid;
+            _nextRoom = reader.GetAttribute("Ziel");
+            _nextPlayerPos.x = Convert.ToInt32(reader.GetAttribute("x"));
+            _nextPlayerPos.y = Convert.ToInt32(reader.GetAttribute("y"));
+            return true;
+        }
+        #endregion
 
         #region Constructor
         public TeleportTile(string nextXml, Coords pos)

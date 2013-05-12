@@ -172,11 +172,13 @@ namespace Gruppe22
 
         #region Public methods
 
-        public void AddToOverlay(Tile newtile)
+        public int AddToOverlay(Tile newtile)
         {            
-            _overlay.Add(newtile);
+            _overlay.Add(new FloorTile());
+            return 1;
         }
 
+        #region XML SaveLoad
         /// <summary>
         /// Write Tile data to an XML-file
         /// </summary>
@@ -184,19 +186,19 @@ namespace Gruppe22
         /// <returns>true if write is successful</returns>
         public virtual bool Save(XmlTextWriter writer)
         {
-            writer.WriteStartElement("Tile");
             writer.WriteAttributeString("canEnter", Convert.ToString(canEnter));
             writer.WriteAttributeString("connected", Convert.ToString(_connected));
             writer.WriteAttributeString("connection", Convert.ToString(_connection));
-            foreach (Tile tile in _overlay)
+            writer.WriteValue("Normal");
+            for(int i=0; i<_overlay.Count; i++)
             {
                 writer.WriteAttributeString("test ist", "etwas da"); // testing
-                tile.Save(writer);
+                writer.WriteStartElement("OverlayTile" + i);
+                _overlay[i].Save(writer);
+                writer.WriteEndElement();
             }
-            writer.WriteEndElement();
             return true;
         }
-
         /// <summary>
         /// Read Tile data from an XML-file
         /// </summary>
@@ -204,9 +206,15 @@ namespace Gruppe22
         /// <returns>true if read is successful</returns>
         public bool Load(XmlTextReader reader)
         {
-            
+            canEnter = Convert.ToBoolean(reader.GetAttribute("canEnter"));
+            connected = Convert.ToBoolean(reader.GetAttribute("connected"));
+            string con = reader.GetAttribute("connection");
+            if (con.Equals("invalid"))
+                connection = Connection.Invalid;
             return true;
         }
+        #endregion
+
         #endregion
 
         #region Constructors

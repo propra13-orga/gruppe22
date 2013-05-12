@@ -33,6 +33,7 @@ namespace Gruppe22
         public override bool Save(XmlTextWriter writer)
         {
             writer.WriteAttributeString("Schaden", damage.ToString());
+            writer.WriteValue("Trap");
             return true;
         }
     }
