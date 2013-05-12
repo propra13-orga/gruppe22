@@ -342,7 +342,14 @@ namespace Gruppe22
         {
             get
             {
-                return _animations[_currentPhase].clipRect;
+                if (_currentPhase < _animations.Count)
+                {
+                    return _animations[_currentPhase].clipRect;
+                }
+                else
+                {
+                    return Rectangle.Empty;
+                }
             }
             set
             {
@@ -387,7 +394,7 @@ namespace Gruppe22
         /// <param name="rows">Number of rows used in the animation</param>
         /// <param name="order">Whether to read row by row (false, default) or column by column (true)</param>
         /// <returns>ID of Animation added to or -1 if invalid target was passed</returns>
-        public void AddAnimation(string src, Vector2 start, int cols = 1, int rows = 1, bool order = false)
+        public void AddAnimation(string src, Coords start, int cols = 1, int rows = 1, bool order = false)
         {
             if (order)
             {
@@ -396,8 +403,8 @@ namespace Gruppe22
                     for (int x = 0; x < cols; ++x)
                     {
 
-                        _animations.Add(new VisibleObject(_content, src, new Rectangle((int)start.X + x * _width,
-                            (int)start.Y + y * _height, _width, _height)));
+                        _animations.Add(new VisibleObject(_content, src, new Rectangle((int)start.x + x * _width,
+                            (int)start.y + y * _height, _width, _height)));
                     }
                 }
             }
@@ -408,8 +415,8 @@ namespace Gruppe22
                     for (int y = 0; y < rows; ++y)
                     {
 
-                        _animations.Add(new VisibleObject(_content, src, new Rectangle((int)start.X + x * _width,
-                            (int)start.Y + y * _height, _width, _height)));
+                        _animations.Add(new VisibleObject(_content, src, new Rectangle((int)start.x + x * _width,
+                            (int)start.y + y * _height, _width, _height)));
                     }
                 }
 

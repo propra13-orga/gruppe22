@@ -62,9 +62,9 @@ namespace Gruppe22
     }
 
 
-    public class TileSet: IXmlSerializable
+    public class TileSet : IXmlSerializable
     {
-       #region Private Fields
+        #region Private Fields
         protected string _fileName = "";
         protected List<TileObject> _textures;
         protected int _width = 0;
@@ -82,7 +82,9 @@ namespace Gruppe22
         {
             get
             {
-                return _textures[i];
+                if (i < _textures.Count)
+                    return _textures[i];
+                else return null;
             }
         }
 
@@ -142,20 +144,23 @@ namespace Gruppe22
                 return;
 
             reader.ReadStartElement("TileSet");
-            reader.ReadStartElement("Tile");
-            while (reader.NodeType != System.Xml.XmlNodeType.EndElement)
+            reader.Read();
+            if (isEmptyElement)
+                return;
+            while ((reader.NodeType != System.Xml.XmlNodeType.EndElement) && (reader.NodeType != System.Xml.XmlNodeType.None))
             {
                 TileObject temp = new TileObject(_content, _width, _height);
                 int _id = Int32.Parse(reader.GetAttribute("ID").ToString());
-                while(_id>_textures.Count){
-                    _textures.Add(new TileObject());
+                while (_id > _textures.Count)
+                {
+                    _textures.Add(new TileObject(_content,_width,_height));
                 }
                 _textures[_id].ReadXml(reader);
             }
             reader.ReadEndElement();
 
-            while (reader.NodeType != System.Xml.XmlNodeType.EndElement) reader.Read();
-            reader.ReadEndElement();
+            while ((reader.NodeType != System.Xml.XmlNodeType.EndElement) && (reader.NodeType != System.Xml.XmlNodeType.None)) reader.Read();
+            if (reader.NodeType == System.Xml.XmlNodeType.EndElement) reader.ReadEndElement();
         }
 
         /// <summary>
@@ -166,8 +171,11 @@ namespace Gruppe22
         /// <param name="cutOut"></param>
         public virtual void Add(string filename, int id, Rectangle cutOut)
         {
-            if ((int)id < _textures.Count)
-                _textures[id].AddAnimation(filename, new Vector2(cutOut.Left, cutOut.Top), 1, 1, false);
+            while ((int)id > _textures.Count-1)
+            {
+                _textures.Add(new TileObject(_content,_width,_height));
+            }
+            _textures[id].AddAnimation(filename, new Coords(cutOut.Left, cutOut.Top), 1, 1, false);
         }
 
         /// <summary>
@@ -178,7 +186,7 @@ namespace Gruppe22
         {
             System.Xml.XmlTextWriter writer = new System.Xml.XmlTextWriter(filename, Encoding.Unicode);
 
-            XmlSerializer serializer = new XmlSerializer(typeof(WallTiles));
+            XmlSerializer serializer = new XmlSerializer(typeof(TileSet));
             serializer.Serialize(writer, this);
             writer.Close();
         }
@@ -202,11 +210,11 @@ namespace Gruppe22
         {
             writer.WriteAttributeString("width", _width.ToString());
             writer.WriteAttributeString("height", _height.ToString());
-            writer.WriteStartElement("walls");
+            writer.WriteStartElement("Tiles");
             for (int i = 0; i < _textures.Count; ++i)
             {
-                writer.WriteStartElement("wall");
-                writer.WriteAttributeString("Direction", ((WallDir)i).ToString());
+                writer.WriteStartElement("Tile");
+                writer.WriteAttributeString("ID", i.ToString());
                 _textures[i].WriteXml(writer);
                 writer.WriteEndElement();
 

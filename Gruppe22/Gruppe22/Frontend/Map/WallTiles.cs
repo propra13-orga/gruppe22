@@ -50,10 +50,10 @@ namespace Gruppe22
         /// <param name="filename"></param>
         /// <param name="direction"></param>
         /// <param name="cutOut"></param>
-        public  void Add(string filename, WallDir direction, Rectangle cutOut)
+        public void Add(string filename, WallDir direction, Rectangle cutOut)
         {
             if ((int)direction < _textures.Count)
-                _textures[(int)direction].AddAnimation(filename, new Vector2(cutOut.Left, cutOut.Top), 1, 1, false);
+                _textures[(int)direction].AddAnimation(filename, new Coords(cutOut.Left, cutOut.Top), 1, 1, false);
         }
 
         /// <summary>
@@ -102,11 +102,16 @@ namespace Gruppe22
 
         #region Constructor
 
+        public WallTiles()
+        {
+
+        }
+
         public WallTiles(ContentManager content, int width, int height, string fileName = "")
             : base(content, width, height, fileName)
         {
             _textures = new List<TileObject>();
-            for (int i = 0; i < (int)Enum.GetValues(typeof(WallDir)).Cast<WallDir>().Max(); ++i)
+            for (int i = 0; i < Enum.GetValues(typeof(WallDir)).Length ; ++i)
             {
                 _textures.Add(new TileObject(_content, _width, _height));
             }

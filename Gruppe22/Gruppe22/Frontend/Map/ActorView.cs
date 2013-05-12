@@ -7,31 +7,6 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Gruppe22
 {
-
-    /*
-
-                player.AddAnimation("Stand", new Vector2(0, 0), -1, 1, 1);
-
-
-            player.AddAnimation("Walk", new Vector2(0, 192), -1, 8, 1);
-
-            player.AddAnimation("Walk", new Vector2(0, 576), -1, 8, 1);
-
-            player.AddAnimation("Walk", new Vector2(0, 480), -1, 8, 1);
-
-            player.AddAnimation("Walk", new Vector2(0, 288), -1, 8, 1);
-
-
-            player.AddAnimation("Walk", new Vector2(0, 0), -1, 8, 1);
-
-            player.AddAnimation("Walk", new Vector2(0, 96), -1, 8, 1);
-
-            player.AddAnimation("Walk", new Vector2(0, 384), -1, 8, 1);
-
-            player.AddAnimation("Walk", new Vector2(0, 672), -1, 8, 1);
-
-
-*/
     public enum Activity
     {
         Walk = 0,
@@ -49,6 +24,7 @@ namespace Gruppe22
         private Activity _activity = Activity.Walk;
         private Direction _direction = Direction.Down;
         private SpriteBatch _spriteBatch = null;
+        private int _speed = 5;
         #endregion
 
         #region Public fields
@@ -64,6 +40,17 @@ namespace Gruppe22
             }
         }
 
+        public int speed
+        {
+            set
+            {
+                _speed = value;
+            }
+            get
+            {
+                return _speed;
+            }
+        }
         public Coords target
         {
             get
@@ -79,7 +66,7 @@ namespace Gruppe22
         {
             get
             {
-                return (!_position.Equals(_target));
+                return ((_target.x != position.x) || (target.y != position.y));
             }
         }
 
@@ -161,17 +148,32 @@ namespace Gruppe22
         }
 
         /// <summary>
+        /// Add animation for certain activity from a file
+        /// </summary>
+        /// <param name="activity"></param>
+        /// <param name="direction"></param>
+        /// <param name="filename"></param>
+        /// <param name="startPos"></param>
+        /// <param name="cols"></param>
+        /// <param name="rows"></param>
+        /// <param name="vertical"></param>
+        public void Add(Activity activity, Direction direction, string filename, Coords startPos, int cols = 1, int rows = 1, bool vertical = false)
+        {
+            _textures[(int)activity * 8 + (int)direction].AddAnimation(filename, startPos, cols, rows, vertical);
+        }
+
+        /// <summary>
         /// 
         /// </summary>
         /// <param name="difference"></param>
-        public void Move(Vector2 difference)
+        public void Move(Coords difference)
         {
             if (_target.x == -1)
             {
                 _target = _position;
             }
-            _target.x += (int)difference.X;
-            _target.y += (int)difference.Y;
+            _target.x += difference.x;
+            _target.y += difference.y;
         }
 
 
@@ -181,70 +183,75 @@ namespace Gruppe22
         /// <param name="gametime"></param>
         public void Update(GameTime gametime)
         {
-            if (!_target.Equals(_position))
+            if ((_target.x != _position.x) || (_target.y != _position.y))
             {
-                if ((_target.x != _position.x) || (_target.y != _position.x))
+                if (_target.x > _position.x)
                 {
-                    if (_target.x > _position.x)
+                    _position.x += Math.Min(_speed, Math.Abs(_target.x - position.x));
+
+                    if (target.y > position.y)
                     {
+                        if (Math.Abs(_target.x - _position.x) < Math.Abs(_target.y - _position.y))
+                            _position.y += Math.Min(_speed, Math.Abs(_target.y - position.y));
+                        _direction = Direction.DownRight;
+                    }
+                    else
+                    {
+                        if (target.y < position.y)
+                        {
+                            if (Math.Abs(_target.x - _position.x) < Math.Abs(_target.y - _position.y))
+                                _position.y -= Math.Min(_speed, Math.Abs(_target.y - position.y));
+                            _direction = Direction.UpRight;
+                        }
+                        else
+                        {
+                            _direction = Direction.Right;
+                        }
+                    }
+                }
+                else
+                {
+                    if (_target.x < _position.x)
+                    {
+                        _position.x -= Math.Min(_speed, Math.Abs(_target.x - position.x));
 
                         if (target.y > position.y)
                         {
-                            _position.x += 1;
-                            if (Math.Abs(_target.x - _position.x) < Math.Abs(_target.y - _position.y)) _position.y += 1;
-                            _direction = Direction.DownRight;
+                            if (Math.Abs(_target.x - _position.x) < Math.Abs(_target.y - _position.y))
+                                _position.y += Math.Min(_speed, Math.Abs(_target.y - position.y));
+
+                            _direction = Direction.UpLeft;
                         }
                         else
                         {
                             if (target.y < position.y)
                             {
-                                _position.x += 1;
-                                if (Math.Abs(_target.x - _position.x) < Math.Abs(_target.y - _position.y)) _position.y -= 1;
-                                _direction = Direction.UpRight;
+                                if (Math.Abs(_target.x - _position.x) < Math.Abs(_target.y - _position.y))
+                                    _position.y -= Math.Min(_speed, Math.Abs(_target.y - position.y));
+                                _direction = Direction.DownLeft;
                             }
                             else
                             {
-                                _position.x += 1;
-                                _direction = Direction.Right;
+                                _direction = Direction.Left;
                             }
                         }
                     }
                     else
                     {
-                        if (_target.x < _position.x)
-                        {
-                            if (target.y > position.y)
-                            {
-                                _position.x -= 1;
-                                if (Math.Abs(_target.x - _position.x) < Math.Abs(_target.y - _position.y)) _position.y += 1;
-
-                                _direction = Direction.UpLeft;
-                            }
-                            else
-                            {
-                                if (target.y < position.y)
-                                {
-                                    _position.x -= 1;
-                                    if (Math.Abs(_target.y - _position.y) < Math.Abs(_target.y - _position.y)) _position.y -= 1;
-                                    _direction = Direction.DownLeft;
-                                }
-                                else
-                                {
-                                    _position.x -= 1;
-                                    _direction = Direction.Left;
-                                }
-                            }
-                        }
+                        if (_target.y > _position.y) {
+                            _position.y += Math.Min(_speed, Math.Abs(_target.y - position.y)); 
+                            _direction = Direction.Down; }
                         else
-                        {
-                            if (_target.y > _position.y) { _position.y += 1; _direction = Direction.Down; }
-                            else
-                                if (_target.y < _position.y) { _position.y -= 1; _direction = Direction.Up; }
-                        }
+                            if (_target.y < _position.y)
+                            {
+                                _position.y -= Math.Min(_speed, Math.Abs(_target.y - position.y));
+                                _direction = Direction.Up;
+                            }
                     }
-                    _textures[(int)_activity * 8 + (int)_direction].NextAnimation();
                 }
+                _textures[(int)_activity * 8 + (int)_direction].NextAnimation();
             }
+
         }
         #endregion
 
@@ -259,11 +266,15 @@ namespace Gruppe22
         /// <param name="controllable"></param>
         /// <param name="position"></param>
         /// <param name="sprite"></param>
-        public ActorView(ContentManager content, Vector2 position)
-            : base(content, 92, 92, "")
+        public ActorView(ContentManager content, Coords position)
+            : base(content, 96, 96, "")
         {
-            _position = new Coords((int)position.X, (int)position.Y);
-            _target = _position;
+            _position = position;
+            _target = position;
+            for (int i = 0; i < (Enum.GetValues(typeof(Activity)).Length) * 8; ++i)
+            {
+                _textures.Add(new TileObject(_content, _width, _height));
+            }
         }
         #endregion
 

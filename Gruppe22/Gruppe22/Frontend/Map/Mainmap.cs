@@ -160,11 +160,6 @@ namespace Gruppe22
         {
             switch (dir)
             {
-                default:
-                    _spriteBatch.Draw(_walls[(int)dir].animationTexture, new Rectangle(target.Left + _walls[(int)dir].offsetX, target.Top + _walls[(int)dir].offsetY,
-    target.Width - _walls[(int)dir].offsetX - _walls[(int)dir].cropX, target.Height - _walls[(int)dir].offsetY - _walls[(int)dir].cropY
-    ), _walls[(int)dir].animationRect, transparent ? new Color(Color.White, (float)0.5) : Color.White);
-                    break;
 
                 case WallDir.DiagUpDownClose: // Done
                     _drawWall(WallDir.DiagUpClose, target, transparent);
@@ -185,6 +180,16 @@ namespace Gruppe22
                     _drawWall(WallDir.DiagRightClose2, target, transparent);
                     _drawWall(WallDir.DiagLeftClose2, target, transparent);
                     break;
+
+                case WallDir.None:
+                    break;
+
+                default:
+                    _spriteBatch.Draw(_walls[(int)dir].animationTexture, new Rectangle(target.Left + _walls[(int)dir].offsetX, target.Top + _walls[(int)dir].offsetY,
+    target.Width - _walls[(int)dir].offsetX - _walls[(int)dir].cropX, target.Height - _walls[(int)dir].offsetY - _walls[(int)dir].cropY
+    ), _walls[(int)dir].animationRect, transparent ? new Color(Color.White, (float)0.5) : Color.White);
+                    break;
+
             }
         }
 
@@ -325,19 +330,6 @@ namespace Gruppe22
                                     }
                                 }
                             }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
                         }
                         else // Wall Down (only)
@@ -568,6 +560,65 @@ namespace Gruppe22
         }
 
 
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="coords"></param>
+        /// <param name="tall"></param>
+        /// <returns></returns>
+        private Coords _map2screen(Coords mapC, bool tall = false)
+        {
+
+            return new Coords((int)mapC.x * 64 + ((int)mapC.y) * 64
+                                    , (int)mapC.y * 48 - (int)mapC.x * 48);
+        }
+
+
+        /// <summary>
+        /// Determine tile based on coordinates of point
+        /// </summary>
+        /// <param name="coords"></param>
+        /// <param name="tall"></param>
+        /// <returns></returns>
+        private Coords _screen2map(Coords screenC, bool tall = false)
+        {
+            // TODO: This does not work perfectly yet. Check the formula!
+            //     screenC.x -= 32;
+            //     screenC.y -= 48;
+            return new Coords((int)(screenC.x / 128 - screenC.y / 96)
+                                    , (int)(screenC.x / 128 + screenC.y / 96));
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="coords"></param>
+        /// <param name="tall"></param>
+        /// <returns></returns>
+        private Coords _map2screen(int x, int y, bool tall = false)
+        {
+
+            return new Coords(x * 64 + y * 64
+                                    , y * 48 - x * 48);
+        }
+
+
+        /// <summary>
+        /// Determine tile based on coordinates of point
+        /// </summary>
+        /// <param name="coords"></param>
+        /// <param name="tall"></param>
+        /// <returns></returns>
+        private Coords _screen2map(int x, int y, bool tall = false)
+        {
+            // TODO: This does not work perfectly yet. Check the formula!
+            //    x -= 32;
+            //  y -= 48;
+            return new Coords((int)(x / 128 - y / 96)
+                                    , (int)(x / 128 + y / 96));
+        }
+
         /// <summary>
         /// Determine tile based on coordinates of point
         /// </summary>
@@ -588,17 +639,17 @@ namespace Gruppe22
         /// </summary>
         private void _drawWalls(GameTime gametime)
         {
-            Coords currentPos = _pos2Tile(new Vector2(_actors[0].position.x, _actors[0].position.y));
+            Coords currentPos = _screen2map(_actors[0].position.x, _actors[0].position.y);
 
-            for (int y = (Math.Max((int)_actors[0].position.y - _renderScope, 0)); y <= (Math.Min(currentPos.y + _renderScope, _map.height)); ++y)
+            for (int y = (Math.Max(currentPos.y - _renderScope, 0)); y <= (Math.Min(currentPos.y + _renderScope, _map.height)); ++y)
             {
-                for (int x = (Math.Min((int)_actors[0].position.x + _renderScope, _map.width)); x >= (Math.Min(currentPos.x - _renderScope, 0)); --x)
+                for (int x = (Math.Min(currentPos.x + _renderScope, _map.width)); x >= (Math.Min(currentPos.x - _renderScope, 0)); --x)
                 {
                     _drawWall(GetWallStyle(x, y), _tileRect(new Vector2(x + 1, y - 1), true), false);
 
                     foreach (ActorView actor in _actors)
                     {
-                        currentPos=_pos2Tile(new Vector2(actor.position.x, actor.position.y));
+                        currentPos = _pos2Tile(new Vector2(actor.position.x, actor.position.y));
                         if (((int)currentPos.x == x) && ((int)currentPos.y == y))
                         {
 
@@ -619,10 +670,10 @@ namespace Gruppe22
         /// <param name="vTiles">Number of horizontal Tiles</param>
         private void _drawFloor(int hTiles = 52, int vTiles = 25)
         {
-            Coords currentPos = _pos2Tile(new Vector2(_actors[0].target.x, _actors[0].target.y));
-            for (int y = (Math.Max((int)_actors[0].position.y - _renderScope, 0)); y <= (Math.Min(currentPos.y + _renderScope, vTiles)); ++y)
+            Coords currentPos = _screen2map(_actors[0].position.x, _actors[0].position.y);
+            for (int y = (Math.Max(currentPos.y - _renderScope, 0)); y <= (Math.Min(currentPos.y + _renderScope, vTiles)); ++y)
             {
-                for (int x = (Math.Max((int)_actors[0].position.x - _renderScope, 0)); x <= (Math.Min(currentPos.x + _renderScope, hTiles)); ++x)
+                for (int x = (Math.Max(currentPos.x - _renderScope, 0)); x <= (Math.Min(currentPos.x + _renderScope, hTiles)); ++x)
                 {
                     if ((y == (int)_highlightedTile.y) && (x == (int)_highlightedTile.x))
                     {
@@ -644,7 +695,7 @@ namespace Gruppe22
         /// <param name="gameTime"></param>
         public override void Update(GameTime gameTime)
         {
-            Coords currentPos = _pos2Tile(new Vector2(_actors[0].target.x, _actors[0].target.y));
+            Coords currentPos = _screen2map(_actors[0].target.x, _actors[0].target.y);
 
             if (IsHit(Mouse.GetState().X, Mouse.GetState().Y))
             {
@@ -740,24 +791,24 @@ namespace Gruppe22
         public void MovePlayer(Direction dir)
         {
             // TODO: This should be somewhere in the game logic, not in the map
-            Coords currentPos = _pos2Tile(new Vector2(_actors[0].target.x, _actors[0].target.y));
+            Coords currentPos = _screen2map(_actors[0].target.x, _actors[0].target.y);
             switch (dir)
             {
                 case Direction.Left:
                     if ((currentPos.x > 0) && (_map[currentPos.x - 1, currentPos.y].canEnter))
-                        _actors[0].Move(new Vector2(-1.0f, 0));
+                        _actors[0].target = _map2screen(currentPos.x - 1, currentPos.y);
                     break;
                 case Direction.Right:
                     if ((currentPos.x < _map.width - 1) && (_map[currentPos.x + 1, currentPos.y].canEnter))
-                        _actors[0].Move(new Vector2(1.0f, 0));
+                        _actors[0].target = _map2screen(currentPos.x + 1, currentPos.y);
                     break;
                 case Direction.Down:
                     if ((currentPos.y < _map.height - 1) && (_map[currentPos.x, currentPos.y + 1].canEnter))
-                        _actors[0].Move(new Vector2(0, 1.0f));
+                        _actors[0].target = _map2screen(currentPos.x, currentPos.y + 1);
                     break;
                 case Direction.Up:
                     if ((currentPos.y > 0) && (_map[currentPos.x, currentPos.y - 1].canEnter))
-                        _actors[0].Move(new Vector2(0, -1.0f));
+                        _actors[0].target = _map2screen(currentPos.x, currentPos.y - 1);
                     break;
 
                 // Diagonal movement
@@ -765,24 +816,24 @@ namespace Gruppe22
                 case Direction.DownLeft:
                     if ((currentPos.x > 0) && (currentPos.y < _map.height - 1) && (_map[currentPos.x - 1, currentPos.y + 1].canEnter)
                         )
-                        _actors[0].Move(new Vector2(-1.0f, 1.0f));
+                        _actors[0].target = _map2screen(currentPos.x - 1, currentPos.y + 1);
                     break;
                 case Direction.UpRight:
                     if ((currentPos.x < _map.width - 1) && (currentPos.y > 0) &&
                         (_map[currentPos.x + 1, currentPos.y - 1].canEnter)
                         )
-                        _actors[0].Move(new Vector2(1.0f, -1.0f));
+                        _actors[0].target = _map2screen(currentPos.x + 1, currentPos.y - 1);
                     break;
                 case Direction.DownRight:
                     if ((currentPos.y < _map.height - 1) && (currentPos.x < _map.width - 1) &&
                         (_map[currentPos.x + 1, currentPos.y + 1].canEnter))
-                        _actors[0].Move(new Vector2(1.0f, 1.0f));
+                        _actors[0].target = _map2screen(currentPos.x + 1, currentPos.y + 1);
                     break;
                 case Direction.UpLeft:
                     if ((currentPos.y > 0) &&
                         (currentPos.x > 0) &&
                         (_map[currentPos.x - 1, currentPos.y - 1].canEnter))
-                        _actors[0].Move(new Vector2(-1.0f, -1.0f));
+                        _actors[0].target = _map2screen(currentPos.x - 1, currentPos.y - 1);
                     break;
             }
         }
@@ -954,27 +1005,44 @@ namespace Gruppe22
 
             // 1. Walls
             _walls = new WallTiles(_content, 128, 192, "");
-            _walls.Load("wall1.xml");
+            _walls.Load("Content\\wall1.xml");
 
             // 2. Environmental objects (floor, items, traps, teleporters, chest...)
             _environment = new List<TileSet>();
             _environment.Add(new TileSet(_content, 128, 192));
-            _environment[0].Load("floor.xml");
+            _environment[0].Add("floor", 0, new Rectangle(512, 384, 128, 96));
+            _environment[0].Save("Content\\floor.xml");
+            _environment[0].Load("Content\\floor.xml");
             _environment.Add(new TileSet(_content, 128, 192));
-            _environment[1].Load("items.xml");
+            _environment[1].Save("Content\\items.xml");
+            _environment[1].Load("Content\\items.xml");
             _environment.Add(new TileSet(_content, 128, 192));
-            _environment[2].Load("spikefield.xml");
+            _environment[2].Save("Content\\spikefield.xml");
+            _environment[2].Load("Content\\spikefield.xml");
             _environment.Add(new TileSet(_content, 128, 192));
-            _environment[3].Load("field.xml");
+            _environment[3].Save("Content\\field.xml");
+            _environment[3].Load("Content\\field.xml");
             _environment.Add(new TileSet(_content, 128, 192));
-            _environment[4].Load("chest.xml");
+            _environment[4].Save("Content\\chest.xml");
+            _environment[4].Load("Content\\chest.xml");
 
             // 3. Moving entities (player, NPCs, enemies)
             _actors = new List<ActorView>();
-            _actors.Add(new ActorView(_content, new Vector2(1, 1)));
-            _actors[0].Load("player.xml");
-            _actors.Add(new ActorView(_content, new Vector2(20, 20)));
-            _actors[1].Load("player.xml");
+            Rectangle tilerect = _tileRect(new Vector2(1, 1), true);
+            _actors.Add(new ActorView(_content, _map2screen(1, 1)));
+            _actors[0].Add(Activity.Walk, Direction.DownRight, "Walk", new Coords(0, 0), 8, 1);
+            _actors[0].Add(Activity.Walk, Direction.UpRight, "Walk", new Coords(0, 96), 8, 1);
+            _actors[0].Add(Activity.Walk, Direction.Right, "Walk", new Coords(0, 192), 8, 1);
+            _actors[0].Add(Activity.Walk, Direction.Up, "Walk", new Coords(0, 288), 8, 1);
+            _actors[0].Add(Activity.Walk, Direction.DownLeft, "Walk", new Coords(0, 384), 8, 1);
+            _actors[0].Add(Activity.Walk, Direction.Down, "Walk", new Coords(0, 480), 8, 1);
+            _actors[0].Add(Activity.Walk, Direction.Left, "Walk", new Coords(0, 576), 8, 1);
+            _actors[0].Add(Activity.Walk, Direction.UpLeft, "Walk", new Coords(0, 672), 8, 1);
+            _actors[0].Save("Content\\player.xml");
+
+            //    _actors[0].Load("Content\\player.xml");
+            //  _actors.Add(new ActorView(_content, new Vector2(20, 20)));
+            // _actors[1].Load("Content\\skeleton.xml");
 
 
         }
