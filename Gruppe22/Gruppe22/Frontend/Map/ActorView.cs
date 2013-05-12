@@ -345,7 +345,7 @@ namespace Gruppe22
         /// <param name="controllable"></param>
         /// <param name="position"></param>
         /// <param name="sprite"></param>
-        public ActorView(ContentManager content, Coords position)
+        public ActorView(ContentManager content, Coords position, string filename="")
             : base(content, 96, 96, "")
         {
             _position = position;
@@ -353,6 +353,10 @@ namespace Gruppe22
             for (int i = 0; i < (Enum.GetValues(typeof(Activity)).Length) * 8; ++i)
             {
                 _textures.Add(new TileObject(_content, _width, _height));
+            }
+            if (filename != "")
+            {
+                Load(filename);
             }
         }
         #endregion

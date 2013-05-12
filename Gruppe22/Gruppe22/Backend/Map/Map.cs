@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
+using Microsoft.Xna.Framework;
 
 namespace Gruppe22
 {
@@ -12,26 +13,53 @@ namespace Gruppe22
         /// <summary>
         /// A two dimensional list of tiles
         /// </summary>
-        private List<List<Tile>> _tiles;
+        private List<List<Tile>> _tiles = null;
         /// <summary>
         /// Internal current width
         /// </summary>
-        private int _width;
+        private int _width = 10;
 
         /// <summary>
         /// Internal current height
         /// </summary>
-        private int _height;
+        private int _height = 10;
 
         /// <summary>
         /// Blank tile returned when requesting tile outside map boundaries (i.e. negative values / values beyond width or height)
         /// </summary>
-        private Tile _blankTile;
+        private Tile _blankTile = null;
 
+        public List<Actor> _actors = null;
+        public List<Item> _items = null;
+        private List<Coords> _updateTiles = null;
         #endregion
 
         #region Public Fields
 
+
+        public List<Actor> actors
+        {
+            get
+            {
+                return _actors;
+            }
+            set
+            {
+                _actors = value;
+            }
+        }
+
+        public List<Item> items
+        {
+            get
+            {
+                return _items;
+            }
+            set
+            {
+                _items = value;
+            }
+        }
         /// <summary>
         /// CUrrent Width of the maze
         /// </summary>
@@ -62,7 +90,29 @@ namespace Gruppe22
             }
         }
 
-
+        public List<Coords> actorPositions
+        {
+            get
+            {
+                List<Coords> result = new List<Coords>();
+                foreach (Coords coords in _updateTiles)
+                {
+                    if (_tiles[coords.x][coords.y] is ActorTile)
+                    {
+                        ActorTile t = _tiles[coords.x][coords.y] as ActorTile;
+                        if (t.actorType == ActorType.Player)
+                        {
+                            result.Insert(0, coords);
+                        }
+                        else
+                        {
+                            result.Add(coords);
+                        };
+                    }
+                }
+                return _updateTiles;
+            }
+        }
 
         /// <summary>
         /// Get the tile at coordinates x and y
@@ -148,10 +198,177 @@ namespace Gruppe22
                 pos.y = -1;
             }
         }
+
+
+
+
         #endregion
 
         #region Public Methods
+        /// <summary>
+        /// Refresh tiles which do something (traps, enemies, NPCs)
+        /// </summary>
+        /// <param name="gameTime"></param>
+        public void Update(GameTime gameTime)
+        {
+            foreach (Coords c in _updateTiles)
+            {
+                _tiles[c.x][c.y].Update(gameTime);
+            }
+        }
 
+        /// <summary>
+        /// Add an actor to a tile
+        /// </summary>
+        /// <param name="item"></param>
+        /// <param name="from"></param>
+        public void AddActor(Item item, Coords from)
+        {
+
+        }
+
+        /// <summary>
+        /// Move an actor on the map in a specified direction (does not check for walls - use CanMove)
+        /// </summary>
+        /// <param name="actor"></param>
+        /// <param name="from"></param>
+        /// <param name="dir"></param>
+        public void MoveActor(Actor actor, Direction dir)
+        {
+            Coords source = actor.tile.coords;
+            Coords target = DirectionTile(actor.tile.coords, dir);
+
+            // Remove ActorTile from current tile
+            ((Tile)actor.tile.parent).Remove(actor.tile);
+            // Add ActorTile to new Tile
+            _tiles[target.y][target.x].Add(actor.tile);
+            actor.tile.parent = _tiles[target.y][target.x];
+            // Remove old tile from updatelist (if no other actor or trap)
+            if (!((_tiles[source.y][source.x].hasEnemy)
+                || (_tiles[source.y][source.x].hasPlayer)
+                || (_tiles[source.y][source.x].hasTrap)))
+                _updateTiles.Remove(source);
+            // Add new tile to updatelist
+            _updateTiles.Add(target);
+        }
+
+        /// <summary>
+        /// Add an item to a tile
+        /// </summary>
+        /// <param name="actor"></param>
+        /// <param name="to"></param>
+        public void AddItem(Item item, Coords to)
+        {
+            // Create ItemTile (if non existant)
+            // or: Remove ItemTile from current tile
+            // Add ItemTile to new Tile
+        }
+
+        /// <summary>
+        /// Move an item on the map (not carried by an actor) in a specified direction 
+        /// </summary>
+        /// <param name="item">item to move</param>
+        /// <param name="from">square from which to move item</param>
+        /// <param name="dir">Direction to move to</param>
+        public void MoveItem(Item item, Coords from, Direction dir)
+        {
+            // or: Remove ItemTile from current tile specified by coords
+            // Add ItemTile to new Tile
+        }
+
+        public Coords DirectionTile(Coords start, Direction dir)
+        {
+            switch (dir)
+            {
+                case Direction.Left:
+                    return new Coords(start.x - 1, start.y);
+                    break;
+                case Direction.Right:
+                    return new Coords(start.x + 1, start.y);
+                    break;
+                case Direction.Down:
+                    return new Coords(start.x, start.y + 1);
+                    break;
+                case Direction.Up:
+                    return new Coords(start.x, start.y - 1);
+                    break;
+                case Direction.DownLeft:
+                    return new Coords(start.x - 1, start.y + 1);
+                    break;
+                case Direction.UpRight:
+                    return new Coords(start.x + 1, start.y - 1);
+                    break;
+                case Direction.DownRight:
+                    return new Coords(start.x + 1, start.y + 1);
+                    break;
+                case Direction.UpLeft:
+                    return new Coords(start.x - 1, start.y - 1);
+                    break;
+            }
+            return start;
+        }
+        /// <summary>
+        /// Check whether it is possible to move from a certain place on a map in a certain direction
+        /// </summary>
+        /// <param name="currentPos">Coordinates on current map</param>
+        /// <param name="dir">Direction to move to</param>
+        /// <returns>true if move is allowed</returns>
+        public bool CanMove(Coords currentPos, Direction dir)
+        {
+            switch (dir)
+            {
+                case Direction.Left:
+                    if ((currentPos.x > 0) && (this[currentPos.x - 1, currentPos.y].canEnter))
+                        return true;
+                    break;
+                case Direction.Right:
+                    if ((currentPos.x < this.width - 1) && (this[currentPos.x + 1, currentPos.y].canEnter))
+                        return true;
+                    break;
+                case Direction.Down:
+                    if ((currentPos.y < this.height - 1) && (this[currentPos.x, currentPos.y + 1].canEnter))
+                        return true;
+                    break;
+                case Direction.Up:
+                    if ((currentPos.y > 0) && (this[currentPos.x, currentPos.y - 1].canEnter))
+                        return true;
+                    break;
+
+                // Diagonal movement
+                case Direction.DownLeft:
+                    if ((currentPos.x > 0) && (currentPos.y < this.height - 1)
+                        && (this[currentPos.x - 1, currentPos.y + 1].canEnter)
+                        && ((this[currentPos.x, currentPos.y + 1].canEnter)
+                        || (this[currentPos.x - 1, currentPos.y].canEnter)
+                        )
+                        )
+                        return true;
+                    break;
+                case Direction.UpRight:
+                    if ((currentPos.x < this.width - 1) && (currentPos.y > 0)
+                        && ((this[currentPos.x, currentPos.y - 1].canEnter)
+                        || (this[currentPos.x + 1, currentPos.y].canEnter))
+                        && (this[currentPos.x + 1, currentPos.y - 1].canEnter)
+                        )
+                        return true;
+                    break;
+                case Direction.DownRight:
+                    if ((currentPos.y < this.height - 1) && (currentPos.x < this.width - 1)
+                        && ((this[currentPos.x, currentPos.y + 1].canEnter)
+                        || (this[currentPos.x + 1, currentPos.y].canEnter))
+                        && (this[currentPos.x + 1, currentPos.y + 1].canEnter))
+                        return true; break;
+                case Direction.UpLeft:
+                    if ((currentPos.y > 0)
+                        && (currentPos.x > 0)
+                        && (this[currentPos.x - 1, currentPos.y - 1].canEnter)
+                        && ((this[currentPos.x - 1, currentPos.y].canEnter)
+                        || (this[currentPos.x, currentPos.y - 1].canEnter)))
+                        return true;
+                    break;
+            }
+            return false;
+        }
 
         /// <summary>
         /// Create a grid of walls
@@ -168,7 +385,8 @@ namespace Gruppe22
                 _tiles.Add(new List<Tile>());
                 for (int col = 0; col < _width * 2 + 1; col++)
                 {
-                    _tiles[row].Add(new Tile(
+                    _tiles[row].Add(new Tile(this, new Coords(col, row),
+
                         (row % 2 == 1)
                         && (col % 2 == 1))
                         );
@@ -176,6 +394,42 @@ namespace Gruppe22
             }
         }
 
+
+        public void AddTraps(int amount = -1)
+        {
+
+        }
+
+        public void AddPlayer(Coords pos)
+        {
+            if (pos == null)
+            {
+                pos = new Coords(1, 1);
+            }
+            Player player = new Player();
+            ActorTile playerTile = new ActorTile(_tiles[pos.y][pos.x], player);
+            player.tile = playerTile;
+            _tiles[pos.y][pos.x].Add(playerTile);
+            _updateTiles.Add(pos);
+            _actors.Add(player);
+        }
+
+        public void AddEnemies(int amount = -1)
+        {
+
+        }
+
+
+        public void AddDoors(int amount = -1)
+        {
+
+        }
+
+
+        public void AddItems(int amount = -1)
+        {
+
+        }
 
         public void ClearWalls(int number = -1)
         {
@@ -210,7 +464,7 @@ namespace Gruppe22
                     pos.x = -1;
                     pos.y = -1;
                 }
-                _tiles[pos.y][pos.x].canEnter = true;
+                _tiles[pos.y][pos.x].Remove(TileType.Wall);
             }
         }
 
@@ -228,7 +482,7 @@ namespace Gruppe22
             Path currentPos = new Path(1 + r.Next(_width - 1) * 2, 1 + r.Next(_height - 1) * 2);
 
             _tiles[originPos.y][originPos.x].connected = true;
-            _tiles[originPos.y][originPos.x].canEnter = true;
+            _tiles[originPos.y][originPos.x].Remove(TileType.Wall);
             int remaining = _width * _height - 1;
 
             Path startPos = originPos;
@@ -262,16 +516,16 @@ namespace Gruppe22
                     switch (_tiles[currentPos.y][currentPos.x].connection)
                     {
                         case Connection.Left:
-                            _tiles[currentPos.y][currentPos.x - 1].canEnter = true;
+                            _tiles[currentPos.y][currentPos.x - 1].Remove(TileType.Wall);
                             break;
                         case Connection.Right:
-                            _tiles[currentPos.y][currentPos.x + 1].canEnter = true;
+                            _tiles[currentPos.y][currentPos.x + 1].Remove(TileType.Wall);
                             break;
                         case Connection.Up:
-                            _tiles[currentPos.y - 1][currentPos.x].canEnter = true;
+                            _tiles[currentPos.y - 1][currentPos.x].Remove(TileType.Wall);
                             break;
                         case Connection.Down:
-                            _tiles[currentPos.y + 1][currentPos.x].canEnter = true;
+                            _tiles[currentPos.y + 1][currentPos.x].Remove(TileType.Wall);
                             break;
                     }
                     currentPos.dir = _tiles[currentPos.y][currentPos.x].connection;
@@ -290,7 +544,7 @@ namespace Gruppe22
         /// </summary>
         /// <param name="filename">The filename to read from</param>
         /// <returns>true if read was successful</returns>
-        public bool Load(string filename)
+        public bool Load(string filename, Coords playerPos)
         {
             bool result = true;
             XmlTextReader source = new XmlTextReader(filename);
@@ -304,6 +558,7 @@ namespace Gruppe22
                 source.Close();
             }
             return result;
+            AddPlayer(playerPos);
         }
 
         public void DebugMap()
@@ -337,7 +592,7 @@ namespace Gruppe22
                 {
                     case '#':
                         if ((col < _width) && (row < height))
-                            _tiles[row][col].canEnter = false;
+                            _tiles[row][col].Add(TileType.Wall);
                         col += 1;
                         break;
                     case '\n':
@@ -346,7 +601,7 @@ namespace Gruppe22
                         break;
                     default:
                         if ((col < _width) && (row < height))
-                            _tiles[row][col].canEnter = true;
+                            _tiles[row][col].Remove(TileType.Wall);
                         col += 1;
 
                         break;
@@ -374,8 +629,8 @@ namespace Gruppe22
                     target.WriteStartElement("row");
                     foreach (Tile tile in row)
                     {
-                        XmlSerializer x=new XmlSerializer(typeof(Map));
-                        result = tile.Save(target,x);
+                        XmlSerializer x = new XmlSerializer(typeof(Map));
+                        result = tile.Save(target, x);
                         if (result == false) break;
                     }
                     target.WriteEndElement();
@@ -389,39 +644,63 @@ namespace Gruppe22
             }
             return result;
         }
+
         #endregion
 
         #region Constructor
+
+        public Map()
+        {
+            _updateTiles = new List<Coords>();
+            _actors = new List<Actor>();
+            _items = new List<Item>();
+            _blankTile = new Tile();
+            _tiles = new List<List<Tile>>();
+
+        }
+
         /// <summary>
         /// Create an empty map
         /// </summary>
         /// <param name="width">The width of the map</param>
         /// <param name="height">The height of the map</param>
-        public Map(int width = 10, int height = 10)
+        public Map(int width = 10, int height = 10, bool generate = false, Coords playerPos = null)
+            : this()
         {
             _width = width;
             _height = height;
-            _tiles = new List<List<Tile>>();
             for (int y = 0; y < height; ++y)
             {
                 _tiles.Add(new List<Tile>());
                 for (int x = 0; x < width; ++x)
                 {
-                    _tiles[y].Add(new Tile());
+                    _tiles[y].Add(new Tile(new Coords(x, y)));
                 }
             }
-            _blankTile = new Tile();
-            //_blankTile.canEnter = false;
+            if (generate)
+            {
+                ClearMaze();
+                GenerateMaze();
+                ClearWalls();
+                AddPlayer(playerPos);
+                AddTraps();
+                AddDoors();
+                AddEnemies();
+                AddItems();
+            }
         }
 
         /// <summary>
         /// Load a map from a file
         /// </summary>
         /// <param name="filename"></param>
-        public Map(string filename = "")
+        public Map(string filename = "", Coords playerPos = null)
+            : this()
         {
-            Load(filename);
+            Load(filename, playerPos);
         }
+
+
 
         public void Dispose()
         {

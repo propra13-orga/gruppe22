@@ -11,9 +11,17 @@ namespace Gruppe22
         NPC = 1,
         Enemy = 2
     }
+
     public class Actor
     {
-        ActorType _actorType;
+        private ActorTile _tile;
+        private ActorType _actorType;
+
+        public ActorTile tile
+        {
+            get { return _tile; }
+            set { _tile = value; }
+        }
         public ActorType actorType
         {
             get

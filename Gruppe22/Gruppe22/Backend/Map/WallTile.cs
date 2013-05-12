@@ -7,9 +7,9 @@ namespace Gruppe22
 {
     public class WallTile : Tile
     {
-        public WallTile()
+        public WallTile(object parent):base(parent)
         {
-            canEnter = false;
+            _canEnter = false;
         }
     }
 }

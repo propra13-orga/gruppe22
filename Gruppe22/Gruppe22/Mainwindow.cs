@@ -22,7 +22,9 @@ namespace Gruppe22
     {
         StartGame = 1,
         EndGame = 2,
-        HideNotification = 3
+        HideNotification = 3,
+        LoadMap = 4,
+        MoveActor = 5
     }
     /// <summary>
     /// This is the main type for your game
@@ -87,10 +89,7 @@ namespace Gruppe22
         protected override void Initialize()
         {
             Random r = new Random();
-            _map1 = new Map(r.Next(20) + 6, r.Next(20) + 6);
-            _map1.ClearMaze();
-            _map1.GenerateMaze();
-            _map1.ClearWalls();
+            _map1 = new Map(r.Next(20) + 6, r.Next(20) + 6, true);
             _interfaceElements = new List<UIElement>();
 
             base.Initialize();
@@ -134,13 +133,13 @@ namespace Gruppe22
 
             _mainMenu.AddChild(new Button(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) + 220, 300, 60), "Spiel beenden", Events.EndGame));
 
-          //  _mainMenu.AddChild(new ProgressBar(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) + 80, 300, 30), ProgressStyle.Block,100,2));
+            //  _mainMenu.AddChild(new ProgressBar(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) + 80, 300, 30), ProgressStyle.Block,100,2));
 
             _interfaceElements.Add(_mainMenu);
             _focus = _interfaceElements[_interfaceElements.Count - 1];
         }
 
-        
+
         /// <summary>
         /// Unload all managed content which has not been disposed of elsewhere
         /// </summary>
@@ -169,6 +168,18 @@ namespace Gruppe22
                 case Events.EndGame:
                     Exit();
                     break;
+                case Events.MoveActor:
+                    int id = (int)data[0];
+                    if (!((Mainmap)_interfaceElements[1]).IsMoving(id))
+                    {
+                        Direction dir = (Direction)data[1];
+                        if (_map1.CanMove(_map1.actors[id].tile.coords, dir))
+                        {
+                            _map1.MoveActor(_map1.actors[id], dir);
+                            ((Mainmap)_interfaceElements[1]).HandleEvent(null, Events.MoveActor, id, _map1.actors[id].tile.coords);
+                        }
+                    }
+                    break;
             }
         }
 
@@ -179,8 +190,8 @@ namespace Gruppe22
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-         /*   ((ProgressBar)
-                ((Window)_interfaceElements[_interfaceElements.Count - 1]).children[((Window)_interfaceElements[_interfaceElements.Count - 1]).children.Count - 1]).value += 1;*/
+            /*   ((ProgressBar)
+                   ((Window)_interfaceElements[_interfaceElements.Count - 1]).children[((Window)_interfaceElements[_interfaceElements.Count - 1]).children.Count - 1]).value += 1;*/
             try
             {
 

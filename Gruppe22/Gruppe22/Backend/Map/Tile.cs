@@ -4,34 +4,68 @@ using System.Text;
 using System.Xml;
 using System.Xml.Schema;
 using System.Xml.Serialization;
+using Microsoft.Xna.Framework;
 
 namespace Gruppe22
 {
+
+    public enum TileType
+    {
+        Empty = 0,
+        Wall,
+        Trap,
+        Enemy,
+        Start,
+        Target,
+        Teleporter,
+        Item
+    }
+
     /// <summary>
     /// An abstract class representing a generic tile (i.e. blank floor)
     /// </summary>
     public class Tile : IDisposable, IXmlSerializable
     {
-        #region Delegates
-        public delegate void OnEnter();
-        #endregion
-
         #region Private Fields
         /// <summary>
         /// Fields displayed (and checked) on top of the current field
         /// </summary>
-        private List<Tile> _overlay;
+        protected List<Tile> _overlay;
         /// <summary>
         /// Internal value whether tile can be entered
         /// </summary>
-        private bool _canEnter = true;
+        protected bool _canEnter = true;
+        /// <summary>
+        /// Used by map generator (determines whether tile can be reached from at least one other tile
+        /// </summary>
+        protected bool _connected = false;
+        /// <summary>
+        /// Direction of connection
+        /// </summary>
+        protected Connection _connection = Connection.Invalid;
 
+        private Coords _coords = null;
 
-        private bool _connected = false;
-        private Connection _connection = Connection.Invalid;
+        protected object _parent = null;
         #endregion
 
         #region Public Fields
+
+        public Coords coords
+        {
+            get
+            {
+                if (_parent is Tile)
+                    return ((Tile)_parent).coords;
+                else
+                    return _coords;
+            }
+            set
+            {
+                if (!(_parent is Tile))
+                    _coords = value;
+            }
+        }
 
         public bool connected
         {
@@ -58,11 +92,6 @@ namespace Gruppe22
         }
 
         /// <summary>
-        /// An event handler for entering the field
-        /// </summary>
-        public OnEnter onenter;
-
-        /// <summary>
         /// Determine whether tile can be entered
         /// </summary>
         public bool canEnter
@@ -78,10 +107,6 @@ namespace Gruppe22
                 }
                 return result;
             }
-            set
-            {
-                _canEnter = value;
-            }
         }
 
         /// <summary>
@@ -93,7 +118,7 @@ namespace Gruppe22
             {
                 bool result = false;
                 int count = 0;
-                while ((result) && (count < _overlay.Count))
+                while ((!result) && (count < _overlay.Count))
                 {
                     result = ((_overlay[count] is ActorTile) && (((ActorTile)_overlay[count]).actorType == ActorType.Player));
                     ++count;
@@ -112,7 +137,7 @@ namespace Gruppe22
             {
                 bool result = false;
                 int count = 0;
-                while ((result) && (count < _overlay.Count))
+                while ((!result) && (count < _overlay.Count))
                 {
                     result = ((_overlay[count] is ActorTile) && (((ActorTile)_overlay[count]).actorType == ActorType.Enemy));
                     ++count;
@@ -131,7 +156,7 @@ namespace Gruppe22
             {
                 bool result = false;
                 int count = 0;
-                while ((result) && (count < _overlay.Count))
+                while ((!result) && (count < _overlay.Count))
                 {
                     result = ((_overlay[count] is TeleportTile));
                     ++count;
@@ -149,9 +174,39 @@ namespace Gruppe22
             {
                 bool result = false;
                 int count = 0;
-                while ((result) && (count < _overlay.Count))
+                while ((!result) && (count < _overlay.Count))
                 {
                     result = ((_overlay[count] is ItemTile) && (((ItemTile)_overlay[count]).itemType == ItemType.Treasure));
+                    ++count;
+                }
+                return result;
+            }
+        }
+
+        public object parent
+        {
+            get
+            {
+                return _parent;
+            }
+            set
+            {
+                _parent = value;
+            }
+        }
+
+        /// <summary>
+        /// Determine whether the current tile contains a "special" feature
+        /// </summary>
+        public bool hasTrap
+        {
+            get
+            {
+                bool result = false;
+                int count = 0;
+                while ((!result) && (count < _overlay.Count))
+                {
+                    result = (_overlay[count] is TrapTile);
                     ++count;
                 }
                 return result;
@@ -173,7 +228,129 @@ namespace Gruppe22
 
         #region Public methods
 
+        /// <summary>
+        /// Add a (generic) tile of a specified type to overlay and return a pointer to that tile
+        /// </summary>
+        /// <param name="type"></param>
+        public Tile Add(TileType type)
+        {
+            switch (type)
+            {
+                case TileType.Wall:
+                    _overlay.Add(new WallTile(this));
+                    break;
+                case TileType.Trap:
+                    _overlay.Add(new TrapTile(this));
+                    break;
+                case TileType.Teleporter:
+                    _overlay.Add(new TeleportTile(this));
+                    break;
+                case TileType.Target:
+                    _overlay.Add(new TargetTile(this));
+                    break;
+                case TileType.Start:
+                    _overlay.Add(new ActorTile(this));
+                    break;
+                case TileType.Item:
+                    _overlay.Add(new ItemTile(this));
+                    break;
+                case TileType.Enemy:
+                    _overlay.Add(new ActorTile(this));
+                    break;
+            }
+            return _overlay[_overlay.Count - 1];
+        }
 
+        /// <summary>
+        /// Refresh tiles which do something (traps, enemies, NPCs)
+        /// </summary>
+        /// <param name="gameTime"></param>
+        public virtual void Update(GameTime gameTime)
+        {
+            foreach (Tile child in _overlay)
+            {
+                child.Update(gameTime);
+            }
+        }
+
+        /// <summary>
+        /// Remove all tiles of a specified type from overlay
+        /// </summary>
+        /// <param name="type"></param>
+        public void Remove(TileType type)
+        {
+            for (int i = 0; i < _overlay.Count; ++i)
+                switch (type)
+                {
+                    case TileType.Wall:
+                        if (_overlay[i] is WallTile)
+                        {
+                            _overlay.RemoveAt(i);
+                            i -= 1;
+                        }
+                        break;
+                    case TileType.Trap:
+                        if (_overlay[i] is TrapTile)
+                        {
+                            _overlay.RemoveAt(i);
+                            i -= 1;
+                        }
+                        break;
+                    case TileType.Teleporter:
+                        if (_overlay[i] is TeleportTile)
+                        {
+                            _overlay.RemoveAt(i);
+                            i -= 1;
+                        }
+                        break;
+                    case TileType.Target:
+                        if (_overlay[i] is TargetTile)
+                        {
+                            _overlay.RemoveAt(i);
+                            i -= 1;
+                        }
+                        break;
+                    case TileType.Start:
+                        if (_overlay[i] is ActorTile)
+                        {
+                            _overlay.RemoveAt(i);
+                            i -= 1;
+                        }
+                        break;
+                    case TileType.Item:
+                        if (_overlay[i] is ItemTile)
+                        {
+                            _overlay.RemoveAt(i);
+                            i -= 1;
+                        }
+                        break;
+                    case TileType.Enemy:
+                        if (_overlay[i] is ActorTile)
+                        {
+                            _overlay.RemoveAt(i);
+                            i -= 1;
+                        }
+                        break;
+                }
+        }
+
+        /// <summary>
+        /// Add specified tile to overlay
+        /// </summary>
+        /// <param name="tile"></param>
+        public void Add(Tile tile)
+        {
+            _overlay.Add(tile);
+        }
+
+        /// <summary>
+        /// Remove specified tile from overlay
+        /// </summary>
+        /// <param name="tile"></param>
+        public void Remove(Tile tile)
+        {
+            _overlay.Remove(tile);
+        }
         /// <summary>
         /// Write Tile data to an XML-file
         /// </summary>
@@ -205,15 +382,30 @@ namespace Gruppe22
 
         #region Constructors
 
+        /// <summary>
+        /// An empty constructor (setting default values)
+        /// </summary>
+        public Tile()
+            : base()
+        {
+            _overlay = new List<Tile>();            
+        }
 
         /// <summary>
         /// An empty constructor (setting default values)
         /// </summary>
-        public Tile(bool canEnter = true)
+        public Tile(object parent, Coords coords = null, bool canEnter = true)
             : base()
         {
+            if (coords != null)
+            {
+                _coords = coords;
+            }
             _overlay = new List<Tile>();
-            _canEnter = canEnter;
+            if (!canEnter)
+            {
+                Add(TileType.Wall);
+            }
         }
 
         #region iXMLSerializer
@@ -236,7 +428,7 @@ namespace Gruppe22
             throw new System.NotImplementedException();
         }
 
-      
+
         /// <summary>
         /// Read the tile from a XML-file
         /// </summary>

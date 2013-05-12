@@ -27,5 +27,11 @@ namespace Gruppe22
             }
         }
         #endregion
+
+        public TrapTile(object parent)
+            : base(parent)
+        {
+
+        }
     }
 }

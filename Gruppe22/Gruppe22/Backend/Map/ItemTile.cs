@@ -19,5 +19,11 @@ namespace Gruppe22
                 return _item.itemType;
             }
         }
+
+        public ItemTile(object parent)
+            : base(parent)
+        {
+
+        }
     }
 }

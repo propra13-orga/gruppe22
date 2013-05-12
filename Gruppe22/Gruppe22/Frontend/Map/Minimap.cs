@@ -54,7 +54,7 @@ namespace Gruppe22
                         {
                             if (_map[x, y].hasPlayer)
                             {
-                                _spriteBatch.Draw(_mapIcon, new Rectangle(_displayRect.Left + x * 16, _displayRect.Top + y * 16, 16, 16), new Rectangle(32, 16, 16, 16), Color.White);
+                                _spriteBatch.Draw(_mapIcon, new Rectangle(_displayRect.Left + x * 16, _displayRect.Top + y * 16, 16, 16), new Rectangle(48, 16, 16, 16), Color.White);
                             }
                             else
                             {

@@ -44,5 +44,12 @@ namespace Gruppe22
             }
         }
         #endregion
+
+
+        public TeleportTile(object parent)
+            : base(parent)
+        {
+
+        }
     }
 }

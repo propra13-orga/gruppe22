@@ -7,5 +7,11 @@ namespace Gruppe22
 {
     public class TargetTile : Tile
     {
+
+        public TargetTile(object parent)
+            : base(parent)
+        {
+
+        }
     }
 }

@@ -14,6 +14,19 @@ namespace Gruppe22
     public class Item
     {
         private ItemType _itemType;
+        private ItemTile _tile;
+
+        public ItemTile tile
+        {
+            get
+            {
+                return _tile;
+            }
+            set
+            {
+                _tile = value;
+            }
+        }
         public ItemType itemType
         {
             get

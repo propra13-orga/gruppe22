@@ -48,7 +48,7 @@ namespace Gruppe22
         /// <summary>
         /// Number of tiles to render (Square with player in center)
         /// </summary>
-        private int _renderScope = 4;
+        private int _renderScope = 7;
         /// <summary>
         /// Basic texture set (for drawing lines
         /// </summary>
@@ -69,7 +69,19 @@ namespace Gruppe22
 
 
         #region Public Methods
+        public override void HandleEvent(UIElement sender, Events eventID, params object[] data)
+        {
+            switch (eventID)
+            {
+                case Events.MoveActor:
+                    int id = (int)data[0];
+                    Coords coords = (Coords)data[1];
+                    _actors[id].target = _map2screen(coords);
+                    break;
+            }
+            base.HandleEvent(sender, eventID, data);
 
+        }
 
         /// <summary>
         /// Draw the Map
@@ -641,21 +653,25 @@ namespace Gruppe22
         private void _drawWalls(GameTime gametime)
         {
             Coords currentPos = _screen2map(_actors[0].position.x, _actors[0].position.y);
-            
+
+            //            System.Diagnostics.Debug.WriteLine((Math.Max(currentPos.y - _renderScope, 0)) + " " + (Math.Min(currentPos.y + _renderScope, _map.height)));
+            //          System.Diagnostics.Debug.WriteLine((Math.Max(currentPos.x - _renderScope, 0)) + " " + (Math.Min(currentPos.x + _renderScope, _map.height)));
+
+
             for (int y = (Math.Max(currentPos.y - _renderScope, 0)); y <= (Math.Min(currentPos.y + _renderScope, _map.height)); ++y)
             {
-                for (int x = (Math.Min(currentPos.x + _renderScope, _map.width)); x >= (Math.Min(currentPos.x - _renderScope, 0)); --x)
+                for (int x = (Math.Max(currentPos.x - _renderScope, 0)); x <= (Math.Min(currentPos.x + _renderScope, _map.width)); ++x)
                 {
                     _drawWall(GetWallStyle(x, y), _tileRect(new Vector2(x + 1, y - 1), true), false);
 
                     foreach (ActorView actor in _actors)
                     {
                         Coords apos = _screen2map(actor.position.x, actor.position.y);
-                        if (((int)apos.x == x) && ((int)apos.y == y))
+                        if (((int)apos.x == x) && ((int)apos.y == y + 1))
                         {
                             _spriteBatch.Draw(actor.animationTexture,
-                                new Rectangle(18 + actor.position.x + actor.offsetX, actor.position.y + actor.offsetY,
-    actor.width - actor.offsetX - actor.cropX, actor.height - actor.offsetY - actor.cropY - 8
+                                new Rectangle(29 + actor.position.x + actor.offsetX, actor.position.y + actor.offsetY,
+    actor.width - actor.offsetX - actor.cropX, actor.height - actor.offsetY - actor.cropY - 10
     ), actor.animationRect, Color.White);
                         }
                     }
@@ -687,6 +703,11 @@ namespace Gruppe22
                 }
             }
             //TODO: Reimplement rugged tiles
+        }
+
+        public bool IsMoving(int id)
+        {
+            return _actors[id].isMoving;
         }
 
         /// <summary>
@@ -765,14 +786,15 @@ namespace Gruppe22
             }
             if (_actors[0].isMoving)
                 _camera.position = new Vector2(-38 - _actors[0].position.x, -30 - _actors[0].position.y);
-            if (Math.Abs(gameTime.TotalGameTime.Milliseconds / 10 - _lastCheck) > 1)
+            /*   if (Math.Abs(gameTime.TotalGameTime.Milliseconds / 10 - _lastCheck) > 1)
+               {
+                   _lastCheck = gameTime.TotalGameTime.Milliseconds / 10;*/
+            // Avoid asynchronous updates, makes for smoother appearance
+            foreach (ActorView actor in _actors)
             {
-                _lastCheck = gameTime.TotalGameTime.Milliseconds / 10;
-                foreach (ActorView actor in _actors)
-                {
-                    actor.Update(gameTime);
-                }
+                actor.Update(gameTime);
             }
+            // }
         }
 
         /// <summary>
@@ -791,53 +813,7 @@ namespace Gruppe22
         /// <param name="dir">Direction to move to</param>
         public void MovePlayer(Direction dir)
         {
-            // TODO: This should be somewhere in the game logic, not in the map
-            Coords currentPos = _screen2map(_actors[0].position.x, _actors[0].position.y);
-            switch (dir)
-            {
-                case Direction.Left:
-                    if ((currentPos.x > 0) && (_map[currentPos.x - 1, currentPos.y].canEnter))
-                        _actors[0].target = _map2screen(currentPos.x - 1, currentPos.y);
-                    break;
-                case Direction.Right:
-                    if ((currentPos.x < _map.width - 1) && (_map[currentPos.x + 1, currentPos.y].canEnter))
-                        _actors[0].target = _map2screen(currentPos.x + 1, currentPos.y);
-                    break;
-                case Direction.Down:
-                    if ((currentPos.y < _map.height - 1) && (_map[currentPos.x, currentPos.y + 1].canEnter))
-                        _actors[0].target = _map2screen(currentPos.x, currentPos.y + 1);
-                    break;
-                case Direction.Up:
-                    if ((currentPos.y > 0) && (_map[currentPos.x, currentPos.y - 1].canEnter))
-                        _actors[0].target = _map2screen(currentPos.x, currentPos.y - 1);
-                    break;
-
-                // Diagonal movement
-                // TODO: Check for diagonal walls - doh :-(
-                case Direction.DownLeft:
-                    if ((currentPos.x > 0) && (currentPos.y < _map.height - 1) && (_map[currentPos.x - 1, currentPos.y + 1].canEnter)
-                        )
-                        _actors[0].target = _map2screen(currentPos.x - 1, currentPos.y + 1);
-                    break;
-                case Direction.UpRight:
-                    if ((currentPos.x < _map.width - 1) && (currentPos.y > 0) &&
-                        (_map[currentPos.x + 1, currentPos.y - 1].canEnter)
-                        )
-                        _actors[0].target = _map2screen(currentPos.x + 1, currentPos.y - 1);
-                    break;
-                case Direction.DownRight:
-                    if ((currentPos.y < _map.height - 1) && (currentPos.x < _map.width - 1) &&
-                        (_map[currentPos.x + 1, currentPos.y + 1].canEnter))
-                        _actors[0].target = _map2screen(currentPos.x + 1, currentPos.y + 1);
-                    break;
-                case Direction.UpLeft:
-                    if ((currentPos.y > 0) &&
-                        (currentPos.x > 0) &&
-                        (_map[currentPos.x - 1, currentPos.y - 1].canEnter))
-                        _actors[0].target = _map2screen(currentPos.x - 1, currentPos.y - 1);
-                    break;
-            }
-            currentPos = _screen2map(_actors[0].target.x, _actors[0].target.y);
+            _parent.HandleEvent(this, Events.MoveActor, 0, dir);
         }
 
 
@@ -1031,69 +1007,85 @@ namespace Gruppe22
 
             // 3. Moving entities (player, NPCs, enemies)
             _actors = new List<ActorView>();
-            _actors.Add(new ActorView(_content, _map2screen(1, 1)));
-         /*   System.Diagnostics.Debug.WriteLine("Start at: 0/1 (" + _map2screen(0, 1).x + "/" + _map2screen(0, 1).y + ")");
-            System.Diagnostics.Debug.WriteLine("---");
-            _actors[0].Add(Activity.Walk, Direction.Right, "Walk", new Coords(0, 0), 8, 1);
-            _actors[0].Add(Activity.Walk, Direction.Up, "Walk", new Coords(0, 96), 8, 1);
-            _actors[0].Add(Activity.Walk, Direction.UpRight, "Walk", new Coords(0, 192), 8, 1);
-            _actors[0].Add(Activity.Walk, Direction.UpLeft, "Walk", new Coords(0, 288), 8, 1);
-            _actors[0].Add(Activity.Walk, Direction.Down, "Walk", new Coords(0, 384), 8, 1);
-            _actors[0].Add(Activity.Walk, Direction.DownRight, "Walk", new Coords(0, 480), 8, 1);
-            _actors[0].Add(Activity.Walk, Direction.DownLeft, "Walk", new Coords(0, 576), 8, 1);
-            _actors[0].Add(Activity.Walk, Direction.Left, "Walk", new Coords(0, 672), 8, 1);
+            foreach (Coords actorPos in _map.actorPositions)
+            {
 
-            _actors[0].Add(Activity.Hit, Direction.Right, "Hit", new Coords(0, 0), 8, 1);
-            _actors[0].Add(Activity.Hit, Direction.Up, "Hit", new Coords(0, 96), 8, 1);
-            _actors[0].Add(Activity.Hit, Direction.UpRight, "Hit", new Coords(0, 192), 8, 1);
-            _actors[0].Add(Activity.Hit, Direction.UpLeft, "Hit", new Coords(0, 288), 8, 1);
-            _actors[0].Add(Activity.Hit, Direction.Down, "Hit", new Coords(0, 384), 8, 1);
-            _actors[0].Add(Activity.Hit, Direction.DownRight, "Hit", new Coords(0, 480), 8, 1);
-            _actors[0].Add(Activity.Hit, Direction.DownLeft, "Hit", new Coords(0, 576), 8, 1);
-            _actors[0].Add(Activity.Hit, Direction.Left, "Hit", new Coords(0, 672), 8, 1);
+                if (_actors.Count > 1) _actors.Add(new ActorView(_content, _map2screen(actorPos), "Content\\skeleton.xml"));
+                else _actors.Add(new ActorView(_content, _map2screen(actorPos), "Content\\player.xml"));
+            }
 
-            _actors[0].Add(Activity.Die, Direction.Right, "fall", new Coords(0, 0), 8, 1);
-            _actors[0].Add(Activity.Die, Direction.Up, "fall", new Coords(0, 96), 8, 1);
-            _actors[0].Add(Activity.Die, Direction.UpRight, "fall", new Coords(0, 192), 8, 1);
-            _actors[0].Add(Activity.Die, Direction.UpLeft, "fall", new Coords(0, 288), 8, 1);
-            _actors[0].Add(Activity.Die, Direction.Down, "fall", new Coords(0, 384), 8, 1);
-            _actors[0].Add(Activity.Die, Direction.DownRight, "fall", new Coords(0, 480), 8, 1);
-            _actors[0].Add(Activity.Die, Direction.DownLeft, "fall", new Coords(0, 576), 8, 1);
-            _actors[0].Add(Activity.Die, Direction.Left, "fall", new Coords(0, 672), 8, 1);
+        }
+        #endregion
 
-            _actors[0].Add(Activity.Talk, Direction.Right, "Talk", new Coords(0, 0), 8, 1);
-            _actors[0].Add(Activity.Talk, Direction.Up, "Talk", new Coords(0, 96), 8, 1);
-            _actors[0].Add(Activity.Talk, Direction.UpRight, "Talk", new Coords(0, 192), 8, 1);
-            _actors[0].Add(Activity.Talk, Direction.UpLeft, "Talk", new Coords(0, 288), 8, 1);
-            _actors[0].Add(Activity.Talk, Direction.Down, "Talk", new Coords(0, 384), 8, 1);
-            _actors[0].Add(Activity.Talk, Direction.DownRight, "Talk", new Coords(0, 480), 8, 1);
-            _actors[0].Add(Activity.Talk, Direction.DownLeft, "Talk", new Coords(0, 576), 8, 1);
-            _actors[0].Add(Activity.Talk, Direction.Left, "Talk", new Coords(0, 672), 8, 1);
-
-            _actors[0].Add(Activity.Run, Direction.Right, "Run", new Coords(0, 0), 8, 1);
-            _actors[0].Add(Activity.Run, Direction.Up, "Run", new Coords(0, 96), 8, 1);
-            _actors[0].Add(Activity.Run, Direction.UpRight, "Run", new Coords(0, 192), 8, 1);
-            _actors[0].Add(Activity.Run, Direction.UpLeft, "Run", new Coords(0, 288), 8, 1);
-            _actors[0].Add(Activity.Run, Direction.Down, "Run", new Coords(0, 384), 8, 1);
-            _actors[0].Add(Activity.Run, Direction.DownRight, "Run", new Coords(0, 480), 8, 1);
-            _actors[0].Add(Activity.Run, Direction.DownLeft, "Run", new Coords(0, 576), 8, 1);
-            _actors[0].Add(Activity.Run, Direction.Left, "Run", new Coords(0, 672), 8, 1);
+    }
+}
 
 
-            _actors[0].Add(Activity.Attack, Direction.Right, "Attack", new Coords(0, 0), 8, 1);
-            _actors[0].Add(Activity.Attack, Direction.Up, "Attack", new Coords(0, 96), 8, 1);
-            _actors[0].Add(Activity.Attack, Direction.UpRight, "Attack", new Coords(0, 192), 8, 1);
-            _actors[0].Add(Activity.Attack, Direction.UpLeft, "Attack", new Coords(0, 288), 8, 1);
-            _actors[0].Add(Activity.Attack, Direction.Down, "Attack", new Coords(0, 384), 8, 1);
-            _actors[0].Add(Activity.Attack, Direction.DownRight, "Attack", new Coords(0, 480), 8, 1);
-            _actors[0].Add(Activity.Attack, Direction.DownLeft, "Attack", new Coords(0, 576), 8, 1);
-            _actors[0].Add(Activity.Attack, Direction.Left, "Attack", new Coords(0, 672), 8, 1);
+
+/*   
+ *             _actors.Add(new ActorView(_content, _map2screen(_map.GetPlayerPos(1))));
+
+ * System.Diagnostics.Debug.WriteLine("Start at: 0/1 (" + _map2screen(0, 1).x + "/" + _map2screen(0, 1).y + ")");
+   System.Diagnostics.Debug.WriteLine("---");
+   _actors[0].Add(Activity.Walk, Direction.Right, "Walk", new Coords(0, 0), 8, 1);
+   _actors[0].Add(Activity.Walk, Direction.Up, "Walk", new Coords(0, 96), 8, 1);
+   _actors[0].Add(Activity.Walk, Direction.UpRight, "Walk", new Coords(0, 192), 8, 1);
+   _actors[0].Add(Activity.Walk, Direction.UpLeft, "Walk", new Coords(0, 288), 8, 1);
+   _actors[0].Add(Activity.Walk, Direction.Down, "Walk", new Coords(0, 384), 8, 1);
+   _actors[0].Add(Activity.Walk, Direction.DownRight, "Walk", new Coords(0, 480), 8, 1);
+   _actors[0].Add(Activity.Walk, Direction.DownLeft, "Walk", new Coords(0, 576), 8, 1);
+   _actors[0].Add(Activity.Walk, Direction.Left, "Walk", new Coords(0, 672), 8, 1);
+
+   _actors[0].Add(Activity.Hit, Direction.Right, "Hit", new Coords(0, 0), 8, 1);
+   _actors[0].Add(Activity.Hit, Direction.Up, "Hit", new Coords(0, 96), 8, 1);
+   _actors[0].Add(Activity.Hit, Direction.UpRight, "Hit", new Coords(0, 192), 8, 1);
+   _actors[0].Add(Activity.Hit, Direction.UpLeft, "Hit", new Coords(0, 288), 8, 1);
+   _actors[0].Add(Activity.Hit, Direction.Down, "Hit", new Coords(0, 384), 8, 1);
+   _actors[0].Add(Activity.Hit, Direction.DownRight, "Hit", new Coords(0, 480), 8, 1);
+   _actors[0].Add(Activity.Hit, Direction.DownLeft, "Hit", new Coords(0, 576), 8, 1);
+   _actors[0].Add(Activity.Hit, Direction.Left, "Hit", new Coords(0, 672), 8, 1);
+
+   _actors[0].Add(Activity.Die, Direction.Right, "fall", new Coords(0, 0), 8, 1);
+   _actors[0].Add(Activity.Die, Direction.Up, "fall", new Coords(0, 96), 8, 1);
+   _actors[0].Add(Activity.Die, Direction.UpRight, "fall", new Coords(0, 192), 8, 1);
+   _actors[0].Add(Activity.Die, Direction.UpLeft, "fall", new Coords(0, 288), 8, 1);
+   _actors[0].Add(Activity.Die, Direction.Down, "fall", new Coords(0, 384), 8, 1);
+   _actors[0].Add(Activity.Die, Direction.DownRight, "fall", new Coords(0, 480), 8, 1);
+   _actors[0].Add(Activity.Die, Direction.DownLeft, "fall", new Coords(0, 576), 8, 1);
+   _actors[0].Add(Activity.Die, Direction.Left, "fall", new Coords(0, 672), 8, 1);
+
+   _actors[0].Add(Activity.Talk, Direction.Right, "Talk", new Coords(0, 0), 8, 1);
+   _actors[0].Add(Activity.Talk, Direction.Up, "Talk", new Coords(0, 96), 8, 1);
+   _actors[0].Add(Activity.Talk, Direction.UpRight, "Talk", new Coords(0, 192), 8, 1);
+   _actors[0].Add(Activity.Talk, Direction.UpLeft, "Talk", new Coords(0, 288), 8, 1);
+   _actors[0].Add(Activity.Talk, Direction.Down, "Talk", new Coords(0, 384), 8, 1);
+   _actors[0].Add(Activity.Talk, Direction.DownRight, "Talk", new Coords(0, 480), 8, 1);
+   _actors[0].Add(Activity.Talk, Direction.DownLeft, "Talk", new Coords(0, 576), 8, 1);
+   _actors[0].Add(Activity.Talk, Direction.Left, "Talk", new Coords(0, 672), 8, 1);
+
+   _actors[0].Add(Activity.Run, Direction.Right, "Run", new Coords(0, 0), 8, 1);
+   _actors[0].Add(Activity.Run, Direction.Up, "Run", new Coords(0, 96), 8, 1);
+   _actors[0].Add(Activity.Run, Direction.UpRight, "Run", new Coords(0, 192), 8, 1);
+   _actors[0].Add(Activity.Run, Direction.UpLeft, "Run", new Coords(0, 288), 8, 1);
+   _actors[0].Add(Activity.Run, Direction.Down, "Run", new Coords(0, 384), 8, 1);
+   _actors[0].Add(Activity.Run, Direction.DownRight, "Run", new Coords(0, 480), 8, 1);
+   _actors[0].Add(Activity.Run, Direction.DownLeft, "Run", new Coords(0, 576), 8, 1);
+   _actors[0].Add(Activity.Run, Direction.Left, "Run", new Coords(0, 672), 8, 1);
+
+
+   _actors[0].Add(Activity.Attack, Direction.Right, "Attack", new Coords(0, 0), 8, 1);
+   _actors[0].Add(Activity.Attack, Direction.Up, "Attack", new Coords(0, 96), 8, 1);
+   _actors[0].Add(Activity.Attack, Direction.UpRight, "Attack", new Coords(0, 192), 8, 1);
+   _actors[0].Add(Activity.Attack, Direction.UpLeft, "Attack", new Coords(0, 288), 8, 1);
+   _actors[0].Add(Activity.Attack, Direction.Down, "Attack", new Coords(0, 384), 8, 1);
+   _actors[0].Add(Activity.Attack, Direction.DownRight, "Attack", new Coords(0, 480), 8, 1);
+   _actors[0].Add(Activity.Attack, Direction.DownLeft, "Attack", new Coords(0, 576), 8, 1);
+   _actors[0].Add(Activity.Attack, Direction.Left, "Attack", new Coords(0, 672), 8, 1);
 
             
-            _actors[0].Save("Content\\player.xml");*/
-            _actors[0].Load("Content\\player.xml");
+   _actors[0].Save("Content\\player.xml");*/
 
-            _actors.Add(new ActorView(_content, _map2screen(5, 1)));/*
+/*
             _actors[1].Add(Activity.Walk, Direction.Right, "sWalk", new Coords(0, 0), 8, 1);
             _actors[1].Add(Activity.Walk, Direction.Up, "sWalk", new Coords(0, 96), 8, 1);
             _actors[1].Add(Activity.Walk, Direction.UpRight, "sWalk", new Coords(0, 192), 8, 1);
@@ -1134,10 +1126,3 @@ namespace Gruppe22
 
 
             _actors[1].Save("Content\\skeleton.xml"); */
-            _actors[1].Load("Content\\skeleton.xml");
-
-        }
-        #endregion
-
-    }
-}
