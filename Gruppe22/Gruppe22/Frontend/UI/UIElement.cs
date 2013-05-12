@@ -12,7 +12,7 @@ namespace Gruppe22
 
     public interface IHandleEvent
     {
-        void HandleEvent(UIElement sender, Events eventID, int data);
+        void HandleEvent(UIElement sender, Events eventID, params object[] data);
     }
     /// <summary>
     /// 
@@ -55,7 +55,7 @@ namespace Gruppe22
 
         #region Public Methods
 
-        public virtual void HandleEvent(UIElement sender, Events eventID, int data)
+        public virtual void HandleEvent(UIElement sender, Events eventID, params object[] data)
         {
             _parent.HandleEvent(sender, eventID, data);
         }

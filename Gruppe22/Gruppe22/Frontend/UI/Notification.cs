@@ -38,7 +38,7 @@ namespace Gruppe22
             base.Draw(gameTime);
         }
 
-        public override void HandleEvent(UIElement sender, Events eventID, int data)
+        public override void HandleEvent(UIElement sender, Events eventID, params object[] data)
         {
             base.HandleEvent(sender, eventID, data);
         }

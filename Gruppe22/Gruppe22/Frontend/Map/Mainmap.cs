@@ -695,11 +695,11 @@ namespace Gruppe22
         /// <param name="gameTime"></param>
         public override void Update(GameTime gameTime)
         {
-            Coords currentPos = _screen2map(_actors[0].target.x, _actors[0].target.y);
 
             if (IsHit(Mouse.GetState().X, Mouse.GetState().Y))
             {
                 _UpdateMouse(new Vector2(Mouse.GetState().X, Mouse.GetState().Y));
+                Coords currentPos = _screen2map(_actors[0].target.x, _actors[0].target.y);
 
                 if (Mouse.GetState().LeftButton == ButtonState.Pressed)
                 {
@@ -709,6 +709,7 @@ namespace Gruppe22
                         {
                             if (_highlightedTile.y < currentPos.y)
                             {
+
                                 MovePlayer(Direction.UpLeft);
                             }
                             else
@@ -931,6 +932,7 @@ namespace Gruppe22
                 if (Keyboard.GetState().IsKeyDown(Keys.W))
                 {
 
+                    //_actors[0].target = new Coords(_actors[0].position.x, _actors[0].position.y-100);
                     MovePlayer(Direction.Up);
 
                 }
@@ -1032,8 +1034,8 @@ namespace Gruppe22
             _actors.Add(new ActorView(_content, _map2screen(1, 1)));
             _actors[0].Add(Activity.Walk, Direction.DownRight, "Walk", new Coords(0, 0), 8, 1);
             _actors[0].Add(Activity.Walk, Direction.UpRight, "Walk", new Coords(0, 96), 8, 1);
-            _actors[0].Add(Activity.Walk, Direction.Right, "Walk", new Coords(0, 192), 8, 1);
-            _actors[0].Add(Activity.Walk, Direction.Up, "Walk", new Coords(0, 288), 8, 1);
+            _actors[0].Add(Activity.Walk, Direction.Up, "Walk", new Coords(0, 192), 8, 1);
+            _actors[0].Add(Activity.Walk, Direction.Right, "Walk", new Coords(0, 288), 8, 1);
             _actors[0].Add(Activity.Walk, Direction.DownLeft, "Walk", new Coords(0, 384), 8, 1);
             _actors[0].Add(Activity.Walk, Direction.Down, "Walk", new Coords(0, 480), 8, 1);
             _actors[0].Add(Activity.Walk, Direction.Left, "Walk", new Coords(0, 576), 8, 1);

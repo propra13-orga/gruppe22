@@ -88,9 +88,9 @@ namespace Gruppe22
         {
             Random r = new Random();
             _map1 = new Map(r.Next(20) + 6, r.Next(20) + 6);
-            _map1.ClearMaze();
-            _map1.GenerateMaze();
-            _map1.ClearWalls();
+           // _map1.ClearMaze();
+            //_map1.GenerateMaze();
+           // _map1.ClearWalls();
             _interfaceElements = new List<UIElement>();
 
             base.Initialize();
@@ -140,6 +140,7 @@ namespace Gruppe22
             _focus = _interfaceElements[_interfaceElements.Count - 1];
         }
 
+        
         /// <summary>
         /// Unload all managed content which has not been disposed of elsewhere
         /// </summary>
@@ -154,7 +155,7 @@ namespace Gruppe22
         /// <param name="sender"></param>
         /// <param name="eventID"></param>
         /// <param name="data"></param>
-        public void HandleEvent(UIElement sender, Events eventID, int data)
+        public void HandleEvent(UIElement sender, Events eventID, params object[] data)
         {
 
             switch (eventID)
