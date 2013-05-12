@@ -120,7 +120,7 @@ namespace Gruppe22
                 int count = 0;
                 while ((!result) && (count < _overlay.Count))
                 {
-                    result = ((_overlay[count] is ActorTile) && (((ActorTile)_overlay[count]).actorType == ActorType.Player));
+                    result = ((_overlay[count] is ActorTile) && (((ActorTile)_overlay[count]).actor is Player));
                     ++count;
                 }
                 return result;
@@ -139,7 +139,7 @@ namespace Gruppe22
                 int count = 0;
                 while ((!result) && (count < _overlay.Count))
                 {
-                    result = ((_overlay[count] is ActorTile) && (((ActorTile)_overlay[count]).actorType == ActorType.Enemy));
+                    result = ((_overlay[count] is ActorTile) && (((ActorTile)_overlay[count]).actor is Enemy));
                     ++count;
                 }
                 return result;

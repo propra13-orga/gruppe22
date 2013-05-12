@@ -7,5 +7,7 @@ namespace Gruppe22
 {
     public class NPC : Actor
     {
+        protected ActorType _actorType = ActorType.NPC;
+
     }
 }

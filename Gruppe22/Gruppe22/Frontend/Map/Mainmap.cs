@@ -667,11 +667,11 @@ namespace Gruppe22
                     foreach (ActorView actor in _actors)
                     {
                         Coords apos = _screen2map(actor.position.x, actor.position.y);
-                        if (((int)apos.x == x) && ((int)apos.y == y + 1))
+                        if (((int)apos.x == x ) && ((int)apos.y == y + 1))
                         {
                             _spriteBatch.Draw(actor.animationTexture,
-                                new Rectangle(29 + actor.position.x + actor.offsetX, actor.position.y + actor.offsetY,
-    actor.width - actor.offsetX - actor.cropX, actor.height - actor.offsetY - actor.cropY - 10
+                                new Rectangle(actor.position.x + actor.offsetX + 25, actor.position.y + actor.offsetY - 25,
+    actor.width - actor.offsetX - actor.cropX, actor.height - actor.offsetY - actor.cropY
     ), actor.animationRect, Color.White);
                         }
                     }

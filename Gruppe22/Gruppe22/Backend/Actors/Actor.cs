@@ -15,7 +15,7 @@ namespace Gruppe22
     public class Actor
     {
         private ActorTile _tile;
-        private ActorType _actorType;
+        protected ActorType _actorType;
 
         public ActorTile tile
         {

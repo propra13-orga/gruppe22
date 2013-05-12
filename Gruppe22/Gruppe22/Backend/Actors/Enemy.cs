@@ -7,5 +7,6 @@ namespace Gruppe22
 {
     public class Enemy : Actor
     {
+        protected ActorType _actorType=ActorType.Enemy;
     }
 }

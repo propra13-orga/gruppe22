@@ -97,9 +97,9 @@ namespace Gruppe22
                 List<Coords> result = new List<Coords>();
                 foreach (Coords coords in _updateTiles)
                 {
-                    if (_tiles[coords.x][coords.y] is ActorTile)
+                    if (_tiles[coords.y][coords.x] is ActorTile)
                     {
-                        ActorTile t = _tiles[coords.x][coords.y] as ActorTile;
+                        ActorTile t = _tiles[coords.y][coords.x] as ActorTile;
                         if (t.actorType == ActorType.Player)
                         {
                             result.Insert(0, coords);
@@ -213,7 +213,7 @@ namespace Gruppe22
         {
             foreach (Coords c in _updateTiles)
             {
-                _tiles[c.x][c.y].Update(gameTime);
+                _tiles[c.y][c.x].Update(gameTime);
             }
         }
 
@@ -397,6 +397,40 @@ namespace Gruppe22
 
         public void AddTraps(int amount = -1)
         {
+            if (amount < 0) amount = 5;
+            Random r = new Random();
+            for (int i = 0; i < amount; ++i)
+            {
+                int count = 0;
+                Path pos = new Path(2 + r.Next(_width / 2 - 2) * 2, 2 + r.Next(_height / 2 - 2) * 2);
+                while ((pos.x > 0) && (!_tiles[pos.y][pos.x].canEnter))
+                {
+                    count += 1;
+                    pos.x += 2;
+                    if (pos.x > _width - 2)
+                    {
+                        pos.x = 2;
+                        pos.y += 2;
+                    };
+                    if (pos.y > _height - 2)
+                    {
+                        pos.y = 2;
+                        pos.x = 2;
+                    }
+                }
+
+                if (count >= _width * _height)
+                {
+                    pos.x = -1;
+                    pos.y = -1;
+                }
+                if ((pos.x >= 0) && (pos.x < _width) && (pos.y < _height) && (pos.y >= 0))
+                {
+                    TrapTile trapTile = new TrapTile(_tiles[pos.y][pos.x]);
+                    _tiles[pos.y][pos.x].Add(trapTile);
+                    _updateTiles.Add(pos);
+                }
+            }
 
         }
 
@@ -416,19 +450,126 @@ namespace Gruppe22
 
         public void AddEnemies(int amount = -1)
         {
+            if (amount < 0) amount = 5;
+            Random r = new Random();
+            for (int i = 0; i < amount; ++i)
+            {
+                int count = 0;
+                Path pos = new Path(2 + r.Next(_width / 2 - 2) * 2, 2 + r.Next(_height / 2 - 2) * 2);
+                while ((pos.x > 0) && (!_tiles[pos.y][pos.x].canEnter))
+                {
+                    count += 1;
+                    pos.x += 2;
+                    if (pos.x > _width - 2)
+                    {
+                        pos.x = 2;
+                        pos.y += 2;
+                    };
+                    if (pos.y > _height - 2)
+                    {
+                        pos.y = 2;
+                        pos.x = 2;
+                    }
+                }
+
+                if (count >= _width * _height)
+                {
+                    pos.x = -1;
+                    pos.y = -1;
+                }
+                if ((pos.x >= 0) && (pos.x < _width) && (pos.y < _height) && (pos.y >= 0))
+                {
+                    Enemy enemy = new Enemy();
+                    ActorTile enemyTile = new ActorTile(_tiles[pos.y][pos.x], enemy);
+                    enemy.tile = enemyTile;
+                    _tiles[pos.y][pos.x].Add(enemyTile);
+                    _updateTiles.Add(pos);
+                    _actors.Add(enemy);
+                }
+            }
 
         }
 
 
         public void AddDoors(int amount = -1)
         {
+            if (amount < 0) amount = 5;
+            if (amount < 0) amount = 5;
+            Random r = new Random();
+            for (int i = 0; i < amount; ++i)
+            {
+                int count = 0;
+                Path pos = new Path(2 + r.Next(_width / 2 - 2) * 2, 2 + r.Next(_height / 2 - 2) * 2);
+                while ((pos.x > 0) && (!_tiles[pos.y][pos.x].canEnter))
+                {
+                    count += 1;
+                    pos.x += 2;
+                    if (pos.x > _width - 2)
+                    {
+                        pos.x = 2;
+                        pos.y += 2;
+                    };
+                    if (pos.y > _height - 2)
+                    {
+                        pos.y = 2;
+                        pos.x = 2;
+                    }
+                }
+
+                if (count >= _width * _height)
+                {
+                    pos.x = -1;
+                    pos.y = -1;
+                }
+                if ((pos.x >= 0) && (pos.x < _width) && (pos.y < _height) && (pos.y >= 0))
+                {
+                    TeleportTile teleportTile = new TeleportTile(_tiles[pos.y][pos.x]);
+                    _tiles[pos.y][pos.x].Add(teleportTile);
+                    _updateTiles.Add(pos);
+                }
+            }
 
         }
 
 
         public void AddItems(int amount = -1)
         {
+            if (amount < 0) amount = 5;
+            Random r = new Random();
+            for (int i = 0; i < amount; ++i)
+            {
+                int count = 0;
+                Path pos = new Path(2 + r.Next(_width / 2 - 2) * 2, 2 + r.Next(_height / 2 - 2) * 2);
+                while ((pos.x > 0) && (!_tiles[pos.y][pos.x].canEnter))
+                {
+                    count += 1;
+                    pos.x += 2;
+                    if (pos.x > _width - 2)
+                    {
+                        pos.x = 2;
+                        pos.y += 2;
+                    };
+                    if (pos.y > _height - 2)
+                    {
+                        pos.y = 2;
+                        pos.x = 2;
+                    }
+                }
 
+                if (count >= _width * _height)
+                {
+                    pos.x = -1;
+                    pos.y = -1;
+                }
+                if ((pos.x >= 0) && (pos.x < _width) && (pos.y < _height) && (pos.y >= 0))
+                {
+                    Item item = new Item();
+                    ItemTile itemTile = new ItemTile(_tiles[pos.y][pos.x], item);
+                    item.tile = itemTile;
+                    _tiles[pos.y][pos.x].Add(itemTile);
+                    _items.Add(item);
+                }
+            }
         }
 
         public void ClearWalls(int number = -1)

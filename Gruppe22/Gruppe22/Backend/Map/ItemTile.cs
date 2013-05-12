@@ -7,7 +7,8 @@ namespace Gruppe22
 {
     public class ItemTile : Tile
     {
-        Item _item;
+        Item _item = null;
+
         public Item item
         {
             get { return _item; }
@@ -20,9 +21,24 @@ namespace Gruppe22
             }
         }
 
-        public ItemTile(object parent)
+        public ItemTile(object parent, Item item)
             : base(parent)
         {
+            _item = item;
+        }
+
+
+
+        public ItemTile()
+            : base(null, null, true)
+        {
+            _parent = parent;
+        }
+
+        public ItemTile(object parent)
+            : base(parent, null, true)
+        {
+            _parent = parent;
 
         }
     }
