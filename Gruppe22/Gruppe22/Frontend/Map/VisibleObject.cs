@@ -19,6 +19,11 @@ namespace Gruppe22
         private Rectangle _clipRect;
         private Texture2D _texture = null;
         private ContentManager _content = null;
+        private int _offsetX = 0;
+        private int _offsetY = 0;
+        private int _cropX = 0;
+        private int _cropY = 0;
+
         #endregion
 
         #region Public Fields
@@ -32,6 +37,30 @@ namespace Gruppe22
         public Rectangle clipRect { get { return _clipRect; } set { _clipRect = value; } }
 
         public Texture2D texture { get { return _texture; } }
+
+        public int offsetX
+        {
+            get { return _offsetX; }
+            set { _offsetX = value; }
+        }
+
+        public int offsetY
+        {
+            get { return _offsetY; }
+            set { _offsetY = value; }
+        }
+
+        public int cropX
+        {
+            get { return _cropX; }
+            set { _cropX = value; }
+        }
+
+        public int cropY
+        {
+            get { return _cropY; }
+            set { _cropY = value; }
+        }
         #endregion
 
         #region Constructor
@@ -46,7 +75,15 @@ namespace Gruppe22
             _srcFile = srcFile;
             _clipRect = clipRect;
             _content = content;
-            _texture = _content.Load<Texture2D>(_srcFile);
+            if (_srcFile != "")
+            {
+                _texture = _content.Load<Texture2D>(_srcFile);
+            }
+        }
+
+        public VisibleObject()
+        {
+
         }
         #endregion
 
@@ -65,18 +102,33 @@ namespace Gruppe22
         /// <param name="reader">The reader containing the object</param>
         public void ReadXml(System.Xml.XmlReader reader)
         {
+
+            Boolean isEmptyElement = reader.IsEmptyElement;
+
+
+
             reader.MoveToContent();
+
+
             _clipRect.X = Int32.Parse(reader.GetAttribute("x"));
             _clipRect.Y = Int32.Parse(reader.GetAttribute("y"));
             _clipRect.Width = Int32.Parse(reader.GetAttribute("width"));
             _clipRect.Height = Int32.Parse(reader.GetAttribute("height"));
             _srcFile = reader.GetAttribute("file");
-            Boolean isEmptyElement = reader.IsEmptyElement;
-            reader.ReadStartElement();
-            if (!isEmptyElement)
+
+            if (_srcFile != "")
             {
-                reader.ReadEndElement();
+                _texture = _content.Load<Texture2D>(_srcFile);
             }
+
+
+            if (isEmptyElement)
+            {
+                return;
+            }
+
+            if (!isEmptyElement)
+                reader.ReadEndElement();
         }
 
         /// <summary>
@@ -103,9 +155,9 @@ namespace Gruppe22
 
         private int _width = 0;
         private int _height = 0;
-        private List<List<VisibleObject>> _animations = null;
+
+        private List<VisibleObject> _animations = null;
         private int _currentPhase = 0;
-        private int _currentAnimation = 0;
         private bool _loop = true;
         private ContentManager _content = null;
         #endregion
@@ -126,6 +178,99 @@ namespace Gruppe22
                 _loop = value;
             }
         }
+
+        public int offsetX
+        {
+            get
+            {
+                if (_currentPhase < _animations.Count)
+                {
+                    return _animations[_currentPhase].offsetX;
+                }
+                else
+                {
+                    return 0;
+                }
+
+            }
+            set
+            {
+                if (_currentPhase < _animations.Count)
+                {
+                    _animations[_currentPhase].offsetX = value;
+                }
+            }
+        }
+
+        public int offsetY
+        {
+            get
+            {
+                if (_currentPhase < _animations.Count)
+                {
+                    return _animations[_currentPhase].offsetY;
+                }
+                else
+                {
+                    return 0;
+                }
+
+            }
+            set
+            {
+                if (_currentPhase < _animations.Count)
+                {
+                    _animations[_currentPhase].offsetY = value;
+                }
+            }
+        }
+
+        public int cropX
+        {
+            get
+            {
+                if (_currentPhase < _animations.Count)
+                {
+                    return _animations[_currentPhase].cropX;
+                }
+                else
+                {
+                    return 0;
+                }
+
+            }
+            set
+            {
+                if (_currentPhase < _animations.Count)
+                {
+                    _animations[_currentPhase].cropX = value;
+                }
+            }
+        }
+
+        public int cropY
+        {
+            get
+            {
+                if (_currentPhase < _animations.Count)
+                {
+                    return _animations[_currentPhase].cropY;
+                }
+                else
+                {
+                    return 0;
+                }
+
+            }
+            set
+            {
+                if (_currentPhase < _animations.Count)
+                {
+                    _animations[_currentPhase].cropY = value;
+                }
+            }
+        }
+
         /// <summary>
         /// True if we can return a valid bitmap
         /// </summary>
@@ -133,7 +278,7 @@ namespace Gruppe22
         {
             get
             {
-                if ((_currentAnimation < _animations.Count) && (_currentPhase < _animations[_currentAnimation].Count))
+                if (_currentPhase < _animations.Count)
                 {
                     return true;
                 }
@@ -144,24 +289,6 @@ namespace Gruppe22
             }
         }
 
-        /// <summary>
-        /// Current animation style (if multiple styles are used, e.g. walking, talking, fighting)
-        /// </summary>
-        public int currentAnimation
-        {
-            get
-            {
-                return _currentAnimation;
-            }
-            set
-            {
-                if (_currentAnimation != value)
-                {
-                    _currentAnimation = value;
-                    _currentPhase = 0;
-                }
-            }
-        }
 
         /// <summary>
         /// The file containing the current animation phase
@@ -170,9 +297,9 @@ namespace Gruppe22
         {
             get
             {
-                if ((_currentAnimation < _animations.Count) && (_currentPhase < _animations[_currentAnimation].Count))
+                if ((_currentPhase < _animations.Count))
                 {
-                    return _animations[_currentAnimation][_currentPhase].src;
+                    return _animations[_currentPhase].src;
                 }
                 else
                 {
@@ -181,9 +308,9 @@ namespace Gruppe22
             }
             set
             {
-                if ((_currentAnimation < _animations.Count) && (_currentPhase < _animations[_currentAnimation].Count))
+                if ((_currentPhase < _animations.Count))
                 {
-                    _animations[_currentAnimation][_currentPhase].src = value;
+                    _animations[_currentPhase].src = value;
 
                 };
             }
@@ -196,10 +323,10 @@ namespace Gruppe22
         {
             get
             {
-                if ((_currentAnimation < _animations.Count) && (_currentPhase < _animations[_currentAnimation].Count))
+                if ((_currentPhase < _animations.Count))
                 {
 
-                    return _animations[_currentAnimation][_currentPhase].texture;
+                    return _animations[_currentPhase].texture;
                 }
                 else
                 {
@@ -215,11 +342,11 @@ namespace Gruppe22
         {
             get
             {
-                return _animations[_currentAnimation][_currentPhase].clipRect;
+                return _animations[_currentPhase].clipRect;
             }
             set
             {
-                _animations[_currentAnimation][_currentPhase].clipRect = value;
+                _animations[_currentPhase].clipRect = value;
             }
         }
         #endregion
@@ -231,7 +358,7 @@ namespace Gruppe22
         public void NextAnimation()
         {
 
-            if ((_currentAnimation + 1 > _animations.Count) || (_animations[_currentAnimation] == null) || (_currentPhase + 2 > _animations[_currentAnimation].Count))
+            if  (_currentPhase + 2 > _animations.Count)
             {
                 if (_loop) _currentPhase = 0;
             }
@@ -260,46 +387,33 @@ namespace Gruppe22
         /// <param name="rows">Number of rows used in the animation</param>
         /// <param name="order">Whether to read row by row (false, default) or column by column (true)</param>
         /// <returns>ID of Animation added to or -1 if invalid target was passed</returns>
-        public int AddAnimation(string src, Vector2 start, int animation = -1, int cols = 1, int rows = 1, bool order = false)
+        public void AddAnimation(string src, Vector2 start, int cols = 1, int rows = 1, bool order = false)
         {
-            if (animation == -1)
+            if (order)
             {
-                _animations.Add(new List<VisibleObject>());
-                animation = _animations.Count - 1;
-            }
-            if (animation < _animations.Count)
-            {
-                if (order)
-                {
-                    for (int y = 0; y < rows; ++y)
-                    {
-                        for (int x = 0; x < cols; ++x)
-                        {
-
-                            _animations[animation].Add(new VisibleObject(_content, src, new Rectangle((int)start.X + x * _width,
-                                (int)start.Y + y * _height, _width, _height)));
-                        }
-                    }
-                }
-                else
+                for (int y = 0; y < rows; ++y)
                 {
                     for (int x = 0; x < cols; ++x)
                     {
-                        for (int y = 0; y < rows; ++y)
-                        {
 
-                            _animations[animation].Add(new VisibleObject(_content, src, new Rectangle((int)start.X + x * _width,
-                                (int)start.Y + y * _height, _width, _height)));
-                        }
+                        _animations.Add(new VisibleObject(_content, src, new Rectangle((int)start.X + x * _width,
+                            (int)start.Y + y * _height, _width, _height)));
                     }
                 }
-                return animation;
             }
             else
             {
-                return -1;
-            }
+                for (int x = 0; x < cols; ++x)
+                {
+                    for (int y = 0; y < rows; ++y)
+                    {
 
+                        _animations.Add(new VisibleObject(_content, src, new Rectangle((int)start.X + x * _width,
+                            (int)start.Y + y * _height, _width, _height)));
+                    }
+                }
+
+            }
         }
 
         #endregion
@@ -316,7 +430,12 @@ namespace Gruppe22
             _content = content;
             _width = width;
             _height = height;
-            _animations = new List<List<VisibleObject>>();
+            _animations = new List<VisibleObject>();
+        }
+
+        public TileObject()
+        {
+
         }
         #endregion
 
@@ -335,24 +454,28 @@ namespace Gruppe22
         /// <param name="reader">The file from which data will be read</param>
         public void ReadXml(System.Xml.XmlReader reader)
         {
-            XmlSerializer visibleSerializer = new XmlSerializer(typeof(VisibleObject));
             reader.MoveToContent();
             Boolean isEmptyElement = reader.IsEmptyElement;
-            reader.ReadStartElement();
+
+
+            _width = Int32.Parse(reader.GetAttribute("width"));
+            _height = Int32.Parse(reader.GetAttribute("height"));
+            _loop = Boolean.Parse(reader.GetAttribute("loop"));
+
+            reader.Read();
+
             if (isEmptyElement) return;
 
-            _width = Int32.Parse(reader.ReadElementString("width"));
-            _height = Int32.Parse(reader.ReadElementString("height"));
-            _loop = Boolean.Parse(reader.ReadElementString("loop"));
-
             reader.ReadStartElement("animations");
+
             while (reader.NodeType != System.Xml.XmlNodeType.EndElement)
             {
-                reader.ReadStartElement("phase");
-                VisibleObject temp = (VisibleObject)visibleSerializer.Deserialize(reader);
-                reader.ReadEndElement();
-                reader.MoveToContent();
+                VisibleObject temp = new VisibleObject(_content, "", Rectangle.Empty);
+                temp.ReadXml(reader);
+                _animations.Add(temp);
+                reader.Read();
             }
+
             reader.ReadEndElement();
             reader.ReadEndElement();
 
@@ -364,20 +487,20 @@ namespace Gruppe22
         /// <param name="writer">The file used to write the data</param>
         public void WriteXml(System.Xml.XmlWriter writer)
         {
-            writer.WriteElementString("width", _width.ToString());
-            writer.WriteElementString("height", _height.ToString());
-            writer.WriteElementString("loop", _loop.ToString());
-            foreach (List<VisibleObject> visibles in _animations)
+            writer.WriteAttributeString("width", _width.ToString());
+            writer.WriteAttributeString("height", _height.ToString());
+            writer.WriteAttributeString("loop", _loop.ToString());
+
+            writer.WriteStartElement("animations");
+            for (int i = 0; i < _animations.Count; ++i)
             {
-                writer.WriteStartElement("animations");
-                foreach (VisibleObject visible in visibles)
-                {
-                    writer.WriteStartElement("phase");
-                    visible.WriteXml(writer);
-                    writer.WriteEndElement();
-                }
+                writer.WriteStartElement("phase");
+                writer.WriteAttributeString("id", i.ToString());
+                _animations[i].WriteXml(writer);
                 writer.WriteEndElement();
             }
+            writer.WriteEndElement();
+
 
         }
     }

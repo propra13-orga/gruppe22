@@ -8,10 +8,12 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Gruppe22
 {
-
+    /// <summary>
+    /// Enumeration of eight ways of movement
+    /// </summary>
     public enum Direction
     {
-        Up,
+        Up = 0,
         Down,
         Left,
         Right,
@@ -30,7 +32,7 @@ namespace Gruppe22
         /// <summary>
         /// Textures used under and on the map
         /// </summary>
-        private List<TileObject> _environment;
+        private List<TileSet> _environment;
         /// <summary>
         /// List of actors on the map
         /// </summary>
@@ -39,13 +41,30 @@ namespace Gruppe22
         /// Internal reference to map data to be displayed
         /// </summary>
         private Map _map;
+        /// <summary>
+        /// Counter for last updated (to avoid repeated execution of keypresses, etc.)
+        /// </summary>
         private int _lastCheck = 0;
+        /// <summary>
+        /// Number of tiles to render (Square with player in center)
+        /// </summary>
         private int _renderScope = 7;
+        /// <summary>
+        /// Basic texture set (for drawing lines
+        /// </summary>
         private Texture2D _background = null;
-        private Keys _lastKey = Keys.None;
+        /// <summary>
+        /// The circle of light surrounding the player
+        /// </summary>
         private Texture2D _circle = null;
+        /// <summary>
+        /// The tile currently hightlighted by the mouse pointer
+        /// </summary>
         private Coords _highlightedTile;
-        private List<Vector2> _path;
+        /// <summary>
+        /// A tileset containing walls for all possible directions
+        /// </summary>
+        private WallTiles _walls;
         #endregion
 
 
@@ -57,20 +76,28 @@ namespace Gruppe22
         /// </summary>
         public override void Draw(GameTime gametime)
         {
+
+            // Rasterizer: Enable cropping at borders (otherwise map would be overlapping everything else)
             RasterizerState rstate = new RasterizerState();
             rstate.ScissorTestEnable = true;
+
+            // Blendstate used for light circle / fog of war
             BlendState blendState = new BlendState();
             blendState.AlphaDestinationBlend = Blend.SourceColor;
             blendState.ColorDestinationBlend = Blend.SourceColor;
             blendState.AlphaSourceBlend = Blend.Zero;
             blendState.ColorSourceBlend = Blend.Zero;
-            try
-            {
-                _spriteBatch.Begin();
-                _spriteBatch.Draw(_background, _displayRect, new Rectangle(39, 6, 1, 1), Color.White);
-                _spriteBatch.Draw(_background, new Rectangle(_displayRect.X + 2, _displayRect.Y + 2, _displayRect.Width - 4, _displayRect.Height - 4), new Rectangle(39, 6, 1, 1), Color.Black);
 
-                _spriteBatch.End();
+
+            // Draw border of window (black square in white square)
+            _spriteBatch.Begin();
+            _spriteBatch.Draw(_background, _displayRect, new Rectangle(39, 6, 1, 1), Color.White);
+            _spriteBatch.Draw(_background, new Rectangle(_displayRect.X + 2, _displayRect.Y + 2, _displayRect.Width - 4, _displayRect.Height - 4), new Rectangle(39, 6, 1, 1), Color.Black);
+            _spriteBatch.End();
+
+
+            try // This might throw exceptions, so be careful to avoid memory leaks
+            {
                 _spriteBatch.Begin(SpriteSortMode.Immediate,
                             BlendState.AlphaBlend,
                             null,
@@ -80,35 +107,22 @@ namespace Gruppe22
                             _camera.matrix);
 
                 _spriteBatch.GraphicsDevice.ScissorRectangle = new Rectangle(_displayRect.Left + 5, _displayRect.Top + 5, _displayRect.Width - 10, _displayRect.Height - 10);
-                _drawFloor(_map.width, _map.height);
 
-                _drawWalls(gametime);
+                _drawFloor(_map.width, _map.height); // Draw the floow
+                _drawWalls(gametime); // Draw walls, other objects, player and enemies
+
                 _spriteBatch.End();
 
 
+                // Draw circle of light / fog of war
                 _spriteBatch.Begin(SpriteSortMode.Deferred, blendState, null,
                             null,
                             rstate,
                             null,
                             _camera.matrix);
                 _spriteBatch.Draw(_circle, new Rectangle(
-                    (int)(_actors[0].position.X * 64 + _actors[0].position.Y * 64) - 1060,
-                    (int)(_actors[0].position.Y * 48 - _actors[0].position.X * 48) - 1200, 2300, 2300), Color.White);
-
-
-                /* _spriteBatch.Draw(_background, new Rectangle( // von oben
-                                (int)(_actors[0].position.X * 64 + _actors[0].position.Y * 64) - 980,
-                                (int)(_actors[0].position.Y * 48 - _actors[0].position.X * 48) - 2000, 1500, 1500), new Rectangle(0, 0, 1, 1), Color.White);
-                            _spriteBatch.Draw(_background, new Rectangle( // von unten
-                                (int)(_actors[0].position.X * 64 + _actors[0].position.Y * 64) - 980,
-                                (int)(_actors[0].position.Y * 48 - _actors[0].position.X * 48) + 500, 1500, 1500), new Rectangle(0, 0, 1, 1), Color.White);
-                            _spriteBatch.Draw(_background, new Rectangle(
-                                (int)(_actors[0].position.X * 64 + _actors[0].position.Y * 64) - 1580,
-                                (int)(_actors[0].position.Y * 48 - _actors[0].position.X * 48) - 1000, 1100, 3000), new Rectangle(0, 0, 1, 1), Color.White);
-                            _spriteBatch.Draw(_background, new Rectangle(
-                                (int)(_actors[0].position.X * 64 + _actors[0].position.Y * 64) + 520,
-                                (int)(_actors[0].position.Y * 48 - _actors[0].position.X * 48) - 1000, 1500, 3000), new Rectangle(0, 0, 1, 1), Color.White);*/
-
+                    (int)(_actors[0].position.x) - 1060,
+                    (int)(_actors[0].position.y) - 1200, 2300, 2300), Color.White);
                 _spriteBatch.End();
 
 
@@ -126,7 +140,7 @@ namespace Gruppe22
         #region Private Methods
 
         /// <summary>
-        /// 
+        /// Highlight tile based on mouse position; note inverted matrix (since map is zoomed / panned)
         /// </summary>
         /// <param name="coords"></param>
         private void _UpdateMouse(Vector2 coords)
@@ -146,132 +160,10 @@ namespace Gruppe22
         {
             switch (dir)
             {
-                case WallDir.UpRight: // Walls on Up and left square
-                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(0, 768, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
-                    break;
-
-                case WallDir.UpLeft: // Walls on up and right square
-                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(128, 768, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
-                    break;
-
-                case WallDir.DownLeft: // Walls on left and down squares
-                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(256, 576, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
-                    break;
-
-                case WallDir.DownRight: // Walls on right and down squares
-                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(384, 576, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
-                    break;
-
-                case WallDir.LeftRight: // Walls on left and right neighboring squares
-                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(0, 576, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
-                    break;
-
-                case WallDir.UpDown:// Walls on up and down neighboring squares
-                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(128, 576, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
-                    break;
-
-                case WallDir.FourWay: // Walls on all surrounding squares
-                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(384, 768, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
-                    break;
-
-                case WallDir.RightClose:
-                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(256, 192, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
-                    break;
-
-                case WallDir.UpClose:
-                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(128, 192, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
-                    break;
-
-                case WallDir.LeftClose: // Wall on current square connected to square to the left
-                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(384, 192, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
-                    break;
-
-                case WallDir.DownClose: // Wall on current square connected to square below
-                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(0, 192, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
-                    break;
-
-                case WallDir.LeftRightUp: // Walls connected left, right and up
-                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(640, 576, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
-                    break;
-
-                case WallDir.LeftRightDown: // Wall connected left right and down
-                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(768, 576, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
-                    break;
-
-                case WallDir.UpDownLeft: // Walls on Up, Down and Left suqares
-                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(896, 576, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
-                    break;
-
-                case WallDir.UpDownRight: // Walls on Up, Down and Right squares
-                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(512, 576, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
-                    break;
-
-                case WallDir.Free: // Free standing wall (no connecting squares)
-                    _spriteBatch.Draw(_environment[2].animationTexture, target, new Rectangle(1920, 0, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
-                    break;
-
-                case WallDir.UpRightDiag: // Done
-                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(681, 835, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
-                    break;
-
-                case WallDir.UpLeftDiag: // Done
-                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(321, 0, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
-                    break;
-
-                case WallDir.DownLeftDiag: // Done
-                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(384, 384, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
-                    break;
-
-                case WallDir.DownRightDiag: // Done
-                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(128, 384, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
-                    break;
-
-                case WallDir.UpDownLeftDiag: // Done
-                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(640, 384, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
-                    break;
-
-                case WallDir.UpDownDiag:// Done
-                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(0, 384, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
-                    break;
-
-                case WallDir.FourDiag: // Done
-                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(256, 768, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
-                    break;
-
-                case WallDir.RightCloseDiag: // Done (Imperfect)
-                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(681, 820, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
-                    break;
-
-                case WallDir.UpCloseDiag: // Done
-                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(257, 0, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
-                    break;
-
-                case WallDir.LeftCloseDiag: // Done
-                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(385, 0, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
-                    break;
-
-                case WallDir.DownCloseDiag: // Done
-                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(136, 0, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
-                    break;
-
-                case WallDir.LeftRightUpDiag: // Done
-                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(896, 384, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
-                    break;
-
-                case WallDir.LeftRightDownDiag: // Done
-                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(768, 384, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
-                    break;
-
-                case WallDir.LeftRightDiag: // Done
-                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(256, 384, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
-                    break;
-
-                case WallDir.UpDownRightDiag: // Done
-                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(512, 384, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
-                    break;
-
-                case WallDir.DiagUpClose: // Done
-                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(640, 192, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
+                default:
+                    _spriteBatch.Draw(_walls[(int)dir].animationTexture, new Rectangle(target.Left + _walls[(int)dir].offsetX, target.Top + _walls[(int)dir].offsetY,
+    target.Width - _walls[(int)dir].offsetX - _walls[(int)dir].cropX, target.Height - _walls[(int)dir].offsetY - _walls[(int)dir].cropY
+    ), _walls[(int)dir].animationRect, transparent ? new Color(Color.White, (float)0.5) : Color.White);
                     break;
 
                 case WallDir.DiagUpDownClose: // Done
@@ -279,25 +171,9 @@ namespace Gruppe22
                     _drawWall(WallDir.DiagDownClose, target, transparent);
                     break;
 
-                case WallDir.DiagDownClose: // Done
-                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(896, 0, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
-                    break;
-
-                case WallDir.DiagUpClose2: // Done
-                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(512, 192, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
-                    break;
-
                 case WallDir.DiagUpDownClose2: // Done
                     _drawWall(WallDir.DiagUpClose2, target, transparent);
                     _drawWall(WallDir.DiagDownClose2, target, transparent);
-                    break;
-
-                case WallDir.DiagDownClose2: // Done
-                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(768, 0, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
-                    break;
-
-                case WallDir.DiagLeftClose: // Done
-                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(640, 0, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
                     break;
 
                 case WallDir.DiagLeftRightClose: // Done
@@ -305,34 +181,19 @@ namespace Gruppe22
                     _drawWall(WallDir.DiagLeftClose, target, transparent);
                     break;
 
-                case WallDir.DiagRightClose: // Done
-                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(896, 192, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
-                    break;
-
-                case WallDir.DiagLeftClose2: // Done
-                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(512, 0, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
-                    break;
-
                 case WallDir.DiagLeftRightClose2: // Done
                     _drawWall(WallDir.DiagRightClose2, target, transparent);
                     _drawWall(WallDir.DiagLeftClose2, target, transparent);
-                    break;
-
-                case WallDir.DiagRightClose2: // Done
-                    _spriteBatch.Draw(_environment[0].animationTexture, target, new Rectangle(768, 192, 128, 192), transparent ? new Color(Color.White, (float)0.5) : Color.White);
-                    break;
-
-                case WallDir.None: // No wall
                     break;
             }
         }
 
         /// <summary>
-        /// 
+        /// Determine wall style to use depending on surrounding squares
         /// </summary>
-        /// <param name="x"></param>
-        /// <param name="y"></param>
-        /// <returns></returns>
+        /// <param name="x">horizontal coordinate of square to check</param>
+        /// <param name="y">vertical coordinate of square to check</param>
+        /// <returns>A direction to be used for the wall</returns>
         public WallDir GetWallStyle(int x = 0, int y = 0)
         {
             if (_map[x, y].canEnter) return WallDir.None;
@@ -708,13 +569,14 @@ namespace Gruppe22
 
 
         /// <summary>
-        /// 
+        /// Determine tile based on coordinates of point
         /// </summary>
         /// <param name="coords"></param>
         /// <param name="tall"></param>
         /// <returns></returns>
         private Coords _pos2Tile(Vector2 coords, bool tall = false)
         {
+            // TODO: This does not work perfectly yet. Check the formula!
             coords.X -= 32;
             coords.Y -= 48;
             return new Coords((int)(coords.X / 128 - coords.Y / 96)
@@ -726,18 +588,24 @@ namespace Gruppe22
         /// </summary>
         private void _drawWalls(GameTime gametime)
         {
+            Coords currentPos = _pos2Tile(new Vector2(_actors[0].position.x, _actors[0].position.y));
 
-            for (int y = (Math.Max((int)_actors[0].position.Y - _renderScope, 0)); y <= (Math.Min((int)_actors[0].position.Y + _renderScope, _map.height)); ++y)
+            for (int y = (Math.Max((int)_actors[0].position.y - _renderScope, 0)); y <= (Math.Min(currentPos.y + _renderScope, _map.height)); ++y)
             {
-                for (int x = (Math.Min((int)_actors[0].position.X + _renderScope, _map.width)); x >= (Math.Max((int)_actors[0].position.X - _renderScope, 0)); --x)
+                for (int x = (Math.Min((int)_actors[0].position.x + _renderScope, _map.width)); x >= (Math.Min(currentPos.x - _renderScope, 0)); --x)
                 {
                     _drawWall(GetWallStyle(x, y), _tileRect(new Vector2(x + 1, y - 1), true), false);
 
                     foreach (ActorView actor in _actors)
                     {
-                        if (((int)actor.position.X == x) && ((int)actor.position.Y == y))
+                        currentPos=_pos2Tile(new Vector2(actor.position.x, actor.position.y));
+                        if (((int)currentPos.x == x) && ((int)currentPos.y == y))
                         {
-                            actor.Draw(gametime);
+
+                            _spriteBatch.Draw(actor.animationTexture,
+                                new Rectangle(actor.position.x + actor.offsetX, actor.position.y + actor.offsetY,
+    actor.width - actor.offsetX - actor.cropX, actor.height - actor.offsetY - actor.cropY
+    ), actor.animationRect, Color.White);
                         }
                     }
                 }
@@ -751,17 +619,18 @@ namespace Gruppe22
         /// <param name="vTiles">Number of horizontal Tiles</param>
         private void _drawFloor(int hTiles = 52, int vTiles = 25)
         {
-            for (int y = (Math.Max((int)_actors[0].position.Y - _renderScope, 0)); y <= (Math.Min((int)_actors[0].position.Y + _renderScope, vTiles)); ++y)
+            Coords currentPos = _pos2Tile(new Vector2(_actors[0].target.x, _actors[0].target.y));
+            for (int y = (Math.Max((int)_actors[0].position.y - _renderScope, 0)); y <= (Math.Min(currentPos.y + _renderScope, vTiles)); ++y)
             {
-                for (int x = (Math.Max((int)_actors[0].position.X - _renderScope, 0)); x <= (Math.Min((int)_actors[0].position.X + _renderScope, hTiles)); ++x)
+                for (int x = (Math.Max((int)_actors[0].position.x - _renderScope, 0)); x <= (Math.Min(currentPos.x + _renderScope, hTiles)); ++x)
                 {
                     if ((y == (int)_highlightedTile.y) && (x == (int)_highlightedTile.x))
                     {
-                        _spriteBatch.Draw(_environment[1].animationTexture, _tileRect(new Vector2(x, y)), new Rectangle(512, 384, 128, 96), Color.Red);
+                        _spriteBatch.Draw(_environment[0][0].animationTexture, _tileRect(new Vector2(x, y)), new Rectangle(512, 384, 128, 96), Color.Red);
                     }
                     else
                     {
-                        _spriteBatch.Draw(_environment[1].animationTexture, _tileRect(new Vector2(x, y)), new Rectangle(512, 384, 128, 96), Color.White);
+                        _spriteBatch.Draw(_environment[0][0].animationTexture, _tileRect(new Vector2(x, y)), new Rectangle(512, 384, 128, 96), Color.White);
 
                     }
                 }
@@ -769,8 +638,14 @@ namespace Gruppe22
             //TODO: Reimplement rugged tiles
         }
 
+        /// <summary>
+        /// Move camera, react to mouse
+        /// </summary>
+        /// <param name="gameTime"></param>
         public override void Update(GameTime gameTime)
         {
+            Coords currentPos = _pos2Tile(new Vector2(_actors[0].target.x, _actors[0].target.y));
+
             if (IsHit(Mouse.GetState().X, Mouse.GetState().Y))
             {
                 _UpdateMouse(new Vector2(Mouse.GetState().X, Mouse.GetState().Y));
@@ -779,15 +654,15 @@ namespace Gruppe22
                 {
                     if (!_actors[0].isMoving)
                     {
-                        if (_highlightedTile.x < _actors[0].position.X)
+                        if (_highlightedTile.x < currentPos.x)
                         {
-                            if (_highlightedTile.y < _actors[0].position.Y)
+                            if (_highlightedTile.y < currentPos.y)
                             {
                                 MovePlayer(Direction.UpLeft);
                             }
                             else
                             {
-                                if (_highlightedTile.y > _actors[0].position.Y)
+                                if (_highlightedTile.y > currentPos.y)
                                 {
                                     MovePlayer(Direction.DownLeft);
                                 }
@@ -799,16 +674,16 @@ namespace Gruppe22
                         }
                         else
                         {
-                            if (_highlightedTile.x > _actors[0].position.X)
+                            if (_highlightedTile.x > currentPos.x)
                             {
 
-                                if (_highlightedTile.y < _actors[0].position.Y)
+                                if (_highlightedTile.y < currentPos.y)
                                 {
                                     MovePlayer(Direction.UpRight);
                                 }
                                 else
                                 {
-                                    if (_highlightedTile.y > _actors[0].position.Y)
+                                    if (_highlightedTile.y > currentPos.y)
                                     {
                                         MovePlayer(Direction.DownRight);
                                     }
@@ -820,13 +695,13 @@ namespace Gruppe22
                             }
                             else
                             {
-                                if (_highlightedTile.y < _actors[0].position.Y)
+                                if (_highlightedTile.y < currentPos.y)
                                 {
                                     MovePlayer(Direction.Up);
                                 }
                                 else
                                 {
-                                    if (_highlightedTile.y > _actors[0].position.Y)
+                                    if (_highlightedTile.y > currentPos.y)
                                     {
                                         MovePlayer(Direction.Down);
                                     }
@@ -837,9 +712,7 @@ namespace Gruppe22
                 }
             }
             if (_actors[0].isMoving)
-                _camera.position = new Vector2(-38 -
-         ((_actors[0].position.X * 64 + _actors[0].position.Y * 64)), -30 -
-         (((_actors[0].position.Y * 48 - _actors[0].position.X * 48))));
+                _camera.position = new Vector2(-38 - _actors[0].position.x, -30 - _actors[0].position.y);
             if (Math.Abs(gameTime.TotalGameTime.Milliseconds / 10 - _lastCheck) > 1)
             {
                 _lastCheck = gameTime.TotalGameTime.Milliseconds / 10;
@@ -850,61 +723,71 @@ namespace Gruppe22
             }
         }
 
+        /// <summary>
+        /// Disable moving map by mouse drag to avoid conflicts with move by click
+        /// </summary>
+        /// <param name="difference"></param>
+        /// <param name="_lastCheck"></param>
+        public override void MoveContent(Vector2 difference, int _lastCheck = 0)
+        {
+
+        }
+
+        /// <summary>
+        /// Check whether player can move to a certain square from current position
+        /// </summary>
+        /// <param name="dir">Direction to move to</param>
         public void MovePlayer(Direction dir)
         {
-            //  if (!_actors[0].isMoving)
-            //    {
+            // TODO: This should be somewhere in the game logic, not in the map
+            Coords currentPos = _pos2Tile(new Vector2(_actors[0].target.x, _actors[0].target.y));
             switch (dir)
             {
                 case Direction.Left:
-                    if (((int)_actors[0].target.X > 0) && (_map[(int)_actors[0].target.X - 1, (int)_actors[0].target.Y].canEnter))
+                    if ((currentPos.x > 0) && (_map[currentPos.x - 1, currentPos.y].canEnter))
                         _actors[0].Move(new Vector2(-1.0f, 0));
                     break;
                 case Direction.Right:
-                    if (((int)_actors[0].target.X < _map.width - 1) && (_map[(int)_actors[0].target.X + 1, (int)_actors[0].target.Y].canEnter))
+                    if ((currentPos.x < _map.width - 1) && (_map[currentPos.x + 1, currentPos.y].canEnter))
                         _actors[0].Move(new Vector2(1.0f, 0));
                     break;
                 case Direction.Down:
-                    if (((int)_actors[0].target.Y < _map.height - 1) && (_map[(int)_actors[0].target.X, (int)_actors[0].target.Y + 1].canEnter))
+                    if ((currentPos.y < _map.height - 1) && (_map[currentPos.x, currentPos.y + 1].canEnter))
                         _actors[0].Move(new Vector2(0, 1.0f));
                     break;
                 case Direction.Up:
-                    if (((int)_actors[0].target.Y > 0) && (_map[(int)_actors[0].target.X, (int)_actors[0].target.Y - 1].canEnter))
+                    if ((currentPos.y > 0) && (_map[currentPos.x, currentPos.y - 1].canEnter))
                         _actors[0].Move(new Vector2(0, -1.0f));
                     break;
 
                 // Diagonal movement
                 // TODO: Check for diagonal walls - doh :-(
                 case Direction.DownLeft:
-                    if (((int)_actors[0].target.X > 0) && ((int)_actors[0].target.Y < _map.height - 1) && (_map[(int)_actors[0].target.X - 1, (int)_actors[0].target.Y + 1].canEnter)
+                    if ((currentPos.x > 0) && (currentPos.y < _map.height - 1) && (_map[currentPos.x - 1, currentPos.y + 1].canEnter)
                         )
                         _actors[0].Move(new Vector2(-1.0f, 1.0f));
                     break;
                 case Direction.UpRight:
-                    if (((int)_actors[0].target.X < _map.width - 1) && ((int)_actors[0].target.Y > 0) &&
-                        (_map[(int)_actors[0].target.X + 1, (int)_actors[0].target.Y - 1].canEnter)
+                    if ((currentPos.x < _map.width - 1) && (currentPos.y > 0) &&
+                        (_map[currentPos.x + 1, currentPos.y - 1].canEnter)
                         )
                         _actors[0].Move(new Vector2(1.0f, -1.0f));
                     break;
                 case Direction.DownRight:
-                    if (((int)_actors[0].target.Y < _map.height - 1) && ((int)_actors[0].target.X < _map.width - 1) &&
-                        (_map[(int)_actors[0].target.X + 1, (int)_actors[0].target.Y + 1].canEnter))
+                    if ((currentPos.y < _map.height - 1) && (currentPos.x < _map.width - 1) &&
+                        (_map[currentPos.x + 1, currentPos.y + 1].canEnter))
                         _actors[0].Move(new Vector2(1.0f, 1.0f));
                     break;
                 case Direction.UpLeft:
-                    if (((int)_actors[0].target.Y > 0) &&
-                        ((int)_actors[0].target.X > 0) &&
-                        (_map[(int)_actors[0].target.X - 1, (int)_actors[0].target.Y - 1].canEnter))
+                    if ((currentPos.y > 0) &&
+                        (currentPos.x > 0) &&
+                        (_map[currentPos.x - 1, currentPos.y - 1].canEnter))
                         _actors[0].Move(new Vector2(-1.0f, -1.0f));
                     break;
             }
         }
 
-        public override void MoveContent(Vector2 difference, int _lastCheck = 0)
-        {
-            // if (!_actors[0].isMoving) 
-            base.MoveContent(difference);
-        }
+
 
 
         /// <summary>
@@ -912,7 +795,7 @@ namespace Gruppe22
         /// </summary>
         public void CreateTextureList()
         {
-            WallTiles _tiles = new WallTiles(_content, 128, 192, "");
+            /*
             _tiles.Add("Wall1", WallDir.UpRight, new Rectangle(0, 768, 128, 192));
             _tiles.Add("Wall1", WallDir.UpLeft, new Rectangle(128, 768, 128, 192));
             _tiles.Add("Wall1", WallDir.DownLeft,
@@ -979,20 +862,25 @@ namespace Gruppe22
             new Rectangle(512, 0, 128, 192));
             _tiles.Add("Wall1", WallDir.DiagRightClose2,
             new Rectangle(768, 192, 128, 192));
-            _tiles.Add("Column", WallDir.Free, new Rectangle(1920, 0, 128, 192));
-            _tiles.Save();
+            _tiles.Add("Column", WallDir.Free, new Rectangle(1920, 0, 128, 192)); */
+            WallTiles _tiles = new WallTiles(_content, 128, 192, "");
+            _tiles.Load();
+            _tiles.Save("neu.xml");
         }
 
+        /// <summary>
+        /// React to keypress
+        /// </summary>
+        /// <param name="_lastCheck"></param>
         public override void HandleKey(int _lastCheck = -1)
         {
-
+            // TODO: This should be in mainwindow (as it should not depend on focus)
             if (!_actors[0].isMoving)
             {
                 if (Keyboard.GetState().IsKeyDown(Keys.W))
                 {
 
                     MovePlayer(Direction.Up);
-                    _lastKey = Keys.W;
 
                 }
 
@@ -1000,41 +888,35 @@ namespace Gruppe22
                 {
 
                     MovePlayer(Direction.Left);
-                    _lastKey = Keys.A;
 
                 }
 
                 if (Keyboard.GetState().IsKeyDown(Keys.D))
                 {
                     MovePlayer(Direction.Right);
-                    _lastKey = Keys.D;
                 }
 
                 if (Keyboard.GetState().IsKeyDown(Keys.S))
                 {
                     MovePlayer(Direction.Down);
-                    _lastKey = Keys.S;
                 }
 
 
                 if (Keyboard.GetState().IsKeyDown(Keys.Q))
                 {
                     MovePlayer(Direction.UpLeft);
-                    _lastKey = Keys.Q;
                 }
 
 
                 if (Keyboard.GetState().IsKeyDown(Keys.E))
                 {
                     MovePlayer(Direction.UpRight);
-                    _lastKey = Keys.E;
                 }
 
 
                 if (Keyboard.GetState().IsKeyDown(Keys.Y))
                 {
                     MovePlayer(Direction.DownLeft);
-                    _lastKey = Keys.Y;
                 }
 
 
@@ -1042,7 +924,6 @@ namespace Gruppe22
                 if (Keyboard.GetState().IsKeyDown(Keys.C))
                 {
                     MovePlayer(Direction.DownRight);
-                    _lastKey = Keys.S;
                 }
             }
             base.HandleKey();
@@ -1065,45 +946,37 @@ namespace Gruppe22
             : base(parent, spriteBatch, content, displayArea)
         {
             _map = map;
-
-            // Load textures to use in environment
-            _environment = new List<TileObject>();
-            _environment.Add(new TileObject(_content, 128, 192));
-            _environment[0].AddAnimation("Wall1", new Vector2(0, 0));
-            _environment.Add(new TileObject(_content, 128, 192));
-            _environment[1].AddAnimation("Floor", new Vector2(0, 0));
-            _environment.Add(new TileObject(_content, 128, 192));
-            _environment[2].AddAnimation("column", new Vector2(0, 0));
-
-            // Create list of actors
-            _actors = new List<ActorView>();
-            TileObject player = new TileObject(_content, 96, 96);
-            player.AddAnimation("Stand", new Vector2(0, 0), -1, 1, 1);
-
-
-            player.AddAnimation("Walk", new Vector2(0, 192), -1, 8, 1);
-
-            player.AddAnimation("Walk", new Vector2(0, 576), -1, 8, 1);
-
-            player.AddAnimation("Walk", new Vector2(0, 480), -1, 8, 1);
-
-            player.AddAnimation("Walk", new Vector2(0, 288), -1, 8, 1);
-
-
-            player.AddAnimation("Walk", new Vector2(0, 0), -1, 8, 1);
-
-            player.AddAnimation("Walk", new Vector2(0, 96), -1, 8, 1);
-
-            player.AddAnimation("Walk", new Vector2(0, 384), -1, 8, 1);
-
-            player.AddAnimation("Walk", new Vector2(0, 672), -1, 8, 1);
-
-
-            _actors.Add(new ActorView(spriteBatch, "Player", true, new Vector2(1, 1), player));
             _background = _content.Load<Texture2D>("Minimap");
             _circle = _content.Load<Texture2D>("Light");
             _highlightedTile = new Coords(-1, -1);
-            //CreateTextureList();
+
+            // Load textures to use in environment
+
+            // 1. Walls
+            _walls = new WallTiles(_content, 128, 192, "");
+            _walls.Load("wall1.xml");
+
+            // 2. Environmental objects (floor, items, traps, teleporters, chest...)
+            _environment = new List<TileSet>();
+            _environment.Add(new TileSet(_content, 128, 192));
+            _environment[0].Load("floor.xml");
+            _environment.Add(new TileSet(_content, 128, 192));
+            _environment[1].Load("items.xml");
+            _environment.Add(new TileSet(_content, 128, 192));
+            _environment[2].Load("spikefield.xml");
+            _environment.Add(new TileSet(_content, 128, 192));
+            _environment[3].Load("field.xml");
+            _environment.Add(new TileSet(_content, 128, 192));
+            _environment[4].Load("chest.xml");
+
+            // 3. Moving entities (player, NPCs, enemies)
+            _actors = new List<ActorView>();
+            _actors.Add(new ActorView(_content, new Vector2(1, 1)));
+            _actors[0].Load("player.xml");
+            _actors.Add(new ActorView(_content, new Vector2(20, 20)));
+            _actors[1].Load("player.xml");
+
+
         }
         #endregion
 

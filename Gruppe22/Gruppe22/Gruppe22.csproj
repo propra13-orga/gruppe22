@@ -86,12 +86,13 @@
     <Compile Include="Backend\Map\Tile.cs" />
     <Compile Include="Backend\Map\TrapTile.cs" />
     <Compile Include="Backend\Map\WallTile.cs" />
-    <Compile Include="Frontend\Map\Actors.cs" />
+    <Compile Include="Frontend\Map\ActorView.cs" />
     <Compile Include="Frontend\Map\Camera.cs" />
     <Compile Include="Frontend\Map\Mainmap.cs" />
     <Compile Include="Frontend\Map\Minimap.cs" />
     <Compile Include="Frontend\Map\VisibleObject.cs" />
     <Compile Include="Frontend\Map\Tileset.cs" />
+    <Compile Include="Frontend\Map\WallTiles.cs" />
     <Compile Include="Frontend\UI\AboutWindow.cs" />
     <Compile Include="Frontend\UI\Button.cs" />
     <Compile Include="Frontend\UI\CheckBox.cs" />
