@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Xml.Serialization;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -13,7 +14,8 @@ namespace Gruppe22
         Talk,
         Attack,
         Hit,
-        Die
+        Die,
+        Run
     }
 
     public class ActorView : TileSet
@@ -139,12 +141,80 @@ namespace Gruppe22
 
         #region Public Methods
         /// <summary>
-        /// 
+        /// Load object from XML-file
+        /// </summary>
+        /// <param name="reader">Load object from XML-stream</param>
+        public override void ReadXml(System.Xml.XmlReader reader)
+        {
+            reader.MoveToContent();
+            _width = Int32.Parse(reader.GetAttribute("width"));
+            _height = Int32.Parse(reader.GetAttribute("height"));
+            Boolean isEmptyElement = reader.IsEmptyElement;
+
+            if (isEmptyElement)
+                return;
+
+            reader.ReadStartElement("ActorView");
+            reader.Read();
+            while ((reader.NodeType != System.Xml.XmlNodeType.EndElement) && (reader.NodeType != System.Xml.XmlNodeType.None))
+            {
+                TileObject temp = new TileObject(_content, _width, _height);
+                Activity acti = (Activity)Enum.Parse(typeof(Activity), reader.GetAttribute("Activity").ToString());
+                Direction dir = (Direction)Enum.Parse(typeof(Direction), reader.GetAttribute("Direction").ToString());
+
+                _textures[(int)acti * 8 + (int)dir].ReadXml(reader);
+            }
+            reader.ReadEndElement();
+
+
+            while ((reader.NodeType != System.Xml.XmlNodeType.EndElement) && (reader.NodeType != System.Xml.XmlNodeType.None))
+                reader.Read();
+            if (reader.NodeType == System.Xml.XmlNodeType.EndElement)
+                reader.ReadEndElement();
+        }
+
+        /// <summary>
+        /// Save (merely a shortcut to the serializer
         /// </summary>
         /// <param name="filename"></param>
-        public override void Load(string filename = "")
+        public override void Save(string filename = "bla.xml")
         {
+            System.Xml.XmlTextWriter writer = new System.Xml.XmlTextWriter(filename, Encoding.Unicode);
+            XmlSerializer serializer = new XmlSerializer(typeof(ActorView));
+            serializer.Serialize(writer, this);
+            writer.Close();
+        }
 
+        /// <summary>
+        /// Load (cannot use serializer at this level!)
+        /// </summary>
+        /// <param name="filename"></param>
+        public override void Load(string filename = "bla.xml")
+        {
+            System.Xml.XmlTextReader reader = new System.Xml.XmlTextReader(filename);
+            ReadXml(reader);
+            reader.Close();
+        }
+
+        /// <summary>
+        /// Dump object to XML-file
+        /// </summary>
+        /// <param name="writer">Write object to XML-stream</param>
+        public override void WriteXml(System.Xml.XmlWriter writer)
+        {
+            writer.WriteAttributeString("width", _width.ToString());
+            writer.WriteAttributeString("height", _height.ToString());
+            writer.WriteStartElement("activities");
+            for (int i = 0; i < _textures.Count; ++i)
+            {
+                writer.WriteStartElement("activity");
+                writer.WriteAttributeString("Activity", ((Activity)(i / 8)).ToString());
+                writer.WriteAttributeString("Direction", ((Direction)(i % 8)).ToString());
+                _textures[i].WriteXml(writer);
+                writer.WriteEndElement();
+
+            }
+            writer.WriteEndElement();
         }
 
         /// <summary>
@@ -193,16 +263,16 @@ namespace Gruppe22
                     {
                         if (Math.Abs(_target.x - _position.x) <= Math.Abs(_target.y - _position.y))
                             _position.y += Math.Min(_speed, Math.Abs(_target.y - position.y));
-                    
+
                         _direction = Direction.DownRight;
                     }
                     else
                     {
                         if (target.y < position.y)
                         {
-                           if (Math.Abs(_target.x - _position.x) <= Math.Abs(_target.y - _position.y))
+                            if (Math.Abs(_target.x - _position.x) <= Math.Abs(_target.y - _position.y))
                                 _position.y -= Math.Min(_speed, Math.Abs(_target.y - position.y));
-                           
+
                             _direction = Direction.UpRight;
                         }
                         else
@@ -240,9 +310,11 @@ namespace Gruppe22
                     }
                     else
                     {
-                        if (_target.y > _position.y) {
-                            _position.y += Math.Min(_speed, Math.Abs(_target.y - position.y)); 
-                            _direction = Direction.Down; }
+                        if (_target.y > _position.y)
+                        {
+                            _position.y += Math.Min(_speed, Math.Abs(_target.y - position.y));
+                            _direction = Direction.Down;
+                        }
                         else
                             if (_target.y < _position.y)
                             {
@@ -251,7 +323,6 @@ namespace Gruppe22
                             }
                     }
                 }
-                System.Diagnostics.Debug.Write(_direction);
                 _textures[(int)_activity * 8 + (int)_direction].NextAnimation();
             }
 
@@ -260,6 +331,11 @@ namespace Gruppe22
 
 
         #region Constructor
+
+        public ActorView()
+        {
+
+        }
 
         /// <summary>
         /// 

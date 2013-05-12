@@ -190,7 +190,6 @@ namespace Gruppe22{
                         {
                             _lastKey = Keys.Down;
                             temp = _startPos + 1;
-                            System.Diagnostics.Debug.WriteLine("D");
                         }
                         break;
                     case Keys.Up:

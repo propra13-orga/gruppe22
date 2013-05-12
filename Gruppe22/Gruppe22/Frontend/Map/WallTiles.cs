@@ -30,30 +30,19 @@ namespace Gruppe22
 
             reader.ReadStartElement("WallTiles");
             reader.ReadStartElement("walls");
-            while (reader.NodeType != System.Xml.XmlNodeType.EndElement)
+            while ((reader.NodeType != System.Xml.XmlNodeType.EndElement) && (reader.NodeType != System.Xml.XmlNodeType.None))
+
             {
                 TileObject temp = new TileObject(_content, _width, _height);
                 WallDir _id = (WallDir)Enum.Parse(typeof(WallDir), reader.GetAttribute("Direction").ToString());
-                System.Diagnostics.Debug.WriteLine(_id);
                 _textures[(int)_id].ReadXml(reader);
             }
             reader.ReadEndElement();
 
 
-            while (reader.NodeType != System.Xml.XmlNodeType.EndElement) reader.Read();
+            while ((reader.NodeType != System.Xml.XmlNodeType.EndElement) && (reader.NodeType != System.Xml.XmlNodeType.None))
+                reader.Read();
             reader.ReadEndElement();
-        }
-
-        /// <summary>
-        /// Add a new wall
-        /// </summary>
-        /// <param name="filename"></param>
-        /// <param name="direction"></param>
-        /// <param name="cutOut"></param>
-        public void Add(string filename, WallDir direction, Rectangle cutOut)
-        {
-            if ((int)direction < _textures.Count)
-                _textures[(int)direction].AddAnimation(filename, new Coords(cutOut.Left, cutOut.Top), 1, 1, false);
         }
 
         /// <summary>
@@ -98,6 +87,18 @@ namespace Gruppe22
             }
             writer.WriteEndElement();
         }
+        /// <summary>
+        /// Add a new wall
+        /// </summary>
+        /// <param name="filename"></param>
+        /// <param name="direction"></param>
+        /// <param name="cutOut"></param>
+        public void Add(string filename, WallDir direction, Rectangle cutOut)
+        {
+            if ((int)direction < _textures.Count)
+                _textures[(int)direction].AddAnimation(filename, new Coords(cutOut.Left, cutOut.Top), 1, 1, false);
+        }
+
         #endregion
 
         #region Constructor

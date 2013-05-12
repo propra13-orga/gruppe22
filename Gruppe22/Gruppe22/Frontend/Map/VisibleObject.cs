@@ -365,7 +365,7 @@ namespace Gruppe22
         public void NextAnimation()
         {
 
-            if  (_currentPhase + 2 > _animations.Count)
+            if (_currentPhase + 2 > _animations.Count)
             {
                 if (_loop) _currentPhase = 0;
             }
@@ -474,6 +474,7 @@ namespace Gruppe22
             if (isEmptyElement) return;
 
             reader.ReadStartElement("animations");
+            if (isEmptyElement) return;
 
             while (reader.NodeType != System.Xml.XmlNodeType.EndElement)
             {
@@ -484,7 +485,8 @@ namespace Gruppe22
             }
 
             reader.ReadEndElement();
-            reader.ReadEndElement();
+            if (reader.NodeType == System.Xml.XmlNodeType.EndElement)
+                reader.ReadEndElement();
 
         }
 

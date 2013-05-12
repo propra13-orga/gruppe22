@@ -211,7 +211,6 @@ namespace Gruppe22
                     pos.y = -1;
                 }
                 _tiles[pos.y][pos.x].canEnter = true;
-                System.Diagnostics.Debug.WriteLine("Remove Wall at " + pos.x + "/" + pos.y);
             }
         }
 
