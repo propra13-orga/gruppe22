@@ -191,16 +191,18 @@ namespace Gruppe22
 
                     if (target.y > position.y)
                     {
-                        if (Math.Abs(_target.x - _position.x) < Math.Abs(_target.y - _position.y))
+                        if (Math.Abs(_target.x - _position.x) <= Math.Abs(_target.y - _position.y))
                             _position.y += Math.Min(_speed, Math.Abs(_target.y - position.y));
+                    
                         _direction = Direction.DownRight;
                     }
                     else
                     {
                         if (target.y < position.y)
                         {
-                            if (Math.Abs(_target.x - _position.x) < Math.Abs(_target.y - _position.y))
+                           if (Math.Abs(_target.x - _position.x) <= Math.Abs(_target.y - _position.y))
                                 _position.y -= Math.Min(_speed, Math.Abs(_target.y - position.y));
+                           
                             _direction = Direction.UpRight;
                         }
                         else
@@ -217,18 +219,18 @@ namespace Gruppe22
 
                         if (target.y > position.y)
                         {
-                            if (Math.Abs(_target.x - _position.x) < Math.Abs(_target.y - _position.y))
+                            if (Math.Abs(_target.x - _position.x) <= Math.Abs(_target.y - _position.y))
                                 _position.y += Math.Min(_speed, Math.Abs(_target.y - position.y));
 
-                            _direction = Direction.UpLeft;
+                            _direction = Direction.DownLeft;
                         }
                         else
                         {
                             if (target.y < position.y)
                             {
-                                if (Math.Abs(_target.x - _position.x) < Math.Abs(_target.y - _position.y))
+                                if (Math.Abs(_target.x - _position.x) <= Math.Abs(_target.y - _position.y))
                                     _position.y -= Math.Min(_speed, Math.Abs(_target.y - position.y));
-                                _direction = Direction.DownLeft;
+                                _direction = Direction.UpLeft;
                             }
                             else
                             {
@@ -249,6 +251,7 @@ namespace Gruppe22
                             }
                     }
                 }
+                System.Diagnostics.Debug.Write(_direction);
                 _textures[(int)_activity * 8 + (int)_direction].NextAnimation();
             }
 
