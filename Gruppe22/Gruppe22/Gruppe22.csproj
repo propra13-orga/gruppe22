@@ -77,6 +77,7 @@
     <Compile Include="Backend\Items\Item.cs" />
     <Compile Include="Backend\Items\Potion.cs" />
     <Compile Include="Backend\Items\Weapon.cs" />
+    <Compile Include="Backend\Map\FloorTile.cs" />
     <Compile Include="Backend\Map\Helpers.cs" />
     <Compile Include="Backend\Map\ItemTile.cs" />
     <Compile Include="Backend\Map\ActorTile.cs" />
