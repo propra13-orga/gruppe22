@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
+using System.Xml;
 
 namespace Gruppe22
 {
@@ -45,11 +46,29 @@ namespace Gruppe22
         }
         #endregion
 
+#region Public-Methods
 
-        public TeleportTile(object parent)
-            : base(parent)
+        public TeleportTile(string nextRoom, Vector2 nextPlayerPos)
+            : base()
         {
-
+            this._nextRoom = nextRoom;
+            this._nextPlayerPos = nextPlayerPos;
         }
+
+        public override void Save(XmlWriter xmlw)
+        {
+            xmlw.WriteStartElement("TeleportTile");
+            xmlw.WriteAttributeString("canEnter", Convert.ToString(canEnter));
+            xmlw.WriteAttributeString("connected", Convert.ToString(connected));
+            xmlw.WriteAttributeString("connection", Convert.ToString(connection));
+            xmlw.WriteAttributeString("nextRoom", _nextRoom);
+            xmlw.WriteAttributeString("nextPlayerPos", _nextPlayerPos.ToString());
+            foreach (Tile tile in overlay)
+            {
+                tile.Save(xmlw);
+            }
+            xmlw.WriteEndElement();
+        }
+#endregion
     }
 }

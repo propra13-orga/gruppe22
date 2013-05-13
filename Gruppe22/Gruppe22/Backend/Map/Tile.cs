@@ -24,9 +24,12 @@ namespace Gruppe22
     /// <summary>
     /// An abstract class representing a generic tile (i.e. blank floor)
     /// </summary>
-    public class Tile : IDisposable, IXmlSerializable
+    public class Tile : IHandleEvent, IDisposable
     {
         #region Private Fields
+
+        private IHandleEvent _parent;
+
         /// <summary>
         /// Fields displayed (and checked) on top of the current field
         /// </summary>
@@ -352,20 +355,19 @@ namespace Gruppe22
             _overlay.Remove(tile);
         }
         /// <summary>
-        /// Write Tile data to an XML-file
         /// </summary>
-        /// <param name="file">An XMLTextWriter containing data for the tile</param>
         /// <returns>true if write is successful</returns>
-        public bool Save(XmlTextWriter target, XmlSerializer serializer)
+        public virtual void Save(XmlWriter xmlw)
         {
-            /*target.WriteStartElement("tile");
+            xmlw.WriteStartElement("Tile");
+            xmlw.WriteAttributeString("canEnter", Convert.ToString(_canEnter));
+            xmlw.WriteAttributeString("connected", Convert.ToString(_connected));
+            xmlw.WriteAttributeString("connection", Convert.ToString(_connection));
             foreach (Tile tile in _overlay)
             {
-                throw new NotImplementedException("Das muss noch jemand machen");
+                tile.Save(xmlw);
             }
-            target.WriteEndElement();
-             */
-            return true;
+            xmlw.WriteEndElement();
         }
 
         /// <summary>
@@ -373,10 +375,9 @@ namespace Gruppe22
         /// </summary>
         /// <param name="file">An XMlTextreader containing data for the tile</param>
         /// <returns>true if read is successful</returns>
-        public bool Load(XmlTextReader source)
+        public void Load()
         {
             throw new NotImplementedException("Das muss noch jemand machen");
-            return true;
         }
         #endregion
 
@@ -408,37 +409,7 @@ namespace Gruppe22
             }
         }
 
-        #region iXMLSerializer
 
-        /// <summary>
-        /// Returns null as no validation is performed according to MSDN-documentation
-        /// </summary>
-        /// <returns></returns>
-        public XmlSchema GetSchema()
-        {
-            return null;
-        }
-
-        /// <summary>
-        /// Write the tile to a XML-file
-        /// </summary>
-        /// <param name="writer"></param>
-        public void WriteXml(XmlWriter writer)
-        {
-            throw new System.NotImplementedException();
-        }
-
-
-        /// <summary>
-        /// Read the tile from a XML-file
-        /// </summary>
-        /// <param name="reader"></param>
-        public void ReadXml(XmlReader reader)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        #endregion
         /// <summary>
         /// Clean up Tile
         /// </summary>

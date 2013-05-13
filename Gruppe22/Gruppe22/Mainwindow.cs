@@ -90,8 +90,10 @@ namespace Gruppe22
         {
             Random r = new Random();
             _map1 = new Map(r.Next(20) + 6, r.Next(20) + 6, true);
+            _map1.Save("test.xml");
+            _map1 = new Map("test.xml"); // TEST!!!
+            //Exit();//TODO:Löschen
             _interfaceElements = new List<UIElement>();
-
             base.Initialize();
         }
 
@@ -167,6 +169,9 @@ namespace Gruppe22
                     break;
                 case Events.EndGame:
                     Exit();
+                    break;
+                case Events.ChangeMap:
+                    //TODO: Lade neue Karte
                     break;
                 case Events.MoveActor:
                     int id = (int)data[0];

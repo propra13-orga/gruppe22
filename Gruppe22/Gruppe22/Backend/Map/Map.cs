@@ -2,14 +2,15 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Xml;
-using System.Xml.Serialization;
 using Microsoft.Xna.Framework;
 
 namespace Gruppe22
 {
-    public class Map : IDisposable
+    public class Map : IHandleEvent, IDisposable
     {
         #region Private Fields
+        private IHandleEvent _parent;
+
         /// <summary>
         /// A two dimensional list of tiles
         /// </summary>
@@ -685,21 +686,34 @@ namespace Gruppe22
         /// </summary>
         /// <param name="filename">The filename to read from</param>
         /// <returns>true if read was successful</returns>
-        public bool Load(string filename, Coords playerPos)
+        public void Load(string filename)
         {
-            bool result = true;
-            XmlTextReader source = new XmlTextReader(filename);
-
-            try
-            {
-
+            XmlReader xmlr = XmlReader.Create(filename);
+            xmlr.Read();//xml
+            xmlr.Read();//GameMap
+            _width = int.Parse(xmlr.GetAttribute("width"));
+            _height = int.Parse(xmlr.GetAttribute("height"));
+            _tiles = new List<List<Tile>>();
+            for (int r = 0; r < _height; r++)
+            { // Add Rows
+                xmlr.Read();//row
+                //TODO: dynamisches einlesen von overlay-Tiles
+                _tiles.Add(new List<Tile>());
+                for (int j = 0; j < _width; j++)
+                { // Add Tiles and overlay-Tiles
+                    xmlr.Read();
+                    switch (xmlr.Name)
+                    {
+                        case "Tile":
+                            _tiles[r].Add(new Tile(Convert.ToBoolean(xmlr.GetAttribute("canEnter"))));
+                            break;
+                        default:
+                            j--;
+                            break;
+                    }
+                }
             }
-            finally
-            {
-                source.Close();
-            }
-            return result;
-            AddPlayer(playerPos);
+            xmlr.Close();
         }
 
         public void DebugMap()
@@ -724,66 +738,33 @@ namespace Gruppe22
             }
         }
 
-        public bool FromString(string input)
-        {
-            int col = 0, row = 0;
-            foreach (char c in input)
-            {
-                switch (c)
-                {
-                    case '#':
-                        if ((col < _width) && (row < height))
                             _tiles[row][col].Add(TileType.Wall);
-                        col += 1;
-                        break;
-                    case '\n':
-                        col = 0;
-                        row += 1;
-                        break;
-                    default:
-                        if ((col < _width) && (row < height))
                             _tiles[row][col].Remove(TileType.Wall);
-                        col += 1;
-
-                        break;
-                }
-
-            }
-            return true;
-        }
-
         /// <summary>
         /// Write the current map to a file
         /// </summary>
         /// <param name="filename">The filename to write to</param>
         /// <returns>true if writing was successful</returns>
-        public bool Save(string filename)
+        public void Save(string filename)
         {
-            bool result = true;
-            XmlTextWriter target = new XmlTextWriter(filename, Encoding.UTF8);
-            try
+            XmlWriter xmlw = XmlWriter.Create(filename);
+            xmlw.WriteStartDocument();
+            xmlw.WriteStartElement("GameMap");
+            xmlw.WriteAttributeString("width", _width.ToString());
+            xmlw.WriteAttributeString("height", _height.ToString());
+            //_tiles[0][0].overlay.Add(new TeleportTile("map2.xml", new Microsoft.Xna.Framework.Vector2(0,0)));//test
+            foreach (List<Tile> ltiles in _tiles)
             {
-                target.WriteStartDocument();
-                target.WriteDocType("GameMap", null, null, null);
-                foreach (List<Tile> row in _tiles)
+                xmlw.WriteStartElement("Row");
+                foreach (Tile tile in ltiles)
                 {
-                    target.WriteStartElement("row");
-                    foreach (Tile tile in row)
-                    {
-                        XmlSerializer x = new XmlSerializer(typeof(Map));
-                        result = tile.Save(target, x);
-                        if (result == false) break;
-                    }
-                    target.WriteEndElement();
-                    if (result == false) break;
-                };
-                target.WriteEndDocument();
+                    tile.Save(xmlw);
+                }
+                xmlw.WriteEndElement();
             }
-            finally
-            {
-                target.Close();
-            }
-            return result;
+            xmlw.WriteEndElement();
+            xmlw.WriteEndDocument();
+            xmlw.Close();
         }
 
         #endregion
@@ -838,7 +819,7 @@ namespace Gruppe22
         public Map(string filename = "", Coords playerPos = null)
             : this()
         {
-            Load(filename, playerPos);
+            _blankTile = new Tile();
         }
 
 

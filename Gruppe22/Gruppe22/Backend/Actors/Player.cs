@@ -9,5 +9,12 @@ namespace Gruppe22
     {
         protected ActorType _actorType = ActorType.Player;
 
+        /// <summary>
+        /// Constuctor. 
+        /// </summary>
+        public Player(string name, int health, int armour, int damage)
+            : base(ActorType.Enemy, health, armour, damage)
+        {
+        }
     }
 }
