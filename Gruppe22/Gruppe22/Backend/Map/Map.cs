@@ -765,7 +765,7 @@ namespace Gruppe22
                     }
                 }
             }
-            xmlr.Close(); System.Diagnostics.Debug.WriteLine(_tiles.Count);
+            xmlr.Close(); 
 
             ActorTile actortile = new ActorTile(_tiles[player.y][player.x], actors[0]);
             _tiles[player.y][player.x].Add(actortile);
@@ -876,7 +876,6 @@ namespace Gruppe22
             : this()
         {
             Load(filename, playerPos);
-            System.Diagnostics.Debug.WriteLine(_tiles.Count);
         }
 
 
