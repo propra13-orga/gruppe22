@@ -179,7 +179,25 @@ namespace Gruppe22
                 int count = 0;
                 while ((!result) && (count < _overlay.Count))
                 {
-                    result = ((_overlay[count] is ItemTile) && (((ItemTile)_overlay[count]).itemType == ItemType.Treasure));
+                    result = (((_overlay[count] is ItemTile) && (((ItemTile)_overlay[count]).itemType == ItemType.Treasure)) || ((_overlay[count] is TargetTile)));
+                    ++count;
+                }
+                return result;
+            }
+        }
+
+        /// <summary>
+        /// Determine whether there is a treasure on the current tile
+        /// </summary>
+        public bool hasTarget
+        {
+            get
+            {
+                bool result = false;
+                int count = 0;
+                while ((!result) && (count < _overlay.Count))
+                {
+                    result = (_overlay[count] is TargetTile);
                     ++count;
                 }
                 return result;
@@ -246,7 +264,7 @@ namespace Gruppe22
                     _overlay.Add(new TrapTile(this));
                     break;
                 case TileType.Teleporter:
-                    _overlay.Add(new TeleportTile("ddd", new Coords(0, 0)));
+                    _overlay.Add(new TeleportTile(this, "ddd", new Coords(0, 0)));
                     break;
                 case TileType.Target:
                     _overlay.Add(new TargetTile(this));

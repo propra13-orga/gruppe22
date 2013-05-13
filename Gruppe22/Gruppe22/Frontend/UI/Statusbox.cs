@@ -21,7 +21,9 @@ namespace Gruppe22
         int _lineHeight = 0;
         Texture2D _arrows = null;
         int _lastTime = 0;
-        Keys _lastKey = Keys.A;
+        Keys _lastKey = Keys.None;
+        bool _hasBorder = true;
+        bool _center = false;
         #endregion
 
         #region Public Methods
@@ -54,8 +56,9 @@ namespace Gruppe22
                         text = text.Remove(text.Length - 2);
                     }
                 }
-                if (remains != "") _text.Add(remains);
                 if (text != "") _text.Add(text);
+
+                if (remains != "") _text.Add(remains);
             }
             _startPos = Math.Max(_text.Count - _numLines, 0);
         }
@@ -77,17 +80,29 @@ namespace Gruppe22
                             null,
                             rstate,
                             null);
-                _spriteBatch.Draw(_background, _displayRect, new Rectangle(39, 6, 1, 1), Color.White);
-                _spriteBatch.Draw(_background, new Rectangle(_displayRect.X + 2, _displayRect.Y + 2, _displayRect.Width - 4, _displayRect.Height - 4), new Rectangle(39, 6, 1, 1), Color.Black);
+                if (_hasBorder)
+                {
+                    _spriteBatch.Draw(_background, _displayRect, new Rectangle(39, 6, 1, 1), Color.White);
+                    _spriteBatch.Draw(_background, new Rectangle(_displayRect.X + 2, _displayRect.Y + 2, _displayRect.Width - 4, _displayRect.Height - 4), new Rectangle(39, 6, 1, 1), Color.Black);
+                }
                 //_startPos = 2;
                 for (int count = _startPos; count < Math.Min(_numLines + _startPos, _text.Count); ++count)
                 {
-                    _spriteBatch.DrawString(_font, _text[count], new Vector2(_displayRect.Left + 20, _displayRect.Top +
-                        (count - _startPos) * _lineHeight), Color.White);
-                }
-                _spriteBatch.Draw(_arrows, new Rectangle(_displayRect.Right - 35, _displayRect.Top + 5, 28, 28), new Rectangle(32, 0, 28, 28), Color.White);
-                _spriteBatch.Draw(_arrows, new Rectangle(_displayRect.Right - 35, _displayRect.Bottom - 35, 28, 28), new Rectangle(0, 0, 28, 28), Color.White);
+                    int centerX = _displayRect.Left + 20;
+                    if (_center)
+                    {
+                        centerX = 20 + _displayRect.X + ((int)(_displayRect.Width - 40 - _font.MeasureString(_text[count]).X) / 2);
+                    }
 
+                    _spriteBatch.DrawString(_font, _text[count], new Vector2(centerX, _displayRect.Top +
+                        (count - _startPos) * _lineHeight), Color.White);
+
+                }
+                if (_numLines < _text.Count)
+                {
+                    _spriteBatch.Draw(_arrows, new Rectangle(_displayRect.Right - 35, _displayRect.Top + 5, 28, 28), new Rectangle(32, 0, 28, 28), Color.White);
+                    _spriteBatch.Draw(_arrows, new Rectangle(_displayRect.Right - 35, _displayRect.Bottom - 35, 28, 28), new Rectangle(0, 0, 28, 28), Color.White);
+                }
                 _spriteBatch.End();
                 _spriteBatch.GraphicsDevice.RasterizerState.ScissorTestEnable = false;
             }
@@ -213,7 +228,7 @@ namespace Gruppe22
         }
         #endregion
 
-        public Statusbox(IHandleEvent parent, SpriteBatch spriteBatch, ContentManager content, Rectangle displayRect)
+        public Statusbox(IHandleEvent parent, SpriteBatch spriteBatch, ContentManager content, Rectangle displayRect, bool hasBorder = true, bool center = false)
             : base(parent, spriteBatch, content, displayRect)
         {
             _font = _content.Load<SpriteFont>("Font");
@@ -222,6 +237,8 @@ namespace Gruppe22
             _numLines = (int)(displayRect.Height / _lineHeight);
             _arrows = _content.Load<Texture2D>("Arrows");
             _text = new List<string>();
+            _hasBorder = hasBorder;
+            _center = center;
         }
 
     }

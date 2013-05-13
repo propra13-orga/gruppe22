@@ -25,7 +25,10 @@ namespace Gruppe22
         HideNotification,
         LoadMap,
         MoveActor,
-        ChangeMap
+        ChangeMap,
+        NewMap,
+        ResetGame,
+        About
     }
     /// <summary>
     /// This is the main type for your game
@@ -89,13 +92,28 @@ namespace Gruppe22
         /// </summary>
         protected override void Initialize()
         {
-            Random r = new Random();
-            _map1 = new Map(r.Next(20) + 6, r.Next(20) + 6, true);
-            _map1.Save("test.xml");
+            if (!System.IO.File.Exists("map1.xml"))
+            {
+                GenerateMaps();
+            }
             _map1 = new Map("test.xml"); // TEST!!!
-            //Exit();//TODO:Löschen
             _interfaceElements = new List<UIElement>();
             base.Initialize();
+        }
+
+        public void GenerateMaps()
+        {
+            Random r = new Random();
+
+            _map1 = new Map(r.Next(4) + 6, r.Next(4) + 6, true);
+            _map1.Save("map1.xml");
+            _map1.Dispose();
+            _map1 = new Map(r.Next(5) + 3, r.Next(2) + 3, true);
+            _map1.Save("map2.xml");
+            _map1.Dispose();
+            _map1 = new Map(r.Next(10) + 6, r.Next(10) + 6, true);
+            _map1.Save("map3.xml");
+            _map1.Dispose();
         }
 
         /// <summary>
@@ -127,19 +145,59 @@ namespace Gruppe22
             _paused = true;
             Window _mainMenu = new Window(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 220) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) - 200, 350, 500));
 
-            _mainMenu.AddChild(new Button(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) - 180, 300, 60), "Spiel fortsetzen", Events.StartGame));
-            _mainMenu.AddChild(new Button(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) - 100, 300, 60), "Spiel neu starten", Events.StartGame));
+            _mainMenu.AddChild(new Button(_mainMenu, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) - 180, 300, 60), "Spiel fortsetzen", Events.StartGame));
+            _mainMenu.AddChild(new Button(_mainMenu, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) - 100, 300, 60), "Spiel neu starten", Events.ResetGame));
 
-            _mainMenu.AddChild(new Button(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) - 20, 300, 60), "Einstellungen", Events.StartGame));
+            _mainMenu.AddChild(new Button(_mainMenu, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) - 20, 300, 60), "Karte neu generieren", Events.NewMap));
 
-            _mainMenu.AddChild(new Button(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) + 120, 300, 60), "Rechtliches", Events.StartGame));
+            _mainMenu.AddChild(new Button(_mainMenu, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) + 120, 300, 60), "Rechtliches", Events.About));
 
-            _mainMenu.AddChild(new Button(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) + 220, 300, 60), "Spiel beenden", Events.EndGame));
+            _mainMenu.AddChild(new Button(_mainMenu, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) + 220, 300, 60), "Spiel beenden", Events.EndGame));
 
             //  _mainMenu.AddChild(new ProgressBar(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) + 80, 300, 30), ProgressStyle.Block,100,2));
 
             _interfaceElements.Add(_mainMenu);
             _focus = _interfaceElements[_interfaceElements.Count - 1];
+        }
+
+        public void ShowEndGame(string message = "You have failed in your mission. Better luck next time.", string title = "Game over!")
+        {
+            _paused = true;
+            Window _gameOver = new Window(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 300) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) - 100, 600, 200));
+            Statusbox stat = new Statusbox(_gameOver, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 300) / 2.0f) + 10, (int)(GraphicsDevice.Viewport.Height / 2.0f) - 70, 590, 90), false, true);
+            stat.AddLine(title + "\n \n" + message);
+            _gameOver.AddChild(stat);
+            _gameOver.AddChild(new Button(_gameOver, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 300) / 2.0f) + 10, (int)(GraphicsDevice.Viewport.Height / 2.0f) + 30, 160, 40), "Neue Karte", Events.NewMap));
+            _gameOver.AddChild(new Button(_gameOver, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 300) / 2.0f) + 180, (int)(GraphicsDevice.Viewport.Height / 2.0f) + 30, 160, 40), "Neu starten", Events.ResetGame));
+            _gameOver.AddChild(new Button(_gameOver, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 300) / 2.0f) + 600 - 170, (int)(GraphicsDevice.Viewport.Height / 2.0f) + 30, 160, 40), "Beenden", Events.EndGame));
+
+            //  _mainMenu.AddChild(new ProgressBar(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) + 80, 300, 30), ProgressStyle.Block,100,2));
+
+            _interfaceElements.Add(_gameOver);
+            _focus = _interfaceElements[_interfaceElements.Count - 1];
+
+        }
+
+
+        public void ShowAbout()
+        {
+            _paused = true;
+            Window _about = new Window(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 300) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) - 200, 600, 500));
+
+            _about.AddChild(new Button(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 80) / 2.0f) + 120, (int)(GraphicsDevice.Viewport.Height / 2.0f) + 240, 160, 40), "Ok", Events.StartGame));
+
+            //  _mainMenu.AddChild(new ProgressBar(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) + 80, 300, 30), ProgressStyle.Block,100,2));
+            Statusbox stat = new Statusbox(_about, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 300) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) - 180, 600, 380), false, true);
+            stat.AddLine("Dungeon Crawler 2013\n\n Developed by Group 22\n\n" +
+                "*********************************\n\n" +
+                "Music: Video Dungeon Crawl by Kevin MacLeod is licensed under a CC Attribution 3.0\n\n" +
+                "http://incompetech.com/music/royalty-free/index.html?collection=029\n\n" +
+                "Graphics: Tile Graphics by Reiner Prokein\n\n" +
+                "http://www.reinerstilesets.de/de/lizenz/ ");
+            _about.AddChild(stat);
+            _interfaceElements.Add(_about);
+            _focus = _interfaceElements[_interfaceElements.Count - 1];
+
         }
 
 
@@ -168,11 +226,31 @@ namespace Gruppe22
                     _focus = null;
                     _paused = false;
                     break;
+                case Events.About:
+                    _focus.Dispose();
+                    _interfaceElements.Remove(_focus);
+                    _focus = null;
+                    ShowAbout();
+                    break;
                 case Events.EndGame:
                     Exit();
                     break;
                 case Events.ChangeMap:
                     //TODO: Lade neue Karte
+                    _map1.Load((string)data[0], (Coords)data[1]);
+                    break;
+                case Events.NewMap:
+                    _paused = true;
+                    _map1.Dispose();
+                    GenerateMaps();
+                    _map1 = new Map("test.xml");
+                    _paused = false;
+                    break;
+                case Events.ResetGame:
+                    _paused = true;
+                    _map1.Dispose();
+                    _map1 = new Map("test.xml");
+                    _paused = false;
                     break;
                 case Events.MoveActor:
                     int id = (int)data[0];
@@ -186,7 +264,11 @@ namespace Gruppe22
                         }
                         if (_map1[_map1.actors[id].tile.coords.x, _map1.actors[id].tile.coords.y].hasEnemy || _map1[_map1.actors[id].tile.coords.x, _map1.actors[id].tile.coords.y].hasTrap)
                         {
-                            Exit();
+                            ShowEndGame();
+                        }
+                        if (_map1[_map1.actors[id].tile.coords.x, _map1.actors[id].tile.coords.y].hasTarget)
+                        {
+                            ShowEndGame("You have successfully found the hidden treasure. Can you do it again?", "Congratulations!");
                         }
                     }
                     break;

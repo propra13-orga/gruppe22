@@ -48,8 +48,8 @@ namespace Gruppe22
 
 #region Public-Methods
 
-        public TeleportTile(string nextRoom, Coords nextPlayerPos)
-            : base()
+        public TeleportTile(object parent,string nextRoom, Coords nextPlayerPos)
+            : base(parent)
         {
             this._nextRoom = nextRoom;
             this._nextPlayerPos = nextPlayerPos;

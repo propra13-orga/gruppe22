@@ -977,7 +977,7 @@ namespace Gruppe22
         {
             _map = map;
             _background = _content.Load<Texture2D>("Minimap");
-            _circle = _content.Load<Texture2D>("Light");
+            _circle = _content.Load<Texture2D>("Light2");
             _highlightedTile = new Coords(-1, -1);
 
             // Load textures to use in environment

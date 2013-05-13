@@ -7,7 +7,7 @@ namespace Gruppe22
 {
     public class Player:Actor
     {
-        protected ActorType _actorType = ActorType.Player;
+        protected new ActorType _actorType = ActorType.Player;
 
         /// <summary>
         /// Constuctor. 

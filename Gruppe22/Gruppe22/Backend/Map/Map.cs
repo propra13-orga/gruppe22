@@ -529,7 +529,7 @@ namespace Gruppe22
                 }
                 if ((pos.x >= 0) && (pos.x < _width) && (pos.y < _height) && (pos.y >= 0))
                 {
-                    TeleportTile teleportTile = new TeleportTile("Raum2", pos);
+                    TeleportTile teleportTile = new TeleportTile(this, "Raum2", pos);
                     _tiles[pos.y][pos.x].Add(teleportTile);
                     _updateTiles.Add(pos);
                 }
@@ -691,14 +691,38 @@ namespace Gruppe22
         /// </summary>
         /// <param name="filename">The filename to read from</param>
         /// <returns>true if read was successful</returns>
-        public void Load(string filename)
+        public void Load(string filename, Coords player)
         {
+            if (player == null)
+            {
+                player = new Coords(1, 1);
+            }
+            if (_actors.Count > 0)
+            {
+                for (int i = 0; i < _actors.Count; ++i)
+                {
+                    if (_actors[i].actorType != ActorType.Player)
+                    {
+                        _actors.RemoveAt(i);
+                        i -= 1;
+                    }
+                }
+            }
+            else
+            {
+                Player playerA = new Player("Klaus", 20, 20, 20);
+                ActorTile playerTile = new ActorTile(null, playerA);
+                playerA.tile = playerTile;
+                _actors.Add(playerA);
+            }
+            _tiles.Clear();
+            _items.Clear();
+            _updateTiles.Clear();
             XmlReader xmlr = XmlReader.Create(filename);
             xmlr.Read();//xml
             xmlr.Read();//GameMap
             _width = int.Parse(xmlr.GetAttribute("width"));
             _height = int.Parse(xmlr.GetAttribute("height"));
-            _tiles = new List<List<Tile>>();
             for (int r = 0; r < _height; r++)
             { // Add Rows
                 xmlr.Read();//row
@@ -718,7 +742,11 @@ namespace Gruppe22
                     }
                 }
             }
-            xmlr.Close();
+            xmlr.Close(); System.Diagnostics.Debug.WriteLine(_tiles.Count);
+
+            ActorTile actortile = new ActorTile(_tiles[player.y][player.x], actors[0]);
+            _tiles[player.y][player.x].Add(actortile);
+            _updateTiles.Add(player);
         }
 
         public void DebugMap()
@@ -823,6 +851,7 @@ namespace Gruppe22
             : this()
         {
             _blankTile = new Tile();
+            Load(filename, playerPos);
         }
 
 

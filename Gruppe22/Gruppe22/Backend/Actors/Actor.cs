@@ -15,7 +15,7 @@ namespace Gruppe22
     public class Actor
     {
         private ActorTile _tile;
-        protected ActorType _actorType;
+        protected  ActorType _actorType;
 
         //Lebenspunkte, Rüstung, Schaden/Angriffsstärke
         protected int _health, _armour, _damage;
