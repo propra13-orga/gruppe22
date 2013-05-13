@@ -29,17 +29,16 @@ namespace Gruppe22
         }
         #endregion
 
-        public TrapTile(object parent)
+        public TrapTile(object parent,int dmg)
             : base(parent)
         {
-
+            _damage = dmg;
         }
         public override void Save(XmlWriter xmlw)
         {
             xmlw.WriteStartElement("TrapTile");
             xmlw.WriteAttributeString("canEnter", Convert.ToString(canEnter));
-            xmlw.WriteAttributeString("connected", Convert.ToString(connected));
-            xmlw.WriteAttributeString("connection", Convert.ToString(connection));
+            xmlw.WriteAttributeString("damage", Convert.ToString(_damage));
             foreach (Tile tile in _overlay)
             {
                 tile.Save(xmlw);

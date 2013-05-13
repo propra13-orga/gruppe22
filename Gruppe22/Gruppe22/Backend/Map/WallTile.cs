@@ -17,8 +17,6 @@ namespace Gruppe22
         {
             xmlw.WriteStartElement("WallTile");
             xmlw.WriteAttributeString("canEnter", Convert.ToString(canEnter));
-            xmlw.WriteAttributeString("connected", Convert.ToString(connected));
-            xmlw.WriteAttributeString("connection", Convert.ToString(connection));
             foreach (Tile tile in _overlay)
             {
                 tile.Save(xmlw);

@@ -45,7 +45,9 @@ namespace Gruppe22
         /// Direction of connection
         /// </summary>
         protected Connection _connection = Connection.Invalid;
-
+        /// <summary>
+        /// The Position of the tile
+        /// </summary>
         private Coords _coords = null;
 
         protected object _parent = null;
@@ -141,7 +143,6 @@ namespace Gruppe22
             }
         }
 
-
         /// <summary>
         /// Determine whether an enemy is standing on the current tile
         /// </summary>
@@ -159,7 +160,6 @@ namespace Gruppe22
                 return result;
             }
         }
-
 
         /// <summary>
         /// Determine whether the current tile contains a teleporter
@@ -272,7 +272,7 @@ namespace Gruppe22
                     _overlay.Add(new WallTile(this));
                     break;
                 case TileType.Trap:
-                    _overlay.Add(new TrapTile(this));
+                    _overlay.Add(new TrapTile(this, 1));
                     break;
                 case TileType.Teleporter:
                     _overlay.Add(new TeleportTile(this, "ddd", new Coords(0, 0)));
@@ -366,7 +366,6 @@ namespace Gruppe22
                 }
         }
 
-
         /// <summary>
         /// Add specified tile to overlay
         /// </summary>
@@ -384,6 +383,7 @@ namespace Gruppe22
         {
             _overlay.Remove(tile);
         }
+
         /// <summary>
         /// </summary>
         /// <returns>true if write is successful</returns>
@@ -391,8 +391,8 @@ namespace Gruppe22
         {
             xmlw.WriteStartElement("Tile");
             xmlw.WriteAttributeString("canEnter", Convert.ToString(_canEnter));
-            xmlw.WriteAttributeString("connected", Convert.ToString(_connected));
-            xmlw.WriteAttributeString("connection", Convert.ToString(_connection));
+            xmlw.WriteAttributeString("CoordX", Convert.ToString(_coords.x));
+            xmlw.WriteAttributeString("CoordY", Convert.ToString(_coords.y));
             foreach (Tile tile in _overlay)
             {
                 tile.Save(xmlw);

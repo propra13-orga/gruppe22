@@ -426,7 +426,7 @@ namespace Gruppe22
                 }
                 if ((pos.x >= 0) && (pos.x < _width) && (pos.y < _height) && (pos.y >= 0))
                 {
-                    TrapTile trapTile = new TrapTile(_tiles[pos.y][pos.x]);
+                    TrapTile trapTile = new TrapTile(_tiles[pos.y][pos.x], 1);
                     _tiles[pos.y][pos.x].Add(trapTile);
                     _updateTiles.Add(pos);
                 }
