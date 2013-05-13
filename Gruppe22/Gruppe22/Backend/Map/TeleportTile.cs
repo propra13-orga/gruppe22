@@ -44,12 +44,13 @@ namespace Gruppe22
         #endregion
 
         #region XML SaveLoad
+        /*
         /// <summary>
         /// see Tile.cs
         /// </summary>
         /// <param name="writer"></param>
         /// <returns></returns>
-        public override bool Save(XmlTextWriter writer)
+        public override bool Save(XmlWriter writer)
         {
             writer.WriteAttributeString("Ziel", nextRoom);
             writer.WriteAttributeString("x", Convert.ToString(_nextPlayerPos.x));
@@ -57,10 +58,10 @@ namespace Gruppe22
             writer.WriteValue("Teleport");
             return true;
         }
-        public bool Load(XmlTextReader reader)
+        public bool Load(XmlReader reader)
         {
-            canEnter = Convert.ToBoolean(reader.GetAttribute("canEnter"));
-            connected = Convert.ToBoolean(reader.GetAttribute("connected"));
+            _canEnter = Convert.ToBoolean(reader.GetAttribute("canEnter"));
+            _connected = Convert.ToBoolean(reader.GetAttribute("connected"));
             string con = reader.GetAttribute("connection");
             if (con.Equals("invalid"))
                 connection = Connection.Invalid;
@@ -68,7 +69,7 @@ namespace Gruppe22
             _nextPlayerPos.x = Convert.ToInt32(reader.GetAttribute("x"));
             _nextPlayerPos.y = Convert.ToInt32(reader.GetAttribute("y"));
             return true;
-        }
+        } */
         #endregion
 
         #region Constructor
@@ -79,9 +80,9 @@ namespace Gruppe22
         }
         #endregion
 
-#region Public-Methods
+        #region Public-Methods
 
-        public TeleportTile(object parent,string nextRoom, Coords nextPlayerPos)
+        public TeleportTile(object parent, string nextRoom, Coords nextPlayerPos)
             : base(parent)
         {
             this._nextRoom = nextRoom;
@@ -102,6 +103,6 @@ namespace Gruppe22
             }
             xmlw.WriteEndElement();
         }
-#endregion
+        #endregion
     }
 }

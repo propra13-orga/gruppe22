@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.Text;
 using System.Xml;
 <<<<<<< HEAD
-using System.Xml.Serialization;
 using Microsoft.Xna.Framework;
 =======
->>>>>>> origin/xml_map_savegame
+>>>>>>> origin/xml
 
 namespace Gruppe22
 {
@@ -39,9 +38,11 @@ namespace Gruppe22
         private List<Coords> _updateTiles = null;
         #endregion
 
+        int _test = 0;
+
         #region Public Fields
 
-
+       
         public List<Actor> actors
         {
             get
@@ -129,7 +130,7 @@ namespace Gruppe22
         {
             get
             {
-                if ((x < width) && (x > -1) && (y < height) && (y > -1))
+                if ((y < _tiles.Count) && (y > -1) && (x < _tiles[y].Count) && (x > -1))
                 {
                     return _tiles[y][x];
                 }
@@ -140,7 +141,7 @@ namespace Gruppe22
             }
             set
             {
-                if ((x < width) && (x > -1) && (y < height) && (y > -1))
+                if ((y < _tiles.Count) && (y > -1) && (x < _tiles[y].Count) && (x > -1))
                 {
                     _tiles[y][x] = value;
                 }
@@ -222,7 +223,6 @@ namespace Gruppe22
             }
         }
 
-<<<<<<< HEAD
         /// <summary>
         /// Add an actor to a tile
         /// </summary>
@@ -374,11 +374,6 @@ namespace Gruppe22
                     break;
             }
             return false;
-=======
-        public void HandleEvent(UIElement sender, Events eventID, int data)
-        {
-            _parent.HandleEvent(sender, eventID, data);
->>>>>>> origin/xml_map_savegame
         }
 
         /// <summary>
@@ -445,13 +440,18 @@ namespace Gruppe22
 
         }
 
+        public virtual void HandleEvent(UIElement sender, Events eventID, params object[] data)
+        {
+            ((IHandleEvent)_parent).HandleEvent(sender, eventID, data);
+        }
+
         public void AddPlayer(Coords pos)
         {
             if (pos == null)
             {
                 pos = new Coords(1, 1);
             }
-            Player player = new Player();
+            Player player = new Player("Klaus", 20, 20, 20);
             ActorTile playerTile = new ActorTile(_tiles[pos.y][pos.x], player);
             player.tile = playerTile;
             _tiles[pos.y][pos.x].Add(playerTile);
@@ -467,7 +467,8 @@ namespace Gruppe22
             {
                 int count = 0;
                 Path pos = new Path(2 + r.Next(_width / 2 - 2) * 2, 2 + r.Next(_height / 2 - 2) * 2);
-                while ((pos.x > 0) && (!_tiles[pos.y][pos.x].canEnter))
+                while ((pos.x > 0) &&
+                    (_tiles[pos.y][pos.x].overlay.Count == 0))
                 {
                     count += 1;
                     pos.x += 2;
@@ -490,7 +491,7 @@ namespace Gruppe22
                 }
                 if ((pos.x >= 0) && (pos.x < _width) && (pos.y < _height) && (pos.y >= 0))
                 {
-                    Enemy enemy = new Enemy();
+                    Enemy enemy = new Enemy(50, 90, 20);
                     ActorTile enemyTile = new ActorTile(_tiles[pos.y][pos.x], enemy);
                     enemy.tile = enemyTile;
                     _tiles[pos.y][pos.x].Add(enemyTile);
@@ -534,7 +535,7 @@ namespace Gruppe22
                 }
                 if ((pos.x >= 0) && (pos.x < _width) && (pos.y < _height) && (pos.y >= 0))
                 {
-                    TeleportTile teleportTile = new TeleportTile(_tiles[pos.y][pos.x]);
+                    TeleportTile teleportTile = new TeleportTile(this, "Raum2", pos);
                     _tiles[pos.y][pos.x].Add(teleportTile);
                     _updateTiles.Add(pos);
                 }
@@ -551,7 +552,8 @@ namespace Gruppe22
             {
                 int count = 0;
                 Path pos = new Path(2 + r.Next(_width / 2 - 2) * 2, 2 + r.Next(_height / 2 - 2) * 2);
-                while ((pos.x > 0) && (!_tiles[pos.y][pos.x].canEnter))
+                while ((pos.x > 0) &&
+                    (_tiles[pos.y][pos.x].overlay.Count == 0))
                 {
                     count += 1;
                     pos.x += 2;
@@ -692,22 +694,78 @@ namespace Gruppe22
         }
 
         /// <summary>
-        /// Load a map from a file
+        /// Read a map from a file
         /// </summary>
         /// <param name="filename">The filename to read from</param>
         /// <returns>true if read was successful</returns>
-<<<<<<< HEAD
-        public bool Load(string filename, Coords playerPos)
-=======
-        public void Load(string filename)
->>>>>>> origin/xml_map_savegame
+        public void Load(string filename, Coords player)
         {
+<<<<<<< HEAD
+            if (player == null)
+            {
+                player = new Coords(1, 1);
+=======
+            bool result = true;
+            XmlTextReader reader = new XmlTextReader(filename);
+
+            try
+            {
+                while (reader.Read())
+                {
+                    if (reader.IsStartElement() && reader.Name.Equals("map"))
+                    {
+                        _height = Convert.ToInt32(reader.GetAttribute("height"));
+                        _width = Convert.ToInt32(reader.GetAttribute("width"));
+                        int y = 0;
+                        while (reader.Name.Equals("row"))
+                        {
+                            _tiles.Add(new List<Tile>());
+                            int x = 0;
+                            while (reader.Name.Equals("tile"))
+                            {
+                                _tiles[y].Add(new Tile());
+                                _tiles[y][x].Load(reader);
+                            }
+                            y++;
+                        }
+                    }
+                    else result = false;
+                }
+>>>>>>> origin/xml
+            }
+            if (_actors.Count > 0)
+            {
+<<<<<<< HEAD
+                for (int i = 0; i < _actors.Count; ++i)
+                {
+                    if (_actors[i].actorType != ActorType.Player)
+                    {
+                        _actors.RemoveAt(i);
+                        i -= 1;
+                    }
+                    else
+                    {
+                        _actors[i].tile = null;
+                    }
+                }
+=======
+                reader.Close();
+>>>>>>> origin/xml
+            }
+            else
+            {
+                Player playerA = new Player("Klaus", 20, 20, 20);
+                _actors.Add(playerA);
+            }
+            _tiles.Clear();
+            _items.Clear();
+            _updateTiles.Clear();
             XmlReader xmlr = XmlReader.Create(filename);
-            xmlr.Read();//xml
-            xmlr.Read();//GameMap
+            xmlr.MoveToContent();//xml
             _width = int.Parse(xmlr.GetAttribute("width"));
             _height = int.Parse(xmlr.GetAttribute("height"));
-            _tiles = new List<List<Tile>>();
+            xmlr.ReadStartElement("GameMap");//GameMap
+
             for (int r = 0; r < _height; r++)
             { // Add Rows
                 xmlr.Read();//row
@@ -715,26 +773,45 @@ namespace Gruppe22
                 _tiles.Add(new List<Tile>());
                 for (int j = 0; j < _width; j++)
                 { // Add Tiles and overlay-Tiles
-                    xmlr.Read();
                     switch (xmlr.Name)
                     {
                         case "Tile":
-                            _tiles[r].Add(new Tile(Convert.ToBoolean(xmlr.GetAttribute("canEnter"))));
+                            Tile tile = new Tile(this, new Coords(j, r), true);
+                            if (!xmlr.IsEmptyElement)
+                            {
+                                xmlr.Read();
+
+                                while ((xmlr.NodeType != XmlNodeType.EndElement))
+                                {
+                                    switch (xmlr.Name)
+                                    {
+                                        case "WallTile":
+                                            tile.Add(TileType.Wall);
+                                            break;
+                                    }
+                                    xmlr.Read();
+                                }
+                            }
+                            _tiles[r].Add(tile);
+                            xmlr.Read();
+
                             break;
                         default:
                             j--;
+                            xmlr.Read();
                             break;
                     }
                 }
             }
-<<<<<<< HEAD
-            return result;
-            AddPlayer(playerPos);
-=======
-            xmlr.Close();
->>>>>>> origin/xml_map_savegame
-        }
+            xmlr.Close(); 
 
+            ActorTile actortile = new ActorTile(_tiles[player.y][player.x], actors[0]);
+            _tiles[player.y][player.x].Add(actortile);
+            actors[0].tile = actortile;
+            actortile.parent = _tiles[player.y][player.x];
+            _updateTiles.Add(player);
+        }
+        
         public void DebugMap()
         {
             string output = "";
@@ -758,6 +835,7 @@ namespace Gruppe22
         }
 
 <<<<<<< HEAD
+=======
         public bool FromString(string input)
         {
             int col = 0, row = 0;
@@ -767,7 +845,7 @@ namespace Gruppe22
                 {
                     case '#':
                         if ((col < _width) && (row < height))
-                            _tiles[row][col].Add(TileType.Wall);
+                            _tiles[row][col].canEnter = false;
                         col += 1;
                         break;
                     case '\n':
@@ -776,7 +854,7 @@ namespace Gruppe22
                         break;
                     default:
                         if ((col < _width) && (row < height))
-                            _tiles[row][col].Remove(TileType.Wall);
+                            _tiles[row][col].canEnter = true;
                         col += 1;
 
                         break;
@@ -785,9 +863,7 @@ namespace Gruppe22
             }
             return true;
         }
-
-=======
->>>>>>> origin/xml_map_savegame
+>>>>>>> origin/xml
         /// <summary>
         /// Write the current map to a file
         /// </summary>
@@ -803,30 +879,44 @@ namespace Gruppe22
             //_tiles[0][0].overlay.Add(new TeleportTile("map2.xml", new Microsoft.Xna.Framework.Vector2(0,0)));//test
             foreach (List<Tile> ltiles in _tiles)
             {
+<<<<<<< HEAD
                 xmlw.WriteStartElement("Row");
                 foreach (Tile tile in ltiles)
                 {
-<<<<<<< HEAD
+                    tile.Save(xmlw);
+                }
+                xmlw.WriteEndElement();
+=======
+                target.WriteStartDocument();
+                target.WriteDocType("GameMap", null, null, null);
+
+                target.WriteStartElement("map");
+                target.WriteAttributeString("height", Convert.ToString(_height));
+                target.WriteAttributeString("width", Convert.ToString(_width));
+                target.WriteAttributeString("test", Convert.ToString(_test));
+
+                foreach (List<Tile> row in _tiles)
+                {
                     target.WriteStartElement("row");
                     foreach (Tile tile in row)
                     {
-                        XmlSerializer x = new XmlSerializer(typeof(Map));
-                        result = tile.Save(target, x);
+                        target.WriteStartElement("tile");
+                        result = tile.Save(target);
+                        target.WriteEndElement();
                         if (result == false) break;
                     }
                     target.WriteEndElement();
                     if (result == false) break;
                 };
+
+                target.WriteEndElement();
                 target.WriteEndDocument();
+                
             }
             finally
             {
                 target.Close();
-=======
-                    tile.Save(xmlw);
-                }
-                xmlw.WriteEndElement();
->>>>>>> origin/xml_map_savegame
+>>>>>>> origin/xml
             }
             xmlw.WriteEndElement();
             xmlw.WriteEndDocument();
@@ -862,7 +952,12 @@ namespace Gruppe22
                 _tiles.Add(new List<Tile>());
                 for (int x = 0; x < width; ++x)
                 {
-                    _tiles[y].Add(new Tile(new Coords(x, y)));
+<<<<<<< HEAD
+                    _tiles[y].Add(new Tile(this, new Coords(x, y)));
+=======
+                    _tiles[y].Add(new FloorTile());
+                    //_test+=_tiles[y][x].AddToOverlay(new Tile());
+>>>>>>> origin/xml
                 }
             }
             if (generate)
@@ -885,27 +980,27 @@ namespace Gruppe22
         public Map(string filename = "", Coords playerPos = null)
             : this()
         {
-<<<<<<< HEAD
             Load(filename, playerPos);
-=======
-            _blankTile = new Tile();
-            Load(filename);
->>>>>>> origin/xml_map_savegame
         }
 
 
 
         public void Dispose()
         {
-            for (int y = 0; y < height; ++y)
+            while (_tiles.Count > 0)
             {
-                for (int x = 0; x < height; ++x)
+                while (_tiles[0].Count > 0)
                 {
                     _tiles[0][0].Dispose();
+                    _tiles[0].RemoveAt(0);
                 }
                 _tiles[0].Clear();
+                _tiles.RemoveAt(0);
             }
             _tiles.Clear();
+            _updateTiles.Clear();
+            _actors.Clear();
+            _items.Clear();
         }
         #endregion
     }

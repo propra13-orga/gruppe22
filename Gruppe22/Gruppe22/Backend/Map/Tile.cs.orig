@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using System.Text;
 using System.Xml;
 using System.Xml.Schema;
+<<<<<<< HEAD
 using System.Xml.Serialization;
 using Microsoft.Xna.Framework;
+=======
+>>>>>>> origin/xml
 
 namespace Gruppe22
 {
@@ -24,11 +27,14 @@ namespace Gruppe22
     /// <summary>
     /// An abstract class representing a generic tile (i.e. blank floor)
     /// </summary>
+<<<<<<< HEAD
     public class Tile : IHandleEvent, IDisposable
+=======
+    public class Tile : IDisposable
+>>>>>>> origin/xml
     {
         #region Private Fields
 
-        private IHandleEvent _parent;
 
         /// <summary>
         /// Fields displayed (and checked) on top of the current field
@@ -54,7 +60,18 @@ namespace Gruppe22
 
         #region Public Fields
 
-<<<<<<< HEAD
+        public List<Tile> overlay
+        {
+            get
+            {
+                return _overlay;
+            }
+            set
+            {
+                _overlay = value;
+            }
+        }
+
         public Coords coords
         {
             get
@@ -70,9 +87,6 @@ namespace Gruppe22
                     _coords = value;
             }
         }
-=======
-        public List<Tile> overlay { get { return _overlay; } } //Referenz! Nicht schreibgeschützt?!
->>>>>>> origin/xml_map_savegame
 
         public bool connected
         {
@@ -183,7 +197,25 @@ namespace Gruppe22
                 int count = 0;
                 while ((!result) && (count < _overlay.Count))
                 {
-                    result = ((_overlay[count] is ItemTile) && (((ItemTile)_overlay[count]).itemType == ItemType.Treasure));
+                    result = (((_overlay[count] is ItemTile) && (((ItemTile)_overlay[count]).itemType == ItemType.Treasure)) || ((_overlay[count] is TargetTile)));
+                    ++count;
+                }
+                return result;
+            }
+        }
+
+        /// <summary>
+        /// Determine whether there is a treasure on the current tile
+        /// </summary>
+        public bool hasTarget
+        {
+            get
+            {
+                bool result = false;
+                int count = 0;
+                while ((!result) && (count < _overlay.Count))
+                {
+                    result = (_overlay[count] is TargetTile);
                     ++count;
                 }
                 return result;
@@ -251,7 +283,7 @@ namespace Gruppe22
                     _overlay.Add(new TrapTile(this));
                     break;
                 case TileType.Teleporter:
-                    _overlay.Add(new TeleportTile(this));
+                    _overlay.Add(new TeleportTile(this, "ddd", new Coords(0, 0)));
                     break;
                 case TileType.Target:
                     _overlay.Add(new TargetTile(this));
@@ -279,8 +311,15 @@ namespace Gruppe22
             {
                 child.Update(gameTime);
             }
+=======
+        public int AddToOverlay(Tile newtile)
+        {            
+            _overlay.Add(new FloorTile());
+            return 1;
+>>>>>>> origin/xml
         }
 
+        #region XML SaveLoad
         /// <summary>
         /// Remove all tiles of a specified type from overlay
         /// </summary>
@@ -342,6 +381,7 @@ namespace Gruppe22
                 }
         }
 
+
         /// <summary>
         /// Add specified tile to overlay
         /// </summary>
@@ -360,20 +400,9 @@ namespace Gruppe22
             _overlay.Remove(tile);
         }
         /// <summary>
-        /// Write Tile data to an XML-file
-=======
-        public void HandleEvent(UIElement sender, Events eventID, int data)
-        {
-            throw new NotImplementedException();
-        }
-
-        
-
-        /// <summary>
-        /// Save the Map.
->>>>>>> origin/xml_map_savegame
         /// </summary>
         /// <returns>true if write is successful</returns>
+<<<<<<< HEAD
         public virtual void Save(XmlWriter xmlw)
         {
             xmlw.WriteStartElement("Tile");
@@ -385,13 +414,29 @@ namespace Gruppe22
                 tile.Save(xmlw);
             }
             xmlw.WriteEndElement();
+=======
+        public virtual bool Save(XmlTextWriter writer)
+        {
+            writer.WriteAttributeString("canEnter", Convert.ToString(canEnter));
+            writer.WriteAttributeString("connected", Convert.ToString(_connected));
+            writer.WriteAttributeString("connection", Convert.ToString(_connection));
+            writer.WriteValue("Normal");
+            for(int i=0; i<_overlay.Count; i++)
+            {
+                writer.WriteAttributeString("test ist", "etwas da"); // testing
+                writer.WriteStartElement("OverlayTile" + i);
+                _overlay[i].Save(writer);
+                writer.WriteEndElement();
+            }
+            return true;
+>>>>>>> origin/xml
         }
-
         /// <summary>
         /// Read Tile data from an XML-file
         /// </summary>
         /// <param name="file">An XMlTextreader containing data for the tile</param>
         /// <returns>true if read is successful</returns>
+<<<<<<< HEAD
         public void Load()
         {
             throw new NotImplementedException("Das muss noch jemand machen");
@@ -400,13 +445,30 @@ namespace Gruppe22
 
         #region Constructors
 
+=======
+        public bool Load(XmlTextReader reader)
+        {
+            canEnter = Convert.ToBoolean(reader.GetAttribute("canEnter"));
+            connected = Convert.ToBoolean(reader.GetAttribute("connected"));
+            string con = reader.GetAttribute("connection");
+            if (con.Equals("invalid"))
+                connection = Connection.Invalid;
+            return true;
+        }
+        #endregion
+
+        #endregion
+
+        #region Constructors
+>>>>>>> origin/xml
         /// <summary>
         /// An empty constructor (setting default values)
         /// </summary>
         public Tile()
             : base()
         {
-            _overlay = new List<Tile>();            
+            _overlay = new List<Tile>();
+<<<<<<< HEAD
         }
 
         /// <summary>
@@ -426,40 +488,12 @@ namespace Gruppe22
             }
         }
 
-<<<<<<< HEAD
-        #region iXMLSerializer
 
-        /// <summary>
-        /// Returns null as no validation is performed according to MSDN-documentation
-        /// </summary>
-        /// <returns></returns>
-        public XmlSchema GetSchema()
-        {
-            return null;
-        }
-
-        /// <summary>
-        /// Write the tile to a XML-file
-        /// </summary>
-        /// <param name="writer"></param>
-        public void WriteXml(XmlWriter writer)
-        {
-            throw new System.NotImplementedException();
-        }
-
-
-        /// <summary>
-        /// Read the tile from a XML-file
-        /// </summary>
-        /// <param name="reader"></param>
-        public void ReadXml(XmlReader reader)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        #endregion
 =======
->>>>>>> origin/xml_map_savegame
+            _canEnter = canEnter;
+        }
+
+>>>>>>> origin/xml
         /// <summary>
         /// Clean up Tile
         /// </summary>
@@ -469,5 +503,10 @@ namespace Gruppe22
 
         }
         #endregion
+
+        public virtual void HandleEvent(UIElement sender, Events eventID, params object[] data)
+        {
+            ((IHandleEvent)_parent).HandleEvent(sender, eventID, data);
+        }
     }
 }

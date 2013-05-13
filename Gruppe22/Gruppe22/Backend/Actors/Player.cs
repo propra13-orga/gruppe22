@@ -7,14 +7,14 @@ namespace Gruppe22
 {
     public class Player:Actor
     {
-        protected new ActorType _actorType = ActorType.Player;
 
         /// <summary>
-        /// Constuctor. 
+        /// Constructor 
         /// </summary>
         public Player(string name, int health, int armour, int damage)
             : base(ActorType.Enemy, health, armour, damage)
         {
+            _actorType = ActorType.Player;
         }
     }
 }

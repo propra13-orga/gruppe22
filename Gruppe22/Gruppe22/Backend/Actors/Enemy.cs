@@ -7,14 +7,14 @@ namespace Gruppe22
 {
     public class Enemy : Actor
     {
-        protected ActorType _actorType=ActorType.Enemy;
 
         /// <summary>
-        /// Constuctor. 
+        /// Constructor
         /// </summary>
         public Enemy(int health, int armour, int damage)
             : base(ActorType.Enemy, health, armour, damage)
         {
+            _actorType=ActorType.Enemy;
         }
     }
 }

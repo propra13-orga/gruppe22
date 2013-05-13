@@ -10,11 +10,10 @@ namespace Gruppe22
 {
     class FloorTile : Tile
     {
-        public override bool Save(XmlTextWriter writer)
+        public override void Save(XmlWriter writer)
         {
             writer.WriteAttributeString("canEnter", Convert.ToString(canEnter));
             writer.WriteValue("Floor");
-            return true;
         }
         #region Constructor
         /// <summary>
@@ -22,7 +21,7 @@ namespace Gruppe22
         /// </summary>
         public FloorTile()
         {
-            canEnter = true;
+            _canEnter = true;
         }
         #endregion
     }
