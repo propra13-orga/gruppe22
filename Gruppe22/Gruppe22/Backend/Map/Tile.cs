@@ -53,6 +53,17 @@ namespace Gruppe22
 
         #region Public Fields
 
+        public List<Tile> overlay
+        {
+            get
+            {
+                return _overlay;
+            }
+            set
+            {
+                _overlay = value;
+            }
+        }
 
         public Coords coords
         {

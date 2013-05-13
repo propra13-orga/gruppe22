@@ -37,7 +37,7 @@ namespace Gruppe22
 
         #region Public Fields
 
-
+       
         public List<Actor> actors
         {
             get
@@ -125,7 +125,7 @@ namespace Gruppe22
         {
             get
             {
-                if ((x < width) && (x > -1) && (y < height) && (y > -1))
+                if ((y < _tiles.Count) && (y > -1) && (x < _tiles[y].Count) && (x > -1))
                 {
                     return _tiles[y][x];
                 }
@@ -136,7 +136,7 @@ namespace Gruppe22
             }
             set
             {
-                if ((x < width) && (x > -1) && (y < height) && (y > -1))
+                if ((y < _tiles.Count) && (y > -1) && (x < _tiles[y].Count) && (x > -1))
                 {
                     _tiles[y][x] = value;
                 }
@@ -462,7 +462,8 @@ namespace Gruppe22
             {
                 int count = 0;
                 Path pos = new Path(2 + r.Next(_width / 2 - 2) * 2, 2 + r.Next(_height / 2 - 2) * 2);
-                while ((pos.x > 0) && (!_tiles[pos.y][pos.x].canEnter))
+                while ((pos.x > 0) &&
+                    (_tiles[pos.y][pos.x].overlay.Count == 0))
                 {
                     count += 1;
                     pos.x += 2;
@@ -546,7 +547,8 @@ namespace Gruppe22
             {
                 int count = 0;
                 Path pos = new Path(2 + r.Next(_width / 2 - 2) * 2, 2 + r.Next(_height / 2 - 2) * 2);
-                while ((pos.x > 0) && (!_tiles[pos.y][pos.x].canEnter))
+                while ((pos.x > 0) &&
+                    (_tiles[pos.y][pos.x].overlay.Count == 0))
                 {
                     count += 1;
                     pos.x += 2;
@@ -706,13 +708,15 @@ namespace Gruppe22
                         _actors.RemoveAt(i);
                         i -= 1;
                     }
+                    else
+                    {
+                        _actors[i].tile = null;
+                    }
                 }
             }
             else
             {
                 Player playerA = new Player("Klaus", 20, 20, 20);
-                ActorTile playerTile = new ActorTile(null, playerA);
-                playerA.tile = playerTile;
                 _actors.Add(playerA);
             }
             _tiles.Clear();
@@ -734,7 +738,7 @@ namespace Gruppe22
                     switch (xmlr.Name)
                     {
                         case "Tile":
-                            Tile tile = new Tile(this,new Coords(j,r),true);
+                            Tile tile = new Tile(this, new Coords(j, r), true);
                             if (!xmlr.IsEmptyElement)
                             {
                                 xmlr.Read();
@@ -848,7 +852,7 @@ namespace Gruppe22
                 _tiles.Add(new List<Tile>());
                 for (int x = 0; x < width; ++x)
                 {
-                    _tiles[y].Add(new Tile(this,new Coords(x, y)));
+                    _tiles[y].Add(new Tile(this, new Coords(x, y)));
                 }
             }
             if (generate)
@@ -871,23 +875,28 @@ namespace Gruppe22
         public Map(string filename = "", Coords playerPos = null)
             : this()
         {
-            _blankTile = new Tile();
             Load(filename, playerPos);
+            System.Diagnostics.Debug.WriteLine(_tiles.Count);
         }
 
 
 
         public void Dispose()
         {
-            for (int y = 0; y < height; ++y)
+            while (_tiles.Count > 0)
             {
-                for (int x = 0; x < height; ++x)
+                while (_tiles[0].Count > 0)
                 {
                     _tiles[0][0].Dispose();
+                    _tiles[0].RemoveAt(0);
                 }
                 _tiles[0].Clear();
+                _tiles.RemoveAt(0);
             }
             _tiles.Clear();
+            _updateTiles.Clear();
+            _actors.Clear();
+            _items.Clear();
         }
         #endregion
     }

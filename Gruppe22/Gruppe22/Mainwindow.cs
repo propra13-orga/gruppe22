@@ -20,7 +20,7 @@ namespace Gruppe22
 {
     public enum Events
     {
-        StartGame = 0,
+        ContinueGame = 0,
         EndGame,
         HideNotification,
         LoadMap,
@@ -29,6 +29,13 @@ namespace Gruppe22
         NewMap,
         ResetGame,
         About
+    }
+
+    public enum GameStatus
+    {
+        Running,
+        NoRedraw,
+        Paused
     }
     /// <summary>
     /// This is the main type for your game
@@ -81,7 +88,7 @@ namespace Gruppe22
         /// <summary>
         /// Whether the game is paused (for menus etc.)
         /// </summary>
-        private bool _paused = false;
+        private GameStatus _status = GameStatus.Running;
         private Keys _lastKey = Keys.A;
         private int _lastCheck = 0;
         #endregion
@@ -96,7 +103,7 @@ namespace Gruppe22
             {
                 GenerateMaps();
             }
-            _map1 = new Map("map1.xml"); // TEST!!!
+            _map1 = new Map("map1.xml", null); // TEST!!!
             _interfaceElements = new List<UIElement>();
             base.Initialize();
         }
@@ -104,16 +111,16 @@ namespace Gruppe22
         public void GenerateMaps()
         {
             Random r = new Random();
-
-            _map1 = new Map(r.Next(4) + 6, r.Next(4) + 6, true);
-            _map1.Save("map1.xml");
-            _map1.Dispose();
-            _map1 = new Map(r.Next(5) + 3, r.Next(2) + 3, true);
-            _map1.Save("map2.xml");
-            _map1.Dispose();
-            _map1 = new Map(r.Next(10) + 6, r.Next(10) + 6, true);
-            _map1.Save("map3.xml");
-            _map1.Dispose();
+            Map tempMap = null;
+            tempMap = new Map(r.Next(4) + 6, r.Next(4) + 6, true);
+            tempMap.Save("map1.xml");
+            tempMap.Dispose();
+            tempMap = new Map(r.Next(5) + 3, r.Next(2) + 3, true);
+            tempMap.Save("map2.xml");
+            tempMap.Dispose();
+            tempMap = new Map(r.Next(10) + 6, r.Next(10) + 6, true);
+            tempMap.Save("map3.xml");
+            tempMap.Dispose();
         }
 
         /// <summary>
@@ -142,10 +149,10 @@ namespace Gruppe22
         /// </summary>
         public void ShowMenu()
         {
-            _paused = true;
+            _status = GameStatus.Paused;
             Window _mainMenu = new Window(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 220) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) - 200, 350, 500));
 
-            _mainMenu.AddChild(new Button(_mainMenu, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) - 180, 300, 60), "Spiel fortsetzen", Events.StartGame));
+            _mainMenu.AddChild(new Button(_mainMenu, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) - 180, 300, 60), "Spiel fortsetzen", Events.ContinueGame));
             _mainMenu.AddChild(new Button(_mainMenu, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) - 100, 300, 60), "Spiel neu starten", Events.ResetGame));
 
             _mainMenu.AddChild(new Button(_mainMenu, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) - 20, 300, 60), "Karte neu generieren", Events.NewMap));
@@ -162,7 +169,7 @@ namespace Gruppe22
 
         public void ShowEndGame(string message = "You have failed in your mission. Better luck next time.", string title = "Game over!")
         {
-            _paused = true;
+            _status = GameStatus.Paused;
             Window _gameOver = new Window(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 300) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) - 100, 600, 200));
             Statusbox stat = new Statusbox(_gameOver, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 300) / 2.0f) + 10, (int)(GraphicsDevice.Viewport.Height / 2.0f) - 70, 590, 90), false, true);
             stat.AddLine(title + "\n \n" + message);
@@ -181,10 +188,10 @@ namespace Gruppe22
 
         public void ShowAbout()
         {
-            _paused = true;
+            _status = GameStatus.Paused;
             Window _about = new Window(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 300) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) - 200, 600, 500));
 
-            _about.AddChild(new Button(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 80) / 2.0f) + 120, (int)(GraphicsDevice.Viewport.Height / 2.0f) + 240, 160, 40), "Ok", Events.StartGame));
+            _about.AddChild(new Button(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 80) / 2.0f) + 120, (int)(GraphicsDevice.Viewport.Height / 2.0f) + 240, 160, 40), "Ok", Events.ContinueGame));
 
             //  _mainMenu.AddChild(new ProgressBar(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) + 80, 300, 30), ProgressStyle.Block,100,2));
             Statusbox stat = new Statusbox(_about, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 300) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) - 180, 600, 380), false, true);
@@ -220,11 +227,14 @@ namespace Gruppe22
 
             switch (eventID)
             {
-                case Events.StartGame:
-                    _focus.Dispose();
-                    _interfaceElements.Remove(_focus);
-                    _focus = null;
-                    _paused = false;
+                case Events.ContinueGame:
+                    if (_status != GameStatus.NoRedraw)
+                    {
+                        _focus.Dispose();
+                        _interfaceElements.Remove(_focus);
+                        _focus = null;
+                        _status = GameStatus.Running;
+                    }
                     break;
                 case Events.About:
                     _focus.Dispose();
@@ -237,20 +247,24 @@ namespace Gruppe22
                     break;
                 case Events.ChangeMap:
                     //TODO: Lade neue Karte
+                    _status = GameStatus.NoRedraw;
                     _map1.Load((string)data[0], (Coords)data[1]);
+                    _status = GameStatus.Running;
                     break;
                 case Events.NewMap:
-                    _paused = true;
+                    _status = GameStatus.NoRedraw;
                     _map1.Dispose();
                     GenerateMaps();
-                    _map1 = new Map("test.xml");
-                    _paused = false;
+                    _map1.Load("map1.xml", null);
+                    _status = GameStatus.Paused;
+                    HandleEvent(null, Events.ContinueGame);
                     break;
                 case Events.ResetGame:
-                    _paused = true;
+                    _status = GameStatus.NoRedraw;
                     _map1.Dispose();
-                    _map1 = new Map("test.xml");
-                    _paused = false;
+                    _map1.Load("map1.xml", null);
+                    _status = GameStatus.Paused;
+                    HandleEvent(null, Events.ContinueGame);
                     break;
                 case Events.MoveActor:
                     int id = (int)data[0];
@@ -301,7 +315,7 @@ namespace Gruppe22
                         }
                     }
 
-                    if (!_paused || element.ignorePause)
+                    if (_status == GameStatus.Running || ((_status == GameStatus.Paused) && (element.ignorePause)))
                         element.Update(gameTime);
                 }
 
@@ -359,13 +373,13 @@ namespace Gruppe22
                             if (_lastKey != Keys.Escape)
                             {
                                 _lastKey = Keys.Escape;
-                                if (!_paused) ShowMenu();
-                                else HandleEvent(null, Events.StartGame, 0);
+                                if (_status == GameStatus.Running) ShowMenu();
+                                else HandleEvent(null, Events.ContinueGame, 0);
                             }
                         }
                         else
                         {
-                            _lastKey = Keys.A;
+                            _lastKey = Keys.None;
                         }
                     }
                 }
@@ -380,12 +394,16 @@ namespace Gruppe22
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.Black);
-            foreach (UIElement element in _interfaceElements)
+            if (_status != GameStatus.NoRedraw)
             {
-                element.Draw(gameTime);
+                GraphicsDevice.Clear(Color.Black);
+
+                foreach (UIElement element in _interfaceElements)
+                {
+                    element.Draw(gameTime);
+                }
+                base.Draw(gameTime);
             }
-            base.Draw(gameTime);
         }
 
 
