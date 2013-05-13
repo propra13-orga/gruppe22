@@ -20,7 +20,6 @@ namespace Gruppe22
         int _numLines = 0;
         int _lineHeight = 0;
         Texture2D _arrows = null;
-        int _lastTime = 0;
         Keys _lastKey = Keys.None;
         bool _hasBorder = true;
         bool _center = false;

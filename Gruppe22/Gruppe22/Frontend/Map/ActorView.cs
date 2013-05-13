@@ -25,7 +25,6 @@ namespace Gruppe22
         private Coords _target = null;
         private Activity _activity = Activity.Walk;
         private Direction _direction = Direction.Down;
-        private SpriteBatch _spriteBatch = null;
         private int _speed = 5;
         #endregion
 

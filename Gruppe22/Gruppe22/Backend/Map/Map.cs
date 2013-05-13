@@ -9,7 +9,7 @@ namespace Gruppe22
     public class Map : IHandleEvent, IDisposable
     {
         #region Private Fields
-        private IHandleEvent _parent;
+        private object _parent = null;
 
         /// <summary>
         /// A two dimensional list of tiles
@@ -37,7 +37,7 @@ namespace Gruppe22
 
         #region Public Fields
 
-       
+
         public List<Actor> actors
         {
             get
@@ -283,28 +283,27 @@ namespace Gruppe22
             {
                 case Direction.Left:
                     return new Coords(start.x - 1, start.y);
-                    break;
+
                 case Direction.Right:
                     return new Coords(start.x + 1, start.y);
-                    break;
+
                 case Direction.Down:
                     return new Coords(start.x, start.y + 1);
-                    break;
+
                 case Direction.Up:
                     return new Coords(start.x, start.y - 1);
-                    break;
+
                 case Direction.DownLeft:
                     return new Coords(start.x - 1, start.y + 1);
-                    break;
+
                 case Direction.UpRight:
                     return new Coords(start.x + 1, start.y - 1);
-                    break;
+
                 case Direction.DownRight:
                     return new Coords(start.x + 1, start.y + 1);
-                    break;
+
                 case Direction.UpLeft:
                     return new Coords(start.x - 1, start.y - 1);
-                    break;
             }
             return start;
         }
@@ -765,7 +764,7 @@ namespace Gruppe22
                     }
                 }
             }
-            xmlr.Close(); 
+            xmlr.Close();
 
             ActorTile actortile = new ActorTile(_tiles[player.y][player.x], actors[0]);
             _tiles[player.y][player.x].Add(actortile);
@@ -842,9 +841,10 @@ namespace Gruppe22
         /// </summary>
         /// <param name="width">The width of the map</param>
         /// <param name="height">The height of the map</param>
-        public Map(int width = 10, int height = 10, bool generate = false, Coords playerPos = null)
+        public Map(object parent=null,int width = 10, int height = 10, bool generate = false, Coords playerPos = null)
             : this()
         {
+            _parent = parent;
             _width = width;
             _height = height;
             for (int y = 0; y < height; ++y)
@@ -872,9 +872,10 @@ namespace Gruppe22
         /// Load a map from a file
         /// </summary>
         /// <param name="filename"></param>
-        public Map(string filename = "", Coords playerPos = null)
+        public Map(object parent=null,string filename = "", Coords playerPos = null)
             : this()
         {
+            _parent = parent;
             Load(filename, playerPos);
         }
 

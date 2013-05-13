@@ -42,10 +42,6 @@ namespace Gruppe22
         /// </summary>
         private Map _map;
         /// <summary>
-        /// Counter for last updated (to avoid repeated execution of keypresses, etc.)
-        /// </summary>
-        private int _lastCheck = 0;
-        /// <summary>
         /// Number of tiles to render (Square with player in center)
         /// </summary>
         private int _renderScope = 7;

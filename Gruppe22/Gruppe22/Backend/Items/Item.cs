@@ -13,7 +13,7 @@ namespace Gruppe22
     }
     public class Item
     {
-        private ItemType _itemType;
+        private ItemType _itemType=ItemType.Treasure;
         private ItemTile _tile;
 
         public ItemTile tile

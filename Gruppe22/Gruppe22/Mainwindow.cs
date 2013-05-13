@@ -80,11 +80,6 @@ namespace Gruppe22
         private Map _map1 = null;
 
         /// <summary>
-        /// Internal storage for Player 2
-        /// </summary>
-        private Map _map2 = null;
-
-        /// <summary>
         /// Whether the game is paused (for menus etc.)
         /// </summary>
         private GameStatus _status = GameStatus.Running;
@@ -102,7 +97,7 @@ namespace Gruppe22
             {
                 GenerateMaps();
             }
-            _map1 = new Map("map1.xml", null); // TEST!!!
+            _map1 = new Map(this,"map1.xml", null); // TEST!!!
             _interfaceElements = new List<UIElement>();
             base.Initialize();
         }
@@ -111,13 +106,13 @@ namespace Gruppe22
         {
             Random r = new Random();
             Map tempMap = null;
-            tempMap = new Map(r.Next(4) + 6, r.Next(4) + 6, true);
+            tempMap = new Map(this, r.Next(4) + 6, r.Next(4) + 6, true);
             tempMap.Save("map1.xml");
             tempMap.Dispose();
-            tempMap = new Map(r.Next(5) + 3, r.Next(2) + 3, true);
+            tempMap = new Map(this, r.Next(5) + 3, r.Next(2) + 3, true);
             tempMap.Save("map2.xml");
             tempMap.Dispose();
-            tempMap = new Map(r.Next(10) + 6, r.Next(10) + 6, true);
+            tempMap = new Map(this, r.Next(10) + 6, r.Next(10) + 6, true);
             tempMap.Save("map3.xml");
             tempMap.Dispose();
         }
