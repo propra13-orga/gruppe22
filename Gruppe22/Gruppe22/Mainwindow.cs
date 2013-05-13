@@ -178,6 +178,10 @@ namespace Gruppe22
                             _map1.MoveActor(_map1.actors[id], dir);
                             ((Mainmap)_interfaceElements[1]).HandleEvent(null, Events.MoveActor, id, _map1.actors[id].tile.coords);
                         }
+                        if (_map1[_map1.actors[id].tile.coords.x, _map1.actors[id].tile.coords.y].hasEnemy || _map1[_map1.actors[id].tile.coords.x, _map1.actors[id].tile.coords.y].hasTrap)
+                        {
+                            Exit();
+                        }  
                     }
                     break;
             }
