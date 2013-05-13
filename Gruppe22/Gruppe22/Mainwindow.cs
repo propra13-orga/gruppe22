@@ -96,7 +96,7 @@ namespace Gruppe22
             {
                 GenerateMaps();
             }
-            _map1 = new Map("test.xml"); // TEST!!!
+            _map1 = new Map("map1.xml"); // TEST!!!
             _interfaceElements = new List<UIElement>();
             base.Initialize();
         }

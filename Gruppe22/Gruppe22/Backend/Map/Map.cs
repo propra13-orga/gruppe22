@@ -719,10 +719,11 @@ namespace Gruppe22
             _items.Clear();
             _updateTiles.Clear();
             XmlReader xmlr = XmlReader.Create(filename);
-            xmlr.Read();//xml
-            xmlr.Read();//GameMap
+            xmlr.MoveToContent();//xml
             _width = int.Parse(xmlr.GetAttribute("width"));
             _height = int.Parse(xmlr.GetAttribute("height"));
+            xmlr.ReadStartElement("GameMap");//GameMap
+
             for (int r = 0; r < _height; r++)
             { // Add Rows
                 xmlr.Read();//row
@@ -730,14 +731,32 @@ namespace Gruppe22
                 _tiles.Add(new List<Tile>());
                 for (int j = 0; j < _width; j++)
                 { // Add Tiles and overlay-Tiles
-                    xmlr.Read();
                     switch (xmlr.Name)
                     {
                         case "Tile":
-                            _tiles[r].Add(new Tile(Convert.ToBoolean(xmlr.GetAttribute("canEnter"))));
+                            Tile tile = new Tile(this,new Coords(j,r),true);
+                            if (!xmlr.IsEmptyElement)
+                            {
+                                xmlr.Read();
+
+                                while ((xmlr.NodeType != XmlNodeType.EndElement))
+                                {
+                                    switch (xmlr.Name)
+                                    {
+                                        case "WallTile":
+                                            tile.Add(TileType.Wall);
+                                            break;
+                                    }
+                                    xmlr.Read();
+                                }
+                            }
+                            _tiles[r].Add(tile);
+                            xmlr.Read();
+
                             break;
                         default:
                             j--;
+                            xmlr.Read();
                             break;
                     }
                 }
@@ -746,6 +765,8 @@ namespace Gruppe22
 
             ActorTile actortile = new ActorTile(_tiles[player.y][player.x], actors[0]);
             _tiles[player.y][player.x].Add(actortile);
+            actors[0].tile = actortile;
+            actortile.parent = _tiles[player.y][player.x];
             _updateTiles.Add(player);
         }
 
@@ -827,7 +848,7 @@ namespace Gruppe22
                 _tiles.Add(new List<Tile>());
                 for (int x = 0; x < width; ++x)
                 {
-                    _tiles[y].Add(new Tile(new Coords(x, y)));
+                    _tiles[y].Add(new Tile(this,new Coords(x, y)));
                 }
             }
             if (generate)
