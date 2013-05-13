@@ -18,10 +18,22 @@ using System.Threading.Tasks;
 
 namespace Gruppe22
 {
+    public enum Events
+    {
+        StartGame = 1,
+        EndGame = 2,
+<<<<<<< HEAD
+        HideNotification = 3,
+        LoadMap = 4,
+        MoveActor = 5
+=======
+        ChangeMap = 3
+>>>>>>> origin/xml_map_savegame
+    }
     /// <summary>
     /// This is the main type for your game
     /// </summary>
-    public class MainWindow : Game
+    public class MainWindow : Game, IHandleEvent
     {
         #region Private Fields
         /// <summary>
@@ -32,21 +44,15 @@ namespace Gruppe22
         /// <summary>
         /// Central Sprite drawing algorithm
         /// </summary>
-<<<<<<< HEAD
         private SpriteBatch _spriteBatch = null;
 
-=======
-        SpriteFont _font = null;
-        /// <summary>
-        /// Main UI-Window
-        /// </summary>
-        Window _window;
->>>>>>> startui
         /// <summary>
         /// Current mousewheel position (used to calculate changes)
         /// </summary>
         private int _mouseWheel = 0;
 
+
+        bool _dragging = false;
         /// <summary>
         /// Current position of mouse on screen
         /// </summary>
@@ -72,6 +78,12 @@ namespace Gruppe22
         /// </summary>
         private Map _map2 = null;
 
+        /// <summary>
+        /// Whether the game is paused (for menus etc.)
+        /// </summary>
+        private bool _paused = false;
+        private Keys _lastKey = Keys.A;
+        private int _lastCheck = 0;
         #endregion
 
         #region Protected Methods (overrides)
@@ -80,70 +92,19 @@ namespace Gruppe22
         /// </summary>
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
+            Random r = new Random();
 <<<<<<< HEAD
+            _map1 = new Map(r.Next(20) + 6, r.Next(20) + 6, true);
 =======
-
-            base.Initialize();
-        }
-
-        /// <summary>
-        /// LoadContent will be called once per game and is the place to load
-        /// all of your content.
-        /// </summary>
-        protected override void LoadContent()
-        {
-            // Create a new SpriteBatch, which can be used to draw textures.
-            _spriteBatch = new SpriteBatch(GraphicsDevice);
-            _backMusic = Content.Load<Song>("Video Dungeon Crawl.wav"); // Todo: *.mp3
-            _font = Content.Load<SpriteFont>("Font");
-            MediaPlayer.Volume = (float)0.3;
-            MediaPlayer.Play(_backMusic);
-
-            _window = new Window(_graphics);
-            _window.LoadContent(Content);
-
-            _wall1 = Content.Load<Texture2D>("wall1");
-            _wall2 = Content.Load<Texture2D>("wall2");
-            _floor = Content.Load<Texture2D>("floor");
-            _player1 = Content.Load<Texture2D>("player1");
-            _player2 = Content.Load<Texture2D>("player2");
-            _player2 = Content.Load<Texture2D>("player2");
-            _miniIcons = Content.Load<Texture2D>("Minimap");
-            //_desaturateEffect = Content.Load<Effect>("normalmap");
-            _map1 = new Map(15, 8);
->>>>>>> startui
-            string str4 =
-                "######.####.###\n" +
-                "###.##.####.###\n" +
-                "###.........###\n" +
-                "###.###.###.###\n" +
-                "###.###.###.###\n" +
-                "#.............#\n" +
-                "#....##.#######\n" +
-                "#.#####.#######\n",
-             str =
-              "###############\n" +
-              "#....#........#\n" +
-              "#....#........#\n" +
-              "#..############\n" +
-              "#....#..#.....#\n" +
-              "#.####..#######\n" +
-              "#....#..#.....#\n" +
-              "######..#######\n",
-            str1 =
-              "###############\n" +
-              "#.....#.......#\n" +
-              "#.....#.......#\n" +
-              "###.........###\n" +
-              "#.............#\n" +
-              "#.....#.......#\n" +
-              "#.....#.......#\n" +
-              "###############\n";
-            _map1 = new Map(15, 8);
-            _map1.FromString(str);
+            _map1 = new Map(r.Next(1) + 6, r.Next(1) + 6); //kleinere Map
+            _map1.ClearMaze();
+            _map1.GenerateMaze();
+            _map1.ClearWalls();
+            _map1.Save("test.xml");
+            _map1 = new Map("test.xml"); // TEST!!!
+            //Exit();//TODO:Löschen
+>>>>>>> origin/xml_map_savegame
             _interfaceElements = new List<UIElement>();
-
             base.Initialize();
         }
 
@@ -155,38 +116,93 @@ namespace Gruppe22
             // Create a new SpriteBatch, which can be used to draw textures.
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            _interfaceElements.Add(new Minimap(_spriteBatch, Content, new Rectangle(_graphics.GraphicsDevice.Viewport.Width - 210, 20, 200, 200), _map1));
-                        _interfaceElements.Add(new Mainmap(_spriteBatch, Content, new Rectangle(0, 20, _graphics.GraphicsDevice.Viewport.Width - 220, _graphics.GraphicsDevice.Viewport.Height - 140), _map1));
-                        _interfaceElements.Add(new Statusbox(_spriteBatch, Content, new Rectangle(40, _graphics.GraphicsDevice.Viewport.Height - 120, _graphics.GraphicsDevice.Viewport.Width - 20, 100)));
+            _interfaceElements.Add(new Minimap(this, _spriteBatch, Content, new Rectangle(_graphics.GraphicsDevice.Viewport.Width - 230, 20, 210, 200), _map1));
+            _interfaceElements.Add(new Mainmap(this, _spriteBatch, Content, new Rectangle(20, 20, _graphics.GraphicsDevice.Viewport.Width - 260, _graphics.GraphicsDevice.Viewport.Height - 160), _map1));
+            _interfaceElements.Add(new Statusbox(this, _spriteBatch, Content, new Rectangle(20, _graphics.GraphicsDevice.Viewport.Height - 120, _graphics.GraphicsDevice.Viewport.Width - 260, 100)));
+            (_interfaceElements[2] as Statusbox).AddLine("Welcome to this highly innovative Dungeon Crawler!\nYou can scroll in this status window.\nUse A-S-D-W to move your character.\n Use Arrow keys (or drag mouse) to scroll map or minimap\n Press ESC to display Game Menu.");
 
 
             // _backMusic = Content.Load<Song>("Video Dungeon Crawl.wav"); // Todo: *.mp3
             // _font = Content.Load<SpriteFont>("Font");
             // MediaPlayer.Volume = (float)0.3;
             // MediaPlayer.Play(_backMusic);
-
+            ShowMenu();
         }
 
         /// <summary>
-        /// UnloadContent will be called once per game and is the place to unload
-        /// all content.
+        /// Display Main Menu
+        /// </summary>
+        public void ShowMenu()
+        {
+            _paused = true;
+            Window _mainMenu = new Window(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 220) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) - 200, 350, 500));
+
+            _mainMenu.AddChild(new Button(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) - 180, 300, 60), "Spiel fortsetzen", Events.StartGame));
+            _mainMenu.AddChild(new Button(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) - 100, 300, 60), "Spiel neu starten", Events.StartGame));
+
+            _mainMenu.AddChild(new Button(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) - 20, 300, 60), "Einstellungen", Events.StartGame));
+
+            _mainMenu.AddChild(new Button(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) + 120, 300, 60), "Rechtliches", Events.StartGame));
+
+            _mainMenu.AddChild(new Button(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) + 220, 300, 60), "Spiel beenden", Events.EndGame));
+
+            //  _mainMenu.AddChild(new ProgressBar(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) + 80, 300, 30), ProgressStyle.Block,100,2));
+
+            _interfaceElements.Add(_mainMenu);
+            _focus = _interfaceElements[_interfaceElements.Count - 1];
+        }
+
+
+        /// <summary>
+        /// Unload all managed content which has not been disposed of elsewhere
         /// </summary>
         protected override void UnloadContent()
         {
-<<<<<<< HEAD
-=======
-            // TODO: Unload any non ContentManager content here
-            _backMusic.Dispose();
-            _wall1.Dispose();
-            _wall2.Dispose();
-            _floor.Dispose();
-            _player1.Dispose();
-            _player2.Dispose();
-            _graphics.Dispose();
-            _spriteBatch.Dispose();
-            //TODO: Die eigenen Typen (z.B. Button) brauchen eine UnloadContent-Methode, die hier aufgerufen wird!
->>>>>>> startui
             Content.Unload();
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="eventID"></param>
+        /// <param name="data"></param>
+        public void HandleEvent(UIElement sender, Events eventID, params object[] data)
+        {
+
+            switch (eventID)
+            {
+                case Events.StartGame:
+                    _focus.Dispose();
+                    _interfaceElements.Remove(_focus);
+                    _focus = null;
+                    _paused = false;
+                    break;
+                case Events.EndGame:
+                    Exit();
+                    break;
+<<<<<<< HEAD
+                case Events.MoveActor:
+                    int id = (int)data[0];
+                    if (!((Mainmap)_interfaceElements[1]).IsMoving(id))
+                    {
+                        Direction dir = (Direction)data[1];
+                        if (_map1.CanMove(_map1.actors[id].tile.coords, dir))
+                        {
+                            _map1.MoveActor(_map1.actors[id], dir);
+                            ((Mainmap)_interfaceElements[1]).HandleEvent(null, Events.MoveActor, id, _map1.actors[id].tile.coords);
+                        }
+                        if (_map1[_map1.actors[id].tile.coords.x, _map1.actors[id].tile.coords.y].hasEnemy || _map1[_map1.actors[id].tile.coords.x, _map1.actors[id].tile.coords.y].hasTrap)
+                        {
+                            Exit();
+                        }  
+                    }
+=======
+                case Events.ChangeMap:
+                    //TODO: Lade neue Karte
+>>>>>>> origin/xml_map_savegame
+                    break;
+            }
         }
 
         /// <summary>
@@ -196,110 +212,95 @@ namespace Gruppe22
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-<<<<<<< HEAD
-            foreach (UIElement element in _interfaceElements)
+            /*   ((ProgressBar)
+                   ((Window)_interfaceElements[_interfaceElements.Count - 1]).children[((Window)_interfaceElements[_interfaceElements.Count - 1]).children.Count - 1]).value += 1;*/
+            try
             {
-                if (element.IsHit(Mouse.GetState().X, Mouse.GetState().Y))
+
+                foreach (UIElement element in _interfaceElements)
                 {
-                    _focus = element;
-                }
-                element.Update(gameTime);
-            }
 
-
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-                Exit();
-
-            if (Keyboard.GetState().IsKeyDown(Keys.Enter))
-                _graphics.ToggleFullScreen();
-
-            if (_focus != null)
-            {
-                if (Mouse.GetState().ScrollWheelValue != _mouseWheel)
-                {
-                    _focus.ScrollWheel(_mouseWheel - Mouse.GetState().ScrollWheelValue);
-                    _mouseWheel = Mouse.GetState().ScrollWheelValue;
-                }
-=======
-            if (_window != null)
-            {
-                if (_window.Update(gameTime) == false)
-                {
-                    _window.UnloadContent();
-                    _window = null;
-                }
-            }
-            else
-            {
-                _currentObject = _mainMap1;
-                /*
-
-                if (Mouse.GetState().LeftButton == ButtonState.Released)
-                {
-                    if (_miniMap1.IsHit(Mouse.GetState().X, Mouse.GetState().Y))
+                    if (!_dragging)
                     {
-                        _currentObject = _miniMap1;
-                    }
-                    else
-                        if (_mainMap1.IsHit(Mouse.GetState().X, Mouse.GetState().Y))
+                        if (element.IsHit(Mouse.GetState().X, Mouse.GetState().Y))
                         {
-                            _currentObject = _mainMap1;
-                        }
-                        else
-                            if (_statusBox.IsHit(Mouse.GetState().X, Mouse.GetState().Y))
+                            if ((_focus == null) || (!_focus.holdFocus))
                             {
-                                _currentObject = _statusBox;
+                                _focus = element;
                             }
-                            else
-                            { _currentObject = null; }
-                }*/
+                        }
+                    }
+
+                    if (!_paused || element.ignorePause)
+                        element.Update(gameTime);
+                }
 
 
 
-                if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-                    Exit();
-                if (Keyboard.GetState().IsKeyDown(Keys.Enter))
-                    _graphics.ToggleFullScreen();
 
-                if (_currentObject != null)
+                //            if (Keyboard.GetState().IsKeyDown(Keys.Enter))
+                //                _graphics.ToggleFullScreen();
+
+                if (_focus != null)
                 {
                     if (Mouse.GetState().ScrollWheelValue != _mouseWheel)
                     {
-                        _mainMap1.ScrollWheel(_mouseWheel - Mouse.GetState().ScrollWheelValue);
+
+                        int Difference = _mouseWheel - Mouse.GetState().ScrollWheelValue;
                         _mouseWheel = Mouse.GetState().ScrollWheelValue;
+                        _focus.ScrollWheel(Difference / Math.Abs(Difference));
                     }
->>>>>>> startui
 
 
                     if (Mouse.GetState().LeftButton == ButtonState.Pressed)
                     {
-<<<<<<< HEAD
-                        _focus.MoveContent(new Vector2(Mouse.GetState().X - _mousepos.X, Mouse.GetState().Y - _mousepos.Y));
-=======
                         if (_mousepos.X != -1)
                         {
-                            _mainMap1.MoveContent(new Vector2(Mouse.GetState().X - _mousepos.X, Mouse.GetState().Y - _mousepos.Y));
+                            _dragging = true;
+                            _focus.MoveContent(new Vector2(Mouse.GetState().X - _mousepos.X, Mouse.GetState().Y - _mousepos.Y), Math.Abs(gameTime.TotalGameTime.Milliseconds - _lastCheck));
                         }
                         _mousepos.X = Mouse.GetState().X;
                         _mousepos.Y = Mouse.GetState().Y;
->>>>>>> startui
                     }
                     else
                     {
                         _mousepos.X = -1;
                         _mousepos.Y = -1;
+                        _dragging = false;
                     }
-                    _mainMap1.HandleKey();
+
+                    if (Math.Abs(gameTime.TotalGameTime.Milliseconds - _lastCheck) > 100)
+                    {
+                        _lastCheck = gameTime.TotalGameTime.Milliseconds;
+                    }
+
+                    if (Mouse.GetState().LeftButton == ButtonState.Pressed)
+                    {
+                        _focus.MouseClick((int)_mousepos.X, (int)_mousepos.Y, Math.Abs(gameTime.TotalGameTime.Milliseconds - _lastCheck));
+                    }
+
+                    _focus.HandleKey(Math.Abs(gameTime.TotalGameTime.Milliseconds - _lastCheck));
+
+
+                    if (_lastCheck > 90)
+                    {
+                        if ((GamePad.GetState(PlayerIndex.One).Buttons.Start == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape)))
+                        {
+                            if (_lastKey != Keys.Escape)
+                            {
+                                _lastKey = Keys.Escape;
+                                if (!_paused) ShowMenu();
+                                else HandleEvent(null, Events.StartGame, 0);
+                            }
+                        }
+                        else
+                        {
+                            _lastKey = Keys.A;
+                        }
+                    }
                 }
-<<<<<<< HEAD
-                _focus.HandleKey();
-=======
-                counter += 1;
-                // TODO: Add your update logic here
-                if (counter % 10 == 1)
-                    _mainMap1.Update();
->>>>>>> startui
             }
+            catch { }
             base.Update(gameTime);
         }
 
@@ -309,15 +310,9 @@ namespace Gruppe22
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            //TODO: spriteBach.Begin() und End() nur hier, sonst Konflikt!
             GraphicsDevice.Clear(Color.Black);
-<<<<<<< HEAD
             foreach (UIElement element in _interfaceElements)
             {
-                if (element.IsHit(Mouse.GetState().X, Mouse.GetState().Y))
-                {
-                    _focus = element;
-                }
                 element.Draw(gameTime);
             }
             base.Draw(gameTime);
@@ -371,36 +366,27 @@ namespace Gruppe22
             }
             return true;
         }
+
         #endregion
 
         #region Constructor
         /// <summary>
         /// Constructor
         /// </summary>
-        public MainWindow(): base()
-=======
-            
-            if (_mainMap1 != null) _mainMap1.Draw();
-            if (_miniMap1 != null) _miniMap1.Draw(gameTime);
-            if (_statusBox != null) _statusBox.Draw(gameTime);
-            if (_window != null) _window.Draw(_spriteBatch); //TODO: Objekt vernünftig löschen
-            base.Draw(gameTime);
-        }
-        #endregion
-
-        public MainWindow() : base()
->>>>>>> startui
+        public MainWindow()
+            : base()
         {
-            //IsMouseVisible = false;
             Content.RootDirectory = "Content";
             Window.Title = "Dungeon Crawler 2013";
-            Window.AllowUserResizing = true;
+
             _graphics = new GraphicsDeviceManager(this);
-<<<<<<< HEAD
             _graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height - 200;
             _graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width - 40;
+            //_graphics.PreferredBackBufferHeight = 640;
+            //_graphics.PreferredBackBufferWidth = 480;
+
             _graphics.IsFullScreen = false;
-            Window.AllowUserResizing = true;
+            Window.AllowUserResizing = false;
             Type type = typeof(OpenTKGameWindow);
 
             // Move window to top left corner of the screen
@@ -408,14 +394,6 @@ namespace Gruppe22
             OpenTK.GameWindow window = (OpenTK.GameWindow)field.GetValue(this.Window);
             window.X = 0;
             window.Y = 0;
-=======
-            _graphics.PreferredBackBufferWidth = 1366;
-            _graphics.PreferredBackBufferHeight = 768;
-            //_graphics.IsFullScreen = false;
-            _graphics.ApplyChanges();
-            _graphics.IsFullScreen = true;
-
->>>>>>> startui
         }
         #endregion
     }

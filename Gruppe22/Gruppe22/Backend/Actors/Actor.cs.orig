@@ -14,18 +14,19 @@ namespace Gruppe22
 
     public class Actor
     {
+        ActorType _actorType;
         private ActorTile _tile;
         protected ActorType _actorType;
 
-        //Lebenspunkte, Rüstung, Schaden/Angriffsstärke
-        protected int _health, _armour, _damage;
-
         public ActorTile tile
+        private ActorType _actorType;
+        //Lebenspunkte, Rüstung, Schaden/Angriffsstärke
+        private int _health, _armour, _damage;
+
         {
             get { return _tile; }
             set { _tile = value; }
         }
-
         public ActorType actorType
         {
             get
@@ -34,7 +35,7 @@ namespace Gruppe22
             }
         }
 
-        #region Public-Methods
+#region Public-Methods
 
         public int health { get { return _health; } }
         public int armour { get { return _armour; } }
@@ -56,7 +57,7 @@ namespace Gruppe22
             else
             {
                 _armour = 0;
-                _health = (_health - tmp > 0) ? (_health - tmp) : 0;
+                _health = (_health - tmp > 0) ? (_health - tmp) : 0; 
             }
 
         }
@@ -76,7 +77,7 @@ namespace Gruppe22
             this._damage = damage;
         }
 
-        #endregion
+#endregion
 
     }
 }

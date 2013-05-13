@@ -2,7 +2,11 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Xml;
+<<<<<<< HEAD
+using System.Xml.Serialization;
 using Microsoft.Xna.Framework;
+=======
+>>>>>>> origin/xml_map_savegame
 
 namespace Gruppe22
 {
@@ -218,6 +222,7 @@ namespace Gruppe22
             }
         }
 
+<<<<<<< HEAD
         /// <summary>
         /// Add an actor to a tile
         /// </summary>
@@ -369,6 +374,11 @@ namespace Gruppe22
                     break;
             }
             return false;
+=======
+        public void HandleEvent(UIElement sender, Events eventID, int data)
+        {
+            _parent.HandleEvent(sender, eventID, data);
+>>>>>>> origin/xml_map_savegame
         }
 
         /// <summary>
@@ -435,18 +445,13 @@ namespace Gruppe22
 
         }
 
-        public virtual void HandleEvent(UIElement sender, Events eventID, params object[] data)
-        {
-            ((IHandleEvent)_parent).HandleEvent(sender, eventID, data);
-        }
-
         public void AddPlayer(Coords pos)
         {
             if (pos == null)
             {
                 pos = new Coords(1, 1);
             }
-            Player player = new Player("Klaus", 20, 20, 20);
+            Player player = new Player();
             ActorTile playerTile = new ActorTile(_tiles[pos.y][pos.x], player);
             player.tile = playerTile;
             _tiles[pos.y][pos.x].Add(playerTile);
@@ -485,7 +490,7 @@ namespace Gruppe22
                 }
                 if ((pos.x >= 0) && (pos.x < _width) && (pos.y < _height) && (pos.y >= 0))
                 {
-                    Enemy enemy = new Enemy(50, 90, 20);
+                    Enemy enemy = new Enemy();
                     ActorTile enemyTile = new ActorTile(_tiles[pos.y][pos.x], enemy);
                     enemy.tile = enemyTile;
                     _tiles[pos.y][pos.x].Add(enemyTile);
@@ -529,7 +534,7 @@ namespace Gruppe22
                 }
                 if ((pos.x >= 0) && (pos.x < _width) && (pos.y < _height) && (pos.y >= 0))
                 {
-                    TeleportTile teleportTile = new TeleportTile("Raum2", pos);
+                    TeleportTile teleportTile = new TeleportTile(_tiles[pos.y][pos.x]);
                     _tiles[pos.y][pos.x].Add(teleportTile);
                     _updateTiles.Add(pos);
                 }
@@ -691,7 +696,11 @@ namespace Gruppe22
         /// </summary>
         /// <param name="filename">The filename to read from</param>
         /// <returns>true if read was successful</returns>
+<<<<<<< HEAD
+        public bool Load(string filename, Coords playerPos)
+=======
         public void Load(string filename)
+>>>>>>> origin/xml_map_savegame
         {
             XmlReader xmlr = XmlReader.Create(filename);
             xmlr.Read();//xml
@@ -718,7 +727,12 @@ namespace Gruppe22
                     }
                 }
             }
+<<<<<<< HEAD
+            return result;
+            AddPlayer(playerPos);
+=======
             xmlr.Close();
+>>>>>>> origin/xml_map_savegame
         }
 
         public void DebugMap()
@@ -743,6 +757,37 @@ namespace Gruppe22
             }
         }
 
+<<<<<<< HEAD
+        public bool FromString(string input)
+        {
+            int col = 0, row = 0;
+            foreach (char c in input)
+            {
+                switch (c)
+                {
+                    case '#':
+                        if ((col < _width) && (row < height))
+                            _tiles[row][col].Add(TileType.Wall);
+                        col += 1;
+                        break;
+                    case '\n':
+                        col = 0;
+                        row += 1;
+                        break;
+                    default:
+                        if ((col < _width) && (row < height))
+                            _tiles[row][col].Remove(TileType.Wall);
+                        col += 1;
+
+                        break;
+                }
+
+            }
+            return true;
+        }
+
+=======
+>>>>>>> origin/xml_map_savegame
         /// <summary>
         /// Write the current map to a file
         /// </summary>
@@ -761,9 +806,27 @@ namespace Gruppe22
                 xmlw.WriteStartElement("Row");
                 foreach (Tile tile in ltiles)
                 {
+<<<<<<< HEAD
+                    target.WriteStartElement("row");
+                    foreach (Tile tile in row)
+                    {
+                        XmlSerializer x = new XmlSerializer(typeof(Map));
+                        result = tile.Save(target, x);
+                        if (result == false) break;
+                    }
+                    target.WriteEndElement();
+                    if (result == false) break;
+                };
+                target.WriteEndDocument();
+            }
+            finally
+            {
+                target.Close();
+=======
                     tile.Save(xmlw);
                 }
                 xmlw.WriteEndElement();
+>>>>>>> origin/xml_map_savegame
             }
             xmlw.WriteEndElement();
             xmlw.WriteEndDocument();
@@ -822,7 +885,12 @@ namespace Gruppe22
         public Map(string filename = "", Coords playerPos = null)
             : this()
         {
+<<<<<<< HEAD
+            Load(filename, playerPos);
+=======
             _blankTile = new Tile();
+            Load(filename);
+>>>>>>> origin/xml_map_savegame
         }
 
 

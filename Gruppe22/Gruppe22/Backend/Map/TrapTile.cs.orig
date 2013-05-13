@@ -6,48 +6,47 @@ using System.Xml;
 
 namespace Gruppe22
 {
-    public class ItemTile : Tile
+    public class TrapTile : Tile
     {
-        Item _item = null;
+        #region Private Fields
+        /// <summary>
+        /// the damage a trap deals to the player
+        /// </summary>
+        private int _damage;
+        #endregion
 
-        public Item item
-        {
-            get { return _item; }
-        }
-        public ItemType itemType
+        #region Public Fields
+        public int damage
         {
             get
             {
-                return _item.itemType;
+                return _damage;
+            }
+            set
+            {
+                _damage = value;
             }
         }
+        #endregion
 
-        public ItemTile(object parent, Item item)
+<<<<<<< HEAD
+        public TrapTile(object parent)
             : base(parent)
         {
-            _item = item;
-        }
 
-
+=======
         public override void Save(XmlWriter xmlw)
         {
-            xmlw.WriteStartElement("ItemTile");
+            xmlw.WriteStartElement("TrapTile");
             xmlw.WriteAttributeString("canEnter", Convert.ToString(canEnter));
             xmlw.WriteAttributeString("connected", Convert.ToString(connected));
             xmlw.WriteAttributeString("connection", Convert.ToString(connection));
-            foreach (Tile tile in _overlay)
+            foreach (Tile tile in overlay)
             {
                 tile.Save(xmlw);
             }
             xmlw.WriteEndElement();
-            _parent = parent;
-        }
-
-        public ItemTile(object parent)
-            : base(parent, null, true)
-        {
-            _parent = parent;
-
+>>>>>>> origin/xml_map_savegame
         }
     }
 }

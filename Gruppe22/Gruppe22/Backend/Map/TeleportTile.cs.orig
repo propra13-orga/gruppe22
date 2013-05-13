@@ -46,9 +46,17 @@ namespace Gruppe22
         }
         #endregion
 
+<<<<<<< HEAD
+
+        public TeleportTile(object parent)
+            : base(parent)
+        {
+
+        }
+=======
 #region Public-Methods
 
-        public TeleportTile(string nextRoom, Coords nextPlayerPos)
+        public TeleportTile(string nextRoom, Vector2 nextPlayerPos)
             : base()
         {
             this._nextRoom = nextRoom;
@@ -63,12 +71,13 @@ namespace Gruppe22
             xmlw.WriteAttributeString("connection", Convert.ToString(connection));
             xmlw.WriteAttributeString("nextRoom", _nextRoom);
             xmlw.WriteAttributeString("nextPlayerPos", _nextPlayerPos.ToString());
-            foreach (Tile tile in _overlay)
+            foreach (Tile tile in overlay)
             {
                 tile.Save(xmlw);
             }
             xmlw.WriteEndElement();
         }
 #endregion
+>>>>>>> origin/xml_map_savegame
     }
 }

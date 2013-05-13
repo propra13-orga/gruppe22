@@ -20,11 +20,12 @@ namespace Gruppe22
 {
     public enum Events
     {
-        StartGame = 1,
-        EndGame = 2,
-        HideNotification = 3,
-        LoadMap = 4,
-        MoveActor = 5
+        StartGame = 0,
+        EndGame,
+        HideNotification,
+        LoadMap,
+        MoveActor,
+        ChangeMap
     }
     /// <summary>
     /// This is the main type for your game
@@ -186,7 +187,7 @@ namespace Gruppe22
                         if (_map1[_map1.actors[id].tile.coords.x, _map1.actors[id].tile.coords.y].hasEnemy || _map1[_map1.actors[id].tile.coords.x, _map1.actors[id].tile.coords.y].hasTrap)
                         {
                             Exit();
-                        }  
+                        }
                     }
                     break;
             }

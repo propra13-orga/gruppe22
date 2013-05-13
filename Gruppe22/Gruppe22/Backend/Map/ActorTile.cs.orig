@@ -24,19 +24,7 @@ namespace Gruppe22
                 return _actor.actorType;
             }
         }
-
-        override public void Save(XmlWriter xmlw)
-        {
-            xmlw.WriteStartElement("ActorTile");
-            xmlw.WriteAttributeString("canEnter", Convert.ToString(canEnter));
-            xmlw.WriteAttributeString("connected", Convert.ToString(connected));
-            xmlw.WriteAttributeString("connection", Convert.ToString(connection));
-            foreach (Tile tile in _overlay)
-            {
-                tile.Save(xmlw);
-            }
-            xmlw.WriteEndElement();
-        }
+<<<<<<< HEAD
         #endregion
 
         #region Constructor
@@ -58,5 +46,20 @@ namespace Gruppe22
         }
         #endregion
 
+=======
+
+        override public void Save(XmlWriter xmlw)
+        {
+            xmlw.WriteStartElement("ActorTile");
+            xmlw.WriteAttributeString("canEnter", Convert.ToString(canEnter));
+            xmlw.WriteAttributeString("connected", Convert.ToString(connected));
+            xmlw.WriteAttributeString("connection", Convert.ToString(connection));
+            foreach (Tile tile in overlay)
+            {
+                tile.Save(xmlw);
+            }
+            xmlw.WriteEndElement();
+        }
+>>>>>>> origin/xml_map_savegame
     }
 }

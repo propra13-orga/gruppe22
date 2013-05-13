@@ -162,6 +162,7 @@
     </Content>
     <Content Include="Content\wall1.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="Content\LEGAL.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

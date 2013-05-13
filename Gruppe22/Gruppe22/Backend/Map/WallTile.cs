@@ -19,7 +19,7 @@ namespace Gruppe22
             xmlw.WriteAttributeString("canEnter", Convert.ToString(canEnter));
             xmlw.WriteAttributeString("connected", Convert.ToString(connected));
             xmlw.WriteAttributeString("connection", Convert.ToString(connection));
-            foreach (Tile tile in overlay)
+            foreach (Tile tile in _overlay)
             {
                 tile.Save(xmlw);
             }
