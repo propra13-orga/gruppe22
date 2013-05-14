@@ -194,9 +194,9 @@ namespace Gruppe22
                     _spriteBatch.Draw(_background, new Rectangle(_displayRect.X + 4, _displayRect.Y + 4, (_value * (_displayRect.Width - 8)) / total + _pixels, _displayRect.Height - 8), new Rectangle(39, 6, 1, 1), _color);
 
                     string state = _value.ToString() + "/" + _total.ToString();
-                    int width = (int)_font.MeasureString(state).Y;
-                    _spriteBatch.DrawString(_font, state, new Vector2(_displayRect.X + (_displayRect.Width - width) / 2 - 4, _displayRect.Y + (_displayRect.Height - _fontHeight) / 2 + 2), Color.Black);
-                    _spriteBatch.DrawString(_font, state, new Vector2(_displayRect.X + (_displayRect.Width - width) / 2 - 2, _displayRect.Y + (_displayRect.Height - _fontHeight) / 2), Color.White);
+                    int width = (int)_font.MeasureString(state).X;
+                    _spriteBatch.DrawString(_font, state, new Vector2(_displayRect.X + (_displayRect.Width - width) / 2 -2, _displayRect.Y + (_displayRect.Height - _fontHeight) / 2 + 2), Color.Black);
+                    _spriteBatch.DrawString(_font, state, new Vector2(_displayRect.X + (_displayRect.Width - width) / 2 , _displayRect.Y + (_displayRect.Height - _fontHeight) / 2), Color.White);
                     break;
                 case ProgressStyle.Vertical:
                     _spriteBatch.Draw(_background, new Rectangle(_displayRect.X + 4, _displayRect.Y + 4 + ((_total - _value) * (_displayRect.Height - 8)) / total + _pixels, _displayRect.Width - 8, (_value * (_displayRect.Height - 8)) / total + _pixels), new Rectangle(39, 6, 1, 1), _color);

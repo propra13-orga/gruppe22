@@ -70,12 +70,23 @@ namespace Gruppe22
             switch (eventID)
             {
                 case Events.MoveActor:
-                    int id = (int)data[0];
-                    Coords coords = (Coords)data[1];
-                    _actors[id].target = _map2screen(coords);
+                    {
+                        int id = (int)data[0];
+                        Coords coords = (Coords)data[1];
+                        _actors[id].target = _map2screen(coords);
+                    };
                     break;
+
+                case Events.AnimateActor:
+                    {
+                        int id = (int)data[0];
+
+                        Activity act = (Activity)data[1];
+                        _actors[id].activity = act;
+                    }
+                    break;
+
             }
-            base.HandleEvent(sender, eventID, data);
 
         }
 
@@ -663,7 +674,7 @@ namespace Gruppe22
                     foreach (ActorView actor in _actors)
                     {
                         Coords apos = _screen2map(actor.position.x, actor.position.y);
-                        if (((int)apos.x == x ) && ((int)apos.y == y + 1))
+                        if (((int)apos.x == x) && ((int)apos.y == y + 1))
                         {
                             _spriteBatch.Draw(actor.animationTexture,
                                 new Rectangle(actor.position.x + actor.offsetX + 25, actor.position.y + actor.offsetY - 25,
@@ -1006,7 +1017,7 @@ namespace Gruppe22
             foreach (Coords actorPos in _map.actorPositions)
             {
 
-                if (_actors.Count > 1) _actors.Add(new ActorView(_content, _map2screen(actorPos), "Content\\skeleton.xml"));
+                if (_actors.Count > 0) _actors.Add(new ActorView(_content, _map2screen(actorPos), "Content\\skeleton.xml"));
                 else _actors.Add(new ActorView(_content, _map2screen(actorPos), "Content\\player.xml"));
             }
 

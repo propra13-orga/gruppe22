@@ -67,6 +67,30 @@ namespace Gruppe22
             }
         }
 
+        public List<Actor> actors
+        {
+            get
+            {
+                List<Actor> result = new List<Actor>();
+                foreach (Tile tile in _overlay)
+                {
+                    if (tile is ActorTile) result.Add(((ActorTile)tile).actor);
+                }
+                return result;
+            }
+        }
+        
+        public Actor firstActor
+        {
+            get
+            {
+                foreach (Tile tile in _overlay)
+                {
+                    if (tile is ActorTile) return ((ActorTile)tile).actor;
+                }
+                return null;
+            }
+        }
         public Coords coords
         {
             get

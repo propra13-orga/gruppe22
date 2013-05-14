@@ -98,10 +98,9 @@ namespace Gruppe22
                 List<Coords> result = new List<Coords>();
                 foreach (Coords coords in _updateTiles)
                 {
-                    if (_tiles[coords.y][coords.x] is ActorTile)
+                    if (_tiles[coords.y][coords.x].hasEnemy || _tiles[coords.y][coords.x].hasPlayer)
                     {
-                        ActorTile t = _tiles[coords.y][coords.x] as ActorTile;
-                        if (t.actorType == ActorType.Player)
+                        if (_tiles[coords.y][coords.x].hasPlayer)
                         {
                             result.Insert(0, coords);
                         }
@@ -111,7 +110,7 @@ namespace Gruppe22
                         };
                     }
                 }
-                return _updateTiles;
+                return result;
             }
         }
 
@@ -307,6 +306,20 @@ namespace Gruppe22
             }
             return start;
         }
+
+        public int firstActorID(int x,int y){
+            int result = 0, i=0;
+            foreach (Coords c in _updateTiles)
+            {
+                if ((_tiles[c.y][c.x].hasPlayer) && (result != 0)) result += 1;
+                if ((_tiles[c.y][c.x].hasPlayer) || (_tiles[c.y][c.x].hasEnemy)) i += 1;
+                if ((c.x == x) && (c.y == y))
+                {
+                    result = i;
+                }
+            }
+            return result;
+        }
         /// <summary>
         /// Check whether it is possible to move from a certain place on a map in a certain direction
         /// </summary>
@@ -445,7 +458,7 @@ namespace Gruppe22
             {
                 pos = new Coords(1, 1);
             }
-            Player player = new Player("Klaus", 20, 20, 20);
+            Player player = new Player("Klaus", 100, 20, 20);
             ActorTile playerTile = new ActorTile(_tiles[pos.y][pos.x], player);
             player.tile = playerTile;
             _tiles[pos.y][pos.x].Add(playerTile);
@@ -702,7 +715,7 @@ namespace Gruppe22
             {
                 for (int i = 0; i < _actors.Count; ++i)
                 {
-                    if (_actors[i].actorType != ActorType.Player)
+                    if (_actors[i] is Player)
                     {
                         _actors.RemoveAt(i);
                         i -= 1;
@@ -715,7 +728,7 @@ namespace Gruppe22
             }
             else
             {
-                Player playerA = new Player("Klaus", 20, 20, 20);
+                Player playerA = new Player("Klaus", 100, 20, 20);
                 _actors.Add(playerA);
             }
             _tiles.Clear();
@@ -748,6 +761,17 @@ namespace Gruppe22
                                     {
                                         case "WallTile":
                                             tile.Add(TileType.Wall);
+                                            break;
+                                        case "ActorTile":
+                                            if ((j != 1) || (r != 1))
+                                            {
+                                                Enemy enemy = (new Enemy(40, 0, 20));
+                                                ActorTile tile2 = new ActorTile(tile, enemy);
+                                                enemy.tile = tile2;
+                                                tile.Add(tile2);
+                                                _actors.Add(enemy);
+                                                _updateTiles.Add(tile.coords);
+                                            }
                                             break;
                                     }
                                     xmlr.Read();
@@ -841,7 +865,7 @@ namespace Gruppe22
         /// </summary>
         /// <param name="width">The width of the map</param>
         /// <param name="height">The height of the map</param>
-        public Map(object parent=null,int width = 10, int height = 10, bool generate = false, Coords playerPos = null)
+        public Map(object parent = null, int width = 10, int height = 10, bool generate = false, Coords playerPos = null)
             : this()
         {
             _parent = parent;
@@ -872,7 +896,7 @@ namespace Gruppe22
         /// Load a map from a file
         /// </summary>
         /// <param name="filename"></param>
-        public Map(object parent=null,string filename = "", Coords playerPos = null)
+        public Map(object parent = null, string filename = "", Coords playerPos = null)
             : this()
         {
             _parent = parent;

@@ -40,7 +40,7 @@ namespace Gruppe22
         public int armour { get { return _armour; } }
         public int damage { get { return _damage; } }
 
-        public bool IsDead() { return _health == 0 ? true : false; }
+        public bool IsDead() { return _health <= 0 ? true : false; }
 
         public void SetDamage(Actor actor) { SetDamage(actor.damage); }
         /// <summary>

@@ -27,7 +27,8 @@ namespace Gruppe22
         ChangeMap,
         NewMap,
         ResetGame,
-        About
+        About,
+        AnimateActor
     }
 
     public enum GameStatus
@@ -97,7 +98,7 @@ namespace Gruppe22
             {
                 GenerateMaps();
             }
-            _map1 = new Map(this,"map1.xml", null); // TEST!!!
+            _map1 = new Map(this, "map1.xml", null); // TEST!!!
             _interfaceElements = new List<UIElement>();
             base.Initialize();
         }
@@ -129,6 +130,7 @@ namespace Gruppe22
             _interfaceElements.Add(new Mainmap(this, _spriteBatch, Content, new Rectangle(20, 20, _graphics.GraphicsDevice.Viewport.Width - 260, _graphics.GraphicsDevice.Viewport.Height - 160), _map1));
             _interfaceElements.Add(new Statusbox(this, _spriteBatch, Content, new Rectangle(20, _graphics.GraphicsDevice.Viewport.Height - 120, _graphics.GraphicsDevice.Viewport.Width - 260, 100)));
             (_interfaceElements[2] as Statusbox).AddLine("Welcome to this highly innovative Dungeon Crawler!\nYou can scroll in this status window.\nUse A-S-D-W to move your character.\n Use Arrow keys (or drag mouse) to scroll map or minimap\n Press ESC to display Game Menu.");
+            _interfaceElements.Add(new ProgressBar(this, _spriteBatch, Content, new Rectangle(_graphics.GraphicsDevice.Viewport.Width - 230, 240, 210, 50), ProgressStyle.Precise, 100, 100));
 
 
             // _backMusic = Content.Load<Song>("Video Dungeon Crawl.wav"); // Todo: *.mp3
@@ -260,29 +262,83 @@ namespace Gruppe22
                     _status = GameStatus.Paused;
                     HandleEvent(null, Events.ContinueGame);
                     break;
+
                 case Events.MoveActor:
                     int id = (int)data[0];
                     if (!((Mainmap)_interfaceElements[1]).IsMoving(id))
                     {
                         Direction dir = (Direction)data[1];
-                        if (_map1.CanMove(_map1.actors[id].tile.coords, dir))
+                        Coords target = _map1.DirectionTile(_map1.actors[id].tile.coords, dir);
+                        if ((_map1[target.x, target.y].hasEnemy) || (_map1[target.x, target.y].hasPlayer))
                         {
-                            _map1.MoveActor(_map1.actors[id], dir);
-                            ((Mainmap)_interfaceElements[1]).HandleEvent(null, Events.MoveActor, id, _map1.actors[id].tile.coords);
+
+                            // Aktuelle Figur attackiert
+                            // Spieler verletzt
+                            // oder tot
+                            _map1[target.x, target.y].firstActor.SetDamage(_map1.actors[id]);
+                            UpdateHealth();
+                            if (_map1[target.x, target.y].firstActor.IsDead())
+                            {
+                                ((Mainmap)_interfaceElements[1]).HandleEvent(null, Events.AnimateActor, _map1.firstActorID(target.x, target.y), Activity.Die, false);
+                                if (_map1.firstActorID(target.x, target.y) == 0)
+                                {
+                                    ShowEndGame();
+                                }
+                            }
+                            else
+                            {
+                                ((Mainmap)_interfaceElements[1]).HandleEvent(null, Events.AnimateActor, _map1.firstActorID(target.x, target.y), Activity.Hit, false);
+                            }
+                            ((Mainmap)_interfaceElements[1]).HandleEvent(null, Events.AnimateActor, id, Activity.Attack, false, dir, true);
+
                         }
-                        if (_map1[_map1.actors[id].tile.coords.x, _map1.actors[id].tile.coords.y].hasEnemy || _map1[_map1.actors[id].tile.coords.x, _map1.actors[id].tile.coords.y].hasTrap)
+                        else
                         {
-                            ShowEndGame();
-                        }
-                        if (_map1[_map1.actors[id].tile.coords.x, _map1.actors[id].tile.coords.y].hasTarget)
-                        {
-                            ShowEndGame("You have successfully found the hidden treasure. Can you do it again?", "Congratulations!");
+                            if (_map1.CanMove(_map1.actors[id].tile.coords, dir))
+                            {
+                                _map1.MoveActor(_map1.actors[id], dir);
+                                ((Mainmap)_interfaceElements[1]).HandleEvent(null, Events.MoveActor, id, _map1.actors[id].tile.coords);
+
+                                if (_map1[_map1.actors[id].tile.coords.x, _map1.actors[id].tile.coords.y].hasTrap)
+                                {
+                                    _map1.actors[id].SetDamage(20);
+                                    UpdateHealth();
+                                    if (_map1.actors[id].IsDead())
+                                    {
+                                        ((Mainmap)_interfaceElements[1]).HandleEvent(null, Events.AnimateActor, id, Activity.Die, true);
+                                        if (id == 0)
+                                        {
+                                            ShowEndGame();
+                                        }
+                                    }
+                                    else
+                                    {
+                                        ((Mainmap)_interfaceElements[1]).HandleEvent(null, Events.AnimateActor, id, Activity.Hit, true);
+                                    }
+                                }
+                                else
+                                {
+                                    if ((_map1[_map1.actors[id].tile.coords.x, _map1.actors[id].tile.coords.y].hasTarget) && (id == 0))
+                                    {
+                                        ((Mainmap)_interfaceElements[1]).HandleEvent(null, Events.AnimateActor, id, Activity.Talk, true);
+                                        ShowEndGame("You have successfully found the hidden treasure. Can you do it again?", "Congratulations!");
+                                    }
+                                }
+                            }
                         }
                     }
                     break;
             }
         }
 
+
+        public void UpdateHealth()
+        {
+            foreach (UIElement element in _interfaceElements)
+            {
+                if (element is ProgressBar) { ((ProgressBar)element).value = _map1.actors[0].health; return; }
+            }
+        }
         /// <summary>
         /// Allows the game to run logic such as updating the world,
         /// checking for collisions, gathering input, and playing audio.

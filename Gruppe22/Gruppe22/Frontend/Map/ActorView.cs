@@ -79,7 +79,8 @@ namespace Gruppe22
             }
             set
             {
-                _activity = activity;
+                _activity = value;
+                Update(null);
             }
         }
 
@@ -323,6 +324,11 @@ namespace Gruppe22
                     }
                 }
                 _textures[(int)_activity * 8 + (int)_direction].NextAnimation();
+            }
+            if ((_activity != Activity.Walk) && (_activity != Activity.Run))
+            { 
+                if(gametime.ElapsedGameTime.Milliseconds%100<50)
+                if ((_textures[(int)_activity * 8 + (int)_direction].NextAnimation())&&(_activity != Activity.Die)) _activity = Activity.Walk;
             }
 
         }

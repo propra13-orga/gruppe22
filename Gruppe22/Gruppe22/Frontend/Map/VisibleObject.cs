@@ -362,16 +362,18 @@ namespace Gruppe22
         /// <summary>
         /// Loop animation to next frame
         /// </summary>
-        public void NextAnimation()
+        public bool NextAnimation()
         {
 
             if (_currentPhase + 2 > _animations.Count)
             {
                 if (_loop) _currentPhase = 0;
+                return true;
             }
             else
             {
                 _currentPhase += 1;
+                return false;
             }
         }
 
