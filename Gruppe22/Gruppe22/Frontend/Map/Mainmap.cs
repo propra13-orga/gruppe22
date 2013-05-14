@@ -1013,7 +1013,48 @@ namespace Gruppe22
             _environment.Add(new TileSet(_content, 128, 192));
             _environment[4].Save("Content\\chest.xml");
             _environment[4].Load("Content\\chest.xml");
+            
+            ActorView skel=new ActorView(content,new Coords(0,0),"");
+            skel.Add(Activity.Walk, Direction.Right, "sWalk", new Coords(0, 0), 8, 1);
+            skel.Add(Activity.Walk, Direction.Up, "sWalk", new Coords(0, 96), 8, 1);
+            skel.Add(Activity.Walk, Direction.UpRight, "sWalk", new Coords(0, 192), 8, 1);
+            skel.Add(Activity.Walk, Direction.UpLeft, "sWalk", new Coords(0, 288), 8, 1);
+            skel.Add(Activity.Walk, Direction.Down, "sWalk", new Coords(0, 384), 8, 1);
+            skel.Add(Activity.Walk, Direction.DownRight, "sWalk", new Coords(0, 480), 8, 1);
+            skel.Add(Activity.Walk, Direction.DownLeft, "sWalk", new Coords(0, 576), 8, 1);
+            skel.Add(Activity.Walk, Direction.Left, "sWalk", new Coords(0, 672), 8, 1);
 
+
+            skel.Add(Activity.Attack, Direction.Right, "sattack", new Coords(0, 0), 8, 1);
+            skel.Add(Activity.Attack, Direction.Up, "sattack", new Coords(0, 96), 8, 1);
+            skel.Add(Activity.Attack, Direction.UpRight, "sattack", new Coords(0, 192), 8, 1);
+            skel.Add(Activity.Attack, Direction.UpLeft, "sattack", new Coords(0, 288), 8, 1);
+            skel.Add(Activity.Attack, Direction.Down, "sattack", new Coords(0, 384), 8, 1);
+            skel.Add(Activity.Attack, Direction.DownRight, "sattack", new Coords(0, 480), 8, 1);
+            skel.Add(Activity.Attack, Direction.DownLeft, "sattack", new Coords(0, 576), 8, 1);
+            skel.Add(Activity.Attack, Direction.Left, "sattack", new Coords(0, 672), 8, 1);
+
+            skel.Add(Activity.Hit, Direction.Right, "shit", new Coords(0, 0), 7, 1);
+            skel.Add(Activity.Hit, Direction.Up, "shit", new Coords(0, 96), 7, 1);
+            skel.Add(Activity.Hit, Direction.UpRight, "shit", new Coords(0, 192), 7, 1);
+            skel.Add(Activity.Hit, Direction.UpLeft, "shit", new Coords(0, 288), 7, 1);
+            skel.Add(Activity.Hit, Direction.Down, "shit", new Coords(0, 384), 7, 1);
+            skel.Add(Activity.Hit, Direction.DownRight, "shit", new Coords(0, 480), 7, 1);
+            skel.Add(Activity.Hit, Direction.DownLeft, "shit", new Coords(0, 576), 7, 1);
+            skel.Add(Activity.Hit, Direction.Left, "shit", new Coords(0, 672), 7, 1);
+
+            skel.Add(Activity.Die, Direction.Right, "skill", new Coords(0, 0), 9, 1);
+            skel.Add(Activity.Die, Direction.Up, "skill", new Coords(0, 96), 9, 1);
+            skel.Add(Activity.Die, Direction.UpRight, "skill", new Coords(0, 192), 9, 1);
+            skel.Add(Activity.Die, Direction.UpLeft, "skill", new Coords(0, 288), 9, 1);
+            skel.Add(Activity.Die, Direction.Down, "skill", new Coords(0, 384), 9, 1);
+            skel.Add(Activity.Die, Direction.DownRight, "skill", new Coords(0, 480), 9, 1);
+            skel.Add(Activity.Die, Direction.DownLeft, "skill", new Coords(0, 576), 9, 1);
+            skel.Add(Activity.Die, Direction.Left, "skill", new Coords(0, 672), 9, 1);
+
+
+
+            skel.Save("Content\\skeleton.xml");
             // 3. Moving entities (player, NPCs, enemies)
             _actors = new List<ActorView>();
             foreach (Coords actorPos in _map.actorPositions)

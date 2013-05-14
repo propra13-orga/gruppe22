@@ -96,19 +96,9 @@ namespace Gruppe22
             get
             {
                 List<Coords> result = new List<Coords>();
-                foreach (Coords coords in _updateTiles)
+                foreach (Actor actor in _actors)
                 {
-                    if (_tiles[coords.y][coords.x].hasEnemy || _tiles[coords.y][coords.x].hasPlayer)
-                    {
-                        if (_tiles[coords.y][coords.x].hasPlayer)
-                        {
-                            result.Insert(0, coords);
-                        }
-                        else
-                        {
-                            result.Add(coords);
-                        };
-                    }
+                    result.Add(actor.tile.coords);
                 }
                 return result;
             }
@@ -305,6 +295,11 @@ namespace Gruppe22
                     return new Coords(start.x - 1, start.y - 1);
             }
             return start;
+        }
+
+        public void RemoveActor(int x, int y)
+        {
+            _tiles[y][x].Remove(TileType.Enemy);
         }
 
         public int firstActorID(int x,int y){

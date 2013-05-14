@@ -80,7 +80,7 @@ namespace Gruppe22
             }
             set
             {
-                
+
                 _activity = value;
             }
         }
@@ -177,6 +177,7 @@ namespace Gruppe22
                 Direction dir = (Direction)Enum.Parse(typeof(Direction), reader.GetAttribute("Direction").ToString());
 
                 _textures[(int)acti * 8 + (int)dir].ReadXml(reader);
+                _textures[(int)acti * 8 + (int)dir].loop = ((acti == Activity.Walk) || (acti == Activity.Run));
             }
             reader.ReadEndElement();
 
@@ -341,11 +342,13 @@ namespace Gruppe22
             }
             if ((_activity != Activity.Walk) && (_activity != Activity.Run))
             {
-                if ((gametime == null) || (count > 7)) { 
+                if ((gametime == null) || (count > 10))
+                {
                     if ((_textures[(int)_activity * 8 + (int)_direction].NextAnimation()) && (_activity != Activity.Die)) _activity = Activity.Walk;
                     count = 0;
                 }
-                count += 1;
+                if (gametime.ElapsedGameTime.Milliseconds % 100 > 10)
+                    count += 1;
 
             }
         }

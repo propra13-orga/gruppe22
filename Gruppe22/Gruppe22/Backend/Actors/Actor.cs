@@ -18,7 +18,7 @@ namespace Gruppe22
         protected  ActorType _actorType;
 
         //Lebenspunkte, Rüstung, Schaden/Angriffsstärke
-        protected int _health, _armour, _damage;
+        protected int _health=50, _armour=40, _damage=20;
 
         public ActorTile tile
         {
@@ -56,7 +56,7 @@ namespace Gruppe22
             else
             {
                 _armour = 0;
-                _health = (_health - tmp > 0) ? (_health - tmp) : 0;
+                _health = (_health + tmp > 0) ? (_health + tmp) : 0;
             }
 
         }
