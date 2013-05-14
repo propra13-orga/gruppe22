@@ -12,6 +12,7 @@ namespace Gruppe22
         #region Private Fields
 
         private float _zoom = (float)1.0;
+        private float _rotate = (float)0.0;
         private Matrix _transform = Matrix.Identity;
         private Vector2 _position = Vector2.Zero;
         private Vector2 _center = Vector2.Zero;
@@ -32,6 +33,14 @@ namespace Gruppe22
             }
         }
 
+        public float rotate
+        {
+            get { return _rotate; }
+            set
+            {
+                _rotate = value;
+            }
+        }
         /// <summary>
         /// Get or set the camera's position
         /// </summary>
@@ -50,7 +59,7 @@ namespace Gruppe22
         {
             get
             {
-                return Matrix.CreateTranslation(new Vector3(_position, 0)) * Matrix.CreateScale(_zoom) * Matrix.CreateTranslation(new Vector3(_center, 0));
+                return Matrix.CreateTranslation(new Vector3(_position, 0)) * Matrix.CreateRotationZ(_rotate) * Matrix.CreateScale(_zoom) * Matrix.CreateTranslation(new Vector3(_center, 0));
 
             }
         }

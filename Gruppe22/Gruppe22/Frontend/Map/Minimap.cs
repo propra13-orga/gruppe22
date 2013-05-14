@@ -55,6 +55,8 @@ namespace Gruppe22
                             if (_map[x, y].hasPlayer)
                             {
                                 _spriteBatch.Draw(_mapIcon, new Rectangle(_displayRect.Left + x * 16, _displayRect.Top + y * 16, 16, 16), new Rectangle(48, 16, 16, 16), Color.White);
+                                _camera.position = new Vector2(-(_displayRect.Left + x * 16)-8, -(_displayRect.Top + y * 16)-8);
+
                             }
                             else
                             {
@@ -94,6 +96,24 @@ namespace Gruppe22
             _spriteBatch.GraphicsDevice.RasterizerState.ScissorTestEnable = false;
             rstate.Dispose();
         }
+        public new float Zoom
+        {
+            get
+            {
+                return _camera.zoom;
+            }
+            set
+            {
+                if ((value > 0.3f) && (value < 1.5f))
+                    _camera.zoom = value;
+            }
+        }
+
+        public override void ScrollWheel(int Difference)
+        {
+            float diff=(float)Difference/10;
+            Zoom -=diff;
+        }
         #endregion
 
         /// <summary>
@@ -109,7 +129,9 @@ namespace Gruppe22
         {
             _map = map;
             _mapIcon = _content.Load<Texture2D>("Minimap");
-            _camera.position = new Vector2(-region.Left-region.Width/2, -region.Top-region.Height/2);
+            _camera.rotate = -45.0f;
+            Zoom = 0.6f;
+
         }
     }
 }
