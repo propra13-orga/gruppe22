@@ -26,6 +26,7 @@ namespace Gruppe22
         private Activity _activity = Activity.Walk;
         private Direction _direction = Direction.Down;
         private int _speed = 5;
+        int count = 0;
         #endregion
 
         #region Public fields
@@ -79,8 +80,21 @@ namespace Gruppe22
             }
             set
             {
+                
                 _activity = value;
-                Update(null);
+            }
+        }
+
+        public Direction direction
+        {
+            get
+            {
+                return _direction;
+            }
+            set
+            {
+
+                _direction = value;
             }
         }
 
@@ -326,11 +340,14 @@ namespace Gruppe22
                 _textures[(int)_activity * 8 + (int)_direction].NextAnimation();
             }
             if ((_activity != Activity.Walk) && (_activity != Activity.Run))
-            { 
-                if(gametime.ElapsedGameTime.Milliseconds%100<50)
-                if ((_textures[(int)_activity * 8 + (int)_direction].NextAnimation())&&(_activity != Activity.Die)) _activity = Activity.Walk;
-            }
+            {
+                if ((gametime == null) || (count > 7)) { 
+                    if ((_textures[(int)_activity * 8 + (int)_direction].NextAnimation()) && (_activity != Activity.Die)) _activity = Activity.Walk;
+                    count = 0;
+                }
+                count += 1;
 
+            }
         }
         #endregion
 
@@ -350,7 +367,7 @@ namespace Gruppe22
         /// <param name="controllable"></param>
         /// <param name="position"></param>
         /// <param name="sprite"></param>
-        public ActorView(ContentManager content, Coords position, string filename="")
+        public ActorView(ContentManager content, Coords position, string filename = "")
             : base(content, 96, 96, "")
         {
             _position = position;

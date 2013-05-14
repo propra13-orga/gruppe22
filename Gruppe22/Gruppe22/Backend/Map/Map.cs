@@ -318,7 +318,7 @@ namespace Gruppe22
                     result = i;
                 }
             }
-            return result;
+            return result-1;
         }
         /// <summary>
         /// Check whether it is possible to move from a certain place on a map in a certain direction

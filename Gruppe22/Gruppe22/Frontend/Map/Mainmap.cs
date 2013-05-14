@@ -83,6 +83,8 @@ namespace Gruppe22
 
                         Activity act = (Activity)data[1];
                         _actors[id].activity = act;
+                          /*bool waitForAnim = (bool)data[2];*/
+                        if (data.Length > 3) _actors[id].direction = (Direction)data[3];
                     }
                     break;
 
