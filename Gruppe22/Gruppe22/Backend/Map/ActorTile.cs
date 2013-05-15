@@ -10,6 +10,7 @@ namespace Gruppe22
     {
         #region Private Fields
         Actor _actor;
+        int _count = 0;
         #endregion
 
         #region Public Fields
@@ -46,6 +47,20 @@ namespace Gruppe22
             _actor = actor;
         }
 
+        public override void Update(Microsoft.Xna.Framework.GameTime gameTime)
+        {
+            if (!(actor is Player))
+            {
+                Random r = new Random();
+                if (!actor.IsDead() && (_count > 20))
+                {
+                    Direction dir = (Direction)r.Next(4);
+                    ((IHandleEvent)parent).HandleEvent(null, Events.MoveActor, actor.id, dir);
+                    _count = 0;
+                }
+                 _count += 1;
+            }
+        }
         public ActorTile()
             : this(null)
         {

@@ -107,13 +107,13 @@ namespace Gruppe22
         {
             Random r = new Random();
             Map tempMap = null;
-            tempMap = new Map(this, r.Next(4) + 6, r.Next(4) + 6, true);
+            tempMap = new Map(this, 15, 15, true);
             tempMap.Save("map1.xml");
             tempMap.Dispose();
-            tempMap = new Map(this, r.Next(5) + 3, r.Next(2) + 3, true);
+            tempMap = new Map(this, r.Next(5) + 8, r.Next(2) + 8, true);
             tempMap.Save("map2.xml");
             tempMap.Dispose();
-            tempMap = new Map(this, r.Next(10) + 6, r.Next(10) + 6, true);
+            tempMap = new Map(this, r.Next(10) + 8, r.Next(10) + 8, true);
             tempMap.Save("map3.xml");
             tempMap.Dispose();
         }
@@ -226,10 +226,13 @@ namespace Gruppe22
                 case Events.ContinueGame:
                     if (_status != GameStatus.NoRedraw)
                     {
+                        UpdateHealth();
                         _focus.Dispose();
                         _interfaceElements.Remove(_focus);
                         _focus = null;
                         _status = GameStatus.Running;
+                        _lastKey = Keys.None;
+
                     }
                     break;
                 case Events.About:
@@ -244,7 +247,9 @@ namespace Gruppe22
                 case Events.ChangeMap:
                     //TODO: Lade neue Karte
                     _status = GameStatus.NoRedraw;
+
                     _map1.Load((string)data[0], (Coords)data[1]);
+                    ((Mainmap)_interfaceElements[1]).resetActors();
                     _status = GameStatus.Running;
                     break;
                 case Events.NewMap:
@@ -252,6 +257,7 @@ namespace Gruppe22
                     _map1.Dispose();
                     GenerateMaps();
                     _map1.Load("map1.xml", null);
+                    ((Mainmap)_interfaceElements[1]).resetActors();
                     _status = GameStatus.Paused;
                     HandleEvent(null, Events.ContinueGame);
                     break;
@@ -259,8 +265,11 @@ namespace Gruppe22
                     _status = GameStatus.NoRedraw;
                     _map1.Dispose();
                     _map1.Load("map1.xml", null);
+                    ((Mainmap)_interfaceElements[1]).resetActors();
                     _status = GameStatus.Paused;
+
                     HandleEvent(null, Events.ContinueGame);
+
                     break;
 
                 case Events.MoveActor:
@@ -276,7 +285,7 @@ namespace Gruppe22
                             // Spieler verletzt
                             // oder tot
                             _map1[target.x, target.y].firstActor.SetDamage(_map1.actors[id]);
-                            UpdateHealth();
+                            if (_map1[target.x, target.y].firstActor is Player) UpdateHealth();
                             if (_map1[target.x, target.y].firstActor.IsDead())
                             {
                                 ((Mainmap)_interfaceElements[1]).HandleEvent(null, Events.AnimateActor, _map1.firstActorID(target.x, target.y), Activity.Die, false);
@@ -302,7 +311,7 @@ namespace Gruppe22
                                 if (_map1[_map1.actors[id].tile.coords.x, _map1.actors[id].tile.coords.y].hasTrap)
                                 {
                                     _map1.actors[id].SetDamage(20);
-                                    UpdateHealth();
+                                    if (_map1[target.x, target.y].firstActor is Player) UpdateHealth();
                                     if (_map1.actors[id].IsDead())
                                     {
                                         ((Mainmap)_interfaceElements[1]).HandleEvent(null, Events.AnimateActor, id, Activity.Die, true);
@@ -334,10 +343,22 @@ namespace Gruppe22
 
         public void UpdateHealth()
         {
+
             foreach (UIElement element in _interfaceElements)
             {
-                if (element is ProgressBar) { ((ProgressBar)element).value = _map1.actors[0].health; return; }
+                if (element is ProgressBar)
+                {
+                    ((ProgressBar)element).value = _map1.actors[0].health;
+                    if (_map1.actors[0].IsDead())
+                    {
+                        ((Mainmap)_interfaceElements[1]).HandleEvent(null, Events.AnimateActor, _map1.actors[0].id, Activity.Die, false);
+
+                        ShowEndGame();
+                    };
+                    return;
+                }
             }
+
         }
         /// <summary>
         /// Allows the game to run logic such as updating the world,
@@ -346,95 +367,102 @@ namespace Gruppe22
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
+            if (Keyboard.GetState().IsKeyDown(Keys.H))
+            {
+                _map1.actors[0].SetDamage(4);
+                UpdateHealth();
+            }
             /*   ((ProgressBar)
                    ((Window)_interfaceElements[_interfaceElements.Count - 1]).children[((Window)_interfaceElements[_interfaceElements.Count - 1]).children.Count - 1]).value += 1;*/
-            try
+
+
+            for (int i = 0; i < _interfaceElements.Count; ++i)
             {
-
-                foreach (UIElement element in _interfaceElements)
+                UIElement element = _interfaceElements[i];
+                if (!_dragging)
                 {
-
-                    if (!_dragging)
+                    if (element.IsHit(Mouse.GetState().X, Mouse.GetState().Y))
                     {
-                        if (element.IsHit(Mouse.GetState().X, Mouse.GetState().Y))
+                        if ((_focus == null) || (!_focus.holdFocus))
                         {
-                            if ((_focus == null) || (!_focus.holdFocus))
-                            {
-                                _focus = element;
-                            }
+                            _focus = element;
                         }
                     }
+                }
 
-                    if (_status == GameStatus.Running || ((_status == GameStatus.Paused) && (element.ignorePause)))
-                        element.Update(gameTime);
+                if (_status == GameStatus.Running || ((_status == GameStatus.Paused) && (element.ignorePause)))
+                    element.Update(gameTime);
+            }
+
+            if (_status == GameStatus.Running)
+            {
+                _map1.Update(gameTime);
+            }
+
+
+            //            if (Keyboard.GetState().IsKeyDown(Keys.Enter))
+            //                _graphics.ToggleFullScreen();
+
+            if (_focus != null)
+            {
+
+                if (Mouse.GetState().ScrollWheelValue != _mouseWheel)
+                {
+
+                    int Difference = _mouseWheel - Mouse.GetState().ScrollWheelValue;
+                    _mouseWheel = Mouse.GetState().ScrollWheelValue;
+                    _focus.ScrollWheel(Difference / Math.Abs(Difference));
                 }
 
 
-
-
-                //            if (Keyboard.GetState().IsKeyDown(Keys.Enter))
-                //                _graphics.ToggleFullScreen();
-
-                if (_focus != null)
+                if (Mouse.GetState().LeftButton == ButtonState.Pressed)
                 {
-                    if (Mouse.GetState().ScrollWheelValue != _mouseWheel)
+                    if (_mousepos.X != -1)
                     {
-
-                        int Difference = _mouseWheel - Mouse.GetState().ScrollWheelValue;
-                        _mouseWheel = Mouse.GetState().ScrollWheelValue;
-                        _focus.ScrollWheel(Difference / Math.Abs(Difference));
+                        _dragging = true;
+                        _focus.MoveContent(new Vector2(Mouse.GetState().X - _mousepos.X, Mouse.GetState().Y - _mousepos.Y), Math.Abs(gameTime.TotalGameTime.Milliseconds - _lastCheck));
                     }
+                    _mousepos.X = Mouse.GetState().X;
+                    _mousepos.Y = Mouse.GetState().Y;
+                }
+                else
+                {
+                    _mousepos.X = -1;
+                    _mousepos.Y = -1;
+                    _dragging = false;
+                }
+
+                if (Math.Abs(gameTime.TotalGameTime.Milliseconds - _lastCheck) > 100)
+                {
+                    _lastCheck = gameTime.TotalGameTime.Milliseconds;
+                }
+
+                if (Mouse.GetState().LeftButton == ButtonState.Pressed)
+                {
+                    _focus.MouseClick((int)_mousepos.X, (int)_mousepos.Y, Math.Abs(gameTime.TotalGameTime.Milliseconds - _lastCheck));
+                }
+
+                _focus.HandleKey(Math.Abs(gameTime.TotalGameTime.Milliseconds - _lastCheck));
 
 
-                    if (Mouse.GetState().LeftButton == ButtonState.Pressed)
+                if (_lastCheck > 90)
+                {
+                    if ((GamePad.GetState(PlayerIndex.One).Buttons.Start == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape)))
                     {
-                        if (_mousepos.X != -1)
+                        if (_lastKey != Keys.Escape)
                         {
-                            _dragging = true;
-                            _focus.MoveContent(new Vector2(Mouse.GetState().X - _mousepos.X, Mouse.GetState().Y - _mousepos.Y), Math.Abs(gameTime.TotalGameTime.Milliseconds - _lastCheck));
+                            _lastKey = Keys.Escape;
+                            if (_status == GameStatus.Running) ShowMenu();
+                            else HandleEvent(null, Events.ContinueGame, 0);
                         }
-                        _mousepos.X = Mouse.GetState().X;
-                        _mousepos.Y = Mouse.GetState().Y;
                     }
                     else
                     {
-                        _mousepos.X = -1;
-                        _mousepos.Y = -1;
-                        _dragging = false;
-                    }
-
-                    if (Math.Abs(gameTime.TotalGameTime.Milliseconds - _lastCheck) > 100)
-                    {
-                        _lastCheck = gameTime.TotalGameTime.Milliseconds;
-                    }
-
-                    if (Mouse.GetState().LeftButton == ButtonState.Pressed)
-                    {
-                        _focus.MouseClick((int)_mousepos.X, (int)_mousepos.Y, Math.Abs(gameTime.TotalGameTime.Milliseconds - _lastCheck));
-                    }
-
-                    _focus.HandleKey(Math.Abs(gameTime.TotalGameTime.Milliseconds - _lastCheck));
-
-
-                    if (_lastCheck > 90)
-                    {
-                        if ((GamePad.GetState(PlayerIndex.One).Buttons.Start == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape)))
-                        {
-                            if (_lastKey != Keys.Escape)
-                            {
-                                _lastKey = Keys.Escape;
-                                if (_status == GameStatus.Running) ShowMenu();
-                                else HandleEvent(null, Events.ContinueGame, 0);
-                            }
-                        }
-                        else
-                        {
-                            _lastKey = Keys.None;
-                        }
+                        _lastKey = Keys.None;
                     }
                 }
             }
-            catch { }
+
             base.Update(gameTime);
         }
 

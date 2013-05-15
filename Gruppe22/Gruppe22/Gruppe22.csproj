@@ -157,6 +157,7 @@
     </Content>
     <Content Include="Content\player.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="Content\skeleton.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

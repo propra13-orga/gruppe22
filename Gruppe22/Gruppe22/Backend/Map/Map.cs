@@ -159,7 +159,8 @@ namespace Gruppe22
                     break;
             };
 
-            if ((result.x >= 1) && (result.x <= 2 * _width) && (result.y >= 0) && (result.y <= 2 * _height))
+            if ((result.x > 0) && (result.x < _width - 1)
+                && (result.y > 0) && (result.y < _height - 1))
                 return result;
             return null;
         }
@@ -167,26 +168,28 @@ namespace Gruppe22
         private void _NextTile(ref Path pos)
         {
             int count = 0;
-            while ((_tiles[pos.y][pos.x].connected) && (count < _width * _height))
+            while (_tiles[pos.y][pos.x].connected)
             {
                 count += 1;
                 pos.x += 2;
-                if (pos.x > _width * 2)
+                if (pos.x > _width - 2)
                 {
                     pos.x = 1;
                     pos.y += 2;
                 };
-                if (pos.y > _height * 2)
+                if (pos.y > _height - 2)
                 {
                     pos.y = 1;
                     pos.x = 1;
                 }
+                if (count >= _width * _height)
+                {
+                    pos.x = -1;
+                    pos.y = -1;
+                    return;
+                }
             }
-            if (count >= _width * _height)
-            {
-                pos.x = -1;
-                pos.y = -1;
-            }
+
         }
 
 
@@ -201,9 +204,9 @@ namespace Gruppe22
         /// <param name="gameTime"></param>
         public void Update(GameTime gameTime)
         {
-            foreach (Coords c in _updateTiles)
+            for (int i = 0; i < _updateTiles.Count; ++i)
             {
-                _tiles[c.y][c.x].Update(gameTime);
+                _tiles[_updateTiles[i].y][_updateTiles[i].x].Update(gameTime);
             }
         }
 
@@ -302,18 +305,9 @@ namespace Gruppe22
             _tiles[y][x].Remove(TileType.Enemy);
         }
 
-        public int firstActorID(int x,int y){
-            int result = 0, i=0;
-            foreach (Coords c in _updateTiles)
-            {
-                if ((_tiles[c.y][c.x].hasPlayer) && (result != 0)) result += 1;
-                if ((_tiles[c.y][c.x].hasPlayer) || (_tiles[c.y][c.x].hasEnemy)) i += 1;
-                if ((c.x == x) && (c.y == y))
-                {
-                    result = i;
-                }
-            }
-            return result-1;
+        public int firstActorID(int x, int y)
+        {
+            return _tiles[y][x].firstActor.id;
         }
         /// <summary>
         /// Check whether it is possible to move from a certain place on a map in a certain direction
@@ -388,10 +382,12 @@ namespace Gruppe22
                 row.Clear();
             }
             _tiles.Clear();
-            for (int row = 0; row < _height * 2 + 1; row++)
+            if (_height % 2 == 0) _height += 1;
+            if (_width % 2 == 0) _width += 1;
+            for (int row = 0; row < _height; row++)
             {
                 _tiles.Add(new List<Tile>());
-                for (int col = 0; col < _width * 2 + 1; col++)
+                for (int col = 0; col < _width; col++)
                 {
                     _tiles[row].Add(new Tile(this, new Coords(col, row),
 
@@ -411,19 +407,19 @@ namespace Gruppe22
             {
                 int count = 0;
                 Path pos = new Path(2 + r.Next(_width / 2 - 2) * 2, 2 + r.Next(_height / 2 - 2) * 2);
-                while ((pos.x > 0) && (!_tiles[pos.y][pos.x].canEnter))
+                while ((count < _width * height) && (pos.x > 0) && (!_tiles[pos.y][pos.x].canEnter))
                 {
                     count += 1;
-                    pos.x += 2;
+                    pos.x += 1;
                     if (pos.x > _width - 2)
                     {
-                        pos.x = 2;
-                        pos.y += 2;
+                        pos.x = 1;
+                        pos.y += 1;
                     };
                     if (pos.y > _height - 2)
                     {
-                        pos.y = 2;
-                        pos.x = 2;
+                        pos.y = 1;
+                        pos.x = 1;
                     }
                 }
 
@@ -468,29 +464,30 @@ namespace Gruppe22
             for (int i = 0; i < amount; ++i)
             {
                 int count = 0;
-                Path pos = new Path(2 + r.Next(_width / 2 - 2) * 2, 2 + r.Next(_height / 2 - 2) * 2);
+                Path pos = new Path(1 + r.Next(_width - 2), 1 + r.Next(_height - 2));
                 while ((pos.x > 0) &&
-                    (_tiles[pos.y][pos.x].overlay.Count == 0))
+                    (_tiles[pos.y][pos.x].overlay.Count != 0))
                 {
                     count += 1;
-                    pos.x += 2;
+                    pos.x += 1;
                     if (pos.x > _width - 2)
                     {
-                        pos.x = 2;
-                        pos.y += 2;
+                        pos.x = 1;
+                        pos.y += 1;
                     };
                     if (pos.y > _height - 2)
                     {
-                        pos.y = 2;
-                        pos.x = 2;
+                        pos.y = 1;
+                        pos.x = 1;
+                    }
+                    if (count >= _width * _height)
+                    {
+                        pos.x = -1;
+                        pos.y = -1;
                     }
                 }
 
-                if (count >= _width * _height)
-                {
-                    pos.x = -1;
-                    pos.y = -1;
-                }
+
                 if ((pos.x >= 0) && (pos.x < _width) && (pos.y < _height) && (pos.y >= 0))
                 {
                     Enemy enemy = new Enemy(50, 90, 20);
@@ -514,7 +511,7 @@ namespace Gruppe22
             {
                 int count = 0;
                 Path pos = new Path(2 + r.Next(_width / 2 - 2) * 2, 2 + r.Next(_height / 2 - 2) * 2);
-                while ((pos.x > 0) && (!_tiles[pos.y][pos.x].canEnter))
+                while ((count < width * height) && (pos.x > 0) && (!_tiles[pos.y][pos.x].canEnter))
                 {
                     count += 1;
                     pos.x += 2;
@@ -634,12 +631,12 @@ namespace Gruppe22
 
             Random r = new Random();
 
-            Path originPos = new Path(1 + r.Next(_width - 1) * 2, 1 + r.Next(_height - 1) * 2);
-            Path currentPos = new Path(1 + r.Next(_width - 1) * 2, 1 + r.Next(_height - 1) * 2);
+            Path originPos = new Path(1 + r.Next((_width - 3) / 2) * 2, 1 + r.Next((_height - 2) / 2) * 2);
+            Path currentPos = new Path(1 + r.Next((_width - 3) / 2) * 2, 1 + r.Next((_height - 3) / 2) * 2);
 
             _tiles[originPos.y][originPos.x].connected = true;
             _tiles[originPos.y][originPos.x].Remove(TileType.Wall);
-            int remaining = _width * _height - 1;
+            int remaining = _width / 2 * _height / 2 - 2;
 
             Path startPos = originPos;
             while ((currentPos.x > -1) && (remaining > 0))
@@ -687,12 +684,10 @@ namespace Gruppe22
                     currentPos.dir = _tiles[currentPos.y][currentPos.x].connection;
                     _tiles[currentPos.y][currentPos.x].connection = Connection.Invalid;
                     currentPos = _Walk(currentPos);
-                    startPos = new Path(1 + r.Next(_width - 1) * 2, 1 + r.Next(_height - 1) * 2);
                     --remaining;
                 }
+                startPos = new Path(1 + r.Next((_width - 3) / 2) * 2, 1 + r.Next((_height - 2) / 2) * 2);
             }
-            _width = _width * 2 + 1;
-            _height = _height * 2 + 1;
         }
 
         /// <summary>
@@ -790,6 +785,19 @@ namespace Gruppe22
             actors[0].tile = actortile;
             actortile.parent = _tiles[player.y][player.x];
             _updateTiles.Add(player);
+            foreach (Coords c in _updateTiles)
+            {
+                System.Diagnostics.Debug.WriteLine(c.x + "/" + c.y);
+            }
+            System.Diagnostics.Debug.WriteLine("ACTOS");
+            foreach (Coords c in actorPositions)
+            {
+                System.Diagnostics.Debug.WriteLine(c.x + "/" + c.y);
+            }
+            for (int i = 0; i < _actors.Count; ++i)
+            {
+                _actors[i].id = i;
+            }
         }
 
         public void DebugMap()
@@ -876,14 +884,14 @@ namespace Gruppe22
             }
             if (generate)
             {
-                ClearMaze();
+                //ClearMaze();
                 GenerateMaze();
-                ClearWalls();
+                //ClearWalls();
                 AddPlayer(playerPos);
-                AddTraps();
-                AddDoors();
+                // AddTraps();
+                //AddDoors();
                 AddEnemies();
-                AddItems();
+                // AddItems();
             }
         }
 

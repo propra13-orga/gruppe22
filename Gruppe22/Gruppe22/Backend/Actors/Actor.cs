@@ -16,6 +16,7 @@ namespace Gruppe22
     {
         private ActorTile _tile;
         protected  ActorType _actorType;
+        private int _id = 0;
 
         //Lebenspunkte, Rüstung, Schaden/Angriffsstärke
         protected int _health=50, _armour=40, _damage=20;
@@ -39,7 +40,7 @@ namespace Gruppe22
         public int health { get { return _health; } }
         public int armour { get { return _armour; } }
         public int damage { get { return _damage; } }
-
+        public int id { get { return _id; } set { _id = value; } }
         public bool IsDead() { return _health <= 0 ? true : false; }
 
         public void SetDamage(Actor actor) { SetDamage(actor.damage); }

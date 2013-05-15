@@ -323,9 +323,9 @@ namespace Gruppe22
         /// <param name="gameTime"></param>
         public virtual void Update(GameTime gameTime)
         {
-            foreach (Tile child in _overlay)
+            for(int i=0;i<_overlay.Count;++i)
             {
-                child.Update(gameTime);
+                _overlay[i].Update(gameTime);
             }
         }
 
@@ -452,6 +452,7 @@ namespace Gruppe22
         public Tile(object parent, Coords coords = null, bool canEnter = true)
             : base()
         {
+            _parent = parent;
             if (coords != null)
             {
                 _coords = coords;

@@ -24,12 +24,12 @@ namespace Gruppe22
         #endregion
 
         #region Public Fields
-        
+
         public override bool ignorePause
         {
             get { return true; }
         }
-        
+
         public override bool holdFocus
         {
             get { return true; }
@@ -52,9 +52,9 @@ namespace Gruppe22
         public override void Update(GameTime gameTime)
         {
             //TODO: Main-UI action, GameTime for effects
-            foreach (UIElement child in _children)
+            for (int i = 0; i < _children.Count; ++i)
             {
-                child.Update(gameTime);
+                _children[i].Update(gameTime);
             }
         }
 
@@ -71,7 +71,7 @@ namespace Gruppe22
         public override void Draw(GameTime gameTime)
         {
             _spriteBatch.Begin();
-            _spriteBatch.Draw(_background, new Rectangle(_displayRect.X,_displayRect.Y,_displayRect.Width,2), new Rectangle(39, 6, 1, 1), Color.White);
+            _spriteBatch.Draw(_background, new Rectangle(_displayRect.X, _displayRect.Y, _displayRect.Width, 2), new Rectangle(39, 6, 1, 1), Color.White);
             _spriteBatch.Draw(_background, new Rectangle(_displayRect.X + _displayRect.Width - 2, _displayRect.Y, 2, _displayRect.Height), new Rectangle(39, 6, 1, 1), Color.White);
             _spriteBatch.Draw(_background, new Rectangle(_displayRect.X, _displayRect.Y, 2, _displayRect.Height), new Rectangle(39, 6, 1, 1), Color.White);
             _spriteBatch.Draw(_background, new Rectangle(_displayRect.X, _displayRect.Y + _displayRect.Height - 2, _displayRect.Width, 2), new Rectangle(39, 6, 1, 1), Color.White);
@@ -86,8 +86,8 @@ namespace Gruppe22
 
 
         public override void Dispose()
-        {         
-          //  if (_background != null) _background.Dispose(); // Kills minimap (reused picture!)
+        {
+            //  if (_background != null) _background.Dispose(); // Kills minimap (reused picture!)
             while ((_children != null) && (_children.Count > 0)) { _children[0].Dispose(); _children.RemoveAt(0); }
             base.Dispose();
         }
@@ -99,7 +99,7 @@ namespace Gruppe22
         /// Constructor
         /// </summary>
         public Window(IHandleEvent parent, SpriteBatch spriteBatch, ContentManager content, Rectangle displayRect)
-            : base(parent,spriteBatch, content, displayRect)
+            : base(parent, spriteBatch, content, displayRect)
         {
             _children = new List<UIElement>();
             _background = _content.Load<Texture2D>("Minimap");

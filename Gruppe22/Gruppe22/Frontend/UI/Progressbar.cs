@@ -102,7 +102,7 @@ namespace Gruppe22
                 {
                     if (_style != ProgressStyle.Undefined)
                     {
-                        _pixels = -(_pixelsPerUnit * (_value - value));
+                        _pixels = -(_pixelsPerUnit * (value - _value));
                     }
                     _value = value;
                 }
