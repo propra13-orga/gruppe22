@@ -584,40 +584,101 @@ namespace Gruppe22
             }
         }
 
-        public void ClearWalls(int number = -1)
+        /// <summary>
+        /// Remove walls at random for more space
+        /// </summary>
+        /// <param name="amount">Amount of walls to remove</param>
+        public void ClearWalls(int amount = -1)
         {
-            if (number < 0)
+            if (amount < 0)
             {
-                number = ((width / 2) * (height / 2)) / 4;
+                amount = (int)(((((float)width - 1) / 2) * (((float)height - 1) / 2)) / 4); // every 4th wall!
             };
             Random r = new Random();
 
-            for (int i = 0; i < number; ++i)
+            for (int i = 0; i < amount; ++i)
             {
                 int count = 0;
-                Path pos = new Path(2 + r.Next(_width / 2 - 2) * 2, 2 + r.Next(_height / 2 - 2) * 2);
+                Path pos = new Path(1 + r.Next((_width - 3) / 2) * 2, 1 + r.Next((_height - 2) / 2) * 2);
                 while ((pos.x > 0) && (_tiles[pos.y][pos.x].canEnter))
                 {
                     count += 1;
-                    pos.x += 2;
+                    pos.x += 1;
                     if (pos.x > _width - 2)
                     {
-                        pos.x = 2;
-                        pos.y += 2;
+                        pos.x = 1;
+                        pos.y += 1;
                     };
                     if (pos.y > _height - 2)
                     {
-                        pos.y = 2;
-                        pos.x = 2;
+                        pos.y = 1;
+                        pos.x = 1;
+                    }
+                    if (count >= _width * _height)
+                    {
+                        pos.x = -1;
+                        pos.y = -1;
                     }
                 }
-
-                if (count >= _width * _height)
-                {
-                    pos.x = -1;
-                    pos.y = -1;
-                }
                 _tiles[pos.y][pos.x].Remove(TileType.Wall);
+            }
+
+            // Remove bad looking places: Walls surrounded by free space become free space, free space surrounded by walls becomes free space surrounded by free space
+            for (int y = 1; y < _height - 1; ++y)
+            {
+                for (int x = 1; x < _height - 1; ++x)
+                {
+                    int _wallsaround = 0;
+                    int _freearound = 0;
+                    if (_tiles[y - 1][x].canEnter)
+                    {
+                        _freearound += 1;
+                    }
+                    else
+                    {
+                        _wallsaround += 1;
+                    };
+                    if (_tiles[y][x - 1].canEnter)
+                    {
+                        _freearound += 1;
+                    }
+                    else
+                    {
+                        _wallsaround += 1;
+                    };
+                    if (_tiles[y][x + 1].canEnter)
+                    {
+                        _freearound += 1;
+                    }
+                    else
+                    {
+                        _wallsaround += 1;
+                    };
+                    if (_tiles[y + 1][x].canEnter)
+                    {
+                        _freearound += 1;
+                    }
+                    else
+                    {
+                        _wallsaround += 1;
+                    };
+                    if (_freearound == 4)
+                        _tiles[y][x].Remove(TileType.Wall);
+                    if (_wallsaround == 4)
+                    {
+                        if (y > 1)
+                            _tiles[y - 1][x].Remove(TileType.Wall);
+                        if (x > 1)
+                            _tiles[y][x - 1].Remove(TileType.Wall);
+                        if (y < _height - 2)
+                            _tiles[y + 1][x].Remove(TileType.Wall);
+                        if (x < _width - 2)
+                            _tiles[y][x + 1].Remove(TileType.Wall);
+
+                        y = y - ((y > 1) ? 2 : 1); // restart at wall above
+                        x = x - ((x > 1) ? 2 : 1); // restart at wall left
+                    }
+                }
             }
         }
 
@@ -627,7 +688,7 @@ namespace Gruppe22
         /// <param name="slow"></param>
         public void GenerateMaze()
         {
-            ClearMaze();
+            ClearMaze(); // set up grid
 
             Random r = new Random();
 
@@ -688,6 +749,7 @@ namespace Gruppe22
                 }
                 startPos = new Path(1 + r.Next((_width - 3) / 2) * 2, 1 + r.Next((_height - 2) / 2) * 2);
             }
+            ClearWalls(); // Remove random walls
         }
 
         /// <summary>
@@ -785,15 +847,6 @@ namespace Gruppe22
             actors[0].tile = actortile;
             actortile.parent = _tiles[player.y][player.x];
             _updateTiles.Add(player);
-            foreach (Coords c in _updateTiles)
-            {
-                System.Diagnostics.Debug.WriteLine(c.x + "/" + c.y);
-            }
-            System.Diagnostics.Debug.WriteLine("ACTOS");
-            foreach (Coords c in actorPositions)
-            {
-                System.Diagnostics.Debug.WriteLine(c.x + "/" + c.y);
-            }
             for (int i = 0; i < _actors.Count; ++i)
             {
                 _actors[i].id = i;
@@ -884,9 +937,7 @@ namespace Gruppe22
             }
             if (generate)
             {
-                //ClearMaze();
                 GenerateMaze();
-                //ClearWalls();
                 AddPlayer(playerPos);
                 // AddTraps();
                 //AddDoors();

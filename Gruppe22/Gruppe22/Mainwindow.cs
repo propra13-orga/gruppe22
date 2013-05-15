@@ -28,7 +28,8 @@ namespace Gruppe22
         NewMap,
         ResetGame,
         About,
-        AnimateActor
+        AnimateActor,
+        FinishedAnimation
     }
 
     public enum GameStatus

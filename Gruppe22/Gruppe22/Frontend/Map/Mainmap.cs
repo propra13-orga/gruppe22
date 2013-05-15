@@ -696,9 +696,9 @@ namespace Gruppe22
         private void _drawFloor()
         {
             Coords currentPos = _screen2map(_actors[0].position.x, _actors[0].position.y);
-            for (int y = (Math.Max(currentPos.y - _renderScope, 0)); y < (Math.Min(currentPos.y + _renderScope, _map.height)); ++y)
+            for (int y = (Math.Max(currentPos.y - _renderScope, 0)); y < (Math.Min(currentPos.y + _renderScope + 1, _map.height)); ++y)
             {
-                for (int x = (Math.Max(currentPos.x - _renderScope, 0)); x < (Math.Min(currentPos.x + _renderScope, _map.width)); ++x)
+                for (int x = (Math.Max(currentPos.x - _renderScope, 0)); x < (Math.Min(currentPos.x + _renderScope + 1, _map.width)); ++x)
                 {
                     if ((y == (int)_highlightedTile.y) && (x == (int)_highlightedTile.x))
                     {
@@ -722,11 +722,11 @@ namespace Gruppe22
         public void resetActors()
         {
             _actors.Clear();
-            foreach (Coords actorPos in _map.actorPositions)
+            for (int count = 0; count < _map.actorPositions.Count; ++count)
             {
 
-                if (_actors.Count > 0) _actors.Add(new ActorView(_content, _map2screen(actorPos), "Content\\skeleton.xml"));
-                else _actors.Add(new ActorView(_content, _map2screen(actorPos), "Content\\player.xml"));
+                if (_actors.Count > 0) _actors.Add(new ActorView(this, count, _content, _map2screen(_map.actorPositions[count]), "Content\\skeleton.xml"));
+                else _actors.Add(new ActorView(this, count, _content, _map2screen(_map.actorPositions[count]), "Content\\player.xml"));
             }
 
         }
@@ -736,7 +736,7 @@ namespace Gruppe22
         /// <param name="gameTime"></param>
         public override void Update(GameTime gameTime)
         {
-            
+
 
 
             if (IsHit(Mouse.GetState().X, Mouse.GetState().Y))
@@ -1027,7 +1027,7 @@ namespace Gruppe22
             _environment[4].Save("Content\\chest.xml");
             _environment[4].Load("Content\\chest.xml");
 
-            ActorView skel = new ActorView(content, new Coords(0, 0), "");
+            ActorView skel = new ActorView(this, 0, content, new Coords(0, 0), "");
             skel.Add(Activity.Walk, Direction.Right, "sWalk", new Coords(0, 0), 8, 1);
             skel.Add(Activity.Walk, Direction.Up, "sWalk", new Coords(0, 96), 8, 1);
             skel.Add(Activity.Walk, Direction.UpRight, "sWalk", new Coords(0, 192), 8, 1);

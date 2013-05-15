@@ -26,7 +26,11 @@ namespace Gruppe22
         private Activity _activity = Activity.Walk;
         private Direction _direction = Direction.Down;
         private int _speed = 5;
-        int count = 0;
+        private int _id = 0;
+        private int _count = 0;
+        private IHandleEvent _parent = null;
+        private Activity _playAfterMove = Activity.Walk;
+        bool _lock=false;
         #endregion
 
         #region Public fields
@@ -68,7 +72,7 @@ namespace Gruppe22
         {
             get
             {
-                return ((_target.x != position.x) || (target.y != position.y));
+                return ((_target.x != position.x) || (target.y != position.y)||_lock);
             }
         }
 
@@ -154,6 +158,27 @@ namespace Gruppe22
         #endregion
 
         #region Public Methods
+
+        public void PlayNowOrAfterMove(Activity activity, bool locked=false)
+        {
+        if(this.isMoving){
+            _playAfterMove=activity;
+        }
+        if(locked){
+            _lock=true;
+        }
+        }
+
+        public void EndMoveAndPlay(Activity activity, bool locked=false)
+        {
+            _position.x = _target.x;
+            _position.y = _target.y;
+            _activity = activity;
+            if(locked){
+                _lock=true;
+            }
+        }
+
         /// <summary>
         /// Load object from XML-file
         /// </summary>
@@ -340,15 +365,28 @@ namespace Gruppe22
                 }
                 _textures[(int)_activity * 8 + (int)_direction].NextAnimation();
             }
+            else
+            {
+                if (_playAfterMove != Activity.Walk)
+                {
+                    _activity = _playAfterMove;
+                    _playAfterMove = Activity.Walk;
+                }
+            }
             if ((_activity != Activity.Walk) && (_activity != Activity.Run))
             {
-                if ((gametime == null) || (count > 10))
+                if ((gametime == null) || (_count > 10))
                 {
-                    if ((_textures[(int)_activity * 8 + (int)_direction].NextAnimation()) && (_activity != Activity.Die)) _activity = Activity.Walk;
-                    count = 0;
+                    if ((_textures[(int)_activity * 8 + (int)_direction].NextAnimation()) && (_activity != Activity.Die)) {
+                        _parent.HandleEvent(null, Events.FinishedAnimation, _id, _activity);                        
+                        _activity = _playAfterMove;
+                        if (_playAfterMove != Activity.Walk) _playAfterMove = Activity.Walk;
+                        _lock = false;
+                        }
+                    _count = 0;
                 }
                 if (gametime.ElapsedGameTime.Milliseconds % 100 > 10)
-                    count += 1;
+                    _count += 1;
 
             }
         }
@@ -370,7 +408,7 @@ namespace Gruppe22
         /// <param name="controllable"></param>
         /// <param name="position"></param>
         /// <param name="sprite"></param>
-        public ActorView(ContentManager content, Coords position, string filename = "")
+        public ActorView(IHandleEvent parent, int _id, ContentManager content, Coords position, string filename = "")
             : base(content, 96, 96, "")
         {
             _position = position;
@@ -383,6 +421,7 @@ namespace Gruppe22
             {
                 Load(filename);
             }
+            _parent = parent;
         }
         #endregion
 
