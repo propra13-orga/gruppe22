@@ -21,16 +21,53 @@ namespace Gruppe22
     public class ActorView : TileSet
     {
         #region Private Fields
+        /// <summary>
+        /// Current position of the actor (in pixels)
+        /// </summary>
         private Coords _position = null;
+        /// <summary>
+        /// Target the actor is supposed to move to
+        /// </summary>
         private Coords _target = null;
+        /// <summary>
+        /// Current animation played
+        /// </summary>
         private Activity _activity = Activity.Walk;
+        /// <summary>
+        /// Direction the actor is facing
+        /// </summary>
         private Direction _direction = Direction.Down;
+        /// <summary>
+        /// Movement speed (nur relevant to animation, see _animationTime below)
+        /// </summary>
         private int _speed = 5;
+        /// <summary>
+        /// The unique ID of the actor
+        /// </summary>
         private int _id = 0;
-        private int _count = 0;
+        /// <summary>
+        /// Number of milliseconds to wait until displaying next frame of animation
+        /// </summary>
+        private int _animationTime = 45;
+        /// <summary>
+        /// Seconds elapsed since last redraw
+        /// </summary>
+        private int _elapsed = 0;
+        /// <summary>
+        /// Map the actor is displayed on
+        /// </summary>
         private IHandleEvent _parent = null;
+        /// <summary>
+        /// Caching for an animation to play once the current transition is finished
+        /// </summary>
         private Activity _playAfterMove = Activity.Walk;
+        /// <summary>
+        /// Whether the actor is locked during an animation (i.e. playing other animations is not allowed
+        /// </summary>
         private bool _lock = false;
+        /// <summary>
+        /// Whether the actor was killed (i.e. should neither move nor animate)
+        /// </summary>
         private bool _dead = false;
         #endregion
 
@@ -85,7 +122,7 @@ namespace Gruppe22
             }
             set
             {
-
+                _elapsed = 0;
                 _activity = value;
                 _textures[(int)_activity * 8 + (int)_direction].ResetAnimation();
             }
@@ -99,6 +136,8 @@ namespace Gruppe22
             }
             set
             {
+
+                _elapsed = 0;
                 if (value != Direction.None)
                     _direction = value;
                 _textures[(int)_activity * 8 + (int)_direction].ResetAnimation();
@@ -373,7 +412,10 @@ namespace Gruppe22
                             }
                     }
                 }
-                _textures[(int)_activity * 8 + (int)_direction].NextAnimation();
+                if (_elapsed > _animationTime)
+                {
+                    _textures[(int)_activity * 8 + (int)_direction].NextAnimation();
+                }
             }
             else
             {
@@ -385,8 +427,9 @@ namespace Gruppe22
             }
             if ((_activity != Activity.Walk) && (_activity != Activity.Run))
             {
-                if ((gametime == null) || (_count > 10))
+                if (_elapsed > _animationTime)
                 {
+                    _elapsed -= _animationTime;
                     if (_textures[(int)_activity * 8 + (int)_direction].NextAnimation())
                     {
                         if (_activity != Activity.Die)
@@ -406,12 +449,10 @@ namespace Gruppe22
                             }
                         }
                     }
-                    _count = 0;
                 }
-                if (gametime.ElapsedGameTime.Milliseconds % 100 > 10)
-                    _count += 1;
-
             }
+            _elapsed += (gametime.TotalGameTime.Milliseconds / 100);
+
         }
         #endregion
 
