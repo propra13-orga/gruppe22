@@ -24,222 +24,36 @@ namespace Gruppe22
     /// <summary>
     /// An abstract class representing a generic tile (i.e. blank floor)
     /// </summary>
-    public class Tile : IHandleEvent, IDisposable
+    public abstract class Tile : IHandleEvent
     {
         #region Private Fields
 
 
-        /// <summary>
-        /// Fields displayed (and checked) on top of the current field
-        /// </summary>
-        protected List<Tile> _overlay;
-        /// <summary>
-        /// Internal value whether tile can be entered
-        /// </summary>
-        protected bool _canEnter = true;
-        /// <summary>
-        /// Used by map generator (determines whether tile can be reached from at least one other tile
-        /// </summary>
-        protected bool _connected = false;
-        /// <summary>
-        /// Direction of connection
-        /// </summary>
-        protected Connection _connection = Connection.Invalid;
-        /// <summary>
-        /// The Position of the tile
-        /// </summary>
-        private Coords _coords = null;
 
         protected object _parent = null;
         #endregion
 
         #region Public Fields
 
-        public List<Tile> overlay
-        {
-            get
-            {
-                return _overlay;
-            }
-            set
-            {
-                _overlay = value;
-            }
-        }
-
-        public List<Actor> actors
-        {
-            get
-            {
-                List<Actor> result = new List<Actor>();
-                foreach (Tile tile in _overlay)
-                {
-                    if (tile is ActorTile) result.Add(((ActorTile)tile).actor);
-                }
-                return result;
-            }
-        }
-
-        public Actor firstActor
-        {
-            get
-            {
-                foreach (Tile tile in _overlay)
-                {
-                    if ((tile is ActorTile) && (((ActorTile)tile).enabled)) 
-                        return ((ActorTile)tile).actor;
-                }
-                return null;
-            }
-        }
         public Coords coords
         {
             get
             {
+                if (_parent is FloorTile)
+                    return (_parent as FloorTile).coords;
                 if (_parent is Tile)
-                    return ((Tile)_parent).coords;
+                    return (_parent as Tile).coords;
+                return null;
+            }
+            set
+            {
+                if (_parent is FloorTile)
+                    (_parent as FloorTile).coords = value;
                 else
-                    return _coords;
-            }
-            set
-            {
-                if (!(_parent is Tile))
-                    _coords = value;
+                    if (_parent is Tile)
+                        (_parent as Tile).coords = value;
             }
         }
-
-        public bool connected
-        {
-            get
-            {
-                return _connected;
-            }
-            set
-            {
-                _connected = value;
-            }
-        }
-
-        public Connection connection
-        {
-            get
-            {
-                return _connection;
-            }
-            set
-            {
-                _connection = value;
-            }
-        }
-
-        /// <summary>
-        /// Determine whether tile can be entered
-        /// </summary>
-        public bool canEnter
-        {
-            get
-            {
-                bool result = _canEnter;
-                int count = 0;
-                while ((result) && (count < _overlay.Count))
-                {
-                    result = _overlay[count].canEnter;
-                    ++count;
-                }
-                return result;
-            }
-        }
-
-        /// <summary>
-        /// Determine whether a player is standing on the current tile
-        /// </summary>
-        public bool hasPlayer
-        {
-            get
-            {
-                bool result = false;
-                int count = 0;
-                while ((!result) && (count < _overlay.Count))
-                {
-                    result = ((_overlay[count] is ActorTile) && (((ActorTile)_overlay[count]).actor is Player));
-                    ++count;
-                }
-                return result;
-            }
-        }
-
-        /// <summary>
-        /// Determine whether an enemy is standing on the current tile
-        /// </summary>
-        public bool hasEnemy
-        {
-            get
-            {
-                bool result = false;
-                int count = 0;
-                while ((!result) && (count < _overlay.Count))
-                {
-                    result = ((_overlay[count] is ActorTile) && (((ActorTile)_overlay[count]).enabled) && (((ActorTile)_overlay[count]).actor is Enemy));
-                    ++count;
-                }
-                return result;
-            }
-        }
-
-        /// <summary>
-        /// Determine whether the current tile contains a teleporter
-        /// </summary>
-        public bool hasTeleport
-        {
-            get
-            {
-                bool result = false;
-                int count = 0;
-                while ((!result) && (count < _overlay.Count))
-                {
-                    result = ((_overlay[count] is TeleportTile));
-                    ++count;
-                }
-                return result;
-            }
-        }
-
-        /// <summary>
-        /// Determine whether there is a treasure on the current tile
-        /// </summary>
-        public bool hasTreasure
-        {
-            get
-            {
-                bool result = false;
-                int count = 0;
-                while ((!result) && (count < _overlay.Count))
-                {
-                    result = (((_overlay[count] is ItemTile) && (((ItemTile)_overlay[count]).itemType == ItemType.Treasure)) || ((_overlay[count] is TargetTile)));
-                    ++count;
-                }
-                return result;
-            }
-        }
-
-        /// <summary>
-        /// Determine whether there is a treasure on the current tile
-        /// </summary>
-        public bool hasTarget
-        {
-            get
-            {
-                bool result = false;
-                int count = 0;
-                while ((!result) && (count < _overlay.Count))
-                {
-                    result = (_overlay[count] is TargetTile);
-                    ++count;
-                }
-                return result;
-            }
-        }
-
         public object parent
         {
             get
@@ -252,178 +66,17 @@ namespace Gruppe22
             }
         }
 
-        /// <summary>
-        /// Determine whether the current tile contains a "special" feature
-        /// </summary>
-        public bool hasTrap
-        {
-            get
-            {
-                bool result = false;
-                int count = 0;
-                while ((!result) && (count < _overlay.Count))
-                {
-                    result = (_overlay[count] is TrapTile);
-                    ++count;
-                }
-                return result;
-            }
-        }
 
-        /// <summary>
-        /// Determine whether the current tile contains a "special" feature
-        /// </summary>
-        public bool hasSpecial
-        {
-            get
-            {
-                bool result = false;
-                return result;
-            }
-        }
         #endregion
 
         #region Public methods
 
-        /// <summary>
-        /// Add a (generic) tile of a specified type to overlay and return a pointer to that tile
-        /// </summary>
-        /// <param name="type"></param>
-        public Tile Add(TileType type)
-        {
-            switch (type)
-            {
-                case TileType.Wall:
-                    _overlay.Add(new WallTile(this));
-                    break;
-                case TileType.Trap:
-                    _overlay.Add(new TrapTile(this, 1));
-                    break;
-                case TileType.Teleporter:
-                    _overlay.Add(new TeleportTile(this, "ddd", new Coords(0, 0)));
-                    break;
-                case TileType.Target:
-                    _overlay.Add(new TargetTile(this));
-                    break;
-                case TileType.Start:
-                    _overlay.Add(new ActorTile(this));
-                    break;
-                case TileType.Item:
-                    _overlay.Add(new ItemTile(this));
-                    break;
-                case TileType.Enemy:
-                    _overlay.Add(new ActorTile(this));
-                    break;
-            }
-            return _overlay[_overlay.Count - 1];
-        }
-
-        /// <summary>
-        /// Refresh tiles which do something (traps, enemies, NPCs)
-        /// </summary>
-        /// <param name="gameTime"></param>
         public virtual void Update(GameTime gameTime)
         {
-            for (int i = 0; i < _overlay.Count; ++i)
-            {
-                _overlay[i].Update(gameTime);
-            }
+
         }
 
-        /// <summary>
-        /// Remove all tiles of a specified type from overlay
-        /// </summary>
-        /// <param name="type"></param>
-        public void Remove(TileType type)
-        {
-            for (int i = 0; i < _overlay.Count; ++i)
-                switch (type)
-                {
-                    case TileType.Wall:
-                        if (_overlay[i] is WallTile)
-                        {
-                            _overlay.RemoveAt(i);
-                            i -= 1;
-                        }
-                        break;
-                    case TileType.Trap:
-                        if (_overlay[i] is TrapTile)
-                        {
-                            _overlay.RemoveAt(i);
-                            i -= 1;
-                        }
-                        break;
-                    case TileType.Teleporter:
-                        if (_overlay[i] is TeleportTile)
-                        {
-                            _overlay.RemoveAt(i);
-                            i -= 1;
-                        }
-                        break;
-                    case TileType.Target:
-                        if (_overlay[i] is TargetTile)
-                        {
-                            _overlay.RemoveAt(i);
-                            i -= 1;
-                        }
-                        break;
-                    case TileType.Start:
-                        if (_overlay[i] is ActorTile)
-                        {
-                            _overlay.RemoveAt(i);
-                            i -= 1;
-                        }
-                        break;
-                    case TileType.Item:
-                        if (_overlay[i] is ItemTile)
-                        {
-                            _overlay.RemoveAt(i);
-                            i -= 1;
-                        }
-                        break;
-                    case TileType.Enemy:
-                        if (_overlay[i] is ActorTile)
-                        {
-                            _overlay.RemoveAt(i);
-                            i -= 1;
-                        }
-                        break;
-                }
-        }
 
-        /// <summary>
-        /// Add specified tile to overlay
-        /// </summary>
-        /// <param name="tile"></param>
-        public void Add(Tile tile)
-        {
-            _overlay.Add(tile);
-        }
-
-        /// <summary>
-        /// Remove specified tile from overlay
-        /// </summary>
-        /// <param name="tile"></param>
-        public void Remove(Tile tile)
-        {
-            _overlay.Remove(tile);
-        }
-
-        /// <summary>
-        /// </summary>
-        /// <returns>true if write is successful</returns>
-        public virtual void Save(XmlWriter xmlw)
-        {
-            xmlw.WriteStartElement("Tile");
-            xmlw.WriteAttributeString("canEnter", Convert.ToString(_canEnter));
-            xmlw.WriteAttributeString("CoordX", Convert.ToString(_coords.x));
-            xmlw.WriteAttributeString("CoordY", Convert.ToString(_coords.y));
-            foreach (Tile tile in _overlay)
-            {
-                tile.Save(xmlw);
-            }
-            xmlw.WriteEndElement();
-        }
 
         /// <summary>
         /// Read Tile data from an XML-file
@@ -434,6 +87,13 @@ namespace Gruppe22
         {
             throw new NotImplementedException("Das muss noch jemand machen");
         }
+
+        /// <summary>
+        /// </summary>
+        /// <returns>true if write is successful</returns>
+        public virtual void Save(XmlWriter xmlw)
+        {
+        }
         #endregion
 
         #region Constructors
@@ -441,38 +101,10 @@ namespace Gruppe22
         /// <summary>
         /// An empty constructor (setting default values)
         /// </summary>
-        public Tile()
-            : base()
-        {
-            _overlay = new List<Tile>();
-        }
-
-        /// <summary>
-        /// An empty constructor (setting default values)
-        /// </summary>
-        public Tile(object parent, Coords coords = null, bool canEnter = true)
+        public Tile(object parent)
             : base()
         {
             _parent = parent;
-            if (coords != null)
-            {
-                _coords = coords;
-            }
-            _overlay = new List<Tile>();
-            if (!canEnter)
-            {
-                Add(TileType.Wall);
-            }
-        }
-
-
-        /// <summary>
-        /// Clean up Tile
-        /// </summary>
-        public void Dispose()
-        {
-            _overlay.Clear();
-
         }
         #endregion
 

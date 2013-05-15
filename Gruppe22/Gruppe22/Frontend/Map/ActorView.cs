@@ -87,6 +87,7 @@ namespace Gruppe22
             {
 
                 _activity = value;
+                _textures[(int)_activity * 8 + (int)_direction].ResetAnimation();
             }
         }
 
@@ -100,6 +101,7 @@ namespace Gruppe22
             {
                 if (value != Direction.None)
                     _direction = value;
+                _textures[(int)_activity * 8 + (int)_direction].ResetAnimation();
             }
         }
 
@@ -429,7 +431,7 @@ namespace Gruppe22
         /// <param name="controllable"></param>
         /// <param name="position"></param>
         /// <param name="sprite"></param>
-        public ActorView(IHandleEvent parent, int id, ContentManager content, Coords position, string filename = "", int speed=5)
+        public ActorView(IHandleEvent parent, int id, ContentManager content, Coords position, string filename = "", int speed = 5)
             : base(content, 96, 96, "")
         {
             _position = position;

@@ -44,33 +44,23 @@ namespace Gruppe22
         #endregion
 
         #region Constructor
-        public TeleportTile(string nextXml, Coords pos)
+        public TeleportTile(object parent, string nextXml, Coords pos)
+            : base(parent)
         {
             _nextRoom = nextXml;
             _nextPlayerPos = pos;
         }
         #endregion
 
-        #region Public-Methods
-
-        public TeleportTile(object parent, string nextRoom, Coords nextPlayerPos)
-            : base(parent)
-        {
-            this._nextRoom = nextRoom;
-            this._nextPlayerPos = nextPlayerPos;
-        }
+        #region Public Methods
 
         public override void Save(XmlWriter xmlw)
         {
             xmlw.WriteStartElement("TeleportTile");
-            xmlw.WriteAttributeString("canEnter", Convert.ToString(canEnter));
             xmlw.WriteAttributeString("nextRoom", _nextRoom);
             xmlw.WriteAttributeString("nextX", Convert.ToString(_nextPlayerPos.x));
             xmlw.WriteAttributeString("nextY", Convert.ToString(_nextPlayerPos.y));
-            foreach (Tile tile in _overlay)
-            {
-                tile.Save(xmlw);
-            }
+
             xmlw.WriteEndElement();
         }
         #endregion

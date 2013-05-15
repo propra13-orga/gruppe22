@@ -173,7 +173,7 @@ namespace Gruppe22
         {
             while ((int)id > _textures.Count-1)
             {
-                _textures.Add(new TileObject(_content,_width,_height));
+                _textures.Add(new TileObject(_content, cutOut.Width, cutOut.Height));
             }
             _textures[id].AddAnimation(filename, new Coords(cutOut.Left, cutOut.Top), 1, 1, false);
         }

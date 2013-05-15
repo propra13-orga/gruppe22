@@ -14,5 +14,12 @@ namespace Gruppe22
         {
 
         }
+
+        public override void Save(XmlWriter xmlw)
+        {
+            xmlw.WriteStartElement("TargetTile");
+
+            xmlw.WriteEndElement();
+        }
     }
 }

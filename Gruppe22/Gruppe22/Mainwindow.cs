@@ -22,7 +22,6 @@ namespace Gruppe22
         ContinueGame = 0,
         EndGame,
         HideNotification,
-        LoadMap,
         MoveActor,
         ChangeMap,
         NewMap,
@@ -95,29 +94,30 @@ namespace Gruppe22
         /// </summary>
         protected override void Initialize()
         {
-            if (!System.IO.File.Exists("map1.xml"))
+            if (!System.IO.File.Exists("room1.xml"))
             {
                 GenerateMaps();
             }
-            _map1 = new Map(this, "map1.xml", null); // TEST!!!
+            _map1 = new Map(this, "room1.xml", null); // TEST!!!
             _interfaceElements = new List<UIElement>();
             base.Initialize();
         }
 
         public void GenerateMaps()
         {
-            List<Exit> exits=new List<Exit>();
+            List<Exit> exits = new List<Exit>();
             Random r = new Random();
-            Map tempMap = null;
-            tempMap = new Map(this, 15, 15, true, null, 1, 3, null);
-            tempMap.Save("map1.xml");
-
+            Generator tempMap = null;
+            tempMap = new Generator(this, 7 + r.Next(8), 8 + r.Next(8), true, null, 1, 3, null);
+            tempMap.Save("room1.xml");
+            exits = Map.ExitToEntry(2, tempMap.exits);
             tempMap.Dispose();
-            tempMap = new Map(this, r.Next(5) + 8, r.Next(2) + 8, true, null, 2, 3, exits);
-            tempMap.Save("map2.xml");
+            tempMap = new Generator(this, r.Next(8) + 4 + exits[0].from.x, r.Next(8) + 4 + exits[0].from.y, true, null, 2, 3, exits);
+            tempMap.Save("room2.xml");
+            exits = Map.ExitToEntry(3, tempMap.exits);
             tempMap.Dispose();
-            tempMap = new Map(this, r.Next(10) + 8, r.Next(10) + 8, true, null, 3, 3, exits);
-            tempMap.Save("map3.xml");
+            tempMap = new Generator(this, r.Next(10) + 8 + exits[0].from.x, r.Next(10) + 8 + exits[0].from.y, true, null, 3, 3, exits);
+            tempMap.Save("room3.xml");
             tempMap.Dispose();
         }
 
@@ -151,14 +151,14 @@ namespace Gruppe22
             _status = GameStatus.Paused;
             Window _mainMenu = new Window(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 220) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) - 200, 350, 500));
 
-            _mainMenu.AddChild(new Button(_mainMenu, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) - 180, 300, 60), "Spiel fortsetzen", Events.ContinueGame));
-            _mainMenu.AddChild(new Button(_mainMenu, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) - 100, 300, 60), "Spiel neu starten", Events.ResetGame));
+            _mainMenu.AddChild(new Button(_mainMenu, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) - 180, 300, 60), "Continue", Events.ContinueGame));
+            _mainMenu.AddChild(new Button(_mainMenu, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) - 100, 300, 60), "Restart", Events.ResetGame));
 
-            _mainMenu.AddChild(new Button(_mainMenu, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) - 20, 300, 60), "Karte neu generieren", Events.NewMap));
+            _mainMenu.AddChild(new Button(_mainMenu, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) - 20, 300, 60), "New Maps", Events.NewMap));
 
-            _mainMenu.AddChild(new Button(_mainMenu, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) + 120, 300, 60), "Rechtliches", Events.About));
+            _mainMenu.AddChild(new Button(_mainMenu, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) + 120, 300, 60), "Credits", Events.About));
 
-            _mainMenu.AddChild(new Button(_mainMenu, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) + 220, 300, 60), "Spiel beenden", Events.EndGame));
+            _mainMenu.AddChild(new Button(_mainMenu, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) + 220, 300, 60), "Quit", Events.EndGame));
 
             //  _mainMenu.AddChild(new ProgressBar(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) + 80, 300, 30), ProgressStyle.Block,100,2));
 
@@ -170,12 +170,12 @@ namespace Gruppe22
         {
             _status = GameStatus.Paused;
             Window _gameOver = new Window(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 300) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) - 100, 600, 200));
-            Statusbox stat = new Statusbox(_gameOver, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 300) / 2.0f) + 10, (int)(GraphicsDevice.Viewport.Height / 2.0f) - 70, 590, 90), false, true);
+            Statusbox stat = new Statusbox(_gameOver, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 300) / 2.0f) + 10, (int)(GraphicsDevice.Viewport.Height / 2.0f) - 70, 590, 110), false, true);
             stat.AddLine(title + "\n \n" + message);
             _gameOver.AddChild(stat);
-            _gameOver.AddChild(new Button(_gameOver, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 300) / 2.0f) + 10, (int)(GraphicsDevice.Viewport.Height / 2.0f) + 30, 160, 40), "Neue Karte", Events.NewMap));
-            _gameOver.AddChild(new Button(_gameOver, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 300) / 2.0f) + 180, (int)(GraphicsDevice.Viewport.Height / 2.0f) + 30, 160, 40), "Neu starten", Events.ResetGame));
-            _gameOver.AddChild(new Button(_gameOver, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 300) / 2.0f) + 600 - 170, (int)(GraphicsDevice.Viewport.Height / 2.0f) + 30, 160, 40), "Beenden", Events.EndGame));
+            _gameOver.AddChild(new Button(_gameOver, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 300) / 2.0f) + 10, (int)(GraphicsDevice.Viewport.Height / 2.0f) + 30, 160, 40), "New Maps", Events.NewMap));
+            _gameOver.AddChild(new Button(_gameOver, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 300) / 2.0f) + 180, (int)(GraphicsDevice.Viewport.Height / 2.0f) + 30, 160, 40), "Restart", Events.ResetGame));
+            _gameOver.AddChild(new Button(_gameOver, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 300) / 2.0f) + 600 - 170, (int)(GraphicsDevice.Viewport.Height / 2.0f) + 30, 160, 40), "Quit", Events.EndGame));
 
             //  _mainMenu.AddChild(new ProgressBar(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) + 80, 300, 30), ProgressStyle.Block,100,2));
 
@@ -248,18 +248,19 @@ namespace Gruppe22
                     Exit();
                     break;
                 case Events.ChangeMap:
-                    //TODO: Lade neue Karte
                     _status = GameStatus.NoRedraw;
 
                     _map1.Load((string)data[0], (Coords)data[1]);
                     ((Mainmap)_interfaceElements[1]).resetActors();
+                    AddMessage("You entered room number "+data[0].ToString().Substring(4,1)+".");
                     _status = GameStatus.Running;
+
                     break;
                 case Events.NewMap:
                     _status = GameStatus.NoRedraw;
                     _map1.Dispose();
                     GenerateMaps();
-                    _map1.Load("map1.xml", null);
+                    _map1.Load("room1.xml", null);
                     ((Mainmap)_interfaceElements[1]).resetActors();
                     _status = GameStatus.Paused;
                     HandleEvent(null, Events.ContinueGame);
@@ -267,7 +268,7 @@ namespace Gruppe22
                 case Events.ResetGame:
                     _status = GameStatus.NoRedraw;
                     _map1.Dispose();
-                    _map1.Load("map1.xml", null);
+                    _map1.Load("room1.xml", null);
                     ((Mainmap)_interfaceElements[1]).resetActors();
                     _status = GameStatus.Paused;
 
@@ -299,28 +300,34 @@ namespace Gruppe22
                     {
                         Direction dir = (Direction)data[1];
                         Coords target = _map1.DirectionTile(_map1.actors[id].tile.coords, dir);
+                        if ((id == 0) && (_map1[target.x, target.y].hasTeleport))
+                        {
+                            HandleEvent(null, Events.ChangeMap, ((TeleportTile)_map1[target.x, target.y].overlay[0]).nextRoom, ((TeleportTile)_map1[target.x, target.y].overlay[0]).nextPlayerPos);
+                        }
+
                         if ((_map1[target.x, target.y].hasEnemy) || (_map1[target.x, target.y].hasPlayer))
                         {
-
-                            // Aktuelle Figur attackiert
-                            // Spieler verletzt
-                            // oder tot
-                            _map1[target.x, target.y].firstActor.SetDamage(_map1.actors[id]);
-                            if (_map1[target.x, target.y].firstActor is Player) UpdateHealth();
-                            if (_map1[target.x, target.y].firstActor.IsDead())
+                            if ((_map1.firstActorID(target.x, target.y) != id)&&(!_map1[target.x, target.y].firstActor.IsDead()))
                             {
-                                ((Mainmap)_interfaceElements[1]).HandleEvent(null, Events.AnimateActor, _map1.firstActorID(target.x, target.y), Activity.Die, false, Map.WhichWayIs(target, _map1.actors[id].tile.coords));
-                                AddMessage((_map1.actors[id] is Player ? "You" : "An enemy") + " killed " + (_map1.actors[_map1.firstActorID(target.x, target.y)] is Player ? "you" : "an enemy") + " doing " + _map1.actors[id].damage.ToString() + " points of damage.");
+                                // Aktuelle Figur attackiert
+                                // Spieler verletzt
+                                // oder tot
+                                _map1[target.x, target.y].firstActor.SetDamage(_map1.actors[id]);
+                                if (_map1[target.x, target.y].firstActor is Player) UpdateHealth();
+                                if (_map1[target.x, target.y].firstActor.IsDead())
+                                {
+                                    ((Mainmap)_interfaceElements[1]).HandleEvent(null, Events.AnimateActor, _map1.firstActorID(target.x, target.y), Activity.Die, false, Map.WhichWayIs(_map1.actors[id].tile.coords, target));
+                                    AddMessage((_map1.actors[id] is Player ? "You" : "An enemy") + " killed " + (_map1.actors[_map1.firstActorID(target.x, target.y)] is Player ? "you" : "an enemy") + " doing " + _map1.actors[id].damage.ToString() + " points of damage.");
 
+                                }
+                                else
+                                {
+                                    ((Mainmap)_interfaceElements[1]).HandleEvent(null, Events.AnimateActor, _map1.firstActorID(target.x, target.y), Activity.Hit, false, Map.WhichWayIs(_map1.actors[id].tile.coords, target));
+                                    AddMessage((_map1.actors[id] is Player ? "You" : "An enemy") + " attacked " + (_map1.actors[_map1.firstActorID(target.x, target.y)] is Player ? "you" : "an enemy") + " for " + _map1.actors[id].damage.ToString() + " points.");
+
+                                }
+                                ((Mainmap)_interfaceElements[1]).HandleEvent(null, Events.AnimateActor, id, Activity.Attack, false, dir, true);
                             }
-                            else
-                            {
-                                ((Mainmap)_interfaceElements[1]).HandleEvent(null, Events.AnimateActor, _map1.firstActorID(target.x, target.y), Activity.Hit, false, Map.WhichWayIs(target, _map1.actors[id].tile.coords));
-                                AddMessage((_map1.actors[id] is Player ? "You" : "An enemy") + " attacked " + (_map1.actors[_map1.firstActorID(target.x, target.y)] is Player ? "you" : "an enemy") + " for " + _map1.actors[id].damage.ToString() + " points.");
-
-                            }
-                            ((Mainmap)_interfaceElements[1]).HandleEvent(null, Events.AnimateActor, id, Activity.Attack, false, dir, true);
-
                         }
                         else
                         {
@@ -357,6 +364,7 @@ namespace Gruppe22
                             }
                         }
                     }
+
                     break;
             }
         }
@@ -586,7 +594,7 @@ namespace Gruppe22
             Window.AllowUserResizing = false;
             Type type = typeof(OpenTKGameWindow);
 
-            // Move window to top left corner of the screen
+            _graphics.SynchronizeWithVerticalRetrace = false;            // Move window to top left corner of the screen
             System.Reflection.FieldInfo field = type.GetField("window", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
             OpenTK.GameWindow window = (OpenTK.GameWindow)field.GetValue(this.Window);
             window.X = 0;

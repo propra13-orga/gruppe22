@@ -31,6 +31,7 @@ namespace Gruppe22
             _from = from;
             _fromRoom = fromRoom;
             _toRoom = toRoom;
+            _to = to;
         }
     }
     public class Map : IHandleEvent, IDisposable
@@ -41,22 +42,22 @@ namespace Gruppe22
         /// <summary>
         /// A two dimensional list of tiles
         /// </summary>
-        private List<List<Tile>> _tiles = null;
+        protected List<List<FloorTile>> _tiles = null;
         /// <summary>
         /// Internal current width
         /// </summary>
-        private int _width = 10;
+        protected int _width = 10;
 
-        private List<Exit> _exits;
+        protected List<Exit> _exits;
         /// <summary>
         /// Internal current height
         /// </summary>
-        private int _height = 10;
+        protected int _height = 10;
 
         /// <summary>
         /// Blank tile returned when requesting tile outside map boundaries (i.e. negative values / values beyond width or height)
         /// </summary>
-        private Tile _blankTile = null;
+        private FloorTile _blankTile = null;
 
         public List<Actor> _actors = null;
         public List<Item> _items = null;
@@ -150,7 +151,7 @@ namespace Gruppe22
         /// <param name="x">The x-coordinate</param>
         /// <param name="y">The y-coordinate</param>
         /// <returns>The tile at the specified coordinates</returns>
-        public Tile this[int x, int y]
+        public FloorTile this[int x, int y]
         {
             get
             {
@@ -173,69 +174,6 @@ namespace Gruppe22
         }
         #endregion
 
-        #region Private Methods
-        /// <summary>
-        /// Get the next tile based on included Connection info
-        /// </summary>
-        /// <param name="current">The start field</param>
-        /// <returns>The next field or null if field would be beyond map</returns>
-        private Path _Walk(Path current)
-        {
-            Path result = new Path(current.x, current.y, Connection.None);
-
-            switch (current.dir)
-            {
-                case Connection.Up:
-                    result.y -= 2;
-                    break;
-                case Connection.Right:
-                    result.x += 2;
-                    break;
-                case Connection.Down:
-                    result.y += 2;
-                    break;
-                case Connection.Left:
-                    result.x -= 2;
-                    break;
-            };
-
-            if ((result.x > 0) && (result.x < _width - 1)
-                && (result.y > 0) && (result.y < _height - 1))
-                return result;
-            return null;
-        }
-
-        private void _NextTile(ref Path pos)
-        {
-            int count = 0;
-            while (_tiles[pos.y][pos.x].connected)
-            {
-                count += 1;
-                pos.x += 2;
-                if (pos.x > _width - 2)
-                {
-                    pos.x = 1;
-                    pos.y += 2;
-                };
-                if (pos.y > _height - 2)
-                {
-                    pos.y = 1;
-                    pos.x = 1;
-                }
-                if (count >= _width * _height)
-                {
-                    pos.x = -1;
-                    pos.y = -1;
-                    return;
-                }
-            }
-
-        }
-
-
-
-
-        #endregion
 
         #region Public Methods
         /// <summary>
@@ -272,7 +210,7 @@ namespace Gruppe22
             Coords target = DirectionTile(actor.tile.coords, dir);
 
             // Remove ActorTile from current tile
-            ((Tile)actor.tile.parent).Remove(actor.tile);
+            ((FloorTile)actor.tile.parent).Remove(actor.tile);
             // Add ActorTile to new Tile
             _tiles[target.y][target.x].Add(actor.tile);
             actor.tile.parent = _tiles[target.y][target.x];
@@ -347,7 +285,10 @@ namespace Gruppe22
 
         public int firstActorID(int x, int y)
         {
-            return _tiles[y][x].firstActor.id;
+            if (_tiles[y][x].firstActor != null)
+                return _tiles[y][x].firstActor.id;
+            else
+                return -1;
         }
         /// <summary>
         /// Check whether it is possible to move from a certain place on a map in a certain direction
@@ -412,403 +353,11 @@ namespace Gruppe22
             return false;
         }
 
-        /// <summary>
-        /// Create a grid of walls
-        /// </summary>
-        public void ClearMaze()
-        {
-            foreach (List<Tile> row in _tiles)
-            {
-                row.Clear();
-            }
-            _tiles.Clear();
-            if (_height % 2 == 0) _height += 1;
-            if (_width % 2 == 0) _width += 1;
-            for (int row = 0; row < _height; row++)
-            {
-                _tiles.Add(new List<Tile>());
-                for (int col = 0; col < _width; col++)
-                {
-                    _tiles[row].Add(new Tile(this, new Coords(col, row),
-
-                        (row % 2 == 1)
-                        && (col % 2 == 1))
-                        );
-                }
-            }
-        }
-
-
-        public void AddTraps(int amount = -1)
-        {
-            if (amount < 0) amount = 5;
-            Random r = new Random();
-            for (int i = 0; i < amount; ++i)
-            {
-                int count = 0;
-                Path pos = new Path(1 + r.Next(_width - 2), 1 + r.Next(_height - 2));
-
-                while ((count < _width * height) && (pos.x > 0)
-                    && (_tiles[pos.y][pos.x].overlay.Count != 0)
-                    )
-                {
-                    count += 1;
-                    pos.x += 1;
-                    if (pos.x > _width - 2)
-                    {
-                        pos.x = 1;
-                        pos.y += 1;
-                    };
-                    if (pos.y > _height - 2)
-                    {
-                        pos.y = 1;
-                        pos.x = 1;
-                    }
-                    if (count >= _width * _height)
-                    {
-                        pos.x = -1;
-                        pos.y = -1;
-                    }
-                }
-
-
-                if ((pos.x >= 0) && (pos.x < _width) && (pos.y < _height) && (pos.y >= 0))
-                {
-                    TrapTile trapTile = new TrapTile(_tiles[pos.y][pos.x], 1);
-                    _tiles[pos.y][pos.x].Add(trapTile);
-                    _updateTiles.Add(pos);
-                }
-            }
-
-        }
-
         public virtual void HandleEvent(UIElement sender, Events eventID, params object[] data)
         {
             ((IHandleEvent)_parent).HandleEvent(sender, eventID, data);
         }
 
-        public void AddPlayer(Coords pos)
-        {
-            if (pos == null)
-            {
-                pos = new Coords(1, 1);
-            }
-            Player player = new Player("Klaus", 100, 20, 20);
-            ActorTile playerTile = new ActorTile(_tiles[pos.y][pos.x], player);
-            player.tile = playerTile;
-            _tiles[pos.y][pos.x].Add(playerTile);
-            _updateTiles.Add(pos);
-            _actors.Add(player);
-        }
-
-        public void AddEnemies(int amount = -1)
-        {
-            if (amount < 0) amount = 5;
-            Random r = new Random();
-            for (int i = 0; i < amount; ++i)
-            {
-                int count = 0;
-                Path pos = new Path(1 + r.Next(_width - 2), 1 + r.Next(_height - 2));
-                while ((count < _width * height) && (pos.x > 0)
-         && (_tiles[pos.y][pos.x].overlay.Count != 0)
-         )
-                {
-                    count += 1;
-                    pos.x += 1;
-                    if (pos.x > _width - 2)
-                    {
-                        pos.x = 1;
-                        pos.y += 1;
-                    };
-                    if (pos.y > _height - 2)
-                    {
-                        pos.y = 1;
-                        pos.x = 1;
-                    }
-                    if (count >= _width * _height)
-                    {
-                        pos.x = -1;
-                        pos.y = -1;
-                    }
-                }
-
-
-                if ((pos.x >= 0) && (pos.x < _width) && (pos.y < _height) && (pos.y >= 0))
-                {
-                    Enemy enemy = new Enemy(50, 90, 20);
-                    ActorTile enemyTile = new ActorTile(_tiles[pos.y][pos.x], enemy);
-                    enemy.tile = enemyTile;
-                    _tiles[pos.y][pos.x].Add(enemyTile);
-                    _updateTiles.Add(pos);
-                    _actors.Add(enemy);
-                }
-            }
-
-        }
-
-        public void AddTarget()
-        {
-
-        }
-        public void AddDoors(int amount = -1, int roomID = 1, int maxRoom = 3, List<Exit> doors = null)
-        {
-            if (amount < 0)
-            {
-                if ((roomID == 1) || (roomID == maxRoom))
-                {
-                    amount = 1;
-                }
-                else
-                {
-                    amount = 2;
-                }
-            }
-
-            Random r = new Random();
-            for (int i = 0; i < amount; ++i)
-            {
-                int count = 0;
-                Path pos = new Path(2 + r.Next(_width / 2 - 2) * 2, 2 + r.Next(_height / 2 - 2) * 2);
-                while ((count < width * height) && (pos.x > 0) && (!_tiles[pos.y][pos.x].canEnter))
-                {
-                    count += 1;
-                    pos.x += 2;
-                    if (pos.x > _width - 2)
-                    {
-                        pos.x = 2;
-                        pos.y += 2;
-                    };
-                    if (pos.y > _height - 2)
-                    {
-                        pos.y = 2;
-                        pos.x = 2;
-                    }
-                }
-
-                if (count >= _width * _height)
-                {
-                    pos.x = -1;
-                    pos.y = -1;
-                }
-                if ((pos.x >= 0) && (pos.x < _width) && (pos.y < _height) && (pos.y >= 0))
-                {
-                    TeleportTile teleportTile = new TeleportTile(this, "Raum2", pos);
-                    _tiles[pos.y][pos.x].Add(teleportTile);
-                    _updateTiles.Add(pos);
-                }
-            }
-
-        }
-
-
-        public void AddItems(int amount = -1)
-        {
-            if (amount < 0) amount = 5;
-            Random r = new Random();
-            for (int i = 0; i < amount; ++i)
-            {
-                int count = 0;
-                Path pos = new Path(2 + r.Next(_width / 2 - 2) * 2, 2 + r.Next(_height / 2 - 2) * 2);
-                while ((pos.x > 0) &&
-                    (_tiles[pos.y][pos.x].overlay.Count == 0))
-                {
-                    count += 1;
-                    pos.x += 2;
-                    if (pos.x > _width - 2)
-                    {
-                        pos.x = 2;
-                        pos.y += 2;
-                    };
-                    if (pos.y > _height - 2)
-                    {
-                        pos.y = 2;
-                        pos.x = 2;
-                    }
-                }
-
-                if (count >= _width * _height)
-                {
-                    pos.x = -1;
-                    pos.y = -1;
-                }
-                if ((pos.x >= 0) && (pos.x < _width) && (pos.y < _height) && (pos.y >= 0))
-                {
-                    Item item = new Item();
-                    ItemTile itemTile = new ItemTile(_tiles[pos.y][pos.x], item);
-                    item.tile = itemTile;
-                    _tiles[pos.y][pos.x].Add(itemTile);
-                    _items.Add(item);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Remove walls at random for more space
-        /// </summary>
-        /// <param name="amount">Amount of walls to remove</param>
-        public void ClearWalls(int amount = -1)
-        {
-            if (amount < 0)
-            {
-                amount = (int)(((((float)width - 1) / 2) * (((float)height - 1) / 2)) / 4); // every 4th wall!
-            };
-            Random r = new Random();
-
-            for (int i = 0; i < amount; ++i)
-            {
-                int count = 0;
-                Path pos = new Path(1 + r.Next((_width - 3) / 2) * 2, 1 + r.Next((_height - 2) / 2) * 2);
-                while ((pos.x > 0) && (_tiles[pos.y][pos.x].canEnter))
-                {
-                    count += 1;
-                    pos.x += 1;
-                    if (pos.x > _width - 2)
-                    {
-                        pos.x = 1;
-                        pos.y += 1;
-                    };
-                    if (pos.y > _height - 2)
-                    {
-                        pos.y = 1;
-                        pos.x = 1;
-                    }
-                    if (count >= _width * _height)
-                    {
-                        pos.x = -1;
-                        pos.y = -1;
-                    }
-                }
-                _tiles[pos.y][pos.x].Remove(TileType.Wall);
-            }
-
-            // Remove bad looking places: Walls surrounded by free space become free space, free space surrounded by walls becomes free space surrounded by free space
-            for (int y = 1; y < _height - 1; ++y)
-            {
-                for (int x = 1; x < _width - 1; ++x)
-                {
-                    int _wallsaround = 0;
-                    int _freearound = 0;
-                    if (_tiles[y - 1][x].canEnter)
-                    {
-                        _freearound += 1;
-                    }
-                    else
-                    {
-                        _wallsaround += 1;
-                    };
-                    if (_tiles[y][x - 1].canEnter)
-                    {
-                        _freearound += 1;
-                    }
-                    else
-                    {
-                        _wallsaround += 1;
-                    };
-                    if (_tiles[y][x + 1].canEnter)
-                    {
-                        _freearound += 1;
-                    }
-                    else
-                    {
-                        _wallsaround += 1;
-                    };
-                    if (_tiles[y + 1][x].canEnter)
-                    {
-                        _freearound += 1;
-                    }
-                    else
-                    {
-                        _wallsaround += 1;
-                    };
-                    if (_freearound == 4)
-                        _tiles[y][x].Remove(TileType.Wall);
-                    if (_wallsaround == 4)
-                    {
-                        if (y > 1)
-                            _tiles[y - 1][x].Remove(TileType.Wall);
-                        if (x > 1)
-                            _tiles[y][x - 1].Remove(TileType.Wall);
-                        if (y < _height - 2)
-                            _tiles[y + 1][x].Remove(TileType.Wall);
-                        if (x < _width - 2)
-                            _tiles[y][x + 1].Remove(TileType.Wall);
-
-                        y = y - ((y > 1) ? 2 : 1); // restart at wall above
-                        x = x - ((x > 1) ? 2 : 1); // restart at wall left
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// Create a new maze
-        /// </summary>
-        /// <param name="slow"></param>
-        public void GenerateMaze()
-        {
-            ClearMaze(); // set up grid
-
-            Random r = new Random();
-
-            Path originPos = new Path(1 + r.Next((_width - 3) / 2) * 2, 1 + r.Next((_height - 2) / 2) * 2);
-            Path currentPos = new Path(1 + r.Next((_width - 3) / 2) * 2, 1 + r.Next((_height - 3) / 2) * 2);
-
-            _tiles[originPos.y][originPos.x].connected = true;
-            _tiles[originPos.y][originPos.x].Remove(TileType.Wall);
-            int remaining = _width / 2 * _height / 2 - 2;
-
-            Path startPos = originPos;
-            while ((currentPos.x > -1) && (remaining > 0))
-            {
-                _NextTile(ref startPos);
-                currentPos = startPos;
-
-                while ((currentPos.x > 0) && (!_tiles[currentPos.y][currentPos.x].connected))
-                {
-                    currentPos.dir = (Connection)r.Next(4) + 1;
-                    Path next = _Walk(currentPos);
-                    int dirCount = 0;
-                    while ((next == null) && (dirCount < 4))
-                    {
-                        dirCount += 1;
-                        currentPos.dir += 1;
-                        if (currentPos.dir == Connection.Invalid)
-                            currentPos.dir = Connection.Up;
-                        next = _Walk(currentPos);
-                    }
-                    if (dirCount == 4) break;
-                    _tiles[currentPos.y][currentPos.x].connection = currentPos.dir;
-                    currentPos = next;
-                }
-                Path endPos = currentPos;
-                currentPos = startPos;
-                while ((currentPos.x != endPos.x) || (currentPos.y != endPos.y))
-                {
-                    _tiles[currentPos.y][currentPos.x].connected = true;
-                    switch (_tiles[currentPos.y][currentPos.x].connection)
-                    {
-                        case Connection.Left:
-                            _tiles[currentPos.y][currentPos.x - 1].Remove(TileType.Wall);
-                            break;
-                        case Connection.Right:
-                            _tiles[currentPos.y][currentPos.x + 1].Remove(TileType.Wall);
-                            break;
-                        case Connection.Up:
-                            _tiles[currentPos.y - 1][currentPos.x].Remove(TileType.Wall);
-                            break;
-                        case Connection.Down:
-                            _tiles[currentPos.y + 1][currentPos.x].Remove(TileType.Wall);
-                            break;
-                    }
-                    currentPos.dir = _tiles[currentPos.y][currentPos.x].connection;
-                    _tiles[currentPos.y][currentPos.x].connection = Connection.Invalid;
-                    currentPos = _Walk(currentPos);
-                    --remaining;
-                }
-                startPos = new Path(1 + r.Next((_width - 3) / 2) * 2, 1 + r.Next((_height - 2) / 2) * 2);
-            }
-            ClearWalls(); // Remove random walls
-        }
 
         /// <summary>
         /// Load a map from a file
@@ -817,6 +366,7 @@ namespace Gruppe22
         /// <returns>true if read was successful</returns>
         public void Load(string filename, Coords player)
         {
+            Player playerA = null;
             if (player == null)
             {
                 player = new Coords(1, 1);
@@ -827,20 +377,19 @@ namespace Gruppe22
                 {
                     if (_actors[i] is Player)
                     {
-                        _actors.RemoveAt(i);
-                        i -= 1;
-                    }
-                    else
-                    {
-                        _actors[i].tile = null;
+                        playerA = (Player)_actors[i];
+                        playerA.tile = null;
+                        break;
                     }
                 }
+                _actors.Clear();
             }
             else
             {
-                Player playerA = new Player("Klaus", 100, 20, 20);
-                _actors.Add(playerA);
+                playerA = new Player("Klaus", 100, 20, 20);
             }
+            _actors.Add(playerA);
+
             _tiles.Clear();
             _items.Clear();
             _updateTiles.Clear();
@@ -850,54 +399,65 @@ namespace Gruppe22
             _height = int.Parse(xmlr.GetAttribute("height"));
             xmlr.ReadStartElement("GameMap");//GameMap
 
-            for (int r = 0; r < _height; r++)
-            { // Add Rows
-                xmlr.Read();//row
-                //TODO: dynamisches einlesen von overlay-Tiles
-                _tiles.Add(new List<Tile>());
-                for (int j = 0; j < _width; j++)
-                { // Add Tiles and overlay-Tiles
-                    switch (xmlr.Name)
-                    {
-                        case "Tile":
-                            Tile tile = new Tile(this, new Coords(j, r), true);
-                            if (!xmlr.IsEmptyElement)
-                            {
-                                xmlr.Read();
-
-                                while ((xmlr.NodeType != XmlNodeType.EndElement))
-                                {
-                                    switch (xmlr.Name)
-                                    {
-                                        case "WallTile":
-                                            tile.Add(TileType.Wall);
-                                            break;
-                                        case "ActorTile":
-                                            if ((j != 1) || (r != 1))
-                                            {
-                                                Enemy enemy = (new Enemy(40, 0, 20));
-                                                ActorTile tile2 = new ActorTile(tile, enemy);
-                                                enemy.tile = tile2;
-                                                tile.Add(tile2);
-                                                _actors.Add(enemy);
-                                                _updateTiles.Add(tile.coords);
-                                            }
-                                            break;
-                                    }
-                                    xmlr.Read();
-                                }
-                            }
-                            _tiles[r].Add(tile);
-                            xmlr.Read();
-
-                            break;
-                        default:
-                            j--;
-                            xmlr.Read();
-                            break;
-                    }
+            for (int row = 0; row < _height; ++row)
+            {
+                _tiles.Add(new List<FloorTile>());
+                for (int col = 0; col < _width; ++col)
+                {
+                    _tiles[row].Add(new FloorTile(this, new Coords(col, row)));
                 }
             }
+
+            while ((xmlr.NodeType != XmlNodeType.EndElement) && (xmlr.NodeType != XmlNodeType.None))
+            { // Add Tiles and overlay-Tiles
+                switch (xmlr.Name)
+                {
+                    case "Tile":
+                        FloorTile tile = _tiles[Int32.Parse(xmlr.GetAttribute("CoordY"))][Int32.Parse(xmlr.GetAttribute("CoordX"))];
+                        if (!xmlr.IsEmptyElement)
+                        {
+                            xmlr.Read();
+
+                            while ((xmlr.NodeType != XmlNodeType.EndElement))
+                            {
+                                switch (xmlr.Name)
+                                {
+                                    case "WallTile":
+                                        tile.Add(TileType.Wall);
+                                        break;
+                                    case "ItemTile":
+                                        tile.Add(TileType.Item);
+                                        break;
+                                    case "TargetTile":
+                                        tile.Add(new TargetTile(tile));
+                                        break;
+                                    case "TrapTile":
+                                        tile.Add(new TrapTile(this, Int32.Parse(xmlr.GetAttribute("damage"))));
+                                        _updateTiles.Add(tile.coords);
+                                        break;
+                                    case "TeleportTile":
+                                        tile.Add(new TeleportTile(tile, xmlr.GetAttribute("nextRoom"), new Coords(Int32.Parse(xmlr.GetAttribute("nextX")), Int32.Parse(xmlr.GetAttribute("nextY")))));
+                                        break;
+                                    case "ActorTile":
+                                        if (xmlr.GetAttribute("player") == null)
+                                        {
+                                            Enemy enemy = (new Enemy(40, 0, 20));
+                                            ActorTile tile2 = new ActorTile(tile, enemy);
+                                            enemy.tile = tile2;
+                                            tile.Add(tile2);
+                                            _actors.Add(enemy);
+                                            _updateTiles.Add(tile.coords);
+                                        }
+                                        break;
+                                }
+                                xmlr.Read();
+                            }
+                        }
+                        xmlr.Read();
+                        break;
+                }
+            }
+
             xmlr.Close();
 
             ActorTile actortile = new ActorTile(_tiles[player.y][player.x], actors[0]);
@@ -914,9 +474,9 @@ namespace Gruppe22
         public void DebugMap()
         {
             string output = "";
-            foreach (List<Tile> row in _tiles)
+            foreach (List<FloorTile> row in _tiles)
             {
-                foreach (Tile tile in row)
+                foreach (FloorTile tile in row)
                 {
                     if (tile.canEnter)
                     {
@@ -938,7 +498,7 @@ namespace Gruppe22
         /// </summary>
         /// <param name="filename">The filename to write to</param>
         /// <returns>true if writing was successful</returns>
-        public void Save(string filename)
+        public virtual void Save(string filename)
         {
             XmlWriter xmlw = XmlWriter.Create(filename);
             xmlw.WriteStartDocument();
@@ -946,14 +506,13 @@ namespace Gruppe22
             xmlw.WriteAttributeString("width", _width.ToString());
             xmlw.WriteAttributeString("height", _height.ToString());
             //_tiles[0][0].overlay.Add(new TeleportTile("map2.xml", new Microsoft.Xna.Framework.Vector2(0,0)));//test
-            foreach (List<Tile> ltiles in _tiles)
+            foreach (List<FloorTile> ltiles in _tiles)
             {
-                xmlw.WriteStartElement("Row");
-                foreach (Tile tile in ltiles)
+                foreach (FloorTile tile in ltiles)
                 {
-                    tile.Save(xmlw);
+                    if (tile.overlay.Count > 0)
+                        tile.Save(xmlw);
                 }
-                xmlw.WriteEndElement();
             }
             xmlw.WriteEndElement();
             xmlw.WriteEndDocument();
@@ -962,6 +521,7 @@ namespace Gruppe22
 
         #endregion
 
+
         #region Constructor
 
         public Map()
@@ -969,60 +529,27 @@ namespace Gruppe22
             _updateTiles = new List<Coords>();
             _actors = new List<Actor>();
             _items = new List<Item>();
-            _blankTile = new Tile();
-            _tiles = new List<List<Tile>>();
+            _blankTile = new FloorTile(this);
+            _blankTile.coords = new Coords(0, 0);
+            _tiles = new List<List<FloorTile>>();
+            _exits = new List<Exit>();
 
         }
 
-        /// <summary>
-        /// Create an empty map
-        /// </summary>
-        /// <param name="width">The width of the map</param>
-        /// <param name="height">The height of the map</param>
-        public Map(object parent = null, int width = 10, int height = 10, bool generate = false, Coords playerPos = null, int roomNr = 1, int maxRoom = 3, List<Exit> exits = null)
-            : this()
-        {
-            _parent = parent;
-            _width = width;
-            _height = height;
-            for (int y = 0; y < height; ++y)
-            {
-                _tiles.Add(new List<Tile>());
-                for (int x = 0; x < width; ++x)
-                {
-                    _tiles[y].Add(new Tile(this, new Coords(x, y)));
-                }
-            }
-            if (generate)
-            {
-                GenerateMaze();
-                AddPlayer(playerPos);
-                // AddTraps();
-                AddDoors(-1, roomNr, maxRoom, exits);
-                AddEnemies();
-                // AddItems();
-                if (roomNr == 3)
-                {
-                    AddTarget();
-                }
-            }
-        }
 
         /// <summary>
         /// Load a map from a file
         /// </summary>
         /// <param name="filename"></param>
-        public Map(object parent = null, string filename = "", Coords playerPos = null)
+        public Map(object parent, string filename = "", Coords playerPos = null)
             : this()
         {
             _parent = parent;
-
             Load(filename, playerPos);
+
         }
 
-
-
-        public void Dispose()
+        public virtual void Dispose()
         {
             while (_tiles.Count > 0)
             {
@@ -1107,7 +634,7 @@ namespace Gruppe22
             List<Exit> result = new List<Exit>();
             foreach (Exit exit in exits)
             {
-                if (exit.toRoom.Contains(ToRoom.ToString() + ".xml"))
+                if (exit.toRoom.Contains("om" + ToRoom.ToString() + ".xml"))
                 {
                     result.Add(new Exit(exit.to, exit.toRoom, exit.from, exit.fromRoom));
                 }

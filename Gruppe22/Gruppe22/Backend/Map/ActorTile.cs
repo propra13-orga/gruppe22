@@ -42,13 +42,7 @@ namespace Gruppe22
         override public void Save(XmlWriter xmlw)
         {
             xmlw.WriteStartElement("ActorTile");
-            xmlw.WriteAttributeString("canEnter", Convert.ToString(canEnter));
-            xmlw.WriteAttributeString("connected", Convert.ToString(connected));
-            xmlw.WriteAttributeString("connection", Convert.ToString(connection));
-            foreach (Tile tile in _overlay)
-            {
-                tile.Save(xmlw);
-            }
+            if (_actor is Player) xmlw.WriteAttributeString("player", "true");
             xmlw.WriteEndElement();
         }
         #endregion
@@ -76,15 +70,11 @@ namespace Gruppe22
                  _count += 1;
             }
         }
-        public ActorTile()
-            : this(null)
-        {
-        }
+        
 
         public ActorTile(object parent)
-            : base(parent, null, true)
+            : base(parent)
         {
-            _parent = parent;
         }
         #endregion
 

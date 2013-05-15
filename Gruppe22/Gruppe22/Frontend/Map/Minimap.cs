@@ -74,11 +74,25 @@ namespace Gruppe22
                                     {
                                         if (_map[x, y].hasTeleport)
                                         {
-                                            _spriteBatch.Draw(_mapIcon, new Rectangle(_displayRect.Left + x * 16, _displayRect.Top + y * 16, 16, 16), new Rectangle(0, 16, 16, 16), Color.White);
-                                        }
+                                            if (x == 0) { 
+                                            _spriteBatch.Draw(_mapIcon, new Rectangle(_displayRect.Left + x * 16, _displayRect.Top + y * 16, 16, 16), new Rectangle(0, 0, 16, 16), Color.White);
+                                            }
+                                            if (y == 0)
+                                            {
+                                                _spriteBatch.Draw(_mapIcon, new Rectangle(_displayRect.Left + x * 16, _displayRect.Top + y * 16, 16, 16), new Rectangle(16, 0, 16, 16), Color.White);
+                                            }
+                                            if (x == _map.width-1)
+                                            {
+                                                _spriteBatch.Draw(_mapIcon, new Rectangle(_displayRect.Left + x * 16, _displayRect.Top + y * 16, 16, 16), new Rectangle(16, 16, 16, 16), Color.White);
+                                            }
+                                            if (y == _map.height- 1)
+                                            {
+                                                _spriteBatch.Draw(_mapIcon, new Rectangle(_displayRect.Left + x * 16, _displayRect.Top + y * 16, 16, 16), new Rectangle(0, 16, 16, 16), Color.White);
+                                            }
+                                            }
                                         else
                                         {
-                                            if (_map[x, y].hasSpecial)
+                                            if (_map[x, y].hasTarget)
                                             {
                                                 _spriteBatch.Draw(_mapIcon, new Rectangle(_displayRect.Left + x * 16, _displayRect.Top + y * 16, 16, 16), new Rectangle(48, 0, 16, 16), Color.White);
                                             }
@@ -130,7 +144,7 @@ namespace Gruppe22
             _map = map;
             _mapIcon = _content.Load<Texture2D>("Minimap");
             _camera.rotate = -45.0f;
-            Zoom = 0.6f;
+            Zoom = 0.9f;
 
         }
     }

@@ -18,7 +18,10 @@ namespace Gruppe22
         {
             get
             {
-                return _item.itemType;
+                if (item != null)
+                    return _item.itemType;
+                else
+                    return ItemType.Potion;
             }
         }
 
@@ -32,21 +35,13 @@ namespace Gruppe22
         public override void Save(XmlWriter xmlw)
         {
             xmlw.WriteStartElement("ItemTile");
-            xmlw.WriteAttributeString("canEnter", Convert.ToString(canEnter));
-            xmlw.WriteAttributeString("connected", Convert.ToString(connected));
-            xmlw.WriteAttributeString("connection", Convert.ToString(connection));
-            foreach (Tile tile in _overlay)
-            {
-                tile.Save(xmlw);
-            }
             xmlw.WriteEndElement();
             _parent = parent;
         }
 
         public ItemTile(object parent)
-            : base(parent, null, true)
+            : base(parent)
         {
-            _parent = parent;
 
         }
     }

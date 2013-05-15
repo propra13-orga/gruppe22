@@ -38,10 +38,7 @@ namespace Gruppe22
         {
             xmlw.WriteStartElement("TrapTile");
             xmlw.WriteAttributeString("damage", Convert.ToString(_damage));
-            foreach (Tile tile in _overlay)
-            {
-                tile.Save(xmlw);
-            }
+
             xmlw.WriteEndElement();
         }
     }
