@@ -37,7 +37,6 @@ namespace Gruppe22
         public override void Save(XmlWriter xmlw)
         {
             xmlw.WriteStartElement("TrapTile");
-            xmlw.WriteAttributeString("canEnter", Convert.ToString(canEnter));
             xmlw.WriteAttributeString("damage", Convert.ToString(_damage));
             foreach (Tile tile in _overlay)
             {

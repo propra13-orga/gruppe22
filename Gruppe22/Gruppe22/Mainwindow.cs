@@ -106,15 +106,17 @@ namespace Gruppe22
 
         public void GenerateMaps()
         {
+            List<Exit> exits=new List<Exit>();
             Random r = new Random();
             Map tempMap = null;
-            tempMap = new Map(this, 15, 15, true);
+            tempMap = new Map(this, 15, 15, true, null, 1, 3, null);
             tempMap.Save("map1.xml");
+
             tempMap.Dispose();
-            tempMap = new Map(this, r.Next(5) + 8, r.Next(2) + 8, true);
+            tempMap = new Map(this, r.Next(5) + 8, r.Next(2) + 8, true, null, 2, 3, exits);
             tempMap.Save("map2.xml");
             tempMap.Dispose();
-            tempMap = new Map(this, r.Next(10) + 8, r.Next(10) + 8, true);
+            tempMap = new Map(this, r.Next(10) + 8, r.Next(10) + 8, true, null, 3, 3, exits);
             tempMap.Save("map3.xml");
             tempMap.Dispose();
         }
@@ -273,6 +275,24 @@ namespace Gruppe22
 
                     break;
 
+                case Events.FinishedAnimation:
+                    int FinishedID = (int)data[0];
+                    Activity FinishedActivity = (Activity)data[1];
+                    if (FinishedActivity == Activity.Die)
+                    {
+                        if (_map1.actors[FinishedID] is Enemy)
+                        {
+                            ((ActorTile)_map1.actors[FinishedID].tile).enabled = false;
+                            AddMessage("An enemy is dead.");
+                        }
+                        else
+                        {
+                            AddMessage("You are dead.");
+                            ShowEndGame();
+                        }
+                    }
+                    break;
+
                 case Events.MoveActor:
                     int id = (int)data[0];
                     if (!((Mainmap)_interfaceElements[1]).IsMoving(id))
@@ -289,15 +309,15 @@ namespace Gruppe22
                             if (_map1[target.x, target.y].firstActor is Player) UpdateHealth();
                             if (_map1[target.x, target.y].firstActor.IsDead())
                             {
-                                ((Mainmap)_interfaceElements[1]).HandleEvent(null, Events.AnimateActor, _map1.firstActorID(target.x, target.y), Activity.Die, false);
-                                if (_map1.firstActorID(target.x, target.y) == 0)
-                                {
-                                    ShowEndGame();
-                                }
+                                ((Mainmap)_interfaceElements[1]).HandleEvent(null, Events.AnimateActor, _map1.firstActorID(target.x, target.y), Activity.Die, false, Map.WhichWayIs(target, _map1.actors[id].tile.coords));
+                                AddMessage((_map1.actors[id] is Player ? "You" : "An enemy") + " killed " + (_map1.actors[_map1.firstActorID(target.x, target.y)] is Player ? "you" : "an enemy") + " doing " + _map1.actors[id].damage.ToString() + " points of damage.");
+
                             }
                             else
                             {
-                                ((Mainmap)_interfaceElements[1]).HandleEvent(null, Events.AnimateActor, _map1.firstActorID(target.x, target.y), Activity.Hit, false);
+                                ((Mainmap)_interfaceElements[1]).HandleEvent(null, Events.AnimateActor, _map1.firstActorID(target.x, target.y), Activity.Hit, false, Map.WhichWayIs(target, _map1.actors[id].tile.coords));
+                                AddMessage((_map1.actors[id] is Player ? "You" : "An enemy") + " attacked " + (_map1.actors[_map1.firstActorID(target.x, target.y)] is Player ? "you" : "an enemy") + " for " + _map1.actors[id].damage.ToString() + " points.");
+
                             }
                             ((Mainmap)_interfaceElements[1]).HandleEvent(null, Events.AnimateActor, id, Activity.Attack, false, dir, true);
 
@@ -316,14 +336,14 @@ namespace Gruppe22
                                     if (_map1.actors[id].IsDead())
                                     {
                                         ((Mainmap)_interfaceElements[1]).HandleEvent(null, Events.AnimateActor, id, Activity.Die, true);
-                                        if (id == 0)
-                                        {
-                                            ShowEndGame();
-                                        }
+                                        AddMessage((_map1.actors[id] is Player ? "You were" : "An enemy was") + " hit for 20 points of damage by a trap.");
+
                                     }
                                     else
                                     {
                                         ((Mainmap)_interfaceElements[1]).HandleEvent(null, Events.AnimateActor, id, Activity.Hit, true);
+                                        AddMessage(" was hit for 20 points of damage by a trap.");
+
                                     }
                                 }
                                 else
@@ -341,6 +361,18 @@ namespace Gruppe22
             }
         }
 
+        public void AddMessage(string s)
+        {
+            foreach (UIElement element in _interfaceElements)
+            {
+                if (element is Statusbox)
+                {
+                    ((Statusbox)element).AddLine(s);
+
+                    return;
+                }
+            }
+        }
 
         public void UpdateHealth()
         {
@@ -353,8 +385,6 @@ namespace Gruppe22
                     if (_map1.actors[0].IsDead())
                     {
                         ((Mainmap)_interfaceElements[1]).HandleEvent(null, Events.AnimateActor, _map1.actors[0].id, Activity.Die, false);
-
-                        ShowEndGame();
                     };
                     return;
                 }

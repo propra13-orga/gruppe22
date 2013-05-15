@@ -30,7 +30,8 @@ namespace Gruppe22
         private int _count = 0;
         private IHandleEvent _parent = null;
         private Activity _playAfterMove = Activity.Walk;
-        bool _lock=false;
+        private bool _lock = false;
+        private bool _dead = false;
         #endregion
 
         #region Public fields
@@ -72,7 +73,7 @@ namespace Gruppe22
         {
             get
             {
-                return ((_target.x != position.x) || (target.y != position.y)||_lock);
+                return ((_target.x != position.x) || (target.y != position.y) || _lock);
             }
         }
 
@@ -97,8 +98,8 @@ namespace Gruppe22
             }
             set
             {
-
-                _direction = value;
+                if (value != Direction.None)
+                    _direction = value;
             }
         }
 
@@ -106,6 +107,10 @@ namespace Gruppe22
         {
             get
             {
+                if (_direction == Direction.None)
+                {
+                    return _textures[(int)_activity].animationTexture;
+                }
                 return _textures[(int)_activity * 8 + (int)_direction].animationTexture;
             }
         }
@@ -159,23 +164,26 @@ namespace Gruppe22
 
         #region Public Methods
 
-        public void PlayNowOrAfterMove(Activity activity, bool locked=false)
+        public void PlayNowOrAfterMove(Activity activity, bool locked = false)
         {
-        if(this.isMoving){
-            _playAfterMove=activity;
-        }
-        if(locked){
-            _lock=true;
-        }
+            if (this.isMoving)
+            {
+                _playAfterMove = activity;
+            }
+            if (locked)
+            {
+                _lock = true;
+            }
         }
 
-        public void EndMoveAndPlay(Activity activity, bool locked=false)
+        public void EndMoveAndPlay(Activity activity, bool locked = false)
         {
             _position.x = _target.x;
             _position.y = _target.y;
             _activity = activity;
-            if(locked){
-                _lock=true;
+            if (locked)
+            {
+                _lock = true;
             }
         }
 
@@ -377,12 +385,25 @@ namespace Gruppe22
             {
                 if ((gametime == null) || (_count > 10))
                 {
-                    if ((_textures[(int)_activity * 8 + (int)_direction].NextAnimation()) && (_activity != Activity.Die)) {
-                        _parent.HandleEvent(null, Events.FinishedAnimation, _id, _activity);                        
-                        _activity = _playAfterMove;
-                        if (_playAfterMove != Activity.Walk) _playAfterMove = Activity.Walk;
-                        _lock = false;
+                    if (_textures[(int)_activity * 8 + (int)_direction].NextAnimation())
+                    {
+                        if (_activity != Activity.Die)
+                        {
+                            _parent.HandleEvent(null, Events.FinishedAnimation, _id, _activity);
+                            _activity = _playAfterMove;
+                            if (_playAfterMove != Activity.Walk) _playAfterMove = Activity.Walk;
+                            _lock = false;
                         }
+                        else
+                        {
+                            if (!_dead)
+                            {
+                                _dead = true;
+                                _parent.HandleEvent(null, Events.FinishedAnimation, _id, _activity);
+
+                            }
+                        }
+                    }
                     _count = 0;
                 }
                 if (gametime.ElapsedGameTime.Milliseconds % 100 > 10)
@@ -408,10 +429,11 @@ namespace Gruppe22
         /// <param name="controllable"></param>
         /// <param name="position"></param>
         /// <param name="sprite"></param>
-        public ActorView(IHandleEvent parent, int _id, ContentManager content, Coords position, string filename = "")
+        public ActorView(IHandleEvent parent, int id, ContentManager content, Coords position, string filename = "", int speed=5)
             : base(content, 96, 96, "")
         {
             _position = position;
+            _id = id;
             _target = position;
             for (int i = 0; i < (Enum.GetValues(typeof(Activity)).Length) * 8; ++i)
             {
@@ -422,6 +444,7 @@ namespace Gruppe22
                 Load(filename);
             }
             _parent = parent;
+            _speed = speed;
         }
         #endregion
 

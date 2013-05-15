@@ -79,14 +79,15 @@ namespace Gruppe22
                 return result;
             }
         }
-        
+
         public Actor firstActor
         {
             get
             {
                 foreach (Tile tile in _overlay)
                 {
-                    if (tile is ActorTile) return ((ActorTile)tile).actor;
+                    if ((tile is ActorTile) && (((ActorTile)tile).enabled)) 
+                        return ((ActorTile)tile).actor;
                 }
                 return null;
             }
@@ -178,7 +179,7 @@ namespace Gruppe22
                 int count = 0;
                 while ((!result) && (count < _overlay.Count))
                 {
-                    result = ((_overlay[count] is ActorTile) && (((ActorTile)_overlay[count]).actor is Enemy));
+                    result = ((_overlay[count] is ActorTile) && (((ActorTile)_overlay[count]).enabled) && (((ActorTile)_overlay[count]).actor is Enemy));
                     ++count;
                 }
                 return result;
@@ -323,7 +324,7 @@ namespace Gruppe22
         /// <param name="gameTime"></param>
         public virtual void Update(GameTime gameTime)
         {
-            for(int i=0;i<_overlay.Count;++i)
+            for (int i = 0; i < _overlay.Count; ++i)
             {
                 _overlay[i].Update(gameTime);
             }

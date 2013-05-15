@@ -6,6 +6,33 @@ using Microsoft.Xna.Framework;
 
 namespace Gruppe22
 {
+    public class Exit
+    {
+        private Coords _from;
+        private Coords _to;
+        private string _fromRoom;
+        private string _toRoom;
+
+        public Coords from
+        {
+            get { return _from; }
+        }
+
+        public Coords to
+        {
+            get { return _to; }
+        }
+        public string fromRoom { get { return _fromRoom; } }
+
+        public string toRoom { get { return _toRoom; } }
+
+        public Exit(Coords from, string fromRoom, Coords to = null, string toRoom = "")
+        {
+            _from = from;
+            _fromRoom = fromRoom;
+            _toRoom = toRoom;
+        }
+    }
     public class Map : IHandleEvent, IDisposable
     {
         #region Private Fields
@@ -20,6 +47,7 @@ namespace Gruppe22
         /// </summary>
         private int _width = 10;
 
+        private List<Exit> _exits;
         /// <summary>
         /// Internal current height
         /// </summary>
@@ -47,6 +75,18 @@ namespace Gruppe22
             set
             {
                 _actors = value;
+            }
+        }
+
+        public List<Exit> exits
+        {
+            get
+            {
+                return _exits;
+            }
+            set
+            {
+                _exits = value;
             }
         }
 
@@ -406,8 +446,11 @@ namespace Gruppe22
             for (int i = 0; i < amount; ++i)
             {
                 int count = 0;
-                Path pos = new Path(2 + r.Next(_width / 2 - 2) * 2, 2 + r.Next(_height / 2 - 2) * 2);
-                while ((count < _width * height) && (pos.x > 0) && (!_tiles[pos.y][pos.x].canEnter))
+                Path pos = new Path(1 + r.Next(_width - 2), 1 + r.Next(_height - 2));
+
+                while ((count < _width * height) && (pos.x > 0)
+                    && (_tiles[pos.y][pos.x].overlay.Count != 0)
+                    )
                 {
                     count += 1;
                     pos.x += 1;
@@ -421,13 +464,14 @@ namespace Gruppe22
                         pos.y = 1;
                         pos.x = 1;
                     }
+                    if (count >= _width * _height)
+                    {
+                        pos.x = -1;
+                        pos.y = -1;
+                    }
                 }
 
-                if (count >= _width * _height)
-                {
-                    pos.x = -1;
-                    pos.y = -1;
-                }
+
                 if ((pos.x >= 0) && (pos.x < _width) && (pos.y < _height) && (pos.y >= 0))
                 {
                     TrapTile trapTile = new TrapTile(_tiles[pos.y][pos.x], 1);
@@ -465,8 +509,9 @@ namespace Gruppe22
             {
                 int count = 0;
                 Path pos = new Path(1 + r.Next(_width - 2), 1 + r.Next(_height - 2));
-                while ((pos.x > 0) &&
-                    (_tiles[pos.y][pos.x].overlay.Count != 0))
+                while ((count < _width * height) && (pos.x > 0)
+         && (_tiles[pos.y][pos.x].overlay.Count != 0)
+         )
                 {
                     count += 1;
                     pos.x += 1;
@@ -501,11 +546,24 @@ namespace Gruppe22
 
         }
 
-
-        public void AddDoors(int amount = -1)
+        public void AddTarget()
         {
-            if (amount < 0) amount = 5;
-            if (amount < 0) amount = 5;
+
+        }
+        public void AddDoors(int amount = -1, int roomID = 1, int maxRoom = 3, List<Exit> doors = null)
+        {
+            if (amount < 0)
+            {
+                if ((roomID == 1) || (roomID == maxRoom))
+                {
+                    amount = 1;
+                }
+                else
+                {
+                    amount = 2;
+                }
+            }
+
             Random r = new Random();
             for (int i = 0; i < amount; ++i)
             {
@@ -626,7 +684,7 @@ namespace Gruppe22
             // Remove bad looking places: Walls surrounded by free space become free space, free space surrounded by walls becomes free space surrounded by free space
             for (int y = 1; y < _height - 1; ++y)
             {
-                for (int x = 1; x < _height - 1; ++x)
+                for (int x = 1; x < _width - 1; ++x)
                 {
                     int _wallsaround = 0;
                     int _freearound = 0;
@@ -921,7 +979,7 @@ namespace Gruppe22
         /// </summary>
         /// <param name="width">The width of the map</param>
         /// <param name="height">The height of the map</param>
-        public Map(object parent = null, int width = 10, int height = 10, bool generate = false, Coords playerPos = null)
+        public Map(object parent = null, int width = 10, int height = 10, bool generate = false, Coords playerPos = null, int roomNr = 1, int maxRoom = 3, List<Exit> exits = null)
             : this()
         {
             _parent = parent;
@@ -940,9 +998,13 @@ namespace Gruppe22
                 GenerateMaze();
                 AddPlayer(playerPos);
                 // AddTraps();
-                //AddDoors();
+                AddDoors(-1, roomNr, maxRoom, exits);
                 AddEnemies();
                 // AddItems();
+                if (roomNr == 3)
+                {
+                    AddTarget();
+                }
             }
         }
 
@@ -954,6 +1016,7 @@ namespace Gruppe22
             : this()
         {
             _parent = parent;
+
             Load(filename, playerPos);
         }
 
@@ -977,5 +1040,82 @@ namespace Gruppe22
             _items.Clear();
         }
         #endregion
+
+        #region Static Helpers
+        public static Direction WhichWayIs(Coords from, Coords to)
+        {
+            if (from.x < to.x)
+            {
+                if (from.y < to.y)
+                {
+
+                    return Direction.UpLeft;
+                }
+                else
+                {
+                    if (from.y > to.y)
+                    {
+                        return Direction.DownLeft;
+                    }
+                    else
+                    {
+                        return Direction.Left;
+                    }
+                }
+            }
+            else
+            {
+                if (from.x > to.x)
+                {
+
+                    if (from.y < to.y)
+                    {
+                        return Direction.UpRight;
+                    }
+                    else
+                    {
+                        if (from.y > to.y)
+                        {
+                            return Direction.DownRight;
+                        }
+                        else
+                        {
+                            return Direction.Right;
+                        }
+                    }
+                }
+                else
+                {
+                    if (from.y < to.y)
+                    {
+                        return Direction.Up;
+                    }
+                    else
+                    {
+                        if (from.y > to.y)
+                        {
+                            return Direction.Down;
+                        }
+                    }
+                }
+            }
+            return Direction.None;
+        }
+
+        public static List<Exit> ExitToEntry(int ToRoom, List<Exit> exits)
+        {
+            List<Exit> result = new List<Exit>();
+            foreach (Exit exit in exits)
+            {
+                if (exit.toRoom.Contains(ToRoom.ToString() + ".xml"))
+                {
+                    result.Add(new Exit(exit.to, exit.toRoom, exit.from, exit.fromRoom));
+                }
+            }
+            return result;
+        }
+        #endregion
+
+
     }
 }

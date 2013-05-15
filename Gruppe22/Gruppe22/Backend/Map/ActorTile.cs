@@ -9,8 +9,9 @@ namespace Gruppe22
     public class ActorTile : Tile
     {
         #region Private Fields
-        Actor _actor;
-        int _count = 0;
+        private Actor _actor;
+        private int _count = 0;
+        private bool _disabled = false;
         #endregion
 
         #region Public Fields
@@ -18,6 +19,7 @@ namespace Gruppe22
         {
             get { return _actor; }
         }
+        
         public ActorType actorType
         {
             get
@@ -26,6 +28,17 @@ namespace Gruppe22
             }
         }
 
+        public bool enabled
+        {
+            get
+            {
+                return !_disabled;
+            }
+            set
+            {
+                _disabled = !value;
+            }
+        }
         override public void Save(XmlWriter xmlw)
         {
             xmlw.WriteStartElement("ActorTile");
@@ -46,6 +59,8 @@ namespace Gruppe22
         {
             _actor = actor;
         }
+
+
 
         public override void Update(Microsoft.Xna.Framework.GameTime gameTime)
         {

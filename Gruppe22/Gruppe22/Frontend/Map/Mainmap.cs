@@ -20,7 +20,8 @@ namespace Gruppe22
         UpRight,
         UpLeft,
         DownRight,
-        DownLeft
+        DownLeft,
+        None = -1
     }
 
     /// <summary>
@@ -80,14 +81,29 @@ namespace Gruppe22
                 case Events.AnimateActor:
                     {
                         int id = (int)data[0];
-
-                        Activity act = (Activity)data[1];
-                        _actors[id].activity = act;
-                        /*bool waitForAnim = (bool)data[2];*/
+                        Activity activity = (Activity)data[1];
+                        bool delay = false;
+                        bool isLock = true;
+                        if (data.Length > 2) delay = (bool)data[2];
                         if (data.Length > 3) _actors[id].direction = (Direction)data[3];
+                        if (delay)
+                        {
+                            _actors[id].PlayNowOrAfterMove(activity, isLock);
+                        }
+                        else
+                        {
+                            _actors[id].EndMoveAndPlay(activity, isLock);
+                        }
+                        ;
+                        /*bool waitForAnim = (bool)data[2];*/
                     }
                     break;
 
+                case Events.FinishedAnimation:
+                    {
+                        _parent.HandleEvent(this, eventID, data);
+                    }
+                    break;
             }
 
         }
@@ -725,8 +741,8 @@ namespace Gruppe22
             for (int count = 0; count < _map.actorPositions.Count; ++count)
             {
 
-                if (_actors.Count > 0) _actors.Add(new ActorView(this, count, _content, _map2screen(_map.actorPositions[count]), "Content\\skeleton.xml"));
-                else _actors.Add(new ActorView(this, count, _content, _map2screen(_map.actorPositions[count]), "Content\\player.xml"));
+                if (_actors.Count > 0) _actors.Add(new ActorView(this, count, _content, _map2screen(_map.actorPositions[count]), "Content\\skeleton.xml", 2));
+                else _actors.Add(new ActorView(this, count, _content, _map2screen(_map.actorPositions[count]), "Content\\player.xml", 5));
             }
 
         }
@@ -748,61 +764,8 @@ namespace Gruppe22
                 {
                     if (!_actors[0].isMoving)
                     {
-                        if (_highlightedTile.x < currentPos.x)
-                        {
-                            if (_highlightedTile.y < currentPos.y)
-                            {
 
-                                MovePlayer(Direction.UpLeft);
-                            }
-                            else
-                            {
-                                if (_highlightedTile.y > currentPos.y)
-                                {
-                                    MovePlayer(Direction.DownLeft);
-                                }
-                                else
-                                {
-                                    MovePlayer(Direction.Left);
-                                }
-                            }
-                        }
-                        else
-                        {
-                            if (_highlightedTile.x > currentPos.x)
-                            {
-
-                                if (_highlightedTile.y < currentPos.y)
-                                {
-                                    MovePlayer(Direction.UpRight);
-                                }
-                                else
-                                {
-                                    if (_highlightedTile.y > currentPos.y)
-                                    {
-                                        MovePlayer(Direction.DownRight);
-                                    }
-                                    else
-                                    {
-                                        MovePlayer(Direction.Right);
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                if (_highlightedTile.y < currentPos.y)
-                                {
-                                    MovePlayer(Direction.Up);
-                                }
-                                else
-                                {
-                                    if (_highlightedTile.y > currentPos.y)
-                                    {
-                                        MovePlayer(Direction.Down);
-                                    }
-                                }
-                            }
-                        }
+                        MovePlayer(Map.WhichWayIs(_highlightedTile, currentPos));
                     }
                 }
             }
@@ -1026,7 +989,7 @@ namespace Gruppe22
             _environment.Add(new TileSet(_content, 128, 192));
             _environment[4].Save("Content\\chest.xml");
             _environment[4].Load("Content\\chest.xml");
-
+            /*
             ActorView skel = new ActorView(this, 0, content, new Coords(0, 0), "");
             skel.Add(Activity.Walk, Direction.Right, "sWalk", new Coords(0, 0), 8, 1);
             skel.Add(Activity.Walk, Direction.Up, "sWalk", new Coords(0, 96), 8, 1);
@@ -1067,7 +1030,7 @@ namespace Gruppe22
 
 
 
-            skel.Save("Content\\skeleton.xml");
+            skel.Save("Content\\skeleton.xml"); */
             // 3. Moving entities (player, NPCs, enemies)
             _actors = new List<ActorView>();
 
