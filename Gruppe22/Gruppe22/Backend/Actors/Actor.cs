@@ -15,16 +15,27 @@ namespace Gruppe22
     public class Actor
     {
         private ActorTile _tile;
-        protected  ActorType _actorType;
+        protected ActorType _actorType;
         private int _id = 0;
+        private string _name = "";
+        private List<Item> _inventory = null;
 
         //Lebenspunkte, Rüstung, Schaden/Angriffsstärke
-        protected int _health=50, _armour=40, _damage=20;
+        protected int
+            _maxhealth = 100, _health = 50, _armour = 40, _damage = 20;
 
         public ActorTile tile
         {
             get { return _tile; }
             set { _tile = value; }
+        }
+
+        public List<Item> inventory
+        {
+            get
+            {
+                return _inventory;
+            }
         }
 
         public ActorType actorType
@@ -38,8 +49,12 @@ namespace Gruppe22
         #region Public-Methods
 
         public int health { get { return _health; } }
+        public int maxHealth { get { return _maxhealth; } }
+
         public int armour { get { return _armour; } }
         public int damage { get { return _damage; } }
+        public string name { get { return _name; } }
+
         public int id { get { return _id; } set { _id = value; } }
         public bool IsDead() { return _health <= 0 ? true : false; }
 
@@ -52,16 +67,142 @@ namespace Gruppe22
         public void SetDamage(int damage)
         {
             int tmp = _armour - damage;
-            if (tmp >= 0)
-                _armour = tmp;
-            else
-            {
-                _armour = 0;
+            if (tmp < 0)
                 _health = (_health + tmp > 0) ? (_health + tmp) : 0;
-            }
-
         }
 
+
+        public void AddProtection(int amount)
+        {
+            if (amount > _armour)
+            {
+                _armour = amount;
+                _tile.HandleEvent(null, Events.ShowMessage, ((_actorType == ActorType.Player) ? "You equip  " : (_name + " equips ")) + " new armor.");
+            }
+            else
+            {
+                _tile.HandleEvent(null, Events.ShowMessage, ((_actorType == ActorType.Player) ? "You put " : (_name + " puts ")) + " the armor away.");
+            }
+        }
+
+        public void AddHealth(int amount)
+        {
+            int temp = Math.Max(amount, _maxhealth - _health - amount);
+            if (temp > 0)
+            {
+                _tile.HandleEvent(null, Events.ShowMessage, ((_actorType == ActorType.Player) ? "You regain " : (_name + " regains ")) + temp.ToString() + ".hitpoints");
+            }
+            else
+            {
+                _tile.HandleEvent(null, Events.ShowMessage, ((_actorType == ActorType.Player) ? "You put " : (_name + " puts ")) + " puts the potion away.");
+            }
+            _health = Math.Min(_health + amount, _maxhealth);
+        }
+
+        public void AddStrength(int amount)
+        {
+            if (amount > _damage)
+            {
+                _damage = amount;
+                _tile.HandleEvent(null, Events.ShowMessage, ((_actorType == ActorType.Player) ? "You equip " : (_name + " equips ")) + " a new weapon.");
+            }
+            else
+            {
+                _tile.HandleEvent(null, Events.ShowMessage, ((_actorType == ActorType.Player) ? "You put " : (_name + " puts ")) + " the weapon away.");
+
+            }
+        }
+
+        public void GenerateName()
+        {
+            Random r = new Random();
+            int index = r.Next(5);
+            switch (_actorType)
+            {
+                case ActorType.Player:
+                    switch (index)
+                    {
+                        case 0:
+                            _name = "Gerd";
+                            break;
+                        case 1:
+                            _name = "Klaus";
+                            break;
+                        case 2:
+                            _name = "Dieter";
+                            break;
+
+                        case 3:
+                            _name = "Waldemar";
+                            break;
+
+                        case 4:
+                            _name = "Friedrich";
+                            break;
+
+                        case 5:
+                            _name = "Othmar";
+                            break;
+
+                    }
+
+                    break;
+                case ActorType.Enemy:
+                    switch (index)
+                    {
+                        case 0:
+                            _name = "Skeletor";
+                            break;
+                        case 1:
+                            _name = "Skeletus";
+                            break;
+                        case 2:
+                            _name = "Skello";
+                            break;
+
+                        case 3:
+                            _name = "Skeletanus";
+                            break;
+
+                        case 4:
+                            _name = "Skeletti";
+                            break;
+
+                        case 5:
+                            _name = "Skelly";
+                            break;
+                    }
+                    index = r.Next(5);
+                    switch (index)
+                    {
+                        case 0:
+                            _name = " the Dirty";
+                            break;
+                        case 1:
+                            _name = " the Killer";
+                            break;
+                        case 2:
+                            _name = " the Strong";
+                            break;
+
+                        case 3:
+                            _name = " the Legend";
+                            break;
+
+                        case 4:
+                            _name = " Maximus";
+                            break;
+
+                        case 5:
+                            _name = " Minimus";
+                            break;
+                    }
+                    break;
+                case ActorType.NPC:
+
+                    break;
+            }
+        }
         /// <summary>
         /// Constructor.
         /// </summary>
@@ -69,12 +210,39 @@ namespace Gruppe22
         /// <param name="health"></param>
         /// <param name="armour"></param>
         /// <param name="damage"></param>
-        public Actor(ActorType actorType, int health, int armour, int damage)
+        public Actor(ActorType actorType, int health, int armour, int damage, int maxHealth = -1, string name = "")
         {
             this._actorType = actorType;
+            Random r = new Random();
+            if (health < 0)
+            {
+                if (maxHealth > 0)
+                {
+                    health = 5 + r.Next(maxHealth - 5);
+                }
+                else
+                {
+                    health = 15 + r.Next(30);
+                }
+            }
             this._health = health;
+            if (_maxhealth == -1)
+            {
+                maxHealth = health;
+            }
+            if (armour < 0)
+            {
+                armour = r.Next(10);
+            }
             this._armour = armour;
+            if (damage < 0)
+            {
+                damage = 12 + r.Next(10);
+            }
             this._damage = damage;
+            if (name == "") GenerateName();
+            _name = name;
+            this._inventory = new List<Item>();
         }
 
         #endregion

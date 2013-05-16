@@ -18,7 +18,7 @@ namespace Gruppe22
             {
                 pos = new Coords(1, 1);
             }
-            Player player = new Player("Klaus", 100, 20, 20);
+            Player player = new Player(100, 20, 20);
             ActorTile playerTile = new ActorTile(_tiles[pos.y][pos.x], player);
             player.tile = playerTile;
             _tiles[pos.y][pos.x].Add(playerTile);
@@ -85,7 +85,7 @@ namespace Gruppe22
 
                 if ((pos.x >= 0) && (pos.x < _width) && (pos.y < _height) && (pos.y >= 0))
                 {
-                    Enemy enemy = new Enemy(50, 90, 20);
+                    Enemy enemy = new Enemy();
                     ActorTile enemyTile = new ActorTile(_tiles[pos.y][pos.x], enemy);
                     enemy.tile = enemyTile;
                     _tiles[pos.y][pos.x].Add(enemyTile);

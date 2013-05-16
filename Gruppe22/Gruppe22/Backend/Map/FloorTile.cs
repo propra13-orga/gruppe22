@@ -61,6 +61,19 @@ namespace Gruppe22
             }
         }
 
+
+        public ItemTile firstItem
+        {
+            get
+            {
+                foreach (Tile tile in _overlay)
+                {
+                    if (tile is ItemTile)
+                        return ((ItemTile)tile);
+                }
+                return null;
+            }
+        }
         public new Coords coords
         {
             get
@@ -260,6 +273,7 @@ namespace Gruppe22
                     case TileType.Wall:
                         if (_overlay[i] is WallTile)
                         {
+                            _overlay[i].parent = null;
                             _overlay.RemoveAt(i);
                             i -= 1;
                         }
@@ -267,6 +281,7 @@ namespace Gruppe22
                     case TileType.Trap:
                         if (_overlay[i] is TrapTile)
                         {
+                            _overlay[i].parent = null;
                             _overlay.RemoveAt(i);
                             i -= 1;
                         }
@@ -274,6 +289,7 @@ namespace Gruppe22
                     case TileType.Teleporter:
                         if (_overlay[i] is TeleportTile)
                         {
+                            _overlay[i].parent = null;
                             _overlay.RemoveAt(i);
                             i -= 1;
                         }
@@ -281,6 +297,7 @@ namespace Gruppe22
                     case TileType.Target:
                         if (_overlay[i] is TargetTile)
                         {
+                            _overlay[i].parent = null;
                             _overlay.RemoveAt(i);
                             i -= 1;
                         }
@@ -288,6 +305,7 @@ namespace Gruppe22
                     case TileType.Start:
                         if (_overlay[i] is ActorTile)
                         {
+                            _overlay[i].parent = null;
                             _overlay.RemoveAt(i);
                             i -= 1;
                         }
@@ -295,6 +313,7 @@ namespace Gruppe22
                     case TileType.Item:
                         if (_overlay[i] is ItemTile)
                         {
+                            _overlay[i].parent = null;
                             _overlay.RemoveAt(i);
                             i -= 1;
                         }
@@ -302,6 +321,7 @@ namespace Gruppe22
                     case TileType.Enemy:
                         if (_overlay[i] is ActorTile)
                         {
+                            _overlay[i].parent = null;
                             _overlay.RemoveAt(i);
                             i -= 1;
                         }
@@ -325,6 +345,7 @@ namespace Gruppe22
         /// <param name="tile"></param>
         public void Remove(Tile tile)
         {
+            tile.parent = null;
             _overlay.Remove(tile);
         }
 

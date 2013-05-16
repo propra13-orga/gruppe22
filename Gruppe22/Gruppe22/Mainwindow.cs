@@ -28,7 +28,8 @@ namespace Gruppe22
         ResetGame,
         About,
         AnimateActor,
-        FinishedAnimation
+        FinishedAnimation,
+        ShowMessage
     }
 
     public enum GameStatus
@@ -252,7 +253,7 @@ namespace Gruppe22
 
                     _map1.Load((string)data[0], (Coords)data[1]);
                     ((Mainmap)_interfaceElements[1]).resetActors();
-                    AddMessage("You entered room number "+data[0].ToString().Substring(4,1)+".");
+                    AddMessage("You entered room number " + data[0].ToString().Substring(4, 1) + ".");
                     _status = GameStatus.Running;
 
                     break;
@@ -271,11 +272,12 @@ namespace Gruppe22
                     _map1.Load("room1.xml", null);
                     ((Mainmap)_interfaceElements[1]).resetActors();
                     _status = GameStatus.Paused;
-
                     HandleEvent(null, Events.ContinueGame);
-
                     break;
-
+                case Events.ShowMessage:
+                    AddMessage(data[0].ToString());
+                    UpdateHealth();
+                    break;
                 case Events.FinishedAnimation:
                     int FinishedID = (int)data[0];
                     Activity FinishedActivity = (Activity)data[1];
@@ -305,9 +307,10 @@ namespace Gruppe22
                             HandleEvent(null, Events.ChangeMap, ((TeleportTile)_map1[target.x, target.y].overlay[0]).nextRoom, ((TeleportTile)_map1[target.x, target.y].overlay[0]).nextPlayerPos);
                         }
 
+
                         if ((_map1[target.x, target.y].hasEnemy) || (_map1[target.x, target.y].hasPlayer))
                         {
-                            if ((_map1.firstActorID(target.x, target.y) != id)&&(!_map1[target.x, target.y].firstActor.IsDead()))
+                            if ((_map1.firstActorID(target.x, target.y) != id) && (!_map1[target.x, target.y].firstActor.IsDead()))
                             {
                                 // Aktuelle Figur attackiert
                                 // Spieler verletzt
@@ -336,29 +339,41 @@ namespace Gruppe22
                                 _map1.MoveActor(_map1.actors[id], dir);
                                 ((Mainmap)_interfaceElements[1]).HandleEvent(null, Events.MoveActor, id, _map1.actors[id].tile.coords);
 
-                                if (_map1[_map1.actors[id].tile.coords.x, _map1.actors[id].tile.coords.y].hasTrap)
+                                if ((_map1[target.x, target.y].hasEnemy) || (_map1[target.x, target.y].hasTreasure))
                                 {
-                                    _map1.actors[id].SetDamage(20);
-                                    if (_map1[target.x, target.y].firstActor is Player) UpdateHealth();
-                                    if (_map1.actors[id].IsDead())
-                                    {
-                                        ((Mainmap)_interfaceElements[1]).HandleEvent(null, Events.AnimateActor, id, Activity.Die, true);
-                                        AddMessage((_map1.actors[id] is Player ? "You were" : "An enemy was") + " hit for 20 points of damage by a trap.");
-
-                                    }
-                                    else
-                                    {
-                                        ((Mainmap)_interfaceElements[1]).HandleEvent(null, Events.AnimateActor, id, Activity.Hit, true);
-                                        AddMessage(" was hit for 20 points of damage by a trap.");
-
+                                    while(_map1[target.x, target.y].hasTreasure){
+                                        _map1._actors[id].inventory.Add(_map1[target.x, target.y].firstItem.item);
+                                        AddMessage((_map1.actors[id] is Player ? "You found " : "An enemy found ") +_map1[target.x, target.y].firstItem.item.name+ " .");
+                                        _map1[target.x, target.y].firstItem.item.EquipItem(_map1._actors[id]);
+                                        _map1[target.x, target.y].Remove(_map1[target.x, target.y].firstItem);                                        
                                     }
                                 }
                                 else
                                 {
-                                    if ((_map1[_map1.actors[id].tile.coords.x, _map1.actors[id].tile.coords.y].hasTarget) && (id == 0))
+                                    if (_map1[_map1.actors[id].tile.coords.x, _map1.actors[id].tile.coords.y].hasTrap)
                                     {
-                                        ((Mainmap)_interfaceElements[1]).HandleEvent(null, Events.AnimateActor, id, Activity.Talk, true);
-                                        ShowEndGame("You have successfully found the hidden treasure. Can you do it again?", "Congratulations!");
+                                        _map1.actors[id].SetDamage(20);
+                                        if (_map1[target.x, target.y].firstActor is Player) UpdateHealth();
+                                        if (_map1.actors[id].IsDead())
+                                        {
+                                            ((Mainmap)_interfaceElements[1]).HandleEvent(null, Events.AnimateActor, id, Activity.Die, true);
+                                            AddMessage((_map1.actors[id] is Player ? "You were" : "An enemy was") + " hit for 20 points of damage by a trap.");
+
+                                        }
+                                        else
+                                        {
+                                            ((Mainmap)_interfaceElements[1]).HandleEvent(null, Events.AnimateActor, id, Activity.Hit, true);
+                                            AddMessage((_map1.actors[id] is Player ? "You were" : "An enemy was") +" hit for 20 points of damage by a trap.");
+
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if ((_map1[_map1.actors[id].tile.coords.x, _map1.actors[id].tile.coords.y].hasTarget) && (id == 0))
+                                        {
+                                            ((Mainmap)_interfaceElements[1]).HandleEvent(null, Events.AnimateActor, id, Activity.Talk, true);
+                                            ShowEndGame("You have successfully found the hidden treasure. Can you do it again?", "Congratulations!");
+                                        }
                                     }
                                 }
                             }

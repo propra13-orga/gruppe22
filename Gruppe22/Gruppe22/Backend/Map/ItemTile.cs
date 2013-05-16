@@ -35,6 +35,9 @@ namespace Gruppe22
         public override void Save(XmlWriter xmlw)
         {
             xmlw.WriteStartElement("ItemTile");
+            xmlw.WriteAttributeString("name", item.name);
+            xmlw.WriteAttributeString("strength", item.strength.ToString());
+            xmlw.WriteAttributeString("type", item.itemType.ToString());
             xmlw.WriteEndElement();
             _parent = parent;
         }

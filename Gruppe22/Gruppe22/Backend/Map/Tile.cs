@@ -79,16 +79,6 @@ namespace Gruppe22
 
 
         /// <summary>
-        /// Read Tile data from an XML-file
-        /// </summary>
-        /// <param name="file">An XMlTextreader containing data for the tile</param>
-        /// <returns>true if read is successful</returns>
-        public void Load()
-        {
-            throw new NotImplementedException("Das muss noch jemand machen");
-        }
-
-        /// <summary>
         /// </summary>
         /// <returns>true if write is successful</returns>
         public virtual void Save(XmlWriter xmlw)

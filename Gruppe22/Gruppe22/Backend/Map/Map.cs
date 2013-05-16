@@ -386,7 +386,7 @@ namespace Gruppe22
             }
             else
             {
-                playerA = new Player("Klaus", 100, 20, 20);
+                playerA = new Player(100, 20, 20);
             }
             _actors.Add(playerA);
 
@@ -426,7 +426,31 @@ namespace Gruppe22
                                         tile.Add(TileType.Wall);
                                         break;
                                     case "ItemTile":
-                                        tile.Add(TileType.Item);
+
+                                        ItemType type = ItemType.Armor;
+                                        string name = "";
+                                        int strength = 0;
+
+
+                                        if (xmlr.GetAttribute("type") != null)
+                                        {
+                                            type = (ItemType)Enum.Parse(typeof(ItemType), xmlr.GetAttribute("type").ToString());
+                                        }
+
+                                        if (xmlr.GetAttribute("name") != null)
+                                        {
+                                            name = xmlr.GetAttribute("name").ToString();
+                                        }
+
+                                        if (xmlr.GetAttribute("strength") != null)
+                                        {
+                                            strength = Int32.Parse(xmlr.GetAttribute("strength").ToString());
+                                        }
+                                        Item item = new Item(type, name, strength);
+
+                                        ItemTile itemTile = new ItemTile(tile, item);
+                                        item.tile = itemTile;
+                                        tile.Add(itemTile);
                                         break;
                                     case "TargetTile":
                                         tile.Add(new TargetTile(tile));
@@ -439,9 +463,49 @@ namespace Gruppe22
                                         tile.Add(new TeleportTile(tile, xmlr.GetAttribute("nextRoom"), new Coords(Int32.Parse(xmlr.GetAttribute("nextX")), Int32.Parse(xmlr.GetAttribute("nextY")))));
                                         break;
                                     case "ActorTile":
-                                        if (xmlr.GetAttribute("player") == null)
+                                        string actorname = "";
+                                        int actorhealth = 40;
+                                        int maxHealth = -1;
+                                        int armour = 0;
+                                        int damage = 20;
+                                        ActorType atype = ActorType.Enemy;
+
+                                        if (xmlr.GetAttribute("name") != null)
                                         {
-                                            Enemy enemy = (new Enemy(40, 0, 20));
+                                            actorname = xmlr.GetAttribute("name").ToString();
+                                        }
+
+                                        if (xmlr.GetAttribute("health") != null)
+                                        {
+                                            actorhealth = Int32.Parse(xmlr.GetAttribute("health").ToString());
+                                        }
+
+                                        if (xmlr.GetAttribute("maxhealth") != null)
+                                        {
+                                            maxHealth = Int32.Parse(xmlr.GetAttribute("maxhealth").ToString());
+                                        }
+
+                                        if (xmlr.GetAttribute("armor") != null)
+                                        {
+                                            armour = Int32.Parse(xmlr.GetAttribute("armor").ToString());
+                                        }
+                                        if (xmlr.GetAttribute("damage") != null)
+                                        {
+                                            damage = Int32.Parse(xmlr.GetAttribute("damage").ToString());
+                                        }
+
+                                        if (xmlr.GetAttribute("type") != null)
+                                        {
+                                            atype = (ActorType)Enum.Parse(typeof(ActorType), xmlr.GetAttribute("type").ToString());
+                                        }
+
+                                        if (xmlr.GetAttribute("player") != null)
+                                        {
+                                            atype = ActorType.Player;
+                                        }
+                                        if (atype!=ActorType.Player)
+                                        {
+                                            Enemy enemy = (new Enemy(actorhealth, armour, damage, maxHealth, actorname));
                                             ActorTile tile2 = new ActorTile(tile, enemy);
                                             enemy.tile = tile2;
                                             tile.Add(tile2);

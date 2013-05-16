@@ -11,10 +11,10 @@ namespace Gruppe22
         /// <summary>
         /// Constructor
         /// </summary>
-        public Enemy(int health, int armour, int damage)
-            : base(ActorType.Enemy, health, armour, damage)
+        public Enemy(int health=-1, int armour=-1, int damage=-1, int maxHealth = -1, string name = "")
+            : base(ActorType.Enemy, health, armour, damage, maxHealth, name)
         {
-            _actorType=ActorType.Enemy;
         }
+
     }
 }

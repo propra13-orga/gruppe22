@@ -19,7 +19,7 @@ namespace Gruppe22
         {
             get { return _actor; }
         }
-        
+
         public ActorType actorType
         {
             get
@@ -42,7 +42,12 @@ namespace Gruppe22
         override public void Save(XmlWriter xmlw)
         {
             xmlw.WriteStartElement("ActorTile");
-            if (_actor is Player) xmlw.WriteAttributeString("player", "true");
+            xmlw.WriteAttributeString("actortype", _actor.actorType.ToString());
+            xmlw.WriteAttributeString("name", _actor.name.ToString());
+            xmlw.WriteAttributeString("health", _actor.health.ToString());
+            xmlw.WriteAttributeString("maxhealth", _actor.maxHealth.ToString());
+            xmlw.WriteAttributeString("armor", _actor.armour.ToString());
+            xmlw.WriteAttributeString("damage", _actor.damage.ToString());
             xmlw.WriteEndElement();
         }
         #endregion
@@ -67,10 +72,10 @@ namespace Gruppe22
                     ((IHandleEvent)parent).HandleEvent(null, Events.MoveActor, actor.id, dir);
                     _count = 0;
                 }
-                 _count += 1;
+                _count += 1;
             }
         }
-        
+
 
         public ActorTile(object parent)
             : base(parent)
