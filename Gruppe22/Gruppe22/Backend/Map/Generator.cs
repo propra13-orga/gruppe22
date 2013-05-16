@@ -147,7 +147,7 @@ namespace Gruppe22
                 Direction targetWall = Direction.Right;
 
 
-                if (r.Next(1) == 0)
+                if (r.Next(2) == 0)
                 {
                     targetWall = Direction.Down;
                 }

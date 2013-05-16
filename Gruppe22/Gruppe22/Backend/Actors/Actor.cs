@@ -143,7 +143,7 @@ namespace Gruppe22
         public void GenerateName(Random r=null)
         {
             if(r==null)r = new Random();
-            int index = r.Next(5);
+            int index = r.Next(6);
             switch (_actorType)
             {
                 case ActorType.Player:
@@ -199,7 +199,7 @@ namespace Gruppe22
                             _name = "Skelly";
                             break;
                     }
-                    index = r.Next(5);
+                    index = r.Next(6);
                     switch (index)
                     {
                         case 0:

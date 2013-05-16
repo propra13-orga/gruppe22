@@ -102,7 +102,7 @@ namespace Gruppe22
             if (r == null) r = new Random();
 
             _strength = 2 + r.Next(10);
-            _itemType = (ItemType)r.Next(2);
+            _itemType = (ItemType)r.Next(3);
             GenerateName();
         }
 
