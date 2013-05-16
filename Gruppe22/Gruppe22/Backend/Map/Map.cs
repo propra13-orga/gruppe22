@@ -37,18 +37,21 @@ namespace Gruppe22
     public class Map : IHandleEvent, IDisposable
     {
         #region Private Fields
+
         private object _parent = null;
 
         /// <summary>
         /// A two dimensional list of tiles
         /// </summary>
         protected List<List<FloorTile>> _tiles = null;
+
         /// <summary>
         /// Internal current width
         /// </summary>
         protected int _width = 10;
 
         protected List<Exit> _exits;
+
         /// <summary>
         /// Internal current height
         /// </summary>
@@ -59,14 +62,15 @@ namespace Gruppe22
         /// </summary>
         private FloorTile _blankTile = null;
 
+        /// <summary>
+        /// A list of Actors in the current room
+        /// </summary>
         public List<Actor> _actors = null;
         public List<Item> _items = null;
         private List<Coords> _updateTiles = null;
         #endregion
 
         #region Public Fields
-
-
         public List<Actor> actors
         {
             get
@@ -102,8 +106,9 @@ namespace Gruppe22
                 _items = value;
             }
         }
+
         /// <summary>
-        /// CUrrent Width of the maze
+        /// Current Width of the maze
         /// </summary>
         public int width
         {
@@ -132,6 +137,9 @@ namespace Gruppe22
             }
         }
 
+        /// <summary>
+        /// A list of the current position of every actor
+        /// </summary>
         public List<Coords> actorPositions
         {
             get
@@ -173,7 +181,6 @@ namespace Gruppe22
             }
         }
         #endregion
-
 
         #region Public Methods
         /// <summary>
@@ -290,6 +297,7 @@ namespace Gruppe22
             else
                 return -1;
         }
+
         /// <summary>
         /// Check whether it is possible to move from a certain place on a map in a certain direction
         /// </summary>
@@ -358,12 +366,11 @@ namespace Gruppe22
             ((IHandleEvent)_parent).HandleEvent(sender, eventID, data);
         }
 
-
         /// <summary>
         /// Load a map from a file
         /// </summary>
         /// <param name="filename">The filename to read from</param>
-        /// <returns>true if read was successful</returns>
+        /// <param name="player">The starting position on the loaded map</param>
         public void Load(string filename, Coords player)
         {
             bool isReady = false;
@@ -577,7 +584,6 @@ namespace Gruppe22
         /// Write the current map to a file
         /// </summary>
         /// <param name="filename">The filename to write to</param>
-        /// <returns>true if writing was successful</returns>
         public virtual void Save(string filename)
         {
             XmlWriter xmlw = XmlWriter.Create(filename);
@@ -598,9 +604,7 @@ namespace Gruppe22
             xmlw.WriteEndDocument();
             xmlw.Close();
         }
-
         #endregion
-
 
         #region Constructor
 
@@ -616,9 +620,8 @@ namespace Gruppe22
 
         }
 
-
         /// <summary>
-        /// Load a map from a file
+        /// Constructor for using a previously saved map
         /// </summary>
         /// <param name="filename"></param>
         public Map(object parent, string filename = "", Coords playerPos = null)
@@ -626,7 +629,6 @@ namespace Gruppe22
         {
             _parent = parent;
             Load(filename, playerPos);
-
         }
 
         public virtual void Dispose()
@@ -722,7 +724,5 @@ namespace Gruppe22
             return result;
         }
         #endregion
-
-
     }
 }

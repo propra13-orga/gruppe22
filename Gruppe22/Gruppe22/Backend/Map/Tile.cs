@@ -28,8 +28,6 @@ namespace Gruppe22
     {
         #region Private Fields
 
-
-
         protected object _parent = null;
         #endregion
 
@@ -54,6 +52,7 @@ namespace Gruppe22
                         (_parent as Tile).coords = value;
             }
         }
+
         public object parent
         {
             get
@@ -65,22 +64,18 @@ namespace Gruppe22
                 _parent = value;
             }
         }
-
-
         #endregion
 
         #region Public methods
-
         public virtual void Update(GameTime gameTime)
         {
 
         }
 
-
-
         /// <summary>
+        /// Abstract method to save a tile in a XML file
         /// </summary>
-        /// <returns>true if write is successful</returns>
+        /// <param name="xmlw">the XmlWriter used for saving the file</param>
         public virtual void Save(XmlWriter xmlw)
         {
         }

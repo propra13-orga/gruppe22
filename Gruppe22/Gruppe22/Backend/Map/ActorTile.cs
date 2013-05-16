@@ -39,6 +39,7 @@ namespace Gruppe22
                 _disabled = !value;
             }
         }
+
         override public void Save(XmlWriter xmlw)
         {
             xmlw.WriteStartElement("ActorTile");
@@ -59,8 +60,6 @@ namespace Gruppe22
             _actor = actor;
         }
 
-
-
         public override void Update(Microsoft.Xna.Framework.GameTime gameTime)
         {
             if (!(actor is Player))
@@ -75,7 +74,6 @@ namespace Gruppe22
                 _count += 1;
             }
         }
-
 
         public ActorTile(object parent)
             : base(parent)

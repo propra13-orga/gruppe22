@@ -14,6 +14,7 @@ namespace Gruppe22
 
     public class Actor
     {
+        #region Private Fields
         private ActorTile _tile;
         protected ActorType _actorType;
         private int _id = 0;
@@ -23,7 +24,9 @@ namespace Gruppe22
         //Lebenspunkte, Rüstung, Schaden/Angriffsstärke
         protected int
             _maxhealth = 100, _health = 50, _armour = 40, _damage = 20;
+        #endregion
 
+        #region Public Fields
         public ActorTile tile
         {
             get { return _tile; }
@@ -45,15 +48,25 @@ namespace Gruppe22
                 return _actorType;
             }
         }
+        
+        public int health 
+        { 
+            get 
+            { 
+                return _health; 
+            } 
+            set 
+            {
+                _health = value;
+            } 
+        }
 
-        #region Public-Methods
-
-        public int health { get { return _health; } set {
-            _health = value;
-        } }
         public int maxHealth
         {
-            get { return _maxhealth; }
+            get 
+            { 
+                return _maxhealth; 
+            }
             set
             {
                 _maxhealth= value;
@@ -62,20 +75,34 @@ namespace Gruppe22
 
         public int armour
         {
-            get { return _armour; }
+            get 
+            { 
+                return _armour; 
+            }
             set
             {
                 _armour = value;
             }
         }
-        public int damage { get { return _damage; }
+
+        public int damage 
+        { 
+            get 
+            { 
+                return _damage; 
+            }
             set
             {
                 _damage = value;
             }
         }
-        public string name { get { return _name; }
 
+        public string name 
+        { 
+            get 
+            { 
+                return _name; 
+            }
             set
             {
                 _name = value;
@@ -83,9 +110,17 @@ namespace Gruppe22
         }
 
         public int id { get { return _id; } set { _id = value; } }
+        #endregion
+
+        #region Public Methods
+
         public bool IsDead() { return _health <= 0 ? true : false; }
 
-        public void SetDamage(Actor actor) { SetDamage(actor.damage); }
+        public void SetDamage(Actor actor) 
+        { 
+            SetDamage(actor.damage); 
+        }
+
         /// <summary>
         /// Schaden nach einem Angriff für diesen Actor setzen.
         /// Erst Rüstung, dann Lebenspunkte;
@@ -97,7 +132,6 @@ namespace Gruppe22
             if (tmp < 0)
                 _health = (_health + tmp > 0) ? (_health + tmp) : 0;
         }
-
 
         public void AddProtection(int amount)
         {
@@ -140,6 +174,10 @@ namespace Gruppe22
             }
         }
 
+        /// <summary>
+        /// Methode to generate random names for actors
+        /// </summary>
+        /// <param name="r"></param>
         public void GenerateName(Random r=null)
         {
             if(r==null)r = new Random();
@@ -158,19 +196,15 @@ namespace Gruppe22
                         case 2:
                             _name = "Dieter";
                             break;
-
                         case 3:
                             _name = "Waldemar";
                             break;
-
                         case 4:
                             _name = "Friedrich";
                             break;
-
                         case 5:
                             _name = "Othmar";
                             break;
-
                     }
 
                     break;
@@ -186,15 +220,12 @@ namespace Gruppe22
                         case 2:
                             _name = "Skello";
                             break;
-
                         case 3:
                             _name = "Skeletanus";
                             break;
-
                         case 4:
                             _name = "Skeletti";
                             break;
-
                         case 5:
                             _name = "Skelly";
                             break;
@@ -211,15 +242,12 @@ namespace Gruppe22
                         case 2:
                             _name += " the Strong";
                             break;
-
                         case 3:
                             _name += " the Legend";
                             break;
-
                         case 4:
                             _name += " Maximus";
                             break;
-
                         case 5:
                             _name += " Minimus";
                             break;
@@ -230,6 +258,7 @@ namespace Gruppe22
                     break;
             }
         }
+
         /// <summary>
         /// Constructor.
         /// </summary>

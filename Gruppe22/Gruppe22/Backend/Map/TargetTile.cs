@@ -12,13 +12,11 @@ namespace Gruppe22
         public TargetTile(object parent)
             : base(parent)
         {
-
         }
 
         public override void Save(XmlWriter xmlw)
         {
             xmlw.WriteStartElement("TargetTile");
-
             xmlw.WriteEndElement();
         }
     }

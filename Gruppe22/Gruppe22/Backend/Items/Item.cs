@@ -74,6 +74,7 @@ namespace Gruppe22
                 _name = value;
             }
         }
+
         public ItemType itemType
         {
             get
@@ -97,6 +98,7 @@ namespace Gruppe22
                     break;
             }
         }
+
         public Item(Random r = null)
         {
             if (r == null) r = new Random();
@@ -109,7 +111,6 @@ namespace Gruppe22
         public Item(ItemType itemtype, string name = "", int strength = -1, Random r = null)
             : this()
         {
-
             _itemType = itemtype;
             if (name != "")
             {
@@ -122,14 +123,11 @@ namespace Gruppe22
             if (strength > 0) _strength = strength;
         }
 
-
         public Item(ItemTile parent, ItemType itemtype, string name = "", int strength = -1)
             : this()
         {
             _tile = parent;
-
         }
-
 
         public Item(Actor owner, ItemType itemtype, string name = "", int strength = -1)
             : this()

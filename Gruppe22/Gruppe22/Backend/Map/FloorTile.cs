@@ -81,7 +81,6 @@ namespace Gruppe22
             }
         }
 
-
         public ItemTile firstItem
         {
             get
@@ -94,6 +93,7 @@ namespace Gruppe22
                 return null;
             }
         }
+
         public new Coords coords
         {
             get
@@ -105,7 +105,6 @@ namespace Gruppe22
                 _coords = value;
             }
         }
-
 
         /// <summary>
         /// Determine whether tile can be entered
@@ -178,7 +177,7 @@ namespace Gruppe22
         }
 
         /// <summary>
-        /// Determine whether the current tile contains a "special" feature
+        /// Determine whether the current tile has a trap on it
         /// </summary>
         public bool hasTrap
         {
@@ -194,7 +193,6 @@ namespace Gruppe22
                 return result;
             }
         }
-
 
         /// <summary>
         /// Determine whether there is a treasure on the current tile
@@ -215,7 +213,7 @@ namespace Gruppe22
         }
 
         /// <summary>
-        /// Determine whether there is a treasure on the current tile
+        /// Determine whether the current tile is the 'end' of the game
         /// </summary>
         public bool hasTarget
         {
@@ -233,8 +231,8 @@ namespace Gruppe22
         }
 
         #endregion
-        #region Public Methods
 
+        #region Public Methods
 
         /// <summary>
         /// Add a (generic) tile of a specified type to overlay and return a pointer to that tile
@@ -371,10 +369,9 @@ namespace Gruppe22
 
         #endregion
 
-
         #region Constructor
         /// <summary>
-        /// You can always walk over a Floor
+        /// A empty constructor
         /// </summary>
         public FloorTile(object parent)
             : base(parent)
@@ -383,9 +380,8 @@ namespace Gruppe22
 
         }
 
-
         /// <summary>
-        /// An empty constructor (setting default values)
+        /// A constructor adding a walltile to the overlay if the contructed tile is impassable
         /// </summary>
         public FloorTile(object parent, Coords coords = null, bool canEnter = true)
             : this(parent)
@@ -402,8 +398,8 @@ namespace Gruppe22
         #endregion
 
         /// <summary>
+        /// Save the Floortile and every tile in it's overlay
         /// </summary>
-        /// <returns>true if write is successful</returns>
         public override void Save(XmlWriter xmlw)
         {
             xmlw.WriteStartElement("Tile");

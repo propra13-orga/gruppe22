@@ -38,8 +38,9 @@ namespace Gruppe22
         NoRedraw,
         Paused
     }
+
     /// <summary>
-    /// This is the main type for your game
+    /// 
     /// </summary>
     public class MainWindow : Game, IHandleEvent
     {
@@ -59,8 +60,8 @@ namespace Gruppe22
         /// </summary>
         private int _mouseWheel = 0;
 
-
         bool _dragging = false;
+
         /// <summary>
         /// Current position of mouse on screen
         /// </summary>
@@ -104,6 +105,9 @@ namespace Gruppe22
             base.Initialize();
         }
 
+        /// <summary>
+        /// A method to generate three rooms and save them to xml files
+        /// </summary>
         public void GenerateMaps()
         {
             List<Exit> exits = new List<Exit>();
@@ -167,6 +171,11 @@ namespace Gruppe22
             _focus = _interfaceElements[_interfaceElements.Count - 1];
         }
 
+        /// <summary>
+        /// A text displayed if the player died
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="title"></param>
         public void ShowEndGame(string message = "You have failed in your mission. Better luck next time.", string title = "Game over!")
         {
             _status = GameStatus.Paused;
@@ -184,7 +193,6 @@ namespace Gruppe22
             _focus = _interfaceElements[_interfaceElements.Count - 1];
 
         }
-
 
         public void ShowAbout()
         {
@@ -206,7 +214,6 @@ namespace Gruppe22
             _focus = _interfaceElements[_interfaceElements.Count - 1];
 
         }
-
 
         /// <summary>
         /// Unload all managed content which has not been disposed of elsewhere
@@ -417,6 +424,7 @@ namespace Gruppe22
             }
 
         }
+
         /// <summary>
         /// Allows the game to run logic such as updating the world,
         /// checking for collisions, gathering input, and playing audio.
@@ -540,8 +548,6 @@ namespace Gruppe22
                 base.Draw(gameTime);
             }
         }
-
-
 
         /// <summary>
         /// Download a file from the internet and place it in the local documents directory

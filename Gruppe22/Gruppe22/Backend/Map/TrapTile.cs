@@ -29,11 +29,20 @@ namespace Gruppe22
         }
         #endregion
 
+        #region Constructor
+        /// <summary>
+        /// A Constructor setting the damage of the trap
+        /// </summary>
+        /// <param name="parent"></param>
+        /// <param name="dmg">The damage the trap will deal</param>
         public TrapTile(object parent,int dmg)
             : base(parent)
         {
             _damage = dmg;
         }
+        #endregion
+
+        #region Public Methods
         public override void Save(XmlWriter xmlw)
         {
             xmlw.WriteStartElement("TrapTile");
@@ -41,5 +50,6 @@ namespace Gruppe22
 
             xmlw.WriteEndElement();
         }
+        #endregion
     }
 }
