@@ -363,7 +363,7 @@ namespace Gruppe22
                                         else
                                         {
                                             ((Mainmap)_interfaceElements[1]).HandleEvent(null, Events.AnimateActor, id, Activity.Hit, true, dir, true);
-                                            AddMessage((_map1.actors[id] is Player ? "You were" : _map1.actors[id].name + " enemy was") + " hit for " + _map1[target.x, target.y].trapDamage.ToString() + " points of damage by a trap.");
+                                            AddMessage((_map1.actors[id] is Player ? "You were" : _map1.actors[id].name + "  was") + " hit for " + _map1[target.x, target.y].trapDamage.ToString() + " points of damage by a trap.");
                                         }
                                         if (_map1._actors[id] is Player) UpdateHealth();
 

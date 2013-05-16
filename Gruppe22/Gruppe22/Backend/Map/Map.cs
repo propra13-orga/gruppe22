@@ -366,6 +366,7 @@ namespace Gruppe22
         /// <returns>true if read was successful</returns>
         public void Load(string filename, Coords player)
         {
+            bool isReady = false;
             Player playerA = null;
             if (player == null)
             {
@@ -379,6 +380,7 @@ namespace Gruppe22
                     {
                         playerA = (Player)_actors[i];
                         playerA.tile = null;
+                        isReady = true;
                         break;
                     }
                 }
@@ -508,6 +510,7 @@ namespace Gruppe22
                                             Enemy enemy = (new Enemy(actorhealth, armour, damage, maxHealth, actorname));
                                             ActorTile tile2 = new ActorTile(tile, enemy);
                                             enemy.tile = tile2;
+                                            tile2.enabled = (actorhealth > 0);
                                             tile.Add(tile2);
                                             _actors.Add(enemy);
                                             _updateTiles.Add(tile.coords);
@@ -519,8 +522,11 @@ namespace Gruppe22
                                             _actors[0].damage = damage;
                                             _actors[0].maxHealth = maxHealth;
                                             _actors[0].name = actorname;
-                                            player.x = tile.coords.x;
-                                            player.y = tile.coords.y;
+                                            if (!isReady)
+                                            {
+                                                player.x = tile.coords.x;
+                                                player.y = tile.coords.y;
+                                            }
                                         }
                                         break;
                                 }
