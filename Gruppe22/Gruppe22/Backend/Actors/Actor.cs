@@ -48,12 +48,39 @@ namespace Gruppe22
 
         #region Public-Methods
 
-        public int health { get { return _health; } }
-        public int maxHealth { get { return _maxhealth; } }
+        public int health { get { return _health; } set {
+            _health = value;
+        } }
+        public int maxHealth
+        {
+            get { return _maxhealth; }
+            set
+            {
+                _maxhealth= value;
+            }
+        }
 
-        public int armour { get { return _armour; } }
-        public int damage { get { return _damage; } }
-        public string name { get { return _name; } }
+        public int armour
+        {
+            get { return _armour; }
+            set
+            {
+                _armour = value;
+            }
+        }
+        public int damage { get { return _damage; }
+            set
+            {
+                _damage = value;
+            }
+        }
+        public string name { get { return _name; }
+
+            set
+            {
+                _name = value;
+            }
+        }
 
         public int id { get { return _id; } set { _id = value; } }
         public bool IsDead() { return _health <= 0 ? true : false; }

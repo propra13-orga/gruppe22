@@ -503,7 +503,7 @@ namespace Gruppe22
                                         {
                                             atype = ActorType.Player;
                                         }
-                                        if (atype!=ActorType.Player)
+                                        if (atype != ActorType.Player)
                                         {
                                             Enemy enemy = (new Enemy(actorhealth, armour, damage, maxHealth, actorname));
                                             ActorTile tile2 = new ActorTile(tile, enemy);
@@ -511,6 +511,16 @@ namespace Gruppe22
                                             tile.Add(tile2);
                                             _actors.Add(enemy);
                                             _updateTiles.Add(tile.coords);
+                                        }
+                                        else
+                                        {
+                                            _actors[0].armour = armour;
+                                            _actors[0].health = actorhealth;
+                                            _actors[0].damage = damage;
+                                            _actors[0].maxHealth = maxHealth;
+                                            _actors[0].name = actorname;
+                                            player.x = tile.coords.x;
+                                            player.y = tile.coords.y;
                                         }
                                         break;
                                 }
