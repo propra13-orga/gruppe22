@@ -23,7 +23,6 @@ namespace Gruppe22
         /// 
         /// </summary>
         private ButtonStatus _bstat = ButtonStatus.normal;
-
         /// <summary>
         /// 
         /// </summary>
@@ -50,13 +49,12 @@ namespace Gruppe22
         {
             if (IsHit(Mouse.GetState().X, Mouse.GetState().Y))
             {
-                if (Mouse.GetState().LeftButton == ButtonState.Pressed)
+                if (Mouse.GetState().LeftButton == ButtonState.Pressed && _bstat != ButtonStatus.pressed)
                 {
                     _bstat = ButtonStatus.pressed;
                     _parent.HandleEvent(this, _id, 0);
                 }
-                else
-                    _bstat = ButtonStatus.mouseon;
+                else _bstat = ButtonStatus.mouseon;
             }
             else
             {
