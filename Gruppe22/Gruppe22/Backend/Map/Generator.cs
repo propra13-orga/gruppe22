@@ -18,7 +18,7 @@ namespace Gruppe22
             {
                 pos = new Coords(1, 1);
             }
-            Player player = new Player(100, 20, 20);
+            Player player = new Player(100, 0, 30);
             ActorTile playerTile = new ActorTile(_tiles[pos.y][pos.x], player);
             player.tile = playerTile;
             _tiles[pos.y][pos.x].Add(playerTile);

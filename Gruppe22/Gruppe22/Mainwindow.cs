@@ -339,7 +339,7 @@ namespace Gruppe22
                                 _map1.MoveActor(_map1.actors[id], dir);
                                 ((Mainmap)_interfaceElements[1]).HandleEvent(null, Events.MoveActor, id, _map1.actors[id].tile.coords);
 
-                                if ((_map1[target.x, target.y].hasEnemy) || (_map1[target.x, target.y].hasTreasure))
+                                if (_map1[target.x, target.y].hasTreasure)
                                 {
                                     while (_map1[target.x, target.y].hasTreasure)
                                     {
@@ -351,22 +351,22 @@ namespace Gruppe22
                                 }
                                 else
                                 {
-                                    if (_map1[_map1.actors[id].tile.coords.x, _map1.actors[id].tile.coords.y].hasTrap)
+                                    if (_map1[target.x, target.y].hasTrap)
                                     {
-                                        _map1.actors[id].SetDamage(_map1[_map1.actors[id].tile.coords.x, _map1.actors[id].tile.coords.y].trapDamage);
-                                        if (_map1[target.x, target.y].firstActor is Player) UpdateHealth();
+                                        _map1.actors[id].SetDamage(_map1[target.x, target.y].trapDamage);
                                         if (_map1.actors[id].IsDead())
                                         {
-                                            ((Mainmap)_interfaceElements[1]).HandleEvent(null, Events.AnimateActor, id, Activity.Die, true);
-                                            AddMessage((_map1.actors[id] is Player ? "You were" : _map1.actors[id].name + " was") + " hit for " + _map1[_map1.actors[id].tile.coords.x, _map1.actors[id].tile.coords.y].trapDamage.ToString() + " points of damage by a trap.");
+                                            ((Mainmap)_interfaceElements[1]).HandleEvent(null, Events.AnimateActor, id, Activity.Die, true, dir, true);
+                                            AddMessage((_map1.actors[id] is Player ? "You were" : _map1.actors[id].name + " was") + " hit for " + _map1[target.x, target.y].trapDamage.ToString() + " points of damage by a trap.");
 
                                         }
                                         else
                                         {
-                                            ((Mainmap)_interfaceElements[1]).HandleEvent(null, Events.AnimateActor, id, Activity.Hit, true);
-                                            AddMessage((_map1.actors[id] is Player ? "You were" : _map1.actors[id].name + " enemy was") + " hit for " + _map1[_map1.actors[id].tile.coords.x, _map1.actors[id].tile.coords.y].trapDamage.ToString() + " points of damage by a trap.");
-
+                                            ((Mainmap)_interfaceElements[1]).HandleEvent(null, Events.AnimateActor, id, Activity.Hit, true, dir, true);
+                                            AddMessage((_map1.actors[id] is Player ? "You were" : _map1.actors[id].name + " enemy was") + " hit for " + _map1[target.x, target.y].trapDamage.ToString() + " points of damage by a trap.");
                                         }
+                                        if (_map1._actors[id] is Player) UpdateHealth();
+
                                     }
                                     else
                                     {

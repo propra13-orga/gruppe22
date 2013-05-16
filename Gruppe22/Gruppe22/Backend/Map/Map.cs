@@ -386,7 +386,7 @@ namespace Gruppe22
             }
             else
             {
-                playerA = new Player(100, 20, 20);
+                playerA = new Player(100, 0, 30);
             }
             _actors.Add(playerA);
 
