@@ -97,17 +97,19 @@ namespace Gruppe22
                     break;
             }
         }
-        public Item()
+        public Item(Random r = null)
         {
-            Random r = new Random();
+            if (r == null) r = new Random();
+
             _strength = 2 + r.Next(10);
             _itemType = (ItemType)r.Next(2);
             GenerateName();
         }
 
-        public Item(ItemType itemtype, string name = "", int strength = -1)
+        public Item(ItemType itemtype, string name = "", int strength = -1, Random r = null)
             : this()
         {
+
             _itemType = itemtype;
             if (name != "")
             {

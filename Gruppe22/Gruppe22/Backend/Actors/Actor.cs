@@ -90,7 +90,7 @@ namespace Gruppe22
             int temp = Math.Max(amount, _maxhealth - _health - amount);
             if (temp > 0)
             {
-                _tile.HandleEvent(null, Events.ShowMessage, ((_actorType == ActorType.Player) ? "You regain " : (_name + " regains ")) + temp.ToString() + ".hitpoints");
+                _tile.HandleEvent(null, Events.ShowMessage, ((_actorType == ActorType.Player) ? "You regain " : (_name + " regains ")) + temp.ToString() + " hitpoints.");
             }
             else
             {
@@ -113,9 +113,9 @@ namespace Gruppe22
             }
         }
 
-        public void GenerateName()
+        public void GenerateName(Random r=null)
         {
-            Random r = new Random();
+            if(r==null)r = new Random();
             int index = r.Next(5);
             switch (_actorType)
             {
@@ -176,25 +176,25 @@ namespace Gruppe22
                     switch (index)
                     {
                         case 0:
-                            _name = " the Dirty";
+                            _name += " the Dirty";
                             break;
                         case 1:
-                            _name = " the Killer";
+                            _name += " the Killer";
                             break;
                         case 2:
-                            _name = " the Strong";
+                            _name += " the Strong";
                             break;
 
                         case 3:
-                            _name = " the Legend";
+                            _name += " the Legend";
                             break;
 
                         case 4:
-                            _name = " Maximus";
+                            _name += " Maximus";
                             break;
 
                         case 5:
-                            _name = " Minimus";
+                            _name += " Minimus";
                             break;
                     }
                     break;
@@ -210,10 +210,10 @@ namespace Gruppe22
         /// <param name="health"></param>
         /// <param name="armour"></param>
         /// <param name="damage"></param>
-        public Actor(ActorType actorType, int health, int armour, int damage, int maxHealth = -1, string name = "")
+        public Actor(ActorType actorType, int health, int armour, int damage, int maxHealth = -1, string name = "", Random r=null)
         {
             this._actorType = actorType;
-            Random r = new Random();
+            if(r==null) r = new Random();
             if (health < 0)
             {
                 if (maxHealth > 0)
@@ -240,8 +240,8 @@ namespace Gruppe22
                 damage = 12 + r.Next(10);
             }
             this._damage = damage;
-            if (name == "") GenerateName();
-            _name = name;
+            if (name.Trim() == "") GenerateName(r);
+            else _name = name;
             this._inventory = new List<Item>();
         }
 

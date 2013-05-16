@@ -48,6 +48,26 @@ namespace Gruppe22
             }
         }
 
+        public int trapDamage
+        {
+            get
+            {
+                if (hasTrap)
+                {
+                    int result = 0;
+                    foreach (Tile tile in _overlay)
+                    {
+                        if (tile is TrapTile) result += ((TrapTile)tile).damage;
+                    }
+                    return result;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+        }
+
         public Actor firstActor
         {
             get

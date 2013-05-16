@@ -42,7 +42,7 @@ namespace Gruppe22
         override public void Save(XmlWriter xmlw)
         {
             xmlw.WriteStartElement("ActorTile");
-            xmlw.WriteAttributeString("actortype", _actor.actorType.ToString());
+            xmlw.WriteAttributeString("type", _actor.actorType.ToString());
             xmlw.WriteAttributeString("name", _actor.name.ToString());
             xmlw.WriteAttributeString("health", _actor.health.ToString());
             xmlw.WriteAttributeString("maxhealth", _actor.maxHealth.ToString());

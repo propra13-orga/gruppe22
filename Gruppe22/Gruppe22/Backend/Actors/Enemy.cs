@@ -11,8 +11,8 @@ namespace Gruppe22
         /// <summary>
         /// Constructor
         /// </summary>
-        public Enemy(int health=-1, int armour=-1, int damage=-1, int maxHealth = -1, string name = "")
-            : base(ActorType.Enemy, health, armour, damage, maxHealth, name)
+        public Enemy(int health = -1, int armour = -1, int damage = -1, int maxHealth = -1, string name = "", Random r = null)
+            : base(ActorType.Enemy, health, armour, damage, maxHealth, name, r)
         {
         }
 

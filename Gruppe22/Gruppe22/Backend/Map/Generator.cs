@@ -10,7 +10,7 @@ namespace Gruppe22
     class Generator : Map
     {
         private new List<List<GeneratorTile>> _tiles = null;
-
+        private Random r;
 
         public void AddPlayer(Coords pos)
         {
@@ -54,7 +54,6 @@ namespace Gruppe22
         public void AddEnemies(int amount = -1)
         {
             if (amount < 0) amount = 5;
-            Random r = new Random();
             for (int i = 0; i < amount; ++i)
             {
                 int count = 0;
@@ -85,7 +84,7 @@ namespace Gruppe22
 
                 if ((pos.x >= 0) && (pos.x < _width) && (pos.y < _height) && (pos.y >= 0))
                 {
-                    Enemy enemy = new Enemy();
+                    Enemy enemy = new Enemy(-1,-1,-1,-1,"",r);
                     ActorTile enemyTile = new ActorTile(_tiles[pos.y][pos.x], enemy);
                     enemy.tile = enemyTile;
                     _tiles[pos.y][pos.x].Add(enemyTile);
@@ -97,7 +96,6 @@ namespace Gruppe22
 
         public void AddTarget()
         {
-            Random r = new Random();
 
             int count = 0;
             Path pos = new Path(2 + r.Next(_width / 2 - 2) * 2, 2 + r.Next(_height / 2 - 2) * 2);
@@ -145,7 +143,6 @@ namespace Gruppe22
             }
             if (roomID != maxRoom)
             {
-                Random r = new Random();
 
                 Direction targetWall = Direction.Right;
 
@@ -203,7 +200,6 @@ namespace Gruppe22
         public void AddItems(int amount = -1)
         {
             if (amount < 0) amount = 5;
-            Random r = new Random();
             for (int i = 0; i < amount; ++i)
             {
                 int count = 0;
@@ -233,7 +229,7 @@ namespace Gruppe22
 
                 if ((pos.x >= 0) && (pos.x < _width) && (pos.y < _height) && (pos.y >= 0))
                 {
-                    Item item = new Item();
+                    Item item = new Item(r);
                     ItemTile itemTile = new ItemTile(_tiles[pos.y][pos.x], item);
                     item.tile = itemTile;
                     _tiles[pos.y][pos.x].Add(itemTile);
@@ -252,7 +248,6 @@ namespace Gruppe22
             {
                 amount = (int)(((((float)width - 1) / 2) * (((float)height - 1) / 2)) / 4); // every 4th wall!
             };
-            Random r = new Random();
 
             for (int i = 0; i < amount; ++i)
             {
@@ -376,7 +371,6 @@ namespace Gruppe22
         public void AddTraps(int amount = -1)
         {
             if (amount < 0) amount = 5;
-            Random r = new Random();
             for (int i = 0; i < amount; ++i)
             {
                 int count = 0;
@@ -478,7 +472,6 @@ namespace Gruppe22
         {
 
 
-            Random r = new Random();
 
             Path originPos = new Path(1 + r.Next((_width - 3) / 2) * 2, 1 + r.Next((_height - 2) / 2) * 2);
             Path currentPos = new Path(1 + r.Next((_width - 3) / 2) * 2, 1 + r.Next((_height - 3) / 2) * 2);
@@ -546,9 +539,10 @@ namespace Gruppe22
         /// </summary>
         /// <param name="width">The width of the map</param>
         /// <param name="height">The height of the map</param>
-        public Generator(object parent = null, int width = 10, int height = 10, bool generate = false, Coords playerPos = null, int roomNr = 1, int maxRoom = 3, List<Exit> exits = null)
+        public Generator(object parent = null, int width = 10, int height = 10, bool generate = false, Coords playerPos = null, int roomNr = 1, int maxRoom = 3, List<Exit> exits = null, Random rnd=null)
             : base()
         {
+            if (rnd == null) r = new Random(); else r = rnd;
             _tiles = new List<List<GeneratorTile>>();
             _width = width;
             _height = height;
