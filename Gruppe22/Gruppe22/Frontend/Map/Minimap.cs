@@ -55,7 +55,6 @@ namespace Gruppe22
                             if (_map[x, y].hasPlayer)
                             {
                                 _spriteBatch.Draw(_mapIcon, new Rectangle(_displayRect.Left + x * 16, _displayRect.Top + y * 16, 16, 16), new Rectangle(48, 16, 16, 16), Color.White);
-                                _camera.position = new Vector2(-(_displayRect.Left + x * 16)-8, -(_displayRect.Top + y * 16)-8);
 
                             }
                             else
@@ -110,6 +109,12 @@ namespace Gruppe22
             _spriteBatch.GraphicsDevice.RasterizerState.ScissorTestEnable = false;
             rstate.Dispose();
         }
+
+        public void MoveCamera(Coords coords)
+        {
+            _camera.position = new Vector2(-(_displayRect.Left + coords.x * 16) - 8, -(_displayRect.Top + coords.y * 16) - 8);
+        }
+
         public new float Zoom
         {
             get

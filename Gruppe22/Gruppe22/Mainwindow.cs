@@ -337,6 +337,8 @@ namespace Gruppe22
                             if (_map1.CanMove(_map1.actors[id].tile.coords, dir))
                             {
                                 _map1.MoveActor(_map1.actors[id], dir);
+                                if (_map1.actors[id] is Player)
+                                    ((Minimap)_interfaceElements[0]).MoveCamera(_map1.actors[id].tile.coords);
                                 ((Mainmap)_interfaceElements[1]).HandleEvent(null, Events.MoveActor, id, _map1.actors[id].tile.coords);
 
                                 if (_map1[target.x, target.y].hasTreasure)
