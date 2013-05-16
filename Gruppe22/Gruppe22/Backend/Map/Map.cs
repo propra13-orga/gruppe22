@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Xml;
 using Microsoft.Xna.Framework;
+using System.Text.RegularExpressions;
 
 namespace Gruppe22
 {
@@ -37,6 +38,8 @@ namespace Gruppe22
     public class Map : IHandleEvent, IDisposable
     {
         #region Private Fields
+        
+        private int _currRoomNbr;
 
         private object _parent = null;
 
@@ -71,6 +74,15 @@ namespace Gruppe22
         #endregion
 
         #region Public Fields
+
+        public int currRoomNbr
+        {
+            get
+            {
+                return _currRoomNbr;
+            }
+        }
+
         public List<Actor> actors
         {
             get
@@ -373,8 +385,12 @@ namespace Gruppe22
         /// <param name="player">The starting position on the loaded map</param>
         public void Load(string filename, Coords player)
         {
+            Regex re = new Regex(@"\d+");
+            Match m = re.Match(filename);
+            _currRoomNbr = Convert.ToInt32(m.Value);
             bool isReady = false;
             Player playerA = null;
+            
             if (player == null)
             {
                 player = new Coords(1, 1);

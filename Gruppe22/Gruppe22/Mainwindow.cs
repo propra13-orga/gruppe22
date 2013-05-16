@@ -257,8 +257,11 @@ namespace Gruppe22
                     break;
                 case Events.ChangeMap:
                     _status = GameStatus.NoRedraw;
-
-                    _map1.Load((string)data[0], (Coords)data[1]);
+                    _map1.Save("savedroom"+_map1.currRoomNbr+".xml");//+Nummer
+                    if(File.Exists("saved" + (string)data[0]))
+                        _map1.Load("saved" + (string)data[0], (Coords)data[1]);
+                    else
+                        _map1.Load((string)data[0], (Coords)data[1]);
                     ((Mainmap)_interfaceElements[1]).resetActors();
                     AddMessage("You entered room number " + data[0].ToString().Substring(4, 1) + ".");
                     _status = GameStatus.Running;
@@ -274,6 +277,19 @@ namespace Gruppe22
                     HandleEvent(null, Events.ContinueGame);
                     break;
                 case Events.ResetGame:
+                    if(File.Exists("savedroom1.xml"))
+                    {
+                        try
+                        {
+                            File.Copy("room1.xml", "savedroom1.xml", true);
+                            File.Copy("room2.xml", "savedroom2.xml", true);
+                            File.Copy("room3.xml", "savedroom3.xml", true);
+                        }
+                        catch
+                        {
+                            Exit();
+                        }
+                    }
                     _status = GameStatus.NoRedraw;
                     _map1.Dispose();
                     _map1.Load("room1.xml", null);
