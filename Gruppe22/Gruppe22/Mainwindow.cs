@@ -254,8 +254,8 @@ namespace Gruppe22
                     break;
                 case Events.ChangeMap:
                     _status = GameStatus.NoRedraw;
-                    _map1.Save("savedroom"+_map1.currRoomNbr+".xml");//+Nummer
-                    if(File.Exists("saved" + (string)data[0]))
+                    _map1.Save("savedroom" + _map1.currRoomNbr + ".xml");//+Nummer
+                    if (File.Exists("saved" + (string)data[0]))
                         _map1.Load("saved" + (string)data[0], (Coords)data[1]);
                     else
                         _map1.Load((string)data[0], (Coords)data[1]);
@@ -274,7 +274,7 @@ namespace Gruppe22
                     HandleEvent(null, Events.ContinueGame);
                     break;
                 case Events.ResetGame:
-                    if(File.Exists("savedroom1.xml"))
+                    if (File.Exists("savedroom1.xml"))
                     {
                         try
                         {
@@ -346,7 +346,9 @@ namespace Gruppe22
                                 else
                                 {
                                     ((Mainmap)_interfaceElements[1]).HandleEvent(null, Events.AnimateActor, _map1.firstActorID(target.x, target.y), Activity.Hit, false, Map.WhichWayIs(_map1.actors[id].tile.coords, target));
-                                    AddMessage((_map1.actors[id] is Player ? "You" : _map1.actors[id].name) + " attacked " + (_map1.actors[_map1.firstActorID(target.x, target.y)] is Player ? "you" : _map1.actors[_map1.firstActorID(target.x, target.y)].name) + " for " + _map1.actors[id].damage.ToString() + " points.");
+                                    AddMessage((_map1.actors[id] is Player ? "You" : _map1.actors[id].name) + " attacked " + (_map1.actors[_map1.firstActorID(target.x, target.y)] is Player ? "you" : _map1.actors[_map1.firstActorID(target.x, target.y)].name));
+                                    AddMessage("The attack caused " + (_map1[target.x, target.y].firstActor.armour - _map1.actors[id].damage).ToString() + " points of damage (" + _map1.actors[id].damage.ToString() + " attack strength - " + _map1[target.x, target.y].firstActor.armour + " defense)");
+                                    AddMessage(_map1.actors[id].health.ToString() + " hitpoints of " + _map1.actors[id].maxHealth.ToString() + " remain.");
 
                                 }
                                 ((Mainmap)_interfaceElements[1]).HandleEvent(null, Events.AnimateActor, id, Activity.Attack, false, dir, true);
@@ -379,13 +381,13 @@ namespace Gruppe22
                                         if (_map1.actors[id].IsDead())
                                         {
                                             ((Mainmap)_interfaceElements[1]).HandleEvent(null, Events.AnimateActor, id, Activity.Die, true, dir, true);
-                                            AddMessage((_map1.actors[id] is Player ? "You were" : _map1.actors[id].name + " was") + " hit for " + _map1[target.x, target.y].trapDamage.ToString() + " points of damage by a trap.");
+                                            AddMessage((_map1.actors[id] is Player ? "You were" : _map1.actors[id].name + " was") + " killed by a trap  doing " + (_map1.actors[id].armour - _map1[target.x, target.y].trapDamage).ToString() + " points of damage (" + _map1[target.x, target.y].trapDamage.ToString() + " - " + _map1.actors[id].armour + "protection)");
 
                                         }
                                         else
                                         {
                                             ((Mainmap)_interfaceElements[1]).HandleEvent(null, Events.AnimateActor, id, Activity.Hit, true, dir, true);
-                                            AddMessage((_map1.actors[id] is Player ? "You were" : _map1.actors[id].name + "  was") + " hit for " + _map1[target.x, target.y].trapDamage.ToString() + " points of damage by a trap.");
+                                            AddMessage((_map1.actors[id] is Player ? "You were" : _map1.actors[id].name + "  was") + " hit for " + _map1[target.x, target.y].trapDamage.ToString() + " points of damage (" + (_map1.actors[id].armour - _map1[target.x, target.y].trapDamage).ToString() + " points of damage (" + _map1[target.x, target.y].trapDamage.ToString() + " - " + _map1.actors[id].armour + "protection)");
                                         }
                                         if (_map1._actors[id] is Player) UpdateHealth();
 
@@ -445,15 +447,6 @@ namespace Gruppe22
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            if (Keyboard.GetState().IsKeyDown(Keys.H))
-            {
-                _map1.actors[0].SetDamage(4);
-                UpdateHealth();
-            }
-            /*   ((ProgressBar)
-                   ((Window)_interfaceElements[_interfaceElements.Count - 1]).children[((Window)_interfaceElements[_interfaceElements.Count - 1]).children.Count - 1]).value += 1;*/
-
-
             for (int i = 0; i < _interfaceElements.Count; ++i)
             {
                 UIElement element = _interfaceElements[i];
@@ -476,10 +469,6 @@ namespace Gruppe22
             {
                 _map1.Update(gameTime);
             }
-
-
-            //            if (Keyboard.GetState().IsKeyDown(Keys.Enter))
-            //                _graphics.ToggleFullScreen();
 
             if (_focus != null)
             {
@@ -523,22 +512,20 @@ namespace Gruppe22
                 _focus.HandleKey(Math.Abs(gameTime.TotalGameTime.Milliseconds - _lastCheck));
 
 
-                if (_lastCheck > 90)
+                if ((GamePad.GetState(PlayerIndex.One).Buttons.Start == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape)))
                 {
-                    if ((GamePad.GetState(PlayerIndex.One).Buttons.Start == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape)))
+                    if (_lastKey != Keys.Escape)
                     {
-                        if (_lastKey != Keys.Escape)
-                        {
-                            _lastKey = Keys.Escape;
-                            if (_status == GameStatus.Running) ShowMenu();
-                            else HandleEvent(null, Events.ContinueGame, 0);
-                        }
-                    }
-                    else
-                    {
-                        _lastKey = Keys.None;
+                        _lastKey = Keys.Escape;
+                        if (_status == GameStatus.Running) ShowMenu();
+                        else HandleEvent(null, Events.ContinueGame, 0);
                     }
                 }
+                else
+                {
+                    _lastKey = Keys.None;
+                }
+
             }
 
             base.Update(gameTime);

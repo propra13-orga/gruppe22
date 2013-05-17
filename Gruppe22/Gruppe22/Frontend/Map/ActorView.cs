@@ -48,7 +48,7 @@ namespace Gruppe22
         /// <summary>
         /// Number of milliseconds to wait until displaying next frame of animation
         /// </summary>
-        private int _animationTime = 45;
+        private int _animationTime = 20;
         /// <summary>
         /// Seconds elapsed since last redraw
         /// </summary>
@@ -113,6 +113,8 @@ namespace Gruppe22
                 return ((_target.x != position.x) || (target.y != position.y) || _lock);
             }
         }
+
+        
 
         public Activity activity
         {
@@ -229,6 +231,16 @@ namespace Gruppe22
         }
 
         /// <summary>
+        /// Sets an actor to "dead" state and displays final frame of animation
+        /// </summary>
+        public void Kill()
+        {
+            _lock = true;
+            _activity = Activity.Die;
+            _textures[(int)_activity * 8 + (int)_direction].FinalAnimation();
+        }
+
+        /// <summary>
         /// Load object from XML-file
         /// </summary>
         /// <param name="reader">Load object from XML-stream</param>
@@ -342,46 +354,20 @@ namespace Gruppe22
         /// <param name="gametime"></param>
         public void Update(GameTime gametime)
         {
-            if ((_target.x != _position.x) || (_target.y != _position.y))
+            if (_elapsed > _animationTime)
             {
-                if (_target.x > _position.x)
+                if ((_target.x != _position.x) || (_target.y != _position.y))
                 {
-                    _position.x += Math.Min(_speed, Math.Abs(_target.x - position.x));
-
-                    if (target.y > position.y)
+                    if (_target.x > _position.x)
                     {
-                        if (Math.Abs(_target.x - _position.x) <= Math.Abs(_target.y - _position.y))
-                            _position.y += Math.Min(_speed, Math.Abs(_target.y - position.y));
-
-                        _direction = Direction.DownRight;
-                    }
-                    else
-                    {
-                        if (target.y < position.y)
-                        {
-                            if (Math.Abs(_target.x - _position.x) <= Math.Abs(_target.y - _position.y))
-                                _position.y -= Math.Min(_speed, Math.Abs(_target.y - position.y));
-
-                            _direction = Direction.UpRight;
-                        }
-                        else
-                        {
-                            _direction = Direction.Right;
-                        }
-                    }
-                }
-                else
-                {
-                    if (_target.x < _position.x)
-                    {
-                        _position.x -= Math.Min(_speed, Math.Abs(_target.x - position.x));
+                        _position.x += Math.Min(_speed, Math.Abs(_target.x - position.x));
 
                         if (target.y > position.y)
                         {
                             if (Math.Abs(_target.x - _position.x) <= Math.Abs(_target.y - _position.y))
                                 _position.y += Math.Min(_speed, Math.Abs(_target.y - position.y));
 
-                            _direction = Direction.DownLeft;
+                            _direction = Direction.DownRight;
                         }
                         else
                         {
@@ -389,63 +375,91 @@ namespace Gruppe22
                             {
                                 if (Math.Abs(_target.x - _position.x) <= Math.Abs(_target.y - _position.y))
                                     _position.y -= Math.Min(_speed, Math.Abs(_target.y - position.y));
-                                _direction = Direction.UpLeft;
+
+                                _direction = Direction.UpRight;
                             }
                             else
                             {
-                                _direction = Direction.Left;
+                                _direction = Direction.Right;
                             }
                         }
                     }
                     else
                     {
-                        if (_target.y > _position.y)
+                        if (_target.x < _position.x)
                         {
-                            _position.y += Math.Min(_speed, Math.Abs(_target.y - position.y));
-                            _direction = Direction.Down;
+                            _position.x -= Math.Min(_speed, Math.Abs(_target.x - position.x));
+
+                            if (target.y > position.y)
+                            {
+                                if (Math.Abs(_target.x - _position.x) <= Math.Abs(_target.y - _position.y))
+                                    _position.y += Math.Min(_speed, Math.Abs(_target.y - position.y));
+
+                                _direction = Direction.DownLeft;
+                            }
+                            else
+                            {
+                                if (target.y < position.y)
+                                {
+                                    if (Math.Abs(_target.x - _position.x) <= Math.Abs(_target.y - _position.y))
+                                        _position.y -= Math.Min(_speed, Math.Abs(_target.y - position.y));
+                                    _direction = Direction.UpLeft;
+                                }
+                                else
+                                {
+                                    _direction = Direction.Left;
+                                }
+                            }
                         }
                         else
-                            if (_target.y < _position.y)
+                        {
+                            if (_target.y > _position.y)
                             {
-                                _position.y -= Math.Min(_speed, Math.Abs(_target.y - position.y));
-                                _direction = Direction.Up;
+                                _position.y += Math.Min(_speed, Math.Abs(_target.y - position.y));
+                                _direction = Direction.Down;
                             }
+                            else
+                                if (_target.y < _position.y)
+                                {
+                                    _position.y -= Math.Min(_speed, Math.Abs(_target.y - position.y));
+                                    _direction = Direction.Up;
+                                }
+                        }
+                    }
+
+                    _textures[(int)_activity * 8 + (int)_direction].NextAnimation();
+
+                }
+                else
+                {
+                    if (_playAfterMove != Activity.Walk)
+                    {
+                        _activity = _playAfterMove;
+                        _playAfterMove = Activity.Walk;
                     }
                 }
-                if (_elapsed > _animationTime)
+                if ((_activity != Activity.Walk) && (_activity != Activity.Run))
                 {
-                    _textures[(int)_activity * 8 + (int)_direction].NextAnimation();
-                }
-            }
-            else
-            {
-                if (_playAfterMove != Activity.Walk)
-                {
-                    _activity = _playAfterMove;
-                    _playAfterMove = Activity.Walk;
-                }
-            }
-            if ((_activity != Activity.Walk) && (_activity != Activity.Run))
-            {
-                if (_elapsed > _animationTime)
-                {
-                    _elapsed -= _animationTime;
-                    if (_textures[(int)_activity * 8 + (int)_direction].NextAnimation())
+                    if (_elapsed > _animationTime)
                     {
-                        if (_activity != Activity.Die)
+                        _elapsed -= _animationTime;
+                        if (_textures[(int)_activity * 8 + (int)_direction].NextAnimation())
                         {
-                            _parent.HandleEvent(null, Events.FinishedAnimation, _id, _activity);
-                            _activity = _playAfterMove;
-                            if (_playAfterMove != Activity.Walk) _playAfterMove = Activity.Walk;
-                            _lock = false;
-                        }
-                        else
-                        {
-                            if (!_dead)
+                            if (_activity != Activity.Die)
                             {
-                                _dead = true;
                                 _parent.HandleEvent(null, Events.FinishedAnimation, _id, _activity);
+                                _activity = _playAfterMove;
+                                if (_playAfterMove != Activity.Walk) _playAfterMove = Activity.Walk;
+                                _lock = false;
+                            }
+                            else
+                            {
+                                if (!_dead)
+                                {
+                                    _dead = true;
+                                    _parent.HandleEvent(null, Events.FinishedAnimation, _id, _activity);
 
+                                }
                             }
                         }
                     }
@@ -455,7 +469,6 @@ namespace Gruppe22
 
         }
         #endregion
-
 
         #region Constructor
 
@@ -472,7 +485,7 @@ namespace Gruppe22
         /// <param name="controllable"></param>
         /// <param name="position"></param>
         /// <param name="sprite"></param>
-        public ActorView(IHandleEvent parent, int id, ContentManager content, Coords position, string filename = "", int speed = 5)
+        public ActorView(IHandleEvent parent, int id, ContentManager content, Coords position, string filename = "", int speed = 5, bool alive=true)
             : base(content, 96, 96, "")
         {
             _position = position;
@@ -488,6 +501,10 @@ namespace Gruppe22
             }
             _parent = parent;
             _speed = speed;
+            if (!alive)
+            {
+                Kill();
+            }
         }
         #endregion
 

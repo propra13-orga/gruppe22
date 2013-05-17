@@ -32,7 +32,7 @@ namespace Gruppe22
             mouseon = 1,
             pressed = 2
         }
-
+        private ButtonState lmb = ButtonState.Pressed;
         private string _label = "";
         private Events _id = 0;
 
@@ -49,7 +49,10 @@ namespace Gruppe22
         {
             if (IsHit(Mouse.GetState().X, Mouse.GetState().Y))
             {
-                if (Mouse.GetState().LeftButton == ButtonState.Pressed && _bstat != ButtonStatus.pressed)
+                if ((lmb == ButtonState.Pressed) && (Mouse.GetState().LeftButton == ButtonState.Released))
+                    lmb = ButtonState.Released;
+
+                if (Mouse.GetState().LeftButton == ButtonState.Pressed && _bstat != ButtonStatus.pressed && lmb == ButtonState.Released)
                 {
                     _bstat = ButtonStatus.pressed;
                     _parent.HandleEvent(this, _id, 0);
@@ -59,6 +62,7 @@ namespace Gruppe22
             else
             {
                 _bstat = ButtonStatus.normal;
+                lmb = ButtonState.Pressed;
             }
         }
 
@@ -76,7 +80,7 @@ namespace Gruppe22
                 {
                     case ButtonStatus.mouseon:
                         _spriteBatch.Draw(_background, _displayRect, new Rectangle(39, 6, 1, 1), Color.Black);
-                        _spriteBatch.Draw(_background, new Rectangle(_displayRect.X+2,_displayRect.Y+2,_displayRect.Width-4,_displayRect.Height-4), new Rectangle(39, 6, 1, 1), Color.White);
+                        _spriteBatch.Draw(_background, new Rectangle(_displayRect.X + 2, _displayRect.Y + 2, _displayRect.Width - 4, _displayRect.Height - 4), new Rectangle(39, 6, 1, 1), Color.White);
                         _spriteBatch.DrawString(_font, _label, new Vector2(_displayRect.Left + (_displayRect.Width - _textPos.X) / 2, _displayRect.Top + (_displayRect.Height - _textPos.Y) / 2), Color.Black);
 
                         break;
@@ -95,10 +99,10 @@ namespace Gruppe22
                         _spriteBatch.Draw(_buttonStates[1], new Rectangle(_displayRect.X, _displayRect.Y, Math.Min(_displayRect.Width, _buttonStates[1].Width), Math.Min(_displayRect.Height, _buttonStates[1].Height)), new Rectangle(0, 0, _buttonStates[1].Width, _buttonStates[1].Height), Color.White);
                         break;
                     case ButtonStatus.pressed:
-                        _spriteBatch.Draw(_buttonStates[2], new Rectangle(_displayRect.X, _displayRect.Y, Math.Min(_displayRect.Width,_buttonStates[2].Width), Math.Min(_displayRect.Height,_buttonStates[2].Height)), new Rectangle(0, 0, _buttonStates[2].Width, _buttonStates[2].Height), Color.White);
+                        _spriteBatch.Draw(_buttonStates[2], new Rectangle(_displayRect.X, _displayRect.Y, Math.Min(_displayRect.Width, _buttonStates[2].Width), Math.Min(_displayRect.Height, _buttonStates[2].Height)), new Rectangle(0, 0, _buttonStates[2].Width, _buttonStates[2].Height), Color.White);
                         break;
                     default:
-                        _spriteBatch.Draw(_buttonStates[0], new Rectangle(_displayRect.X, _displayRect.Y, Math.Min(_displayRect.Width,_buttonStates[0].Width), Math.Min(_displayRect.Height,_buttonStates[0].Height)), new Rectangle(0, 0, _buttonStates[0].Width, _buttonStates[0].Height), Color.White);
+                        _spriteBatch.Draw(_buttonStates[0], new Rectangle(_displayRect.X, _displayRect.Y, Math.Min(_displayRect.Width, _buttonStates[0].Width), Math.Min(_displayRect.Height, _buttonStates[0].Height)), new Rectangle(0, 0, _buttonStates[0].Width, _buttonStates[0].Height), Color.White);
                         break;
                 }
             }
@@ -108,8 +112,8 @@ namespace Gruppe22
 
         public override void Dispose()
         {
-          //  if (_background != null) _background.Dispose(); // Kills minimap (reused picture)
-          //  while ((_buttonStates != null) && (_buttonStates.Count > 0)) { _buttonStates[0].Dispose(); _buttonStates.RemoveAt(0); } // prevents reloading by content-manager: Button appears black
+            //  if (_background != null) _background.Dispose(); // Kills minimap (reused picture)
+            //  while ((_buttonStates != null) && (_buttonStates.Count > 0)) { _buttonStates[0].Dispose(); _buttonStates.RemoveAt(0); } // prevents reloading by content-manager: Button appears black
             base.Dispose();
         }
         #endregion

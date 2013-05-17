@@ -385,6 +385,13 @@ namespace Gruppe22
             _currentPhase = 0;
         }
 
+        /// <summary>
+        /// Show the final phase of the animation
+        /// </summary>
+        public void FinalAnimation()
+        {
+            _currentPhase = _animations.Count - 1;
+        }
 
         /// <summary>
         /// Add multiple animation phases from a single file
