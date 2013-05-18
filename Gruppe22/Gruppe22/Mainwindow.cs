@@ -221,6 +221,26 @@ namespace Gruppe22
         }
 
         /// <summary>
+        /// Methode to delete old saved rooms
+        /// </summary>
+        public void DeleteSavedRooms()
+        {
+            if (File.Exists("savedroom1.xml"))
+            {
+                try
+                {
+                    File.Delete("savedroom1.xml");
+                    File.Delete("savedroom2.xml");
+                    File.Delete("savedroom3.xml");
+                }
+                catch
+                {
+                    Exit();
+                }
+            }
+        }
+
+        /// <summary>
         /// 
         /// </summary>
         /// <param name="sender"></param>
@@ -250,6 +270,7 @@ namespace Gruppe22
                     ShowAbout();
                     break;
                 case Events.EndGame:
+                    DeleteSavedRooms();
                     Exit();
                     break;
                 case Events.ChangeMap:
@@ -268,25 +289,14 @@ namespace Gruppe22
                     _status = GameStatus.NoRedraw;
                     _map1.Dispose();
                     GenerateMaps();
+                    DeleteSavedRooms();
                     _map1.Load("room1.xml", null);
                     ((Mainmap)_interfaceElements[1]).resetActors();
                     _status = GameStatus.Paused;
                     HandleEvent(null, Events.ContinueGame);
                     break;
                 case Events.ResetGame:
-                    if (File.Exists("savedroom1.xml"))
-                    {
-                        try
-                        {
-                            File.Copy("room1.xml", "savedroom1.xml", true);
-                            File.Copy("room2.xml", "savedroom2.xml", true);
-                            File.Copy("room3.xml", "savedroom3.xml", true);
-                        }
-                        catch
-                        {
-                            Exit();
-                        }
-                    }
+                    DeleteSavedRooms();
                     _status = GameStatus.NoRedraw;
                     _map1.Dispose();
                     _map1.Load("room1.xml", null);
