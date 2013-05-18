@@ -117,7 +117,7 @@ namespace Gruppe22
         /// <param name="_lastCheck"></param>
         public override void MoveContent(Vector2 difference, int _lastCheck = 0)
         {
-            float tmp = 0.70710678f; //berechnete rückverschiebung (Rot.matrix für 45°), wurzel 2 halbe
+            float tmp = 0.70710678118654752440084436210485f; //berechnete rückverschiebung (Rot.matrix für 45°), wurzel 2 halbe
             difference = new Vector2(tmp*difference.X + (-tmp)*difference.Y, tmp*difference.X + tmp*difference.Y);
             Move(difference);
             base.MoveContent(difference);
