@@ -12,6 +12,7 @@ using Microsoft.Xna.Framework.Audio;
 using System.Net;
 using System.IO;
 using System.Threading.Tasks;
+using System.Xml;
 #endregion
 
 
@@ -606,6 +607,45 @@ namespace Gruppe22
             return true;
         }
 
+        public void LoadSaveGame(string filename = "autosave")
+        {
+            throw new NotImplementedException("TODO!");
+        }
+
+        /// <summary>
+        /// Save the running Game to continue later.
+        /// </summary>
+        /// <param name="filename"></param>
+        public void SaveGame(string filename = "autosave")
+        {
+            if (!Directory.Exists(Environment.CurrentDirectory + @"\SaveGames"))
+                Directory.CreateDirectory(Environment.CurrentDirectory + @"\SaveGames");
+            //TODO: xml file with a list of all savegames? or any dir IS a savegame
+            string filedir = Environment.CurrentDirectory + @"\SaveGames\" + filename;
+            if(!Directory.Exists(filedir))
+                Directory.CreateDirectory(filedir);
+            //Save the Gamedata
+            //TODO: Dynamic levels and rooms (List of rooms, levels)
+            if (File.Exists("room1.xml")) File.Copy("room1.xml", filedir + @"\room1.xml", true);
+            if (File.Exists("room2.xml")) File.Copy("room2.xml", filedir + @"\room2.xml", true);
+            if (File.Exists("room3.xml")) File.Copy("room3.xml", filedir + @"\room3.xml", true);
+            if (File.Exists("savedroom1.xml")) File.Copy("savedroom1.xml", filedir + @"\savedroom1.xml", true);
+            if (File.Exists("savedroom2.xml")) File.Copy("savedroom2.xml", filedir + @"\savedroom2.xml", true);
+            if (File.Exists("savedroom3.xml")) File.Copy("savedroom3.xml", filedir + @"\savedroom3.xml", true);
+            //create savegame.xml with necessary information
+            XmlWriter xmlw = XmlWriter.Create(filedir + @"\savegame.xml");
+            //TODO: write the current room and other values whitch are required to load a savegame
+            xmlw.WriteStartDocument();
+                xmlw.WriteStartElement("SaveGame");
+                xmlw.WriteAttributeString("id", filename);
+                    xmlw.WriteStartElement("Player1");
+                    xmlw.WriteAttributeString("info", "TODO!");
+                    xmlw.WriteEndElement();
+                xmlw.WriteEndElement();
+            xmlw.WriteEndDocument();
+            xmlw.Close();
+        }
+
         #endregion
 
         #region Constructor
@@ -615,8 +655,13 @@ namespace Gruppe22
         public MainWindow()
             : base()
         {
+
             Content.RootDirectory = "Content";
             Window.Title = "Dungeon Crawler 2013";
+
+            //TODO: delete
+            //SaveGame();
+            //Exit();
 
             _graphics = new GraphicsDeviceManager(this);
             _graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height - 200;
