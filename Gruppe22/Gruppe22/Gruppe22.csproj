@@ -101,6 +101,7 @@
     <Compile Include="Frontend\UI\CheckBox.cs" />
     <Compile Include="Frontend\UI\FileDialog.cs" />
     <Compile Include="Frontend\UI\Grid.cs" />
+    <Compile Include="Frontend\UI\KeyHandler.cs" />
     <Compile Include="Frontend\UI\Menu.cs" />
     <Compile Include="Frontend\UI\Notification.cs" />
     <Compile Include="Frontend\UI\NumberEntry.cs" />
@@ -120,7 +121,7 @@
   <ItemGroup>
     <Reference Include="MonoGame.Framework, Version=3.0.1.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\..\..\MonoGame\MonoGame.Framework\bin\WindowsGL\Debug\MonoGame.Framework.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\..\..\Program Files (x86)\MonoGame\v3.0\Assemblies\WindowsGL\MonoGame.Framework.dll</HintPath>
     </Reference>
     <Reference Include="OpenTK">
       <HintPath>$(MSBuildExtensionsPath)\..\MonoGame\v3.0\Assemblies\WindowsGL\OpenTK.dll</HintPath>
