@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Xml;
 
 namespace Gruppe22
 {
@@ -20,6 +21,14 @@ namespace Gruppe22
         private int _id = 0;
         private string _name = "";
         private List<Item> _inventory = null;
+
+        /// <summary>
+        /// later used to calculate Health, Damage, etc
+        /// </summary>
+        private int _level;
+        private int _strength;
+        private int _vitality;
+        private int _exp;
 
         //Lebenspunkte, Rüstung, Schaden/Angriffsstärke
         protected int
@@ -109,12 +118,65 @@ namespace Gruppe22
             }
         }
 
+        public int level
+        {
+            get
+            {
+                return _level;
+            }
+        }
+
+        public int strength
+        {
+            get
+            {
+                return _strength;
+            }
+            set
+            {
+                _strength = value;
+            }
+        }
+
+        public int vitality
+        {
+            get
+            {
+                return _vitality;
+            }
+            set
+            {
+                _vitality = value;
+            }
+        }
+
+        public int exp
+        {
+            get
+            {
+                return _exp;
+            }
+            set
+            {
+                _exp = value;
+            }
+        }
+
         public int id { get { return _id; } set { _id = value; } }
         #endregion
 
         #region Public Methods
 
         public bool IsDead() { return _health <= 0 ? true : false; }
+
+        public void LevelUp(Actor actor)
+        {
+            actor._vitality++;
+            actor._strength++;
+            actor._exp = 0;
+            actor._level++;
+            actor._health = actor._maxhealth;
+        }
 
         public void SetDamage(Actor actor) 
         { 
@@ -174,11 +236,46 @@ namespace Gruppe22
             }
         }
 
+        public void SaveActor(XmlWriter writer)
+        {
+            writer.WriteStartElement("actor");
+            writer.WriteAttributeString("name", _name);
+            writer.WriteAttributeString("maxhp", Convert.ToString(_maxhealth));
+            writer.WriteAttributeString("currhp", Convert.ToString(_health));
+            writer.WriteAttributeString("arm", Convert.ToString(_armour));
+            writer.WriteAttributeString("lev", Convert.ToString(_level));
+            writer.WriteAttributeString("str", Convert.ToString(_strength));
+            writer.WriteAttributeString("vit", Convert.ToString(_vitality));
+            writer.WriteAttributeString("#items", Convert.ToString(_inventory.Count()));
+            writer.WriteStartElement("Inventory");
+            foreach (Item itm in _inventory)
+            {
+                //save inventory
+            }
+            writer.WriteEndElement();
+            writer.WriteEndElement();
+        }
+
+        public void LoadActor(XmlReader reader)
+        {
+            _name = reader.GetAttribute("name");
+            _maxhealth = Convert.ToInt32(reader.GetAttribute("maxhp")); 
+            _health = Convert.ToInt32(reader.GetAttribute("currhp")); 
+            _armour = Convert.ToInt32(reader.GetAttribute("arm"));
+            _level = Convert.ToInt32(reader.GetAttribute("lev"));
+            _strength = Convert.ToInt32(reader.GetAttribute("str"));
+            _vitality = Convert.ToInt32(reader.GetAttribute("vit"));
+            for (int i = 0; i < Convert.ToInt32(reader.GetAttribute("#items")); i++)
+            {
+                //read inventory
+            }
+        }
+
         /// <summary>
         /// Methode to generate random names for actors
         /// </summary>
         /// <param name="r"></param>
-        public void GenerateName(Random r=null)
+        public void GenerateName(Random r = null)
         {
             if(r==null)r = new Random();
             int index = r.Next(6);
