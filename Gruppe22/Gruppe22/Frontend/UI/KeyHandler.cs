@@ -178,6 +178,15 @@ namespace Gruppe22
                 {
                     if (!current.Contains(key))
                     {
+                        _parent.OnKeyUp(key);
+
+                        _lastCheck = 0;
+                    }                    
+                }
+                foreach (Keys key in current)
+                {
+                    if (!_pressed.Contains(key))
+                    {
                         _parent.OnKeyDown(key);
                         _lastCheck = 0;
                     }
@@ -187,14 +196,6 @@ namespace Gruppe22
                         {
                             _parent.OnKeyHeld(key);
                         }
-                    }
-                }
-                foreach (Keys key in current)
-                {
-                    if (!_pressed.Contains(key))
-                    {
-                        _parent.OnKeyUp(key);
-                        _lastCheck = 0;
                     }
                 }
                 _pressed = current; // Save current state

@@ -58,7 +58,13 @@ namespace Gruppe22
             }
         }
 
-
+        public override void OnMouseDown(int button)
+        {
+            for (int i = 0; i < _children.Count;++i )
+            {
+                _children[i].OnMouseDown(button);
+            }
+        }
         public void AddChild(UIElement child)
         {
             _children.Add(child);

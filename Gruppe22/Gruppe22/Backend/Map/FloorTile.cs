@@ -131,10 +131,10 @@ namespace Gruppe22
             {
                 for (int i = 0; i < _overlay.Count; ++i)
                 {
-                    if (_overlay[i] is WallTile) return false;
+                    if ((_overlay[i] is WallTile)||(_overlay[i] is DoorTile)) return true;
                 }
 
-                return true;
+                return false;
             }
         }
 

@@ -66,26 +66,38 @@ namespace Gruppe22
             base.ScrollWheel(Difference);
         }
 
-        public override void HandleKey(int _lastCheck=-1)
+        public override void OnKeyDown(Keys k)
         {
-            if (Keyboard.GetState().IsKeyDown(Keys.PageUp))
+            DoZoom(k);
+        }
+
+        public override void OnKeyHeld(Keys k)
+        {
+            DoZoom(k);
+        }
+        public void DoZoom(Keys k)
+        {
+            switch(k){
+                case Keys.PageUp:
                 Zoom += (float)0.1;
+                break;
 
-            if (Keyboard.GetState().IsKeyDown(Keys.PageDown))
+            case Keys.PageDown:
                 Zoom -= (float)0.1;
-
-            if (Keyboard.GetState().IsKeyDown(Keys.Right))
+                break;
+            case Keys.Right:
                 Move(new Vector2(-1, 0));
-
-            if (Keyboard.GetState().IsKeyDown(Keys.Left))
+                break;
+            case Keys.Left:
                 Move(new Vector2(1, 0));
-
-            if (Keyboard.GetState().IsKeyDown(Keys.Down))
+                break;
+            case Keys.Down:
                 Move(new Vector2(0, -1));
-
-            if (Keyboard.GetState().IsKeyDown(Keys.Up))
+                break;
+            case Keys.Up:
                 Move(new Vector2(0, 1));
-            base.HandleKey();
+                break;
+            }
         }
         /// <summary>
         /// Move the camera by a specified number of pixels (pass through to camera)
@@ -109,6 +121,7 @@ namespace Gruppe22
         {
             _camera = new Camera(new Vector2(displayRect.Width / 2+displayRect.Left, displayRect.Height / 2+displayRect.Top));
             _camera.position = new Vector2(-displayRect.Left, -displayRect.Top);
+            //_camera.zoom = 0.4f;
         }
         #endregion
     }

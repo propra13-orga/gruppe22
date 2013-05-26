@@ -171,66 +171,63 @@ namespace Gruppe22
         /// <summary>
         /// 
         /// </summary>
-        public override void HandleKey(int _lastCheck = -1)
+        public override void OnKeyDown(Keys k)
         {
-            Keys[] keys = Keyboard.GetState().GetPressedKeys();
             int temp = _startPos;
 
-            foreach (Keys key in keys)
+            switch (k)
             {
-                switch (key)
-                {
-                    case Keys.PageUp:
-                        if ((_lastKey != Keys.PageUp) || (_lastCheck > 90))
-                        {
-                            temp = _startPos - 10;
-                            _lastKey = Keys.PageUp;
+                case Keys.PageUp:
+                    if ((_lastKey != Keys.PageUp))
+                    {
+                        temp = _startPos - 10;
+                        _lastKey = Keys.PageUp;
 
-                        }
-                        break;
-                    case Keys.PageDown:
-                        if ((_lastKey != Keys.PageDown) || (_lastCheck > 90))
-                        {
-                            temp = _startPos + 10;
-                            _lastKey = Keys.PageDown;
+                    }
+                    break;
+                case Keys.PageDown:
+                    if ((_lastKey != Keys.PageDown))
+                    {
+                        temp = _startPos + 10;
+                        _lastKey = Keys.PageDown;
 
-                        }
-                        break;
-                    case Keys.Home:
-                        if ((_lastKey != Keys.Home) || (_lastCheck > 90))
-                        {
-                            temp = 0;
-                            _lastKey = Keys.Home;
+                    }
+                    break;
+                case Keys.Home:
+                    if ((_lastKey != Keys.Home))
+                    {
+                        temp = 0;
+                        _lastKey = Keys.Home;
 
-                        }
-                        break;
-                    case Keys.End:
-                        if ((_lastKey != Keys.End) || (_lastCheck > 90))
-                        {
-                            temp = _text.Count - _numLines;
-                            _lastKey = Keys.End;
-                        }
-                        break;
-                    case Keys.Down:
-                        if ((_lastKey != Keys.Down) || (_lastCheck > 90))
-                        {
-                            _lastKey = Keys.Down;
-                            temp = _startPos + 1;
-                        }
-                        break;
-                    case Keys.Up:
-                        if ((_lastKey != Keys.Up) || (_lastCheck > 90))
-                        {
-                            _lastKey = Keys.Up;
-                            temp = _startPos - 1;
+                    }
+                    break;
+                case Keys.End:
+                    if ((_lastKey != Keys.End))
+                    {
+                        temp = _text.Count - _numLines;
+                        _lastKey = Keys.End;
+                    }
+                    break;
+                case Keys.Down:
+                    if ((_lastKey != Keys.Down))
+                    {
+                        _lastKey = Keys.Down;
+                        temp = _startPos + 1;
+                    }
+                    break;
+                case Keys.Up:
+                    if ((_lastKey != Keys.Up))
+                    {
+                        _lastKey = Keys.Up;
+                        temp = _startPos - 1;
 
-                        }
-                        break;
-                    default:
-                        _lastKey = Keys.A;
-                        break;
-                }
+                    }
+                    break;
+                default:
+                    _lastKey = Keys.A;
+                    break;
             }
+
 
             if (temp < 0) temp = 0;
             if (temp > _text.Count - 1) temp = _text.Count - 1;

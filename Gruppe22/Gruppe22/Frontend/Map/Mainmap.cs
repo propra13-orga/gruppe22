@@ -45,7 +45,7 @@ namespace Gruppe22
         /// <summary>
         /// Number of tiles to render (Square with player in center)
         /// </summary>
-        private int _renderScope = 7;
+        private int _renderScope = 4;
         /// <summary>
         /// Basic texture set (for drawing lines
         /// </summary>
@@ -158,8 +158,8 @@ namespace Gruppe22
                             null,
                             _camera.matrix);
                 _spriteBatch.Draw(_circle, new Rectangle(
-                    (int)(_actors[0].position.x) - 1060,
-                    (int)(_actors[0].position.y) - 1200, 2300, 2300), Color.White);
+                    (int)(_actors[0].position.x) - 75 * _renderScope,
+                    (int)(_actors[0].position.y) - 75* _renderScope, 150 * _renderScope, 150 * _renderScope), Color.White);
                 _spriteBatch.End();
 
 
@@ -906,67 +906,6 @@ namespace Gruppe22
             _tiles.Save("neu.xml");
         }
 
-        /// <summary>
-        /// React to keypress
-        /// </summary>
-        /// <param name="_lastCheck"></param>
-        public override void HandleKey(int _lastCheck = -1)
-        {
-            // TODO: This should be in mainwindow (as it should not depend on focus)
-            if (!_actors[0].isMoving)
-            {
-                if (Keyboard.GetState().IsKeyDown(Keys.W))
-                {
-
-                    //_actors[0].target = new Coords(_actors[0].position.x, _actors[0].position.y-100);
-                    MovePlayer(Direction.Up);
-
-                }
-
-                if (Keyboard.GetState().IsKeyDown(Keys.A))
-                {
-
-                    MovePlayer(Direction.Left);
-
-                }
-
-                if (Keyboard.GetState().IsKeyDown(Keys.D))
-                {
-                    MovePlayer(Direction.Right);
-                }
-
-                if (Keyboard.GetState().IsKeyDown(Keys.S))
-                {
-                    MovePlayer(Direction.Down);
-                }
-
-
-                if (Keyboard.GetState().IsKeyDown(Keys.Q))
-                {
-                    MovePlayer(Direction.UpLeft);
-                }
-
-
-                if (Keyboard.GetState().IsKeyDown(Keys.E))
-                {
-                    MovePlayer(Direction.UpRight);
-                }
-
-
-                if (Keyboard.GetState().IsKeyDown(Keys.Y))
-                {
-                    MovePlayer(Direction.DownLeft);
-                }
-
-
-
-                if (Keyboard.GetState().IsKeyDown(Keys.C))
-                {
-                    MovePlayer(Direction.DownRight);
-                }
-            }
-            base.HandleKey();
-        }
         #endregion
 
 

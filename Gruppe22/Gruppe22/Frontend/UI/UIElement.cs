@@ -145,14 +145,7 @@ namespace Gruppe22
         {
 
         }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public virtual void HandleKey(int lastCheck = 0)
-        {
-
-        }
+        
 
         public virtual void Dispose()
         {

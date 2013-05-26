@@ -103,11 +103,6 @@ namespace Gruppe22
         /// Current background color (used to indicate healing or damage)
         /// </summary>
         private Color _backgroundcolor;
-
-        private Mainmap _mainmap1 = null;
-        private Minimap _minimap1 = null;
-        private Statusbox _statusbox = null;
-        private Inventory _inventory = null;
         /// <summary>
         /// A reference to the object displaying current player statistics
         /// </summary>
@@ -127,47 +122,6 @@ namespace Gruppe22
         #region Implementation of IKeyHandler-Interface
         public void OnKeyDown(Keys k)
         {
-            switch (k)
-            {
-                case Keys.Escape:
-                    if (_status == GameStatus.Running) ShowMenu();
-                    else HandleEvent(null, Events.ContinueGame, 0);
-                    break;
-            }
-
-            HandleMovementKeys(k);
-        }
-
-        private void HandleMovementKeys(Keys k)
-        {
-            switch (k)
-            {
-                case Keys.W:
-                    _mainmap1.MovePlayer(Direction.Up);
-                    break;
-
-                case Keys.A:
-                    _mainmap1.MovePlayer(Direction.Left);
-                    break;
-                case Keys.D:
-                    _mainmap1.MovePlayer(Direction.Right);
-                    break;
-                case Keys.S:
-                    _mainmap1.MovePlayer(Direction.Down);
-                    break;
-                case Keys.Q:
-                    _mainmap1.MovePlayer(Direction.UpLeft);
-                    break;
-                case Keys.E:
-                    _mainmap1.MovePlayer(Direction.UpRight);
-                    break;
-                case Keys.Y:
-                    _mainmap1.MovePlayer(Direction.DownLeft);
-                    break;
-                case Keys.C:
-                    _mainmap1.MovePlayer(Direction.DownRight);
-                    break;
-            }
         }
 
         public void OnKeyUp(Keys k)
@@ -176,35 +130,18 @@ namespace Gruppe22
 
         public void OnMouseDown(int button)
         {
-            for(int i=0;i<_interfaceElements.Count;++i)
-            {
-                _interfaceElements[i].OnMouseDown(button);
-            }
         }
 
         public void OnMouseUp(int button)
         {
-            foreach (UIElement element in _interfaceElements)
-            {
-                element.OnMouseUp(button);
-            }
         }
 
         public void OnMouseHeld(int button)
         {
-            foreach (UIElement element in _interfaceElements)
-            {
-                element.OnMouseHeld(button);
-            }
         }
 
         public void OnKeyHeld(Keys k)
         {
-            HandleMovementKeys(k);
-            foreach (UIElement element in _interfaceElements)
-            {
-                element.OnKeyHeld(k);
-            }
         }
         #endregion
         #region Protected Methods (overrides)
@@ -250,23 +187,20 @@ namespace Gruppe22
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-            _minimap1 = new Minimap(this, _spriteBatch, Content, new Rectangle(_graphics.GraphicsDevice.Viewport.Width - 230, 20, 210, 200), _map1);
-            _interfaceElements.Add(_minimap1);
-            _mainmap1 = new Mainmap(this, _spriteBatch, Content, new Rectangle(20, 20, _graphics.GraphicsDevice.Viewport.Width - 260, _graphics.GraphicsDevice.Viewport.Height - 160), _map1);
-            _interfaceElements.Add(_mainmap1);
-            _statusbox = new Statusbox(this, _spriteBatch, Content, new Rectangle(20, _graphics.GraphicsDevice.Viewport.Height - 120, _graphics.GraphicsDevice.Viewport.Width - 260, 100));
-            _interfaceElements.Add(_statusbox);
-            _inventory = new Inventory(this, _spriteBatch, Content, new Rectangle(20, _graphics.GraphicsDevice.Viewport.Height - 120, _graphics.GraphicsDevice.Viewport.Width - 260, 100), _map1.actors[0]);
-            _interfaceElements.Add(_inventory);
-            _statusbox.AddLine("Welcome to this highly innovative Dungeon Crawler!\nYou can scroll in this status window.\nUse A-S-D-W to move your character.\n Use Arrow keys (or drag mouse) to scroll map or minimap\n Press ESC to display Game Menu.");
-            _playerStats = new SimpleStats(this, _spriteBatch, Content, new Rectangle(_graphics.GraphicsDevice.Viewport.Width - 230, 230, 210, 100), _map1.actors[0]);
-            _enemyStats = new SimpleStats(this, _spriteBatch, Content, new Rectangle(_graphics.GraphicsDevice.Viewport.Width - 230, 340, 210, 100), null);
+            _interfaceElements.Add(new Minimap(this, _spriteBatch, Content, new Rectangle(_graphics.GraphicsDevice.Viewport.Width - 230, 20, 210, 200), _map1));
+            _interfaceElements.Add(new Mainmap(this, _spriteBatch, Content, new Rectangle(20, 20, _graphics.GraphicsDevice.Viewport.Width - 260, _graphics.GraphicsDevice.Viewport.Height - 160), _map1));
+            _interfaceElements.Add(new Statusbox(this, _spriteBatch, Content, new Rectangle(20, _graphics.GraphicsDevice.Viewport.Height - 120, _graphics.GraphicsDevice.Viewport.Width - 260, 100)));
+            _interfaceElements.Add(new Inventory(this, _spriteBatch, Content, new Rectangle(20, _graphics.GraphicsDevice.Viewport.Height - 120, _graphics.GraphicsDevice.Viewport.Width - 260, 100)),_map1.actors[0]);
+            (_interfaceElements[2] as Statusbox).AddLine("Welcome to this highly innovative Dungeon Crawler!\nYou can scroll in this status window.\nUse A-S-D-W to move your character.\n Use Arrow keys (or drag mouse) to scroll map or minimap\n Press ESC to display Game Menu.");
+            _playerStats = new SimpleStats(this, _spriteBatch, Content, new Rectangle(_graphics.GraphicsDevice.Viewport.Width - 230, 240, 210, 50), _map1._actors[0]);
+            _enemyStats = new SimpleStats(this, _spriteBatch, Content, new Rectangle(_graphics.GraphicsDevice.Viewport.Width - 230, 240, 210, 50), null);
             _interfaceElements.Add(_playerStats);
-            _interfaceElements.Add(_enemyStats);
+            _interfaceElements.Add(_enemyStats);            
             // _backMusic = Content.Load<Song>("Video Dungeon Crawl.wav"); // Todo: *.mp3
             // _font = Content.Load<SpriteFont>("Font");
             // MediaPlayer.Volume = (float)0.3;
-            // MediaPlayer.Play(_backMusic);            
+            // MediaPlayer.Play(_backMusic);
+            ShowMenu();
         }
 
         /// <summary>
@@ -404,7 +338,7 @@ namespace Gruppe22
                         _map1.Load("saved" + (string)data[0], (Coords)data[1]);
                     else
                         _map1.Load((string)data[0], (Coords)data[1]);
-                    _mainmap1.resetActors();
+                    ((Mainmap)_interfaceElements[1]).resetActors();
                     AddMessage("You entered room number " + data[0].ToString().Substring(4, 1) + ".");
                     _status = GameStatus.Running;
                     break;
@@ -415,7 +349,7 @@ namespace Gruppe22
                     GenerateMaps();
                     DeleteSavedRooms();
                     _map1.Load("room1.xml", null);
-                    _mainmap1.resetActors();
+                    ((Mainmap)_interfaceElements[1]).resetActors();
                     _status = GameStatus.Paused;
                     HandleEvent(null, Events.ContinueGame);
                     break;
@@ -425,7 +359,7 @@ namespace Gruppe22
                     _status = GameStatus.NoRedraw;
                     _map1.Dispose();
                     _map1.Load("room1.xml", null);
-                    _mainmap1.resetActors();
+                    ((Mainmap)_interfaceElements[1]).resetActors();
                     _status = GameStatus.Paused;
                     HandleEvent(null, Events.ContinueGame);
                     break;
@@ -455,7 +389,7 @@ namespace Gruppe22
 
                 case Events.MoveActor:
                     int id = (int)data[0];
-                    if (!_mainmap1.IsMoving(id))
+                    if (!((Mainmap)_interfaceElements[1]).IsMoving(id))
                     {
                         Direction dir = (Direction)data[1];
                         Coords target = _map1.DirectionTile(_map1.actors[id].tile.coords, dir);
@@ -488,17 +422,17 @@ namespace Gruppe22
                                 if (_map1[target.x, target.y].firstActor is Player) RemoveHealth();
                                 if (_map1[target.x, target.y].firstActor.IsDead())
                                 {
-                                    _mainmap1.HandleEvent(null, Events.AnimateActor, _map1.firstActorID(target.x, target.y), Activity.Die, false, Map.WhichWayIs(_map1.actors[id].tile.coords, target));
+                                    ((Mainmap)_interfaceElements[1]).HandleEvent(null, Events.AnimateActor, _map1.firstActorID(target.x, target.y), Activity.Die, false, Map.WhichWayIs(_map1.actors[id].tile.coords, target));
                                     AddMessage((_map1.actors[id] is Player ? "<green>You" : _map1.actors[id].name) + " killed " + (_map1.actors[_map1.firstActorID(target.x, target.y)] is Player ? "you" : _map1.actors[_map1.firstActorID(target.x, target.y)].name) + " doing " + _map1.actors[id].damage.ToString() + " points of damage.");
 
                                 }
                                 else
                                 {
-                                    _mainmap1.HandleEvent(null, Events.AnimateActor, _map1.firstActorID(target.x, target.y), Activity.Hit, false, Map.WhichWayIs(_map1.actors[id].tile.coords, target));
+                                    ((Mainmap)_interfaceElements[1]).HandleEvent(null, Events.AnimateActor, _map1.firstActorID(target.x, target.y), Activity.Hit, false, Map.WhichWayIs(_map1.actors[id].tile.coords, target));
                                     AddMessage(((_map1.actors[_map1.firstActorID(target.x, target.y)] is Player) ? "<red>" : "") + (_map1.actors[id] is Player ? "<green>You" : _map1.actors[id].name) + " attacked " + (_map1.actors[_map1.firstActorID(target.x, target.y)] is Player ? "you" : _map1.actors[_map1.firstActorID(target.x, target.y)].name));
                                     AddMessage(((_map1.actors[_map1.firstActorID(target.x, target.y)] is Player) ? "<red>" : "") + "The attack caused " + (_map1[target.x, target.y].firstActor.armour - _map1.actors[id].damage).ToString() + " points of damage (" + _map1.actors[id].damage.ToString() + " attack strength - " + _map1[target.x, target.y].firstActor.armour + " defense)");
                                 }
-                                _mainmap1.HandleEvent(null, Events.AnimateActor, id, Activity.Attack, false, dir, true);
+                                ((Mainmap)_interfaceElements[1]).HandleEvent(null, Events.AnimateActor, id, Activity.Attack, false, dir, true);
                             }
                         }
                         else
@@ -507,8 +441,8 @@ namespace Gruppe22
                             {
                                 _map1.MoveActor(_map1.actors[id], dir);
                                 if (_map1.actors[id] is Player)
-                                    _minimap1.MoveCamera(_map1.actors[id].tile.coords);
-                                _mainmap1.HandleEvent(null, Events.MoveActor, id, _map1.actors[id].tile.coords);
+                                    ((Minimap)_interfaceElements[0]).MoveCamera(_map1.actors[id].tile.coords);
+                                ((Mainmap)_interfaceElements[1]).HandleEvent(null, Events.MoveActor, id, _map1.actors[id].tile.coords);
 
                                 if (_map1[target.x, target.y].hasTreasure)
                                 {
@@ -527,13 +461,13 @@ namespace Gruppe22
                                         _map1.actors[id].SetDamage(_map1[target.x, target.y].trapDamage);
                                         if (_map1.actors[id].IsDead())
                                         {
-                                            _mainmap1.HandleEvent(null, Events.AnimateActor, id, Activity.Die, true, dir, true);
+                                            ((Mainmap)_interfaceElements[1]).HandleEvent(null, Events.AnimateActor, id, Activity.Die, true, dir, true);
                                             AddMessage((_map1.actors[id] is Player ? "You were" : _map1.actors[id].name + " was") + " killed by a trap  doing " + (_map1.actors[id].armour - _map1[target.x, target.y].trapDamage).ToString() + " points of damage (" + _map1[target.x, target.y].trapDamage.ToString() + " - " + _map1.actors[id].armour + "protection)");
 
                                         }
                                         else
                                         {
-                                            _mainmap1.HandleEvent(null, Events.AnimateActor, id, Activity.Hit, true, dir, true);
+                                            ((Mainmap)_interfaceElements[1]).HandleEvent(null, Events.AnimateActor, id, Activity.Hit, true, dir, true);
                                             AddMessage((_map1.actors[id] is Player ? "You were" : _map1.actors[id].name + "  was") + " hit for " + _map1[target.x, target.y].trapDamage.ToString() + " points of damage (" + (_map1.actors[id].armour - _map1[target.x, target.y].trapDamage).ToString() + " points of damage (" + _map1[target.x, target.y].trapDamage.ToString() + " - " + _map1.actors[id].armour + "protection)");
                                         }
                                         if (_map1._actors[id] is Player) RemoveHealth();
@@ -543,7 +477,7 @@ namespace Gruppe22
                                     {
                                         if ((_map1[_map1.actors[id].tile.coords.x, _map1.actors[id].tile.coords.y].hasTarget) && (id == 0))
                                         {
-                                            _mainmap1.HandleEvent(null, Events.AnimateActor, id, Activity.Talk, true);
+                                            ((Mainmap)_interfaceElements[1]).HandleEvent(null, Events.AnimateActor, id, Activity.Talk, true);
                                             ShowEndGame("You have successfully found the hidden treasure. Can you do it again?", "Congratulations!");
                                         }
                                     }
@@ -561,7 +495,15 @@ namespace Gruppe22
         /// <param name="s"></param>
         public void AddMessage(string s)
         {
-            _statusbox.AddLine(s);
+            foreach (UIElement element in _interfaceElements)
+            {
+                if (element is Statusbox)
+                {
+                    ((Statusbox)element).AddLine(s);
+
+                    return;
+                }
+            }
         }
 
         /// <summary>
@@ -593,9 +535,6 @@ namespace Gruppe22
         {
             if (!_updating)
             {
-                _updating = true;
-
-                _events.Update(gameTime);
                 if (_backgroundcolor.R > 0) // Remove Red Tint
                 {
                     _backgroundcolor.R -= 1;
@@ -604,6 +543,7 @@ namespace Gruppe22
                 {
                     _backgroundcolor.G -= 1;
                 };
+                _updating = true;
                 for (int i = 0; i < _interfaceElements.Count; ++i)
                 {
                     UIElement element = _interfaceElements[i];
@@ -654,12 +594,15 @@ namespace Gruppe22
                         _mousepos.X = -1;
                         _mousepos.Y = -1;
                         _dragging = false;
+                    }                    
+
+
+                    if ((GamePad.GetState(PlayerIndex.One).Buttons.Start == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape)))
+                    {
+                        
+                            if (_status == GameStatus.Running) ShowMenu();
+                            else HandleEvent(null, Events.ContinueGame, 0);                        
                     }
-
-
-
-
-
                 }
 
                 base.Update(gameTime);
@@ -676,6 +619,7 @@ namespace Gruppe22
             if (!_drawing)
             {
                 _drawing = true;
+                BeginDraw();
                 if (_status != GameStatus.NoRedraw)
                 {
                     GraphicsDevice.Clear(_backgroundcolor);
@@ -686,6 +630,7 @@ namespace Gruppe22
                     }
                     base.Draw(gameTime);
                 }
+                EndDraw();
                 _drawing = false;
             }
         }
@@ -752,7 +697,7 @@ namespace Gruppe22
                 Directory.CreateDirectory(Environment.CurrentDirectory + @"\SaveGames");
             //TODO: xml file with a list of all savegames? or any dir IS a savegame
             string filedir = Environment.CurrentDirectory + @"\SaveGames\" + filename;
-            if (!Directory.Exists(filedir))
+            if(!Directory.Exists(filedir))
                 Directory.CreateDirectory(filedir);
             //Save the Gamedata
             //TODO: Dynamic levels and rooms (List of rooms, levels)
@@ -764,14 +709,14 @@ namespace Gruppe22
             if (File.Exists("savedroom3.xml")) File.Copy("savedroom3.xml", filedir + @"\savedroom3.xml", true);
             //create savegame.xml with necessary information
             XmlWriter xmlw = XmlWriter.Create(filedir + @"\savegame.xml");
-            //TODO: write the current room and other values which are required to load a savegame
+            //TODO: write the current room and other values whitch are required to load a savegame
             xmlw.WriteStartDocument();
-            xmlw.WriteStartElement("SaveGame");
-            xmlw.WriteAttributeString("id", filename);
-            xmlw.WriteStartElement("Player1");
-            xmlw.WriteAttributeString("info", "TODO!");
-            xmlw.WriteEndElement();
-            xmlw.WriteEndElement();
+                xmlw.WriteStartElement("SaveGame");
+                xmlw.WriteAttributeString("id", filename);
+                    xmlw.WriteStartElement("Player1");
+                    xmlw.WriteAttributeString("info", "TODO!");
+                    xmlw.WriteEndElement();
+                xmlw.WriteEndElement();
             xmlw.WriteEndDocument();
             xmlw.Close();
         }
@@ -788,22 +733,26 @@ namespace Gruppe22
 
             Content.RootDirectory = "Content";
             Window.Title = "Dungeon Crawler 2013";
+<<<<<<< HEAD
             _backgroundcolor = Color.Black;
-            _events = new StateToEvent(this);
+=======
+
             //TODO: delete
             //SaveGame();
             //Exit();
+
+>>>>>>> origin/master
             _graphics = new GraphicsDeviceManager(this);
             // _graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height - 200;
             // _graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width - 40;
-            _graphics.PreferredBackBufferHeight = 600;
-            _graphics.PreferredBackBufferWidth = 800;
+            _graphics.PreferredBackBufferHeight = 1024;
+            _graphics.PreferredBackBufferWidth = 768;
 
-            _graphics.IsFullScreen = false;
+            _graphics.IsFullScreen = true;
             Window.AllowUserResizing = false;
             //  Type type = typeof(OpenTKGameWindow);
 
-            _graphics.SynchronizeWithVerticalRetrace = false;
+            // _graphics.SynchronizeWithVerticalRetrace = false;            
 
             // Move window to top left corner of the screen
             // System.Reflection.FieldInfo field = type.GetField("window", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);

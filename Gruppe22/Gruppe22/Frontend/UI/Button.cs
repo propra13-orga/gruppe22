@@ -32,7 +32,6 @@ namespace Gruppe22
             mouseon = 1,
             pressed = 2
         }
-        private ButtonState lmb = ButtonState.Pressed;
         private string _label = "";
         private Events _id = 0;
 
@@ -45,24 +44,12 @@ namespace Gruppe22
         /// 
         /// </summary>
         /// <param name="gameTime"></param>
-        public override void Update(GameTime gameTime)
+        public override void OnMouseDown(int button)
         {
             if (IsHit(Mouse.GetState().X, Mouse.GetState().Y))
             {
-                if ((lmb == ButtonState.Pressed) && (Mouse.GetState().LeftButton == ButtonState.Released))
-                    lmb = ButtonState.Released;
-
-                if (Mouse.GetState().LeftButton == ButtonState.Pressed && _bstat != ButtonStatus.pressed && lmb == ButtonState.Released)
-                {
-                    _bstat = ButtonStatus.pressed;
-                    _parent.HandleEvent(this, _id, 0);
-                }
-                else _bstat = ButtonStatus.mouseon;
-            }
-            else
-            {
-                _bstat = ButtonStatus.normal;
-                lmb = ButtonState.Pressed;
+                _bstat = ButtonStatus.pressed;
+                _parent.HandleEvent(this, _id, 0);
             }
         }
 
@@ -73,6 +60,17 @@ namespace Gruppe22
         public override void Draw(GameTime gameTime)
         {
             _spriteBatch.Begin();
+            if (_bstat != ButtonStatus.pressed)
+            {
+                if (IsHit(Mouse.GetState().X, Mouse.GetState().Y))
+                {
+                    _bstat = ButtonStatus.mouseon;
+                }
+                else
+                {
+                    _bstat = ButtonStatus.normal;
+                }
+            }
             if (_label != "")
             {
                 Vector2 _textPos = _font.MeasureString(_label);

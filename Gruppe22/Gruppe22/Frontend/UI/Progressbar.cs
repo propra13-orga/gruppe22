@@ -122,11 +122,13 @@ namespace Gruppe22
                     _value = total;
                 if (_style != ProgressStyle.Vertical)
                 {
-                    _pixelsPerUnit = ((_displayRect.Width - 8) / _total);
+                    if (_total > 0)
+                        _pixelsPerUnit = ((_displayRect.Width - 8) / _total);
                 }
                 else
                 {
-                    _pixelsPerUnit = ((_displayRect.Height - 8) / _total);
+                    if (_total > 0)
+                        _pixelsPerUnit = ((_displayRect.Height - 8) / _total);
                 }
                 _pixels = 0;
             }
@@ -170,39 +172,41 @@ namespace Gruppe22
         /// <param name="gameTime"></param>
         public override void Draw(GameTime gameTime)
         {
-
-            _spriteBatch.Begin();
-            _spriteBatch.Draw(_background, _displayRect, new Rectangle(39, 6, 1, 1), Color.White);
-            _spriteBatch.Draw(_background, new Rectangle(_displayRect.X + 2, _displayRect.Y + 2, _displayRect.Width - 4, _displayRect.Height - 4), new Rectangle(39, 6, 1, 1), Color.Black);
-            switch (_style)
+            if (_total > 0)
             {
-                case ProgressStyle.Undefined:
-                    _spriteBatch.Draw(_background, new Rectangle(_displayRect.X + Math.Abs(_pixels), _displayRect.Y + 4, 20, _displayRect.Height - 8), new Rectangle(39, 6, 2, 2), _color);
-                    break;
-                case ProgressStyle.Block:
-                    for (int i = 0; ((i <= _total / 24) && (_value > i * 24)); ++i)
-                    {
-                        _spriteBatch.Draw(_background, new Rectangle(_displayRect.X +
-                        i * 24+4
-                        , _displayRect.Y + 4, 20, _displayRect.Height - 8), new Rectangle(39, 6, 1, 1), _color);
-                    }
-                    break;
-                case ProgressStyle.Default:
-                    _spriteBatch.Draw(_background, new Rectangle(_displayRect.X + 4, _displayRect.Y + 4, (_value * (_displayRect.Width - 8)) / total + _pixels, _displayRect.Height - 8), new Rectangle(39, 6, 1, 1), _color);
-                    break;
-                case ProgressStyle.Precise:
-                    _spriteBatch.Draw(_background, new Rectangle(_displayRect.X + 4, _displayRect.Y + 4, (_value * (_displayRect.Width - 8)) / total + _pixels, _displayRect.Height - 8), new Rectangle(39, 6, 1, 1), _color);
+                _spriteBatch.Begin();
+                _spriteBatch.Draw(_background, _displayRect, new Rectangle(39, 6, 1, 1), Color.White);
+                _spriteBatch.Draw(_background, new Rectangle(_displayRect.X + 2, _displayRect.Y + 2, _displayRect.Width - 4, _displayRect.Height - 4), new Rectangle(39, 6, 1, 1), Color.Black);
+                switch (_style)
+                {
+                    case ProgressStyle.Undefined:
+                        _spriteBatch.Draw(_background, new Rectangle(_displayRect.X + Math.Abs(_pixels), _displayRect.Y + 4, 20, _displayRect.Height - 8), new Rectangle(39, 6, 2, 2), _color);
+                        break;
+                    case ProgressStyle.Block:
+                        for (int i = 0; ((i <= _total / 24) && (_value > i * 24)); ++i)
+                        {
+                            _spriteBatch.Draw(_background, new Rectangle(_displayRect.X +
+                            i * 24 + 4
+                            , _displayRect.Y + 4, 20, _displayRect.Height - 8), new Rectangle(39, 6, 1, 1), _color);
+                        }
+                        break;
+                    case ProgressStyle.Default:
+                        _spriteBatch.Draw(_background, new Rectangle(_displayRect.X + 4, _displayRect.Y + 4, (_value * (_displayRect.Width - 8)) / total + _pixels, _displayRect.Height - 8), new Rectangle(39, 6, 1, 1), _color);
+                        break;
+                    case ProgressStyle.Precise:
+                        _spriteBatch.Draw(_background, new Rectangle(_displayRect.X + 4, _displayRect.Y + 4, (_value * (_displayRect.Width - 8)) / total + _pixels, _displayRect.Height - 8), new Rectangle(39, 6, 1, 1), _color);
 
-                    string state = _value.ToString() + "/" + _total.ToString();
-                    int width = (int)_font.MeasureString(state).X;
-                    _spriteBatch.DrawString(_font, state, new Vector2(_displayRect.X + (_displayRect.Width - width) / 2 -2, _displayRect.Y + (_displayRect.Height - _fontHeight) / 2 + 2), Color.Black);
-                    _spriteBatch.DrawString(_font, state, new Vector2(_displayRect.X + (_displayRect.Width - width) / 2 , _displayRect.Y + (_displayRect.Height - _fontHeight) / 2), Color.White);
-                    break;
-                case ProgressStyle.Vertical:
-                    _spriteBatch.Draw(_background, new Rectangle(_displayRect.X + 4, _displayRect.Y + 4 + ((_total - _value) * (_displayRect.Height - 8)) / total + _pixels, _displayRect.Width - 8, (_value * (_displayRect.Height - 8)) / total + _pixels), new Rectangle(39, 6, 1, 1), _color);
-                    break;
+                        string state = _value.ToString() + "/" + _total.ToString();
+                        int width = (int)_font.MeasureString(state).X;
+                        _spriteBatch.DrawString(_font, state, new Vector2(_displayRect.X + (_displayRect.Width - width) / 2 - 2, _displayRect.Y + (_displayRect.Height - _fontHeight) / 2 + 2), Color.Black);
+                        _spriteBatch.DrawString(_font, state, new Vector2(_displayRect.X + (_displayRect.Width - width) / 2, _displayRect.Y + (_displayRect.Height - _fontHeight) / 2), Color.White);
+                        break;
+                    case ProgressStyle.Vertical:
+                        _spriteBatch.Draw(_background, new Rectangle(_displayRect.X + 4, _displayRect.Y + 4 + ((_total - _value) * (_displayRect.Height - 8)) / total + _pixels, _displayRect.Width - 8, (_value * (_displayRect.Height - 8)) / total + _pixels), new Rectangle(39, 6, 1, 1), _color);
+                        break;
+                }
+                _spriteBatch.End();
             }
-            _spriteBatch.End();
         }
 
         /// <summary>
