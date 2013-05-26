@@ -239,35 +239,35 @@ namespace Gruppe22
         /// <param name="x">horizontal coordinate of square to check</param>
         /// <param name="y">vertical coordinate of square to check</param>
         /// <returns>A direction to be used for the wall</returns>
-        public WallDir GetWallStyle(int x = 0, int y = 0)
+        public WallDir GetWallStyle(int x = 0, int y = 0, bool CheckWall = true, int FloorStyle = -1)
         {
-            if (_map[x, y].canEnter) return WallDir.None;
+            if ((CheckWall && (!_map[x, y].hasWall)) || (!CheckWall && _map[x, y].floorStyle != FloorStyle)) return WallDir.None;
 
 
-            if (_map[x - 1, y].canEnter) // No wall left
+            if ((CheckWall && (!_map[x - 1, y].hasWall)) || (!CheckWall && _map[x - 1, y].floorStyle != FloorStyle)) // No wall left
             {
 
                 // No wall blocks way to left
 
-                if (_map[x + 1, y].canEnter) // No wall right
+                if ((CheckWall && (!_map[x + 1, y].hasWall)) || (!CheckWall && _map[x + 1, y].floorStyle != FloorStyle)) // No wall right
                 {
 
                     // No wall blocks way to left or right
 
-                    if (_map[x, y - 1].canEnter) // No wall up
+                    if ((CheckWall && (!_map[x, y - 1].hasWall)) || (!CheckWall && _map[x, y - 1].floorStyle != FloorStyle))  // No wall up
                     {
                         // No wall blocks way up, left or right
 
-                        if (_map[x, y + 1].canEnter) // No wall down
+                        if ((CheckWall && (!_map[x, y + 1].hasWall)) || (!CheckWall && _map[x, y + 1].floorStyle != FloorStyle)) // No wall down
                         {
                             // No wall blocks way up, down, left or right => this is a freestanding wall surrounded by walkable space OR only connected by diagonals
-                            if (!_map[x + 1, y + 1].canEnter)   // Down Right diagonal
+                            if ((CheckWall && (_map[x + 1, y + 1].hasWall)) || (!CheckWall && _map[x + 1, y + 1].floorStyle == FloorStyle))   // Down Right diagonal
                             {
-                                if (!_map[x + 1, y - 1].canEnter) // Down Right + Up Right diagonal
+                                if ((CheckWall && (_map[x + 1, y - 1].hasWall)) || (!CheckWall && _map[x + 1, y - 1].floorStyle == FloorStyle)) // Down Right + Up Right diagonal
                                 {
-                                    if (!_map[x - 1, y + 1].canEnter) // Down Right + Up Right + Down Left diagonal
+                                    if ((CheckWall && (_map[x - 1, y + 1].hasWall)) || (!CheckWall && _map[x - 1, y + 1].floorStyle == FloorStyle)) // Down Right + Up Right + Down Left diagonal
                                     {
-                                        if (!_map[x - 1, y - 1].canEnter) // Down Right +Up Right + Down Left + Up Left diagonal
+                                        if ((CheckWall && (_map[x - 1, y - 1].hasWall)) || (!CheckWall && _map[x - 1, y - 1].floorStyle == FloorStyle)) // Down Right +Up Right + Down Left + Up Left diagonal
                                         {
                                             return WallDir.FourDiag;
                                         }
@@ -278,7 +278,7 @@ namespace Gruppe22
                                     }
                                     else // (not down left)
                                     {
-                                        if (!_map[x - 1, y - 1].canEnter) // Down Right  + Up right + Up Left diagonal (not up right)
+                                        if ((CheckWall && (_map[x - 1, y - 1].hasWall)) || (!CheckWall && _map[x - 1, y - 1].floorStyle == FloorStyle)) // Down Right  + Up right + Up Left diagonal (not up right)
                                         {
                                             return WallDir.LeftRightUpDiag;
                                         }
@@ -290,9 +290,9 @@ namespace Gruppe22
                                 }
                                 else // Not up right
                                 {
-                                    if (!_map[x - 1, y + 1].canEnter) // Down Right  + Down Left diagonal
+                                    if ((CheckWall && (_map[x - 1, y + 1].hasWall)) || (!CheckWall && _map[x - 1, y + 1].floorStyle == FloorStyle)) // Down Right  + Down Left diagonal
                                     {
-                                        if (!_map[x - 1, y - 1].canEnter) // Down Right + Down Left + Up Left diagonal
+                                        if ((CheckWall && (_map[x - 1, y - 1].hasWall)) || (!CheckWall && _map[x - 1, y - 1].floorStyle == FloorStyle))  // Down Right + Down Left + Up Left diagonal
                                         {
                                             return WallDir.UpDownLeftDiag;
                                         }
@@ -304,7 +304,7 @@ namespace Gruppe22
                                     }
                                     else // Not down left
                                     {
-                                        if (!_map[x - 1, y - 1].canEnter) // Down Right + Up Left diagonal
+                                        if ((CheckWall && (_map[x - 1, y - 1].hasWall)) || (!CheckWall && _map[x - 1, y - 1].floorStyle == FloorStyle))  // Down Right + Up Left diagonal
                                         {
                                             return WallDir.UpLeftDiag;
                                         }
@@ -318,11 +318,11 @@ namespace Gruppe22
 
                             else // not down right
                             {
-                                if (!_map[x + 1, y - 1].canEnter) //  Up Right diagonal
+                                if ((CheckWall && (_map[x + 1, y - 1].hasWall)) || (!CheckWall && _map[x + 1, y - 1].floorStyle == FloorStyle))  //  Up Right diagonal
                                 {
-                                    if (!_map[x - 1, y + 1].canEnter) // Up Right + Down Left diagonal
+                                    if ((CheckWall && (_map[x - 1, y + 1].hasWall)) || (!CheckWall && _map[x - 1, y + 1].floorStyle == FloorStyle))  // Up Right + Down Left diagonal
                                     {
-                                        if (!_map[x - 1, y - 1].canEnter) // Up Right + Down Left + Up Left diagonal
+                                        if ((CheckWall && (_map[x - 1, y - 1].hasWall)) || (!CheckWall && _map[x - 1, y - 1].floorStyle == FloorStyle))  // Up Right + Down Left + Up Left diagonal
                                         {
                                             return WallDir.UpDownRightDiag;
                                         }
@@ -333,7 +333,7 @@ namespace Gruppe22
                                     }
                                     else
                                     {
-                                        if (!_map[x - 1, y - 1].canEnter) // Up Right + Up Left diagonal
+                                        if ((CheckWall && (_map[x - 1, y - 1].hasWall)) || (!CheckWall && _map[x - 1, y - 1].floorStyle == FloorStyle))  // Up Right + Up Left diagonal
                                         {
                                             return WallDir.DownLeftDiag;
                                         }
@@ -346,9 +346,9 @@ namespace Gruppe22
                                 else // not up right
                                 {
 
-                                    if (!_map[x - 1, y + 1].canEnter) //  Down Left diagonal
+                                    if ((CheckWall && (_map[x - 1, y + 1].hasWall)) || (!CheckWall && _map[x - 1, y + 1].floorStyle == FloorStyle))  //  Down Left diagonal
                                     {
-                                        if (!_map[x - 1, y - 1].canEnter) // Down Left + Up Left diagonal
+                                        if ((CheckWall && (_map[x - 1, y - 1].hasWall)) || (!CheckWall && _map[x - 1, y - 1].floorStyle == FloorStyle))  // Down Left + Up Left diagonal
                                         {
                                             return WallDir.DownRightDiag;
                                         }
@@ -359,7 +359,7 @@ namespace Gruppe22
                                     }
                                     else
                                     {
-                                        if (!_map[x - 1, y - 1].canEnter) //  Up Left diagonal
+                                        if ((CheckWall && (_map[x - 1, y - 1].hasWall)) || (!CheckWall && _map[x - 1, y - 1].floorStyle == FloorStyle))  //  Up Left diagonal
                                         {
                                             return WallDir.LeftCloseDiag;
                                         }
@@ -378,9 +378,9 @@ namespace Gruppe22
 
                             // auf Diagonalen testen
 
-                            if (!_map[x + 1, y - 1].canEnter)
+                            if ((CheckWall && (_map[x + 1, y - 1].hasWall)) || (!CheckWall && _map[x + 1, y - 1].floorStyle == FloorStyle))
                             {
-                                if (!_map[x - 1, y - 1].canEnter)
+                                if ((CheckWall && (_map[x - 1, y - 1].hasWall)) || (!CheckWall && _map[x - 1, y - 1].floorStyle == FloorStyle))
                                 {
                                     return WallDir.DiagUpDownClose2;
                                 }
@@ -391,7 +391,7 @@ namespace Gruppe22
                             }
                             else
                             {
-                                if (!_map[x - 1, y - 1].canEnter)
+                                if ((CheckWall && (_map[x - 1, y - 1].hasWall)) || (!CheckWall && _map[x - 1, y - 1].floorStyle == FloorStyle))
                                 {
                                     return WallDir.DiagDownClose2;
                                 }
@@ -405,16 +405,16 @@ namespace Gruppe22
                     }
                     else // Wall up
                     {
-                        if (_map[x, y + 1].canEnter) // No wall down
+                        if ((CheckWall && (!_map[x, y + 1].hasWall)) || (!CheckWall && _map[x, y + 1].floorStyle == FloorStyle))  // No wall down
                         {
                             // Wall ony on current square and square below
 
 
                             // auf Diagonalen testen
 
-                            if (!_map[x + 1, y + 1].canEnter)
+                            if ((CheckWall && (_map[x + 1, y + 1].hasWall)) || (!CheckWall && _map[x + 1, y + 1].floorStyle == FloorStyle))
                             {
-                                if (!_map[x - 1, y + 1].canEnter)
+                                if ((CheckWall && (_map[x - 1, y + 1].hasWall)) || (!CheckWall && _map[x - 1, y + 1].floorStyle == FloorStyle))
                                 {
                                     return WallDir.DiagUpDownClose;
                                 }
@@ -425,7 +425,7 @@ namespace Gruppe22
                             }
                             else
                             {
-                                if (!_map[x - 1, y + 1].canEnter)
+                                if ((CheckWall && (_map[x - 1, y + 1].hasWall)) || (!CheckWall && _map[x - 1, y + 1].floorStyle == FloorStyle))
                                 {
                                     return WallDir.DiagDownClose;
                                 }
@@ -445,17 +445,17 @@ namespace Gruppe22
                 }
                 else // Wall right
                 {
-                    if (_map[x, y - 1].canEnter) // No wall up
+                    if ((CheckWall && (!_map[x, y - 1].hasWall)) || (!CheckWall && _map[x, y - 1].floorStyle == FloorStyle)) // No wall up
                     {
-                        if (_map[x, y + 1].canEnter) // No wall down
+                        if ((CheckWall && (!_map[x, y + 1].hasWall)) || (!CheckWall && _map[x, y + 1].floorStyle == FloorStyle))  // No wall down
                         {
                             // Wall on current tile and right only, but not up or down
 
                             // auf Diagonalen testen
 
-                            if (!_map[x - 1, y + 1].canEnter)
+                            if ((CheckWall && (_map[x - 1, y + 1].hasWall)) || (!CheckWall && _map[x - 1, y + 1].floorStyle == FloorStyle))
                             {
-                                if (!_map[x - 1, y - 1].canEnter)
+                                if ((CheckWall && (_map[x - 1, y - 1].hasWall)) || (!CheckWall && _map[x - 1, y - 1].floorStyle == FloorStyle))
                                 {
                                     return WallDir.DiagLeftRightClose2;
                                 }
@@ -466,7 +466,7 @@ namespace Gruppe22
                             }
                             else
                             {
-                                if (!_map[x - 1, y - 1].canEnter)
+                                if ((CheckWall && (_map[x - 1, y - 1].hasWall)) || (!CheckWall && _map[x - 1, y - 1].floorStyle == FloorStyle))
                                 {
                                     return WallDir.DiagRightClose2;
                                 }
@@ -485,7 +485,7 @@ namespace Gruppe22
                     else // Wall up
                     {
                         // Wall up and right, but not left
-                        if (_map[x, y + 1].canEnter) // No wall down
+                        if ((CheckWall && (!_map[x, y + 1].hasWall)) || (!CheckWall && _map[x, y + 1].floorStyle == FloorStyle))  // No wall down
                         {
                             // Wall up, right, but not left and down
                             return WallDir.UpRight;
@@ -500,19 +500,19 @@ namespace Gruppe22
             }
             else
             {
-                if (_map[x + 1, y].canEnter) // No Wall right
+                if ((CheckWall && (!_map[x + 1, y].hasWall)) || (!CheckWall && _map[x + 1, y].floorStyle == FloorStyle))  // No Wall right
                 {
-                    if (_map[x, y - 1].canEnter) // No wall up
+                    if ((CheckWall && (!_map[x, y - 1].hasWall)) || (!CheckWall && _map[x, y - 1].floorStyle == FloorStyle))  // No wall up
                     {
-                        if (_map[x, y + 1].canEnter) // No wall down
+                        if ((CheckWall && (!_map[x, y + 1].hasWall)) || (!CheckWall && _map[x, y + 1].floorStyle == FloorStyle))  // No wall down
                         {
                             // Left and Right closed
 
                             // auf Diagonalen testen
 
-                            if (!_map[x + 1, y + 1].canEnter)
+                            if ((CheckWall && (_map[x + 1, y + 1].hasWall)) || (!CheckWall && _map[x + 1, y + 1].floorStyle == FloorStyle))
                             {
-                                if (!_map[x + 1, y - 1].canEnter)
+                                if ((CheckWall && (_map[x + 1, y - 1].hasWall)) || (!CheckWall && _map[x + 1, y - 1].floorStyle == FloorStyle))
                                 {
                                     return WallDir.DiagLeftRightClose;
                                 }
@@ -523,7 +523,7 @@ namespace Gruppe22
                             }
                             else
                             {
-                                if (!_map[x + 1, y - 1].canEnter)
+                                if ((CheckWall && (_map[x + 1, y - 1].hasWall)) || (!CheckWall && _map[x - 1, y - 1].floorStyle == FloorStyle))
                                 {
                                     return WallDir.DiagRightClose;
                                 }
@@ -541,7 +541,7 @@ namespace Gruppe22
                     }
                     else // Wall up
                     {
-                        if (_map[x, y + 1].canEnter) // No wall down
+                        if ((CheckWall && (!_map[x, y + 1].hasWall)) || (!CheckWall && _map[x, y + 1].floorStyle == FloorStyle))  // No wall down
                         {
                             // Left and Up closed
                             return WallDir.UpLeft;
@@ -555,9 +555,9 @@ namespace Gruppe22
                 }
                 else // Wall Left and Right
                 {
-                    if (_map[x, y - 1].canEnter) // No wall up
+                    if ((CheckWall && (!_map[x, y - 1].hasWall)) || (!CheckWall && _map[x, y - 1].floorStyle == FloorStyle))  // No wall up
                     {
-                        if (_map[x, y + 1].canEnter) // No wall down
+                        if ((CheckWall && (!_map[x, y + 1].hasWall)) || (!CheckWall && _map[x, y + 1].floorStyle == FloorStyle))  // No wall down
                         {
                             // Walls left and right only
                             return WallDir.LeftRight;
@@ -571,7 +571,7 @@ namespace Gruppe22
                     }
                     else
                     {
-                        if (_map[x, y + 1].canEnter) // No wall down
+                        if ((CheckWall && (!_map[x, y + 1].hasWall)) || (!CheckWall && _map[x, y + 1].floorStyle == FloorStyle))  // No wall down
                         {
                             // All walls but not down
                             return WallDir.LeftRightUp;

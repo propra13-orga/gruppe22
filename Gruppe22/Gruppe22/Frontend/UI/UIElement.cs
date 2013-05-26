@@ -17,7 +17,7 @@ namespace Gruppe22
     /// <summary>
     /// 
     /// </summary>
-    public class UIElement : IHandleEvent, IDisposable
+    public class UIElement : IHandleEvent, IDisposable, IKeyHandler
     {
         #region Private (Protected) Fields
         /// <summary>
@@ -40,6 +40,31 @@ namespace Gruppe22
 
         #endregion
 
+        #region Implementation of IKeyHandler-Interface
+        public virtual void OnKeyDown(Keys k)
+        {
+        }
+
+        public virtual void OnKeyUp(Keys k)
+        {
+        }
+
+        public virtual void OnMouseDown(int button)
+        {
+        }
+
+        public virtual void OnMouseUp(int button)
+        {
+        }
+
+        public virtual void OnMouseHeld(int button)
+        {
+        }
+
+        public virtual void OnKeyHeld(Keys k)
+        {
+        }
+        #endregion
         #region Public Fields
 
         public virtual bool ignorePause

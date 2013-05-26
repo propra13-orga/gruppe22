@@ -115,6 +115,22 @@ namespace Gruppe22
             {
                 for (int i = 0; i < _overlay.Count; ++i)
                 {
+                    if ((_overlay[i] is WallTile) || (_overlay[i] is GapTile)) return false;
+                }
+
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// Determine whether tile has a wall on it
+        /// </summary>
+        public bool hasWall
+        {
+            get
+            {
+                for (int i = 0; i < _overlay.Count; ++i)
+                {
                     if (_overlay[i] is WallTile) return false;
                 }
 
@@ -122,6 +138,22 @@ namespace Gruppe22
             }
         }
 
+
+        /// <summary>
+        /// Determine whether tile has a special floor style (empty space, fire, water, road, grass, rocks, etc.)
+        /// </summary>
+        public int floorStyle
+        {
+            get
+            {
+                for (int i = 0; i < _overlay.Count; ++i)
+                {
+                    if (_overlay[i] is GapTile) return ((GapTile)_overlay[i]).style;
+                }
+
+                return -1;
+            }
+        }
         /// <summary>
         /// Determine whether a player is standing on the current tile
         /// </summary>

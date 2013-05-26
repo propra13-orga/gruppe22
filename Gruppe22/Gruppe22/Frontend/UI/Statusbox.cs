@@ -13,16 +13,17 @@ namespace Gruppe22
     public class Statusbox : UIElement
     {
         #region Private Fields
-        SpriteFont _font = null;
-        Texture2D _background = null;
-        List<string> _text = null;
-        int _startPos = 0;
-        int _numLines = 0;
-        int _lineHeight = 0;
-        Texture2D _arrows = null;
-        Keys _lastKey = Keys.None;
-        bool _hasBorder = true;
-        bool _center = false;
+        private SpriteFont _font = null;
+        private Texture2D _background = null;
+        private List<string> _text = null;
+        private int _startPos = 0;
+        private int _numLines = 0;
+        private int _lineHeight = 0;
+        private Texture2D _arrows = null;
+        private Keys _lastKey = Keys.None;
+        private bool _hasBorder = true;
+        private bool _center = false;
+        private List<Color> _color = null;
         #endregion
 
         #region Public Methods
@@ -31,14 +32,17 @@ namespace Gruppe22
         /// Append a new line of text to the status box; word wrap if necessary
         /// </summary>
         /// <param name="text"></param>
-        public void AddLine(string text)
+        public void AddLine(string text, object color = null)
         {
+            if (color == null) { color = new Color(); color = Color.White; }
             string remains = "";
+            if (text.StartsWith("<red>")) { color = Color.Red; text = text.Substring(4); }
+            if (text.StartsWith("<green>")) { color = Color.Green; text = text.Substring(6); }
             text = text.Trim();
             if (text.IndexOf("\n") > -1)
             {
-                AddLine(text.Substring(0, text.IndexOf("\n")));
-                AddLine(text.Substring(text.IndexOf("\n") + 1));
+                AddLine(text.Substring(0, text.IndexOf("\n")), color);
+                AddLine(text.Substring(text.IndexOf("\n") + 1), color);
             }
             else
             {
@@ -55,9 +59,17 @@ namespace Gruppe22
                         text = text.Remove(text.Length - 2);
                     }
                 }
-                if (text != "") _text.Add(text);
+                if (text != "")
+                {
+                    _text.Add(text);
+                    _color.Add((Color)color);
+                }
 
-                if (remains != "") _text.Add(remains);
+                if (remains != "")
+                {
+                    _text.Add(remains);
+                    _color.Add((Color)color);
+                }
             }
             _startPos = Math.Max(_text.Count - _numLines, 0);
         }
@@ -94,7 +106,7 @@ namespace Gruppe22
                     }
 
                     _spriteBatch.DrawString(_font, _text[count], new Vector2(centerX, _displayRect.Top +
-                        (count - _startPos) * _lineHeight), Color.White);
+                        (count - _startPos) * _lineHeight), _color[count]);
 
                 }
                 if (_numLines < _text.Count)
@@ -226,6 +238,15 @@ namespace Gruppe22
         }
         #endregion
 
+        /// <summary>
+        /// Creates a scrollable area to output text
+        /// </summary>
+        /// <param name="parent"></param>
+        /// <param name="spriteBatch"></param>
+        /// <param name="content"></param>
+        /// <param name="displayRect"></param>
+        /// <param name="hasBorder"></param>
+        /// <param name="center"></param>
         public Statusbox(IHandleEvent parent, SpriteBatch spriteBatch, ContentManager content, Rectangle displayRect, bool hasBorder = true, bool center = false)
             : base(parent, spriteBatch, content, displayRect)
         {
@@ -235,6 +256,7 @@ namespace Gruppe22
             _numLines = (int)(displayRect.Height / _lineHeight);
             _arrows = _content.Load<Texture2D>("Arrows");
             _text = new List<string>();
+            _color = new List<Color>();
             _hasBorder = hasBorder;
             _center = center;
         }

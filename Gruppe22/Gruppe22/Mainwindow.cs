@@ -40,9 +40,9 @@ namespace Gruppe22
     }
 
     /// <summary>
-    /// 
+    /// The main class (disposing events, handling game logic, reacting to user input)
     /// </summary>
-    public class MainWindow : Game, IHandleEvent
+    public class MainWindow : Game, IHandleEvent, IKeyHandler
     {
         #region Private Fields
         /// <summary>
@@ -60,6 +60,9 @@ namespace Gruppe22
         /// </summary>
         private int _mouseWheel = 0;
 
+        /// <summary>
+        /// Whether the user is currently dragging something
+        /// </summary>
         bool _dragging = false;
 
         /// <summary>
@@ -86,10 +89,60 @@ namespace Gruppe22
         /// Whether the game is paused (for menus etc.)
         /// </summary>
         private GameStatus _status = GameStatus.Running;
-        private Keys _lastKey = Keys.A;
-        private int _lastCheck = 0;
+
+        /// <summary>
+        /// True if update cycle is in progress (to prevent simultaneous changes)
+        /// </summary>
+        private bool _updating = false;
+        /// <summary>
+        /// True if currently drawing (to prevent superfluous redraws)
+        /// </summary>
+        private bool _drawing = false;
+        /// <summary>
+        /// Current background color (used to indicate healing or damage)
+        /// </summary>
+        private Color _backgroundcolor;
+        /// <summary>
+        /// A reference to the object displaying current player statistics
+        /// </summary>
+        private SimpleStats _playerStats = null;
+        /// <summary>
+        /// A reference to the object displaying current enemy statistics
+        /// </summary>
+        private SimpleStats _enemyStats = null;
+
+        /// <summary>
+        /// Change-based handling of events (i.e. keyup/keydown) instead of status based ("Is key pressed?")
+        /// </summary>
+        private StateToEvent _events = null;
         #endregion
 
+
+        #region Implementation of IKeyHandler-Interface
+        public void OnKeyDown(Keys k)
+        {
+        }
+
+        public void OnKeyUp(Keys k)
+        {
+        }
+
+        public void OnMouseDown(int button)
+        {
+        }
+
+        public void OnMouseUp(int button)
+        {
+        }
+
+        public void OnMouseHeld(int button)
+        {
+        }
+
+        public void OnKeyHeld(Keys k)
+        {
+        }
+        #endregion
         #region Protected Methods (overrides)
         /// <summary>
         /// Set up the (non visible) objects of the game
@@ -100,7 +153,7 @@ namespace Gruppe22
             {
                 GenerateMaps();
             }
-            _map1 = new Map(this, "room1.xml", null); // TEST!!!
+            _map1 = new Map(this, "room1.xml", null);
             _interfaceElements = new List<UIElement>();
             base.Initialize();
         }
@@ -133,14 +186,15 @@ namespace Gruppe22
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-
             _interfaceElements.Add(new Minimap(this, _spriteBatch, Content, new Rectangle(_graphics.GraphicsDevice.Viewport.Width - 230, 20, 210, 200), _map1));
             _interfaceElements.Add(new Mainmap(this, _spriteBatch, Content, new Rectangle(20, 20, _graphics.GraphicsDevice.Viewport.Width - 260, _graphics.GraphicsDevice.Viewport.Height - 160), _map1));
             _interfaceElements.Add(new Statusbox(this, _spriteBatch, Content, new Rectangle(20, _graphics.GraphicsDevice.Viewport.Height - 120, _graphics.GraphicsDevice.Viewport.Width - 260, 100)));
+            _interfaceElements.Add(new Inventory(this, _spriteBatch, Content, new Rectangle(20, _graphics.GraphicsDevice.Viewport.Height - 120, _graphics.GraphicsDevice.Viewport.Width - 260, 100)),_map1.actors[0]);
             (_interfaceElements[2] as Statusbox).AddLine("Welcome to this highly innovative Dungeon Crawler!\nYou can scroll in this status window.\nUse A-S-D-W to move your character.\n Use Arrow keys (or drag mouse) to scroll map or minimap\n Press ESC to display Game Menu.");
-            _interfaceElements.Add(new ProgressBar(this, _spriteBatch, Content, new Rectangle(_graphics.GraphicsDevice.Viewport.Width - 230, 240, 210, 50), ProgressStyle.Precise, 100, 100));
-
-
+            _playerStats = new SimpleStats(this, _spriteBatch, Content, new Rectangle(_graphics.GraphicsDevice.Viewport.Width - 230, 240, 210, 50), _map1._actors[0]);
+            _enemyStats = new SimpleStats(this, _spriteBatch, Content, new Rectangle(_graphics.GraphicsDevice.Viewport.Width - 230, 240, 210, 50), null);
+            _interfaceElements.Add(_playerStats);
+            _interfaceElements.Add(_enemyStats);            
             // _backMusic = Content.Load<Song>("Video Dungeon Crawl.wav"); // Todo: *.mp3
             // _font = Content.Load<SpriteFont>("Font");
             // MediaPlayer.Volume = (float)0.3;
@@ -191,6 +245,9 @@ namespace Gruppe22
 
         }
 
+        /// <summary>
+        /// Setup and display a window containing credits
+        /// </summary>
         public void ShowAbout()
         {
             _status = GameStatus.Paused;
@@ -241,7 +298,7 @@ namespace Gruppe22
         }
 
         /// <summary>
-        /// 
+        /// Handle events from UIElements and/or backend objects
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="eventID"></param>
@@ -254,25 +311,25 @@ namespace Gruppe22
                 case Events.ContinueGame:
                     if (_status != GameStatus.NoRedraw)
                     {
-                        UpdateHealth();
                         _focus.Dispose();
                         _interfaceElements.Remove(_focus);
                         _focus = null;
                         _status = GameStatus.Running;
-                        _lastKey = Keys.None;
-
                     }
                     break;
+
                 case Events.About:
                     _focus.Dispose();
                     _interfaceElements.Remove(_focus);
                     _focus = null;
                     ShowAbout();
                     break;
+
                 case Events.EndGame:
                     DeleteSavedRooms();
                     Exit();
                     break;
+
                 case Events.ChangeMap:
                     _status = GameStatus.NoRedraw;
                     _map1.Save("savedroom" + _map1.currRoomNbr + ".xml");//+Nummer
@@ -283,8 +340,8 @@ namespace Gruppe22
                     ((Mainmap)_interfaceElements[1]).resetActors();
                     AddMessage("You entered room number " + data[0].ToString().Substring(4, 1) + ".");
                     _status = GameStatus.Running;
-
                     break;
+
                 case Events.NewMap:
                     _status = GameStatus.NoRedraw;
                     _map1.Dispose();
@@ -295,6 +352,7 @@ namespace Gruppe22
                     _status = GameStatus.Paused;
                     HandleEvent(null, Events.ContinueGame);
                     break;
+
                 case Events.ResetGame:
                     DeleteSavedRooms();
                     _status = GameStatus.NoRedraw;
@@ -304,10 +362,11 @@ namespace Gruppe22
                     _status = GameStatus.Paused;
                     HandleEvent(null, Events.ContinueGame);
                     break;
+
                 case Events.ShowMessage:
                     AddMessage(data[0].ToString());
-                    UpdateHealth();
                     break;
+
                 case Events.FinishedAnimation:
                     int FinishedID = (int)data[0];
                     Activity FinishedActivity = (Activity)data[1];
@@ -320,7 +379,8 @@ namespace Gruppe22
                         }
                         else
                         {
-                            AddMessage("You are dead.");
+                            AddMessage("<red>You are dead.");
+                            RemoveHealth();
                             ShowEndGame();
                         }
                     }
@@ -342,24 +402,34 @@ namespace Gruppe22
                         {
                             if ((_map1.firstActorID(target.x, target.y) != id) && (!_map1[target.x, target.y].firstActor.IsDead()))
                             {
+                                // Display enemy statistics
+                                if (_map1[target.x, target.y].firstActor is Player)
+                                {
+                                    _enemyStats.actor = _map1.actors[id]; // Enemy attacked
+                                }
+                                else
+                                {
+                                    if (id == 0)
+                                    {
+                                        _enemyStats.actor = _map1[target.x, target.y].firstActor; // Player attacked enemy
+                                    }
+                                }
                                 // Aktuelle Figur attackiert
                                 // Spieler verletzt
                                 // oder tot
                                 _map1[target.x, target.y].firstActor.SetDamage(_map1.actors[id]);
-                                if (_map1[target.x, target.y].firstActor is Player) UpdateHealth();
+                                if (_map1[target.x, target.y].firstActor is Player) RemoveHealth();
                                 if (_map1[target.x, target.y].firstActor.IsDead())
                                 {
                                     ((Mainmap)_interfaceElements[1]).HandleEvent(null, Events.AnimateActor, _map1.firstActorID(target.x, target.y), Activity.Die, false, Map.WhichWayIs(_map1.actors[id].tile.coords, target));
-                                    AddMessage((_map1.actors[id] is Player ? "You" : _map1.actors[id].name) + " killed " + (_map1.actors[_map1.firstActorID(target.x, target.y)] is Player ? "you" : _map1.actors[_map1.firstActorID(target.x, target.y)].name) + " doing " + _map1.actors[id].damage.ToString() + " points of damage.");
+                                    AddMessage((_map1.actors[id] is Player ? "<green>You" : _map1.actors[id].name) + " killed " + (_map1.actors[_map1.firstActorID(target.x, target.y)] is Player ? "you" : _map1.actors[_map1.firstActorID(target.x, target.y)].name) + " doing " + _map1.actors[id].damage.ToString() + " points of damage.");
 
                                 }
                                 else
                                 {
                                     ((Mainmap)_interfaceElements[1]).HandleEvent(null, Events.AnimateActor, _map1.firstActorID(target.x, target.y), Activity.Hit, false, Map.WhichWayIs(_map1.actors[id].tile.coords, target));
-                                    AddMessage((_map1.actors[id] is Player ? "You" : _map1.actors[id].name) + " attacked " + (_map1.actors[_map1.firstActorID(target.x, target.y)] is Player ? "you" : _map1.actors[_map1.firstActorID(target.x, target.y)].name));
-                                    AddMessage("The attack caused " + (_map1[target.x, target.y].firstActor.armour - _map1.actors[id].damage).ToString() + " points of damage (" + _map1.actors[id].damage.ToString() + " attack strength - " + _map1[target.x, target.y].firstActor.armour + " defense)");
-                                    AddMessage(_map1.actors[id].health.ToString() + " hitpoints of " + _map1.actors[id].maxHealth.ToString() + " remain.");
-
+                                    AddMessage(((_map1.actors[_map1.firstActorID(target.x, target.y)] is Player) ? "<red>" : "") + (_map1.actors[id] is Player ? "<green>You" : _map1.actors[id].name) + " attacked " + (_map1.actors[_map1.firstActorID(target.x, target.y)] is Player ? "you" : _map1.actors[_map1.firstActorID(target.x, target.y)].name));
+                                    AddMessage(((_map1.actors[_map1.firstActorID(target.x, target.y)] is Player) ? "<red>" : "") + "The attack caused " + (_map1[target.x, target.y].firstActor.armour - _map1.actors[id].damage).ToString() + " points of damage (" + _map1.actors[id].damage.ToString() + " attack strength - " + _map1[target.x, target.y].firstActor.armour + " defense)");
                                 }
                                 ((Mainmap)_interfaceElements[1]).HandleEvent(null, Events.AnimateActor, id, Activity.Attack, false, dir, true);
                             }
@@ -399,7 +469,7 @@ namespace Gruppe22
                                             ((Mainmap)_interfaceElements[1]).HandleEvent(null, Events.AnimateActor, id, Activity.Hit, true, dir, true);
                                             AddMessage((_map1.actors[id] is Player ? "You were" : _map1.actors[id].name + "  was") + " hit for " + _map1[target.x, target.y].trapDamage.ToString() + " points of damage (" + (_map1.actors[id].armour - _map1[target.x, target.y].trapDamage).ToString() + " points of damage (" + _map1[target.x, target.y].trapDamage.ToString() + " - " + _map1.actors[id].armour + "protection)");
                                         }
-                                        if (_map1._actors[id] is Player) UpdateHealth();
+                                        if (_map1._actors[id] is Player) RemoveHealth();
 
                                     }
                                     else
@@ -414,11 +484,14 @@ namespace Gruppe22
                             }
                         }
                     }
-
                     break;
             }
         }
 
+        /// <summary>
+        /// Add text to status box
+        /// </summary>
+        /// <param name="s"></param>
         public void AddMessage(string s)
         {
             foreach (UIElement element in _interfaceElements)
@@ -432,22 +505,24 @@ namespace Gruppe22
             }
         }
 
-        public void UpdateHealth()
+        /// <summary>
+        /// Indicate damage  done to player
+        /// </summary>
+        public void RemoveHealth()
         {
+            _backgroundcolor.G = 0;
+            _backgroundcolor.R = 200;
+            // Play sound
+        }
 
-            foreach (UIElement element in _interfaceElements)
-            {
-                if (element is ProgressBar)
-                {
-                    ((ProgressBar)element).value = _map1.actors[0].health;
-                    if (_map1.actors[0].IsDead())
-                    {
-                        ((Mainmap)_interfaceElements[1]).HandleEvent(null, Events.AnimateActor, _map1.actors[0].id, Activity.Die, false);
-                    };
-                    return;
-                }
-            }
-
+        /// <summary>
+        /// Indicate health regained by potions
+        /// </summary>
+        public void AddHealth()
+        {
+            _backgroundcolor.R = 0;
+            _backgroundcolor.G = 200;
+            // Play sound
         }
 
         /// <summary>
@@ -457,88 +532,81 @@ namespace Gruppe22
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            for (int i = 0; i < _interfaceElements.Count; ++i)
+            if (!_updating)
             {
-                UIElement element = _interfaceElements[i];
-                if (!_dragging)
+                if (_backgroundcolor.R > 0) // Remove Red Tint
                 {
-                    if (element.IsHit(Mouse.GetState().X, Mouse.GetState().Y))
+                    _backgroundcolor.R -= 1;
+                };
+                if (_backgroundcolor.G > 0) // Remove Green Tint
+                {
+                    _backgroundcolor.G -= 1;
+                };
+                _updating = true;
+                for (int i = 0; i < _interfaceElements.Count; ++i)
+                {
+                    UIElement element = _interfaceElements[i];
+                    if (!_dragging)
                     {
-                        if ((_focus == null) || (!_focus.holdFocus))
+                        if (element.IsHit(Mouse.GetState().X, Mouse.GetState().Y))
                         {
-                            _focus = element;
+                            if ((_focus == null) || (!_focus.holdFocus))
+                            {
+                                _focus = element;
+                            }
                         }
                     }
+
+                    if (_status == GameStatus.Running || ((_status == GameStatus.Paused) && (element.ignorePause)))
+                        element.Update(gameTime);
                 }
 
-                if (_status == GameStatus.Running || ((_status == GameStatus.Paused) && (element.ignorePause)))
-                    element.Update(gameTime);
-            }
-
-            if (_status == GameStatus.Running)
-            {
-                _map1.Update(gameTime);
-            }
-
-            if (_focus != null)
-            {
-
-                if (Mouse.GetState().ScrollWheelValue != _mouseWheel)
+                if (_status == GameStatus.Running)
                 {
-
-                    int Difference = _mouseWheel - Mouse.GetState().ScrollWheelValue;
-                    _mouseWheel = Mouse.GetState().ScrollWheelValue;
-                    _focus.ScrollWheel(Difference / Math.Abs(Difference));
+                    _map1.Update(gameTime);
                 }
 
-
-                if (Mouse.GetState().LeftButton == ButtonState.Pressed)
+                if (_focus != null)
                 {
-                    if (_mousepos.X != -1)
+
+                    if (Mouse.GetState().ScrollWheelValue != _mouseWheel)
                     {
-                        _dragging = true;
-                        _focus.MoveContent(new Vector2(Mouse.GetState().X - _mousepos.X, Mouse.GetState().Y - _mousepos.Y), Math.Abs(gameTime.TotalGameTime.Milliseconds - _lastCheck));
+
+                        int Difference = _mouseWheel - Mouse.GetState().ScrollWheelValue;
+                        _mouseWheel = Mouse.GetState().ScrollWheelValue;
+                        _focus.ScrollWheel(Difference / Math.Abs(Difference));
                     }
-                    _mousepos.X = Mouse.GetState().X;
-                    _mousepos.Y = Mouse.GetState().Y;
-                }
-                else
-                {
-                    _mousepos.X = -1;
-                    _mousepos.Y = -1;
-                    _dragging = false;
-                }
-
-                if (Math.Abs(gameTime.TotalGameTime.Milliseconds - _lastCheck) > 100)
-                {
-                    _lastCheck = gameTime.TotalGameTime.Milliseconds;
-                }
-
-                if (Mouse.GetState().LeftButton == ButtonState.Pressed)
-                {
-                    _focus.MouseClick((int)_mousepos.X, (int)_mousepos.Y, Math.Abs(gameTime.TotalGameTime.Milliseconds - _lastCheck));
-                }
-
-                _focus.HandleKey(Math.Abs(gameTime.TotalGameTime.Milliseconds - _lastCheck));
 
 
-                if ((GamePad.GetState(PlayerIndex.One).Buttons.Start == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape)))
-                {
-                    if (_lastKey != Keys.Escape)
+                    if (Mouse.GetState().LeftButton == ButtonState.Pressed)
                     {
-                        _lastKey = Keys.Escape;
-                        if (_status == GameStatus.Running) ShowMenu();
-                        else HandleEvent(null, Events.ContinueGame, 0);
+                        if (_mousepos.X != -1)
+                        {
+                            _dragging = true;
+                            _focus.MoveContent(new Vector2(Mouse.GetState().X - _mousepos.X, Mouse.GetState().Y - _mousepos.Y));
+                        }
+                        _mousepos.X = Mouse.GetState().X;
+                        _mousepos.Y = Mouse.GetState().Y;
+                    }
+                    else
+                    {
+                        _mousepos.X = -1;
+                        _mousepos.Y = -1;
+                        _dragging = false;
+                    }                    
+
+
+                    if ((GamePad.GetState(PlayerIndex.One).Buttons.Start == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape)))
+                    {
+                        
+                            if (_status == GameStatus.Running) ShowMenu();
+                            else HandleEvent(null, Events.ContinueGame, 0);                        
                     }
                 }
-                else
-                {
-                    _lastKey = Keys.None;
-                }
 
+                base.Update(gameTime);
+                _updating = false;
             }
-
-            base.Update(gameTime);
         }
 
         /// <summary>
@@ -547,15 +615,22 @@ namespace Gruppe22
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            if (_status != GameStatus.NoRedraw)
+            if (!_drawing)
             {
-                GraphicsDevice.Clear(Color.Black);
-
-                foreach (UIElement element in _interfaceElements)
+                _drawing = true;
+                BeginDraw();
+                if (_status != GameStatus.NoRedraw)
                 {
-                    element.Draw(gameTime);
+                    GraphicsDevice.Clear(_backgroundcolor);
+
+                    foreach (UIElement element in _interfaceElements)
+                    {
+                        element.Draw(gameTime);
+                    }
+                    base.Draw(gameTime);
                 }
-                base.Draw(gameTime);
+                EndDraw();
+                _drawing = false;
             }
         }
 
@@ -617,23 +692,26 @@ namespace Gruppe22
         {
             Content.RootDirectory = "Content";
             Window.Title = "Dungeon Crawler 2013";
-
+            _backgroundcolor = Color.Black;
             _graphics = new GraphicsDeviceManager(this);
-            _graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height - 200;
-            _graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width - 40;
-            //_graphics.PreferredBackBufferHeight = 640;
-            //_graphics.PreferredBackBufferWidth = 480;
+            // _graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height - 200;
+            // _graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width - 40;
+            _graphics.PreferredBackBufferHeight = 1024;
+            _graphics.PreferredBackBufferWidth = 768;
 
-            _graphics.IsFullScreen = false;
+            _graphics.IsFullScreen = true;
             Window.AllowUserResizing = false;
-            Type type = typeof(OpenTKGameWindow);
+            //  Type type = typeof(OpenTKGameWindow);
 
-            _graphics.SynchronizeWithVerticalRetrace = false;            // Move window to top left corner of the screen
-            System.Reflection.FieldInfo field = type.GetField("window", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-            OpenTK.GameWindow window = (OpenTK.GameWindow)field.GetValue(this.Window);
-            window.X = 0;
-            window.Y = 0;
+            // _graphics.SynchronizeWithVerticalRetrace = false;            
+
+            // Move window to top left corner of the screen
+            // System.Reflection.FieldInfo field = type.GetField("window", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+            //   OpenTK.GameWindow window = (OpenTK.GameWindow)field.GetValue(this.Window);
+            // window.X = 0;
+            // window.Y = 0;
         }
         #endregion
+
     }
 }

@@ -18,13 +18,13 @@ namespace Gruppe22
         /// </summary>
         /// <param name="k">The key which was pressed</param>
         void OnKeyDown(Keys k);
-        
+
         /// <summary>
         /// Called whenever a key was down and is now up 
         /// </summary>
         /// <param name="k">The key which was pressed</param>
         void OnKeyUp(Keys k);
-        
+
 
         /// <summary>
         /// Called when a mouse button changes from up to down
@@ -37,6 +37,10 @@ namespace Gruppe22
         /// </summary>
         /// <param name="button">Left Button=1, Middle Button=2, Right Button=3</param>
         void OnMouseUp(int button);
+
+        void OnMouseHeld(int button);
+
+        void OnKeyHeld(Keys k);
     }
 
     /// <summary>
@@ -69,6 +73,10 @@ namespace Gruppe22
         /// Current state of middle mouse button
         /// </summary>
         private bool _middleButton = false;
+        /// <summary>
+        /// Counter when keyboard was last checked for input
+        /// </summary>
+        private int _lastCheck = 0;
         #endregion
 
         #region Public Methods
@@ -90,6 +98,14 @@ namespace Gruppe22
                     {
                         _parent.OnMouseUp(1);
                         _leftButton = false;
+                        _lastCheck = 0;
+                    }
+                    else
+                    {
+                        if (_lastCheck == 2)
+                        {
+                            _parent.OnMouseHeld(1);
+                        }
                     }
                 }
                 else
@@ -98,6 +114,7 @@ namespace Gruppe22
                     {
                         _parent.OnMouseDown(1);
                         _leftButton = true;
+                        _lastCheck = 0;
                     }
                 }
 
@@ -107,6 +124,14 @@ namespace Gruppe22
                     {
                         _parent.OnMouseUp(2);
                         _middleButton = false;
+                        _lastCheck = 0;
+                    }
+                    else
+                    {
+                        if (_lastCheck == 2)
+                        {
+                            _parent.OnMouseHeld(2);
+                        }
                     }
                 }
                 else
@@ -115,6 +140,7 @@ namespace Gruppe22
                     {
                         _parent.OnMouseDown(2);
                         _middleButton = true;
+                        _lastCheck = 0;
                     }
                 }
 
@@ -124,6 +150,14 @@ namespace Gruppe22
                     {
                         _parent.OnMouseUp(3);
                         _rightButton = false;
+                        _lastCheck = 0;
+                    }
+                    else
+                    {
+                        if (_lastCheck == 2)
+                        {
+                            _parent.OnMouseHeld(3);
+                        }
                     }
                 }
                 else
@@ -132,6 +166,7 @@ namespace Gruppe22
                     {
                         _parent.OnMouseDown(3);
                         _rightButton = true;
+                        _lastCheck = 0;
                     }
                 }
 
@@ -144,6 +179,14 @@ namespace Gruppe22
                     if (!current.Contains(key))
                     {
                         _parent.OnKeyDown(key);
+                        _lastCheck = 0;
+                    }
+                    else
+                    {
+                        if (_lastCheck == 2)
+                        {
+                            _parent.OnKeyHeld(key);
+                        }
                     }
                 }
                 foreach (Keys key in current)
@@ -151,10 +194,19 @@ namespace Gruppe22
                     if (!_pressed.Contains(key))
                     {
                         _parent.OnKeyUp(key);
+                        _lastCheck = 0;
                     }
                 }
                 _pressed = current; // Save current state
                 _working = false;
+                if ((int)(gametime.TotalGameTime.Milliseconds / 10) == 1)
+                {
+                    _lastCheck += 1;
+                }
+                if (_lastCheck > 2)
+                {
+                    _lastCheck = 0;
+                }
             }
         }
         #endregion
