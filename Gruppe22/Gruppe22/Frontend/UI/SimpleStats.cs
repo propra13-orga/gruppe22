@@ -13,10 +13,12 @@ namespace Gruppe22
     {
         #region Private Fields
         private SpriteFont _font;
-        private ProgressBar _progressbar;
+        private ProgressBar _manaBar;
+        private ProgressBar _healthBar;
         private Actor _actor;
         private int _lineheight;
         private Texture2D _background;
+
         #endregion
 
         #region Public Fields
@@ -43,14 +45,23 @@ namespace Gruppe22
             // Update Health bar
             if (_actor != null)
             {
-                if (_actor.health != _progressbar.value)
+                if (_actor.health != _healthBar.value)
                 {
-                    _progressbar.value = _actor.health;
+                    _healthBar.value = _actor.health;
                 }
-                if (_actor.maxHealth != _progressbar.total)
+                if (_actor.maxHealth != _healthBar.total)
                 {
-                    _progressbar.total = _actor.maxHealth;
+                    _healthBar.total = _actor.maxHealth;
                 }
+                /*
+                if (_actor.mana != _manaBar.value)
+                {
+                    _healthBar.value = _actor.mana;
+                }
+                if (_actor.maxMana != _manaBar.total)
+                {
+                    _manaBar.total = _actor.maxMana;
+                } */
             }
         }
         /// <summary>
@@ -76,16 +87,17 @@ namespace Gruppe22
 
 
                 // Statistics
-                _spriteBatch.DrawString(_font, "ATK: " + _actor.damage.ToString() + " - DEF:" + _actor.armour.ToString(), new Vector2(_displayRect.Left + 10, _displayRect.Top + _lineheight * 2 + 8), color);
+                _spriteBatch.DrawString(_font, "ATK: " + _actor.damage.ToString() + " - DEF:" + _actor.armour.ToString(), new Vector2(_displayRect.Left + 10, _displayRect.Top + _lineheight * 3 + 8), color);
 
                 // Additional Data for player: Experience
                 if (_actor is Player)
                 {
-                    _spriteBatch.DrawString(_font, "LVL: " + _actor.level.ToString() + " - EXP to next LVL:" + _actor.exp.ToString(), new Vector2(_displayRect.Left + 10, _displayRect.Top + _lineheight * 3 + 8), color);
+                    _spriteBatch.DrawString(_font, "LVL: " + _actor.level.ToString() + " - EXP to next LVL:" + _actor.exp.ToString(), new Vector2(_displayRect.Left + 10, _displayRect.Top + _lineheight * 4 + 8), color);
                 }
                 _spriteBatch.End();
-                // Health bar
-                _progressbar.Draw(gameTime);
+                // Health bar and Mana bar
+                _healthBar.Draw(gameTime);
+                _manaBar.Draw(gameTime);
             }
         }
         #endregion
@@ -100,8 +112,12 @@ namespace Gruppe22
             _font = _content.Load<SpriteFont>("SmallFont");
             _actor = actor;
             _lineheight = (int)(_font.MeasureString("WgjITt").Y);
-            _progressbar = new ProgressBar(this, _spriteBatch, _content, new Rectangle(
-_displayRect.Left + 10, _displayRect.Top + _lineheight , _displayRect.Width - 20, _lineheight + 4), ProgressStyle.Precise, (actor != null) ? actor.maxHealth : 0, (actor != null) ? actor.health : 0);
+            _healthBar = new ProgressBar(this, _spriteBatch, _content, new Rectangle(
+_displayRect.Left + 10, _displayRect.Top + _lineheight, _displayRect.Width - 20, _lineheight + 4), ProgressStyle.Precise, (actor != null) ? actor.maxHealth : 0, (actor != null) ? actor.health : 0);
+            _healthBar.color = Color.Red;
+            _manaBar = new ProgressBar(this, _spriteBatch, _content, new Rectangle(
+_displayRect.Left + 10, _displayRect.Top + 2 * _lineheight, _displayRect.Width - 20, _lineheight + 4), ProgressStyle.Precise, (actor != null) ? actor.maxHealth : 0, (actor != null) ? actor.health : 0); //TODO: Mana public fields
+            _manaBar.color = Color.Blue;
             _background = _content.Load<Texture2D>("Minimap");
 
         }
