@@ -72,6 +72,11 @@ namespace Gruppe22
             get { return false; }
         }
 
+        public virtual void Resize(Rectangle rect)
+        {
+            _displayRect = rect;
+        }
+
         public virtual bool holdFocus
         {
             get { return false; }

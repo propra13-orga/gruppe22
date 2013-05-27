@@ -34,6 +34,7 @@ namespace Gruppe22
                 {
                     CreateToolTip(tile);
                 }
+                //tile.coords.x
             }
         }
 

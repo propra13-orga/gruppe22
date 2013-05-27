@@ -38,6 +38,8 @@ namespace Gruppe22
         /// List of actors on the map
         /// </summary>
         private List<ActorView> _actors;
+        private bool _enabled = true;
+        private int _playerID = 0;
         /// <summary>
         /// Internal reference to map data to be displayed
         /// </summary>
@@ -64,7 +66,19 @@ namespace Gruppe22
         private WallTiles _walls;
         #endregion
 
-
+        #region Public Fields
+        public bool enabled
+        {
+            get
+            {
+                return _enabled;
+            }
+            set
+            {
+                _enabled = value;
+            }
+        }
+        #endregion
         #region Public Methods
         public override void HandleEvent(UIElement sender, Events eventID, params object[] data)
         {
@@ -113,64 +127,65 @@ namespace Gruppe22
         /// </summary>
         public override void Draw(GameTime gametime)
         {
-
-            // Rasterizer: Enable cropping at borders (otherwise map would be overlapping everything else)
-            RasterizerState rstate = new RasterizerState();
-            rstate.ScissorTestEnable = true;
-
-            // Blendstate used for light circle / fog of war
-            BlendState blendState = new BlendState();
-            blendState.AlphaDestinationBlend = Blend.SourceColor;
-            blendState.ColorDestinationBlend = Blend.SourceColor;
-            blendState.AlphaSourceBlend = Blend.Zero;
-            blendState.ColorSourceBlend = Blend.Zero;
-
-
-            // Draw border of window (black square in white square)
-            _spriteBatch.Begin();
-            _spriteBatch.Draw(_background, _displayRect, new Rectangle(39, 6, 1, 1), Color.White);
-            _spriteBatch.Draw(_background, new Rectangle(_displayRect.X + 2, _displayRect.Y + 2, _displayRect.Width - 4, _displayRect.Height - 4), new Rectangle(39, 6, 1, 1), Color.Black);
-            _spriteBatch.End();
-
-
-            try // This might throw exceptions, so be careful to avoid memory leaks
+            if (_enabled)
             {
-                _spriteBatch.Begin(SpriteSortMode.Immediate,
-                            BlendState.AlphaBlend,
-                            null,
-                            null,
-                            rstate,
-                            null,
-                            _camera.matrix);
+                // Rasterizer: Enable cropping at borders (otherwise map would be overlapping everything else)
+                RasterizerState rstate = new RasterizerState();
+                rstate.ScissorTestEnable = true;
 
-                _spriteBatch.GraphicsDevice.ScissorRectangle = new Rectangle(_displayRect.Left + 5, _displayRect.Top + 5, _displayRect.Width - 10, _displayRect.Height - 10);
+                // Blendstate used for light circle / fog of war
+                BlendState blendState = new BlendState();
+                blendState.AlphaDestinationBlend = Blend.SourceColor;
+                blendState.ColorDestinationBlend = Blend.SourceColor;
+                blendState.AlphaSourceBlend = Blend.Zero;
+                blendState.ColorSourceBlend = Blend.Zero;
 
-                _drawFloor(); // Draw the floow
-                _drawWalls(gametime); // Draw walls, other objects, player and enemies
 
+                // Draw border of window (black square in white square)
+                _spriteBatch.Begin();
+                _spriteBatch.Draw(_background, _displayRect, new Rectangle(39, 6, 1, 1), Color.White);
+                _spriteBatch.Draw(_background, new Rectangle(_displayRect.X + 1, _displayRect.Y + 1, _displayRect.Width - 2, _displayRect.Height - 2), new Rectangle(39, 6, 1, 1), Color.Black);
                 _spriteBatch.End();
 
 
-                // Draw circle of light / fog of war
-                _spriteBatch.Begin(SpriteSortMode.Deferred, blendState, null,
-                            null,
-                            rstate,
-                            null,
-                            _camera.matrix);
-                _spriteBatch.Draw(_circle, new Rectangle(
-                    (int)(_actors[0].position.x+1) - 160* _renderScope,
-                    (int)(_actors[0].position.y+1) - 160* _renderScope, 350 * _renderScope, 350 * _renderScope), Color.White);
-                _spriteBatch.End();
+                try // This might throw exceptions, so be careful to avoid memory leaks
+                {
+                    _spriteBatch.Begin(SpriteSortMode.Immediate,
+                                BlendState.AlphaBlend,
+                                null,
+                                null,
+                                rstate,
+                                null,
+                                _camera.matrix);
+
+                    _spriteBatch.GraphicsDevice.ScissorRectangle = new Rectangle(_displayRect.Left + 5, _displayRect.Top + 5, _displayRect.Width - 10, _displayRect.Height - 10);
+
+                    _drawFloor(); // Draw the floow
+                    _drawWalls(gametime); // Draw walls, other objects, player and enemies
+
+                    _spriteBatch.End();
 
 
-                _spriteBatch.GraphicsDevice.RasterizerState.ScissorTestEnable = false;
+                    // Draw circle of light / fog of war
+                    _spriteBatch.Begin(SpriteSortMode.Deferred, blendState, null,
+                                null,
+                                rstate,
+                                null,
+                                _camera.matrix);
+                    _spriteBatch.Draw(_circle, new Rectangle(
+                        (int)(_actors[0].position.x + 1) - 160 * _renderScope,
+                        (int)(_actors[0].position.y + 1) - 160 * _renderScope, 350 * _renderScope, 350 * _renderScope), Color.White);
+                    _spriteBatch.End();
+
+
+                    _spriteBatch.GraphicsDevice.RasterizerState.ScissorTestEnable = false;
+                }
+                finally
+                {
+                    rstate.Dispose();
+                    blendState.Dispose();
+                }
             }
-            finally
-            {
-                rstate.Dispose();
-                blendState.Dispose();
-            }
-
         }
         #endregion
 
@@ -599,7 +614,7 @@ namespace Gruppe22
                                     , (int)coords.Y * 48 - (int)coords.X * 48, 130, tall ? 194 : 98);
         }
 
-
+        
 
         /// <summary>
         /// 
@@ -776,34 +791,34 @@ namespace Gruppe22
         /// <param name="gameTime"></param>
         public override void Update(GameTime gameTime)
         {
-
-
-
-            if (IsHit(Mouse.GetState().X, Mouse.GetState().Y))
+            if (_enabled)
             {
-                _UpdateMouse(new Vector2(Mouse.GetState().X, Mouse.GetState().Y));
-                Coords currentPos = _screen2map(_actors[0].target.x, _actors[0].target.y);
-
-                if (Mouse.GetState().LeftButton == ButtonState.Pressed)
+                if (IsHit(Mouse.GetState().X, Mouse.GetState().Y))
                 {
-                    if (!_actors[0].isMoving)
-                    {
+                    _UpdateMouse(new Vector2(Mouse.GetState().X, Mouse.GetState().Y));
+                    Coords currentPos = _screen2map(_actors[0].target.x, _actors[0].target.y);
 
-                        MovePlayer(Map.WhichWayIs(_highlightedTile, currentPos));
+                    if (Mouse.GetState().LeftButton == ButtonState.Pressed)
+                    {
+                        if (!_actors[0].isMoving)
+                        {
+
+                            MovePlayer(Map.WhichWayIs(_highlightedTile, currentPos));
+                        }
                     }
                 }
+                if (_actors[0].isMoving)
+                    _camera.position = new Vector2(-38 - _actors[0].position.x, -30 - _actors[0].position.y);
+                /*   if (Math.Abs(gameTime.TotalGameTime.Milliseconds / 10 - _lastCheck) > 1)
+                   {
+                       _lastCheck = gameTime.TotalGameTime.Milliseconds / 10;*/
+                // Avoid asynchronous updates, makes for smoother appearance
+                foreach (ActorView actor in _actors)
+                {
+                    actor.Update(gameTime);
+                }
+                // }
             }
-            if (_actors[0].isMoving)
-                _camera.position = new Vector2(-38 - _actors[0].position.x, -30 - _actors[0].position.y);
-            /*   if (Math.Abs(gameTime.TotalGameTime.Milliseconds / 10 - _lastCheck) > 1)
-               {
-                   _lastCheck = gameTime.TotalGameTime.Milliseconds / 10;*/
-            // Avoid asynchronous updates, makes for smoother appearance
-            foreach (ActorView actor in _actors)
-            {
-                actor.Update(gameTime);
-            }
-            // }
         }
 
         /// <summary>
@@ -920,7 +935,7 @@ namespace Gruppe22
         /// <param name="wall1">A set of tiles for the walls</param>
         /// <param name="wall2">A set of tiles for doors</param>
         /// <param name="map">Internal storage of map data</param>
-        public Mainmap(IHandleEvent parent, SpriteBatch spriteBatch, ContentManager content, Rectangle displayArea, Map map)
+        public Mainmap(IHandleEvent parent, SpriteBatch spriteBatch, ContentManager content, Rectangle displayArea, Map map, bool enabled = true)
             : base(parent, spriteBatch, content, displayArea)
         {
             _map = map;
@@ -1068,7 +1083,7 @@ namespace Gruppe22
 
             resetActors();
             _camera.position = new Vector2(-38 - _actors[0].position.x, -30 - _actors[0].position.y);
-            _camera.zoom = 0.3f;
+            _enabled = enabled;
         }
         #endregion
 

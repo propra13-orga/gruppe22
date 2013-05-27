@@ -8,6 +8,16 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Gruppe22
 {
+    /// <summary>
+    /// 
+    /// </summary>
+    public enum ButtonStatus
+    {
+        normal = 0,
+        mouseon = 1,
+        down = 3,
+        downon = 4
+    }
     public class Button : UIElement, IDisposable
     {
         #region private Fields
@@ -23,19 +33,51 @@ namespace Gruppe22
         /// 
         /// </summary>
         private ButtonStatus _bstat = ButtonStatus.normal;
-        /// <summary>
-        /// 
-        /// </summary>
-        private enum ButtonStatus
-        {
-            normal = 0,
-            mouseon = 1,
-            pressed = 2
-        }
+
         private string _label = "";
         private Events _id = 0;
 
         private List<Texture2D> _buttonStates = null;
+        #endregion
+
+        #region Public Fields
+
+        /// <summary>
+        /// True if the button should stay down
+        /// </summary>
+        public bool stayDown
+        {
+            get
+            {
+                return ((_bstat == ButtonStatus.downon) || (_bstat == ButtonStatus.down));
+            }
+            set
+            {
+                if (value == true)
+                {
+
+                    if (_bstat == ButtonStatus.normal)
+                    {
+                        _bstat = ButtonStatus.down;
+                    }
+                    if (_bstat == ButtonStatus.mouseon)
+                    {
+                        _bstat = ButtonStatus.downon;
+                    }
+                }
+                else
+                {
+                    if (_bstat == ButtonStatus.downon)
+                    {
+                        _bstat = ButtonStatus.mouseon;
+                    }
+                    if (_bstat == ButtonStatus.down)
+                    {
+                        _bstat = ButtonStatus.normal;
+                    }
+                }
+            }
+        }
         #endregion
 
         #region Public Methods
@@ -48,10 +90,17 @@ namespace Gruppe22
         {
             if (IsHit(Mouse.GetState().X, Mouse.GetState().Y))
             {
-                _bstat = ButtonStatus.pressed;
                 _parent.HandleEvent(this, _id, 0);
             }
         }
+
+        public override void HandleEvent(UIElement sender, Events eventID, params object[] data)
+        {
+            if ((eventID == Events.ToggleButton) && ((Events)data[0] == _id)) {
+                stayDown = (bool)data[1];
+            }
+        }
+
 
         /// <summary>
         /// 
@@ -60,31 +109,45 @@ namespace Gruppe22
         public override void Draw(GameTime gameTime)
         {
             _spriteBatch.Begin();
-            if (_bstat != ButtonStatus.pressed)
+            if (IsHit(Mouse.GetState().X, Mouse.GetState().Y))
             {
-                if (IsHit(Mouse.GetState().X, Mouse.GetState().Y))
+                if (_bstat == ButtonStatus.down)
                 {
-                    _bstat = ButtonStatus.mouseon;
+                    _bstat = ButtonStatus.downon;
                 }
                 else
+                    if (_bstat == ButtonStatus.normal)
+                    {
+                        _bstat = ButtonStatus.mouseon;
+                    }
+            }
+            else
+            {
+                if (_bstat == ButtonStatus.downon)
+                {
+                    _bstat = ButtonStatus.down;
+                }
+                else if (_bstat == ButtonStatus.mouseon)
                 {
                     _bstat = ButtonStatus.normal;
                 }
             }
+
             if (_label != "")
             {
                 Vector2 _textPos = _font.MeasureString(_label);
                 switch (_bstat)
                 {
+                    case ButtonStatus.down:
                     case ButtonStatus.mouseon:
+                    case ButtonStatus.downon:
                         _spriteBatch.Draw(_background, _displayRect, new Rectangle(39, 6, 1, 1), Color.Black);
-                        _spriteBatch.Draw(_background, new Rectangle(_displayRect.X + 2, _displayRect.Y + 2, _displayRect.Width - 4, _displayRect.Height - 4), new Rectangle(39, 6, 1, 1), Color.White);
+                        _spriteBatch.Draw(_background, new Rectangle(_displayRect.X + 1, _displayRect.Y + 1, _displayRect.Width - 2, _displayRect.Height - 2), new Rectangle(39, 6, 1, 1), Color.White);
                         _spriteBatch.DrawString(_font, _label, new Vector2(_displayRect.Left + (_displayRect.Width - _textPos.X) / 2, _displayRect.Top + (_displayRect.Height - _textPos.Y) / 2), Color.Black);
-
                         break;
                     default:
                         _spriteBatch.Draw(_background, _displayRect, new Rectangle(39, 6, 1, 1), Color.White);
-                        _spriteBatch.Draw(_background, new Rectangle(_displayRect.X + 2, _displayRect.Y + 2, _displayRect.Width - 4, _displayRect.Height - 4), new Rectangle(39, 6, 1, 1), Color.Black);
+                        _spriteBatch.Draw(_background, new Rectangle(_displayRect.X + 1, _displayRect.Y + 1, _displayRect.Width - 2, _displayRect.Height - 2), new Rectangle(39, 6, 1, 1), Color.Black);
                         _spriteBatch.DrawString(_font, _label, new Vector2(_displayRect.Left + (_displayRect.Width - _textPos.X) / 2, _displayRect.Top + (_displayRect.Height - _textPos.Y) / 2), Color.White);
                         break;
                 }
@@ -94,11 +157,10 @@ namespace Gruppe22
                 switch (_bstat)
                 {
                     case ButtonStatus.mouseon:
+                    case ButtonStatus.down:
                         _spriteBatch.Draw(_buttonStates[1], new Rectangle(_displayRect.X, _displayRect.Y, Math.Min(_displayRect.Width, _buttonStates[1].Width), Math.Min(_displayRect.Height, _buttonStates[1].Height)), new Rectangle(0, 0, _buttonStates[1].Width, _buttonStates[1].Height), Color.White);
                         break;
-                    case ButtonStatus.pressed:
-                        _spriteBatch.Draw(_buttonStates[2], new Rectangle(_displayRect.X, _displayRect.Y, Math.Min(_displayRect.Width, _buttonStates[2].Width), Math.Min(_displayRect.Height, _buttonStates[2].Height)), new Rectangle(0, 0, _buttonStates[2].Width, _buttonStates[2].Height), Color.White);
-                        break;
+                    case ButtonStatus.downon:
                     default:
                         _spriteBatch.Draw(_buttonStates[0], new Rectangle(_displayRect.X, _displayRect.Y, Math.Min(_displayRect.Width, _buttonStates[0].Width), Math.Min(_displayRect.Height, _buttonStates[0].Height)), new Rectangle(0, 0, _buttonStates[0].Width, _buttonStates[0].Height), Color.White);
                         break;
@@ -147,7 +209,7 @@ namespace Gruppe22
         /// <param name="button"></param>
         /// <param name="bpressed"></param>
         /// <param name="bmouseon"></param>
-        public Button(IHandleEvent parent, SpriteBatch spriteBatch, ContentManager content, Rectangle displayRect, string label, Events id)
+        public Button(IHandleEvent parent, SpriteBatch spriteBatch, ContentManager content, Rectangle displayRect, string label, Events id, bool staydown = false)
             : base(parent, spriteBatch, content, displayRect)
         {
             _background = _content.Load<Texture2D>("Minimap");
@@ -155,6 +217,7 @@ namespace Gruppe22
             _label = label;
             _id = id;
             _bstat = ButtonStatus.normal;
+            this.stayDown = staydown;
         }
 
         #endregion

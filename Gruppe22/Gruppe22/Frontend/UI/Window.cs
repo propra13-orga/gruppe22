@@ -97,6 +97,15 @@ namespace Gruppe22
             while ((_children != null) && (_children.Count > 0)) { _children[0].Dispose(); _children.RemoveAt(0); }
             base.Dispose();
         }
+
+        public override void HandleEvent(UIElement sender, Events eventID, params object[] data)
+        {
+            foreach (UIElement child in _children)
+            {
+                child.HandleEvent(sender, eventID, data);
+            }
+            _parent.HandleEvent(sender, eventID, data);
+        }
         #endregion
 
 

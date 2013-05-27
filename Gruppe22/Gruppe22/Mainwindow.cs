@@ -22,6 +22,7 @@ namespace Gruppe22
     {
         ContinueGame = 0,
         EndGame,
+        ToggleButton,
         HideNotification,
         MoveActor,
         ChangeMap,
@@ -30,7 +31,13 @@ namespace Gruppe22
         About,
         AnimateActor,
         FinishedAnimation,
-        ShowMessage
+        ShowMessage,
+        Player1,
+        Player2,
+        Network,
+        Settings,
+        Local,
+        LAN
     }
 
     public enum GameStatus
@@ -87,6 +94,11 @@ namespace Gruppe22
         private Map _map1 = null;
 
         /// <summary>
+        /// Internal storage for Player 2
+        /// </summary>
+        private Map _map2 = null;
+
+        /// <summary>
         /// Whether the game is paused (for menus etc.)
         /// </summary>
         private GameStatus _status = GameStatus.Running;
@@ -105,6 +117,7 @@ namespace Gruppe22
         private Color _backgroundcolor;
 
         private Mainmap _mainmap1 = null;
+        private Mainmap _mainmap2 = null;
         private Minimap _minimap1 = null;
         private Statusbox _statusbox = null;
         private Inventory _inventory = null;
@@ -121,6 +134,9 @@ namespace Gruppe22
         /// Change-based handling of events (i.e. keyup/keydown) instead of status based ("Is key pressed?")
         /// </summary>
         private StateToEvent _events = null;
+
+        private bool _secondPlayer = false;
+        private bool _lan = false;
         #endregion
 
 
@@ -149,7 +165,6 @@ namespace Gruppe22
                 case Keys.W:
                     _mainmap1.MovePlayer(Direction.Up);
                     break;
-
                 case Keys.A:
                     _mainmap1.MovePlayer(Direction.Left);
                     break;
@@ -180,7 +195,7 @@ namespace Gruppe22
 
         public void OnMouseDown(int button)
         {
-            for(int i=0;i<_interfaceElements.Count;++i)
+            for (int i = 0; i < _interfaceElements.Count; ++i)
             {
                 _interfaceElements[i].OnMouseDown(button);
             }
@@ -254,17 +269,19 @@ namespace Gruppe22
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-            _minimap1 = new Minimap(this, _spriteBatch, Content, new Rectangle(_graphics.GraphicsDevice.Viewport.Width - 230, 20, 210, 200), _map1);
+            _minimap1 = new Minimap(this, _spriteBatch, Content, new Rectangle(_graphics.GraphicsDevice.Viewport.Width - 220, 5, 215, 215), _map1);
             _interfaceElements.Add(_minimap1);
-            _mainmap1 = new Mainmap(this, _spriteBatch, Content, new Rectangle(20, 20, _graphics.GraphicsDevice.Viewport.Width - 260, _graphics.GraphicsDevice.Viewport.Height - 160), _map1);
+            _mainmap1 = new Mainmap(this, _spriteBatch, Content, new Rectangle(5, 5, _graphics.GraphicsDevice.Viewport.Width - 230, ((_graphics.GraphicsDevice.Viewport.Height - 20)) - 115), _map1, true);
             _interfaceElements.Add(_mainmap1);
-            _statusbox = new Statusbox(this, _spriteBatch, Content, new Rectangle(20, _graphics.GraphicsDevice.Viewport.Height - 120, _graphics.GraphicsDevice.Viewport.Width - 260, 120));
+            _mainmap2 = new Mainmap(this, _spriteBatch, Content, new Rectangle(5, ((_graphics.GraphicsDevice.Viewport.Height) / 2) - 60, _graphics.GraphicsDevice.Viewport.Width - 230, ((_graphics.GraphicsDevice.Viewport.Height - 20) / 2) - 60), _map1, _secondPlayer && !_lan);
+            _interfaceElements.Add(_mainmap2);
+            _statusbox = new Statusbox(this, _spriteBatch, Content, new Rectangle(5, _graphics.GraphicsDevice.Viewport.Height - 125, _graphics.GraphicsDevice.Viewport.Width - 230, 120));
             _interfaceElements.Add(_statusbox);
-            _inventory = new Inventory(this, _spriteBatch, Content, new Rectangle(_graphics.GraphicsDevice.Viewport.Width - 230, _graphics.GraphicsDevice.Viewport.Height - 120, 210, 120), _map1.actors[0]);
+            _inventory = new Inventory(this, _spriteBatch, Content, new Rectangle(_graphics.GraphicsDevice.Viewport.Width - 220, _graphics.GraphicsDevice.Viewport.Height - 125, 215, 120), _map1.actors[0]);
             _interfaceElements.Add(_inventory);
             _statusbox.AddLine("Welcome to this highly innovative Dungeon Crawler!\nYou can scroll in this status window.\nUse A-S-D-W to move your character.\n Use Arrow keys (or drag mouse) to scroll map or minimap\n Press ESC to display Game Menu.");
-            _playerStats = new SimpleStats(this, _spriteBatch, Content, new Rectangle(_graphics.GraphicsDevice.Viewport.Width - 230, 230, 210, 100), _map1.actors[0]);
-            _enemyStats = new SimpleStats(this, _spriteBatch, Content, new Rectangle(_graphics.GraphicsDevice.Viewport.Width - 230, 340, 210, 100), null);
+            _playerStats = new SimpleStats(this, _spriteBatch, Content, new Rectangle(_graphics.GraphicsDevice.Viewport.Width - 215, 230, 210, 100), _map1.actors[0]);
+            _enemyStats = new SimpleStats(this, _spriteBatch, Content, new Rectangle(_graphics.GraphicsDevice.Viewport.Width - 215, 340, 210, 100), null);
             _interfaceElements.Add(_playerStats);
             _interfaceElements.Add(_enemyStats);
             // _backMusic = Content.Load<Song>("Video Dungeon Crawl.wav"); // Todo: *.mp3
@@ -279,13 +296,22 @@ namespace Gruppe22
         public void ShowMenu()
         {
             _status = GameStatus.Paused;
-            Window _mainMenu = new Window(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 220) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) - 250, 350, 500));
+            Window _mainMenu = new Window(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 180) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) - 250, 320, 500));
 
-            _mainMenu.AddChild(new Button(_mainMenu, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) - 230, 300, 60), "Continue", Events.ContinueGame));
-            _mainMenu.AddChild(new Button(_mainMenu, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) - 150, 300, 60), "Restart", Events.ResetGame));
-            _mainMenu.AddChild(new Button(_mainMenu, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) - 70, 300, 60), "New Maps", Events.NewMap));
-            _mainMenu.AddChild(new Button(_mainMenu, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) + 70, 300, 60), "Credits", Events.About));
-            _mainMenu.AddChild(new Button(_mainMenu, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) + 170, 300, 60), "Quit", Events.EndGame));
+            _mainMenu.AddChild(new Button(_mainMenu, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) - 240, 300, 60), "Continue", Events.ContinueGame));
+            _mainMenu.AddChild(new Button(_mainMenu, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) - 170, 140, 60), "Restart", Events.ResetGame));
+            _mainMenu.AddChild(new Button(_mainMenu, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f) + 160, (int)(GraphicsDevice.Viewport.Height / 2.0f) - 170, 140, 60), "New Maps", Events.NewMap));
+
+            _mainMenu.AddChild(new Button(_mainMenu, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) - 100, 140, 60), "1 Player", Events.Player1, !_secondPlayer));
+            _mainMenu.AddChild(new Button(_mainMenu, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f) + 160, (int)(GraphicsDevice.Viewport.Height / 2.0f) - 100, 140, 60), "2 Players", Events.Player2, _secondPlayer));
+
+            _mainMenu.AddChild(new Button(_mainMenu, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) - 30, 140, 60), "Local", Events.Local, !_lan));
+            _mainMenu.AddChild(new Button(_mainMenu, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f) + 160, (int)(GraphicsDevice.Viewport.Height / 2.0f) - 30, 140, 60), "LAN", Events.LAN, _lan));
+
+            _mainMenu.AddChild(new Button(_mainMenu, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) + 40, 300, 60), "Settings", Events.Settings));
+
+            _mainMenu.AddChild(new Button(_mainMenu, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) + 110, 300, 60), "Credits", Events.About));
+            _mainMenu.AddChild(new Button(_mainMenu, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) + 180, 300, 60), "Quit", Events.EndGame));
 
             //  _mainMenu.AddChild(new ProgressBar(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) + 80, 300, 30), ProgressStyle.Block,100,2));
 
@@ -324,7 +350,7 @@ namespace Gruppe22
             _status = GameStatus.Paused;
             Window _about = new Window(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width) / 2.0f) - 300, (int)(GraphicsDevice.Viewport.Height / 2.0f) - 200, 600, 400));
 
-            _about.AddChild(new Button(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width ) / 2.0f) - 80, (int)(GraphicsDevice.Viewport.Height / 2.0f) + 140, 160, 40), "Ok", Events.ContinueGame));
+            _about.AddChild(new Button(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width) / 2.0f) - 80, (int)(GraphicsDevice.Viewport.Height / 2.0f) + 140, 160, 40), "Ok", Events.ContinueGame));
 
             //  _mainMenu.AddChild(new ProgressBar(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) + 80, 300, 30), ProgressStyle.Block,100,2));
             Statusbox stat = new Statusbox(_about, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width) / 2.0f) - 300, (int)(GraphicsDevice.Viewport.Height / 2.0f) - 180, 600, 380), false, true);
@@ -379,6 +405,61 @@ namespace Gruppe22
 
             switch (eventID)
             {
+                case Events.Player1:
+                    foreach (UIElement element in _interfaceElements)
+                    {
+                        element.HandleEvent(null, Events.ToggleButton, Events.Player2,false);
+                        element.HandleEvent(null, Events.ToggleButton, Events.Player1, true);
+                        element.HandleEvent(null, Events.ToggleButton, Events.Local, true);
+                        element.HandleEvent(null, Events.ToggleButton, Events.LAN, false);
+                    }
+                    _secondPlayer = false;
+                    _mainmap2.enabled = false;
+                    _mainmap1.Resize(new Rectangle(5, 5, _graphics.GraphicsDevice.Viewport.Width - 230, ((_graphics.GraphicsDevice.Viewport.Height - 20)) - 115));
+                    _lan = false;
+                    break;
+                case Events.Player2:
+                    foreach (UIElement element in _interfaceElements)
+                    {
+                        element.HandleEvent(null,Events.ToggleButton,Events.Player2,true);
+                        element.HandleEvent(null, Events.ToggleButton, Events.Player1, false);
+                    }
+                    _secondPlayer = true;
+                    if (!_lan)
+                    {
+                        _mainmap2.enabled = true;
+                        _mainmap1.Resize(new Rectangle(5, 5, _graphics.GraphicsDevice.Viewport.Width - 230, ((_graphics.GraphicsDevice.Viewport.Height - 20) / 2) - 60));
+                    }
+                    else
+                    {
+                        _mainmap2.enabled = false;
+                        _mainmap1.Resize(new Rectangle(5, 5, _graphics.GraphicsDevice.Viewport.Width - 230, ((_graphics.GraphicsDevice.Viewport.Height - 20)) - 115));
+                    }
+                    
+                    break;
+                case Events.LAN:
+                    _secondPlayer = true;
+                    _lan = true;
+                    foreach (UIElement element in _interfaceElements)
+                    {
+                        element.HandleEvent(null, Events.ToggleButton, Events.Player2, true);
+                        element.HandleEvent(null, Events.ToggleButton, Events.Player1, false);
+                        element.HandleEvent(null, Events.ToggleButton, Events.Local, false);
+                        element.HandleEvent(null, Events.ToggleButton, Events.LAN, true);
+                    }
+                    _mainmap2.enabled = false;
+                    _mainmap1.Resize(new Rectangle(5, 5, _graphics.GraphicsDevice.Viewport.Width - 230, ((_graphics.GraphicsDevice.Viewport.Height - 20)) - 115));
+                    break;
+                case Events.Local:
+                    foreach (UIElement element in _interfaceElements)
+                    {
+                        element.HandleEvent(null, Events.ToggleButton, Events.Local, true);
+                        element.HandleEvent(null, Events.ToggleButton, Events.LAN, false);
+                    }
+                    _lan = false;
+                    _mainmap2.enabled = true;
+                    _mainmap1.Resize(new Rectangle(5, 5, _graphics.GraphicsDevice.Viewport.Width - 230, ((_graphics.GraphicsDevice.Viewport.Height - 20) / 2) - 60));
+                    break;
                 case Events.ContinueGame:
                     if (_status != GameStatus.NoRedraw)
                     {
@@ -532,13 +613,13 @@ namespace Gruppe22
                                         if (_map1.actors[id].IsDead())
                                         {
                                             _mainmap1.HandleEvent(null, Events.AnimateActor, id, Activity.Die, true, dir, true);
-                                            AddMessage((_map1.actors[id] is Player ? "You were" : _map1.actors[id].name + " was") + " killed by a trap  doing " + (_map1.actors[id].armour - _map1[target.x, target.y].trapDamage).ToString() + " points of damage (" + _map1[target.x, target.y].trapDamage.ToString() + " - " + _map1.actors[id].armour + "protection)");
+                                            AddMessage((_map1.actors[id] is Player ? "You were" : _map1.actors[id].name + " was") + " killed by a trap  doing " + (_map1[target.x, target.y].trapDamage - _map1.actors[id].armour).ToString() + " points of damage (" + _map1[target.x, target.y].trapDamage.ToString() + " - " + _map1.actors[id].armour + " protection)");
 
                                         }
                                         else
                                         {
                                             _mainmap1.HandleEvent(null, Events.AnimateActor, id, Activity.Hit, true, dir, true);
-                                            AddMessage((_map1.actors[id] is Player ? "You were" : _map1.actors[id].name + "  was") + " hit for " + _map1[target.x, target.y].trapDamage.ToString() + " points of damage (" + (_map1.actors[id].armour - _map1[target.x, target.y].trapDamage).ToString() + " points of damage (" + _map1[target.x, target.y].trapDamage.ToString() + " - " + _map1.actors[id].armour + "protection)");
+                                            AddMessage((_map1.actors[id] is Player ? "You were" : _map1.actors[id].name + "  was") + " hit for " + (_map1[target.x, target.y].trapDamage - _map1.actors[id].armour).ToString() + " points of damage (" + _map1[target.x, target.y].trapDamage.ToString() + " - " + _map1.actors[id].armour + " protection)");
                                         }
                                         if (_map1._actors[id] is Player) RemoveHealth();
 
@@ -801,7 +882,7 @@ namespace Gruppe22
             // _graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height - 200;
             // _graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width - 40;
             _graphics.PreferredBackBufferHeight = 600;
-            _graphics.PreferredBackBufferWidth = 800;
+            _graphics.PreferredBackBufferWidth = 1024;
 
             _graphics.IsFullScreen = true;
             Window.AllowUserResizing = false;

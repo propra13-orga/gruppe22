@@ -36,8 +36,8 @@ namespace Gruppe22
         {
             if (color == null) { color = new Color(); color = Color.White; }
             string remains = "";
-            if (text.StartsWith("<red>")) { color = Color.Red; text = text.Substring(4); }
-            if (text.StartsWith("<green>")) { color = Color.Green; text = text.Substring(6); }
+            if (text.StartsWith("<red>")) { color = Color.Red; text = text.Substring(5); }
+            if (text.StartsWith("<green>")) { color = Color.Green; text = text.Substring(7); }
             text = text.Trim();
             if (text.IndexOf("\n") > -1)
             {
@@ -46,7 +46,7 @@ namespace Gruppe22
             }
             else
             {
-                while (_font.MeasureString(text).X > _displayRect.Width - 40)
+                while (_font.MeasureString(text).X > _displayRect.Width - 55)
                 {
                     if (text.LastIndexOf(' ') > 0)
                     {
@@ -94,18 +94,18 @@ namespace Gruppe22
                 if (_hasBorder)
                 {
                     _spriteBatch.Draw(_background, _displayRect, new Rectangle(39, 6, 1, 1), Color.White);
-                    _spriteBatch.Draw(_background, new Rectangle(_displayRect.X + 2, _displayRect.Y + 2, _displayRect.Width - 4, _displayRect.Height - 4), new Rectangle(39, 6, 1, 1), Color.Black);
+                    _spriteBatch.Draw(_background, new Rectangle(_displayRect.X + 1, _displayRect.Y + 1, _displayRect.Width - 2, _displayRect.Height - 2), new Rectangle(39, 6, 1, 1), Color.Black);
                 }
                 //_startPos = 2;
                 for (int count = _startPos; count < Math.Min(_numLines + _startPos, _text.Count); ++count)
                 {
-                    int centerX = _displayRect.Left + 20;
+                    int centerX = _displayRect.Left + 5;
                     if (_center)
                     {
-                        centerX = 20 + _displayRect.X + ((int)(_displayRect.Width - 40 - _font.MeasureString(_text[count]).X) / 2);
+                        centerX = 5 + _displayRect.X + ((int)(_displayRect.Width - 55 - _font.MeasureString(_text[count]).X) / 2);
                     }
 
-                    _spriteBatch.DrawString(_font, _text[count], new Vector2(centerX, _displayRect.Top +
+                    _spriteBatch.DrawString(_font, _text[count], new Vector2(centerX, _displayRect.Top + 5 +
                         (count - _startPos) * _lineHeight), _color[count]);
 
                 }
@@ -250,7 +250,7 @@ namespace Gruppe22
             _font = _content.Load<SpriteFont>("SmallFont");
             _background = _content.Load<Texture2D>("Minimap");
             _lineHeight = (int)(_font.MeasureString("WgjITt").Y) + 1;
-            _numLines = (int)(displayRect.Height / _lineHeight);
+            _numLines = (int)((displayRect.Height - 10) / _lineHeight);
             _arrows = _content.Load<Texture2D>("Arrows");
             _text = new List<string>();
             _color = new List<Color>();
