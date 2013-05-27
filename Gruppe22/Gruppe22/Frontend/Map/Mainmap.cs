@@ -772,13 +772,13 @@ namespace Gruppe22
                         switch (_map[x, y].firstItem.itemType)
                         {
                             case ItemType.Armor:
-                                _spriteBatch.Draw(_environment[1][0].animationTexture, new Rectangle(_map2screen(x, y).x + 32, _map2screen(x, y).y + 16, 64, 64), _environment[1][0].animationRect, Color.White);
+                                _spriteBatch.Draw(_environment[1][0].animationTexture, new Rectangle(_map2screen(x, y).x + 32, _map2screen(x, y).y + 16, _environment[1][0].animationRect.Width, _environment[1][0].animationRect.Height), _environment[1][0].animationRect, Color.White);
                                 break;
                             case ItemType.Weapon:
-                                _spriteBatch.Draw(_environment[1][4].animationTexture, new Rectangle(_map2screen(x, y).x + 32, _map2screen(x, y).y + 16, 64, 64), _environment[1][4].animationRect, Color.White);
+                                _spriteBatch.Draw(_environment[1][4].animationTexture, new Rectangle(_map2screen(x, y).x + 32, _map2screen(x, y).y + 16, _environment[1][4].animationRect.Width, _environment[1][4].animationRect.Height), _environment[1][4].animationRect, Color.White);
                                 break;
                             case ItemType.Potion:
-                                _spriteBatch.Draw(_environment[1][5].animationTexture, new Rectangle(_map2screen(x, y).x + 32, _map2screen(x, y).y + 16, 64, 64), _environment[1][5].animationRect, Color.White);
+                                _spriteBatch.Draw(_environment[1][5].animationTexture, new Rectangle(_map2screen(x, y).x + 32, _map2screen(x, y).y + 16, _environment[1][5].animationRect.Width, _environment[1][5].animationRect.Height), _environment[1][5].animationRect, Color.White);
                                 break;
                         }
 
