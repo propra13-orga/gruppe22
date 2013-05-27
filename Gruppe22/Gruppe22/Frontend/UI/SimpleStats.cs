@@ -97,7 +97,7 @@ namespace Gruppe22
         public SimpleStats(IHandleEvent parent, SpriteBatch spriteBatch, ContentManager content, Rectangle displayRect, Actor actor)
             : base(parent, spriteBatch, content, displayRect)
         {
-            _font = _content.Load<SpriteFont>("Font");
+            _font = _content.Load<SpriteFont>("SmallFont");
             _actor = actor;
             _lineheight = (int)(_font.MeasureString("WgjITt").Y);
             _progressbar = new ProgressBar(this, _spriteBatch, _content, new Rectangle(

@@ -247,7 +247,7 @@ namespace Gruppe22
         public Statusbox(IHandleEvent parent, SpriteBatch spriteBatch, ContentManager content, Rectangle displayRect, bool hasBorder = true, bool center = false)
             : base(parent, spriteBatch, content, displayRect)
         {
-            _font = _content.Load<SpriteFont>("Font");
+            _font = _content.Load<SpriteFont>("SmallFont");
             _background = _content.Load<Texture2D>("Minimap");
             _lineHeight = (int)(_font.MeasureString("WgjITt").Y) + 1;
             _numLines = (int)(displayRect.Height / _lineHeight);

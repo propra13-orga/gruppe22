@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +17,8 @@ namespace Gruppe22
         private Coords _currentTile;
         private string _currentTooltip = "";
         private bool _updating = true;
+        private SpriteFont _font = null;
+        
         #endregion
 
         #region Public Methods

@@ -265,7 +265,7 @@ namespace Gruppe22
             _style = style;
             _color = color;
             _background = _content.Load<Texture2D>("Minimap");
-            _font = _content.Load<SpriteFont>("Font");
+            _font = _content.Load<SpriteFont>("SmallFont");
             _fontHeight = (int)_font.MeasureString("1234567890").Y;
         }
         #endregion
