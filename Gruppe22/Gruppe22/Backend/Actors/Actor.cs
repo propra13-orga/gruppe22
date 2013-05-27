@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml;
@@ -53,6 +54,65 @@ namespace Gruppe22
             get
             {
                 return _inventory;
+            }
+        }
+
+        public int currMana
+        {
+            get
+            {
+                return _currMana;
+            }
+            set
+            {
+                _currMana = value;
+            }
+        }
+
+        public int expNeeded
+        {
+            get
+            {
+                return _expNeeded;
+            }
+            set
+            {
+                _expNeeded = value;
+            }
+        }
+        public int maxMana
+        {
+            get
+            {
+                return _maxMana;
+            }
+            set
+            {
+                _maxMana = value;
+            }
+        }
+
+        public int manaReg
+        {
+            get
+            {
+                return _manaReg;
+            }
+            set
+            {
+                _manaReg = value;
+            }
+        }
+
+        public int gold
+        {
+            get
+            {
+                return _gold;
+            }
+            set
+            {
+                _gold = value;
             }
         }
 
@@ -288,50 +348,81 @@ namespace Gruppe22
             switch (_actorType)
             {
                 case ActorType.Player:
-                    switch (index)
+                    if (File.Exists("playernames.txt"))
                     {
-                        case 0:
-                            _name = "Gerd";
-                            break;
-                        case 1:
-                            _name = "Klaus";
-                            break;
-                        case 2:
-                            _name = "Dieter";
-                            break;
-                        case 3:
-                            _name = "Waldemar";
-                            break;
-                        case 4:
-                            _name = "Friedrich";
-                            break;
-                        case 5:
-                            _name = "Othmar";
-                            break;
+                        using (TextReader reader = new StreamReader("playernames.txt"))
+                        {
+                            index = r.Next(File.ReadAllLines("playernames.txt").Length);
+                            int i = 0;
+                            while (i < index && reader.ReadLine() != null)
+                            {
+                                i++;
+                            }
+                            _name = reader.ReadLine();
+                        }
                     }
-
+                    else
+                    {
+                        switch (index)
+                        {
+                            case 0:
+                                _name = "Gerd";
+                                break;
+                            case 1:
+                                _name = "Klaus";
+                                break;
+                            case 2:
+                                _name = "Dieter";
+                                break;
+                            case 3:
+                                _name = "Waldemar";
+                                break;
+                            case 4:
+                                _name = "Friedrich";
+                                break;
+                            case 5:
+                                _name = "Othmar";
+                                break;
+                        }
+                    }
                     break;
                 case ActorType.Enemy:
-                    switch (index)
+                    if (File.Exists("enemynames.txt"))
                     {
-                        case 0:
-                            _name = "Skeletor";
-                            break;
-                        case 1:
-                            _name = "Skeletus";
-                            break;
-                        case 2:
-                            _name = "Skello";
-                            break;
-                        case 3:
-                            _name = "Skeletanus";
-                            break;
-                        case 4:
-                            _name = "Skeletti";
-                            break;
-                        case 5:
-                            _name = "Skelly";
-                            break;
+                        using (TextReader reader = new StreamReader("enemynames.txt"))
+                        {
+                            index = r.Next(File.ReadAllLines("enemynames.txt").Length);
+                            int i = 0;
+                            while (i < index && reader.ReadLine() != null)
+                            {
+                                i++;
+                            }
+                            _name = reader.ReadLine();
+                        }
+                    }
+                    else
+                    {
+                        switch (index)
+                        {
+                            case 0:
+                                _name = "Skeletor";
+                                break;
+                            case 1:
+                                _name = "Skeletus";
+                                break;
+                            case 2:
+                                _name = "Skello";
+                                break;
+                            case 3:
+                                _name = "Skeletanus";
+                                break;
+                            case 4:
+                                _name = "Skeletti";
+                                break;
+                            case 5:
+                                _name = "Skelly";
+                                break;
+                        }
                     }
                     index = r.Next(6);
                     switch (index)
@@ -357,7 +448,19 @@ namespace Gruppe22
                     }
                     break;
                 case ActorType.NPC:
-
+                    if (File.Exists("npcnames.txt"))
+                    {
+                        using (TextReader reader = new StreamReader("npcnames.txt"))
+                        {
+                            index = r.Next(File.ReadAllLines("npcnames.txt").Length);
+                            int i = 0;
+                            while (i < index && reader.ReadLine() != null)
+                            {
+                                i++;
+                            }
+                            _name = reader.ReadLine();
+                        }
+                    }
                     break;
             }
         }
