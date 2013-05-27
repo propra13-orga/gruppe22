@@ -81,7 +81,7 @@ namespace Gruppe22
                 // Additional Data for player: Experience
                 if (_actor is Player)
                 {
-                    //  _spriteBatch.DrawString(_font, "LVL: " + _actor.level.ToString() + " - EXP to next LVL:" + _actor.experience.ToString(), new Vector2(_displayRect.Left + 10, _displayRect.Top + _lineheight * 4 + 20), color);
+                    _spriteBatch.DrawString(_font, "LVL: " + _actor.level.ToString() + " - EXP to next LVL:" + _actor.exp.ToString(), new Vector2(_displayRect.Left + 10, _displayRect.Top + _lineheight * 3 + 8), color);
                 }
                 _spriteBatch.End();
                 // Health bar

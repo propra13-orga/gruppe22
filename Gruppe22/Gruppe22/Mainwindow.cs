@@ -136,6 +136,10 @@ namespace Gruppe22
             }
 
             HandleMovementKeys(k);
+            foreach (UIElement element in _interfaceElements)
+            {
+                element.OnKeyDown(k);
+            }
         }
 
         private void HandleMovementKeys(Keys k)
@@ -254,9 +258,9 @@ namespace Gruppe22
             _interfaceElements.Add(_minimap1);
             _mainmap1 = new Mainmap(this, _spriteBatch, Content, new Rectangle(20, 20, _graphics.GraphicsDevice.Viewport.Width - 260, _graphics.GraphicsDevice.Viewport.Height - 160), _map1);
             _interfaceElements.Add(_mainmap1);
-            _statusbox = new Statusbox(this, _spriteBatch, Content, new Rectangle(20, _graphics.GraphicsDevice.Viewport.Height - 120, _graphics.GraphicsDevice.Viewport.Width - 260, 100));
+            _statusbox = new Statusbox(this, _spriteBatch, Content, new Rectangle(20, _graphics.GraphicsDevice.Viewport.Height - 120, _graphics.GraphicsDevice.Viewport.Width - 260, 120));
             _interfaceElements.Add(_statusbox);
-            _inventory = new Inventory(this, _spriteBatch, Content, new Rectangle(20, _graphics.GraphicsDevice.Viewport.Height - 120, _graphics.GraphicsDevice.Viewport.Width - 260, 100), _map1.actors[0]);
+            _inventory = new Inventory(this, _spriteBatch, Content, new Rectangle(_graphics.GraphicsDevice.Viewport.Width - 230, _graphics.GraphicsDevice.Viewport.Height - 120, 210, 120), _map1.actors[0]);
             _interfaceElements.Add(_inventory);
             _statusbox.AddLine("Welcome to this highly innovative Dungeon Crawler!\nYou can scroll in this status window.\nUse A-S-D-W to move your character.\n Use Arrow keys (or drag mouse) to scroll map or minimap\n Press ESC to display Game Menu.");
             _playerStats = new SimpleStats(this, _spriteBatch, Content, new Rectangle(_graphics.GraphicsDevice.Viewport.Width - 230, 230, 210, 100), _map1.actors[0]);
@@ -799,7 +803,7 @@ namespace Gruppe22
             _graphics.PreferredBackBufferHeight = 600;
             _graphics.PreferredBackBufferWidth = 800;
 
-            _graphics.IsFullScreen = false;
+            _graphics.IsFullScreen = true;
             Window.AllowUserResizing = false;
             //  Type type = typeof(OpenTKGameWindow);
 

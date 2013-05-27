@@ -23,12 +23,12 @@ namespace Gruppe22
         /// <summary>
         /// 
         /// </summary>
-        private int _rows = 0;
+        private int _rows = 2;
 
         /// <summary>
         /// 
         /// </summary>
-        private int _cols = 0;
+        private int _cols = 3;
 
         /// <summary>
         /// 
@@ -48,12 +48,15 @@ namespace Gruppe22
         /// <summary>
         /// 
         /// </summary>
-        private int _totalPages = -1;
+        private int _totalPages = 3;
 
         /// <summary>
         /// 
         /// </summary>
         private int _page = -1;
+
+        private Texture2D _arrows = null;
+        private Texture2D _background = null;
         #endregion
 
         #region Public Fields
@@ -144,6 +147,22 @@ namespace Gruppe22
         /// <param name="gameTime"></param>
         public override void Draw(GameTime gameTime)
         {
+            _spriteBatch.Begin();
+            for (int y = 0; y < _rows; ++y)
+            {
+                for (int x = 0; x < _cols; ++x)
+                {
+                    _spriteBatch.Draw(_background, new Rectangle(_displayRect.Left + x * (_width + 3), _displayRect.Top + y * (_height + 3), _width + 2, _height + 2), new Rectangle(39, 6, 1, 1), Color.White);
+                    _spriteBatch.Draw(_background, new Rectangle(_displayRect.Left + x * (_width + 3) + 1, _displayRect.Top + y * (_height + 3) + 1, _width, _height), new Rectangle(39, 6, 1, 1), Color.Black);
+                }
+            }
+            if (_totalPages > 1)
+            {
+                _spriteBatch.Draw(_arrows, new Rectangle(_displayRect.Right - 35, _displayRect.Top + 5, 28, 28), new Rectangle(32, 0, 28, 28), Color.White);
+                _spriteBatch.Draw(_arrows, new Rectangle(_displayRect.Right - 35, _displayRect.Bottom - 35, 28, 28), new Rectangle(0, 0, 28, 28), Color.White);
+            }
+
+            _spriteBatch.End();
             base.Draw(gameTime);
         }
 
@@ -168,6 +187,10 @@ namespace Gruppe22
         public Grid(IHandleEvent parent, SpriteBatch spriteBatch, ContentManager content, Rectangle displayRect)
             : base(parent, spriteBatch, content, displayRect)
         {
+            _background = _content.Load<Texture2D>("Minimap");
+            _arrows = _content.Load<Texture2D>("Arrows");
+            _cols = (int)((_displayRect.Width - 35) / (_width+3));
+            _rows = (int)((_displayRect.Height) / (_height+3));
         }
         #endregion
     }

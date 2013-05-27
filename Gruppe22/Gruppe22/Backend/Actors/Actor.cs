@@ -57,36 +57,36 @@ namespace Gruppe22
                 return _actorType;
             }
         }
-        
-        public int health 
-        { 
-            get 
-            { 
-                return _health; 
-            } 
-            set 
+
+        public int health
+        {
+            get
+            {
+                return _health;
+            }
+            set
             {
                 _health = value;
-            } 
+            }
         }
 
         public int maxHealth
         {
-            get 
-            { 
-                return _maxhealth; 
+            get
+            {
+                return _maxhealth;
             }
             set
             {
-                _maxhealth= value;
+                _maxhealth = value;
             }
         }
 
         public int armour
         {
-            get 
-            { 
-                return _armour; 
+            get
+            {
+                return _armour;
             }
             set
             {
@@ -94,11 +94,11 @@ namespace Gruppe22
             }
         }
 
-        public int damage 
-        { 
-            get 
-            { 
-                return _damage; 
+        public int damage
+        {
+            get
+            {
+                return _damage;
             }
             set
             {
@@ -106,11 +106,11 @@ namespace Gruppe22
             }
         }
 
-        public string name 
-        { 
-            get 
-            { 
-                return _name; 
+        public string name
+        {
+            get
+            {
+                return _name;
             }
             set
             {
@@ -178,9 +178,9 @@ namespace Gruppe22
             actor._health = actor._maxhealth;
         }
 
-        public void SetDamage(Actor actor) 
-        { 
-            SetDamage(actor.damage); 
+        public void SetDamage(Actor actor)
+        {
+            SetDamage(actor.damage);
         }
 
         /// <summary>
@@ -259,8 +259,8 @@ namespace Gruppe22
         public void LoadActor(XmlReader reader)
         {
             _name = reader.GetAttribute("name");
-            _maxhealth = Convert.ToInt32(reader.GetAttribute("maxhp")); 
-            _health = Convert.ToInt32(reader.GetAttribute("currhp")); 
+            _maxhealth = Convert.ToInt32(reader.GetAttribute("maxhp"));
+            _health = Convert.ToInt32(reader.GetAttribute("currhp"));
             _armour = Convert.ToInt32(reader.GetAttribute("arm"));
             _level = Convert.ToInt32(reader.GetAttribute("lev"));
             _strength = Convert.ToInt32(reader.GetAttribute("str"));
@@ -277,7 +277,7 @@ namespace Gruppe22
         /// <param name="r"></param>
         public void GenerateName(Random r = null)
         {
-            if(r==null)r = new Random();
+            if (r == null) r = new Random();
             int index = r.Next(6);
             switch (_actorType)
             {
@@ -363,10 +363,10 @@ namespace Gruppe22
         /// <param name="health"></param>
         /// <param name="armour"></param>
         /// <param name="damage"></param>
-        public Actor(ActorType actorType, int health, int armour, int damage, int maxHealth = -1, string name = "", Random r=null)
+        public Actor(ActorType actorType, int health, int armour, int damage, int maxHealth = -1, string name = "", Random r = null)
         {
             this._actorType = actorType;
-            if(r==null) r = new Random();
+            if (r == null) r = new Random();
             if (health < 0)
             {
                 if (maxHealth > 0)

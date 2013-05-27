@@ -158,8 +158,8 @@ namespace Gruppe22
                             null,
                             _camera.matrix);
                 _spriteBatch.Draw(_circle, new Rectangle(
-                    (int)(_actors[0].position.x+1) - 90* _renderScope,
-                    (int)(_actors[0].position.y+1) - 90* _renderScope, 200 * _renderScope, 200 * _renderScope), Color.White);
+                    (int)(_actors[0].position.x+1) - 160* _renderScope,
+                    (int)(_actors[0].position.y+1) - 160* _renderScope, 350 * _renderScope, 350 * _renderScope), Color.White);
                 _spriteBatch.End();
 
 
@@ -1068,6 +1068,7 @@ namespace Gruppe22
 
             resetActors();
             _camera.position = new Vector2(-38 - _actors[0].position.x, -30 - _actors[0].position.y);
+            _camera.zoom = 0.3f;
         }
         #endregion
 
