@@ -21,6 +21,11 @@ namespace Gruppe22
         private int _id = 0;
         private string _name = "";
         private List<Item> _inventory = null;
+        private int _currMana;
+        private int _maxMana;
+        private int _manaReg;
+        private int _gold;
+        //private List<Spell> _spellbook = null;
 
         /// <summary>
         /// later used to calculate Health, Damage, etc
@@ -29,6 +34,7 @@ namespace Gruppe22
         private int _strength;
         private int _vitality;
         private int _exp;
+        private int _expNeeded;
 
         //Lebenspunkte, Rüstung, Schaden/Angriffsstärke
         protected int
