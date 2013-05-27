@@ -10,7 +10,7 @@ namespace Gruppe22
     class GapTile : Tile
     {
         #region Private Fields
-        private int _style = -1;
+        private int _style = 0;
         #endregion
 
         #region Public Fields

@@ -126,9 +126,8 @@ namespace Gruppe22
             {
                 return;
             }
-
-            if (!isEmptyElement)
-                reader.ReadEndElement();
+            else
+                reader.Read();                
         }
 
         /// <summary>
@@ -470,6 +469,7 @@ namespace Gruppe22
         /// <param name="reader">The file from which data will be read</param>
         public void ReadXml(System.Xml.XmlReader reader)
         {
+            
             reader.MoveToContent();
             Boolean isEmptyElement = reader.IsEmptyElement;
 

@@ -151,7 +151,7 @@ namespace Gruppe22
                     if (_overlay[i] is GapTile) return ((GapTile)_overlay[i]).style;
                 }
 
-                return -1;
+                return 1;
             }
         }
         /// <summary>

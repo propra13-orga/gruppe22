@@ -631,6 +631,7 @@ namespace Gruppe22
             _items = new List<Item>();
             _blankTile = new FloorTile(this);
             _blankTile.coords = new Coords(0, 0);
+            _blankTile.Add(new GapTile(_blankTile));
             _tiles = new List<List<FloorTile>>();
             _exits = new List<Exit>();
 

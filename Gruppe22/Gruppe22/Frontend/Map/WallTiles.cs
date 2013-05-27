@@ -33,6 +33,7 @@ namespace Gruppe22
             while ((reader.NodeType != System.Xml.XmlNodeType.EndElement) && (reader.NodeType != System.Xml.XmlNodeType.None))
 
             {
+                while (reader.NodeType == System.Xml.XmlNodeType.Whitespace) reader.Read();
                 TileObject temp = new TileObject(_content, _width, _height);
                 WallDir _id = (WallDir)Enum.Parse(typeof(WallDir), reader.GetAttribute("Direction").ToString());
                 _textures[(int)_id].ReadXml(reader);
@@ -63,7 +64,9 @@ namespace Gruppe22
         /// <param name="filename"></param>
         public override void Load(string filename = "bla.xml")
         {
-            System.Xml.XmlTextReader reader = new System.Xml.XmlTextReader(filename);
+            System.Xml.XmlReaderSettings settings = new System.Xml.XmlReaderSettings();
+            settings.IgnoreWhitespace = true;
+            System.Xml.XmlReader reader = System.Xml.XmlReader.Create(filename,settings);
             ReadXml(reader);
             reader.Close();
         }

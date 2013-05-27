@@ -292,7 +292,10 @@ namespace Gruppe22
         /// <param name="filename"></param>
         public override void Load(string filename = "bla.xml")
         {
-            System.Xml.XmlTextReader reader = new System.Xml.XmlTextReader(filename);
+            System.Xml.XmlReaderSettings settings = new System.Xml.XmlReaderSettings();
+            settings.IgnoreWhitespace = true;
+            System.Xml.XmlReader reader = System.Xml.XmlReader.Create(filename, settings);
+
             ReadXml(reader);
             reader.Close();
         }
