@@ -655,7 +655,7 @@ namespace Gruppe22
                 AddDoors(roomNr, maxRoom, exits);
                 AddEnemies();
                 AddItems();
-                if (roomNr == 3)
+                if (roomNr == 3) //maxRoom
                 {
                     AddTarget();
                 }
