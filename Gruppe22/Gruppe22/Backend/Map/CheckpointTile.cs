@@ -4,9 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Gruppe22.Backend.Map
+namespace Gruppe22
 {
-    class CheckpointTile
+    public class CheckpointTile : Tile
     {
+        public CheckpointTile(object parent) :
+            base(parent)
+        { 
+        }
     }
 }

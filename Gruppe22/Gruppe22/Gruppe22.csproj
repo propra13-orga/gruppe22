@@ -97,6 +97,7 @@
     <Compile Include="Backend\Items\Potion.cs" />
     <Compile Include="Backend\Items\Weapon.cs" />
     <Compile Include="Backend\Map\BombTile.cs" />
+    <Compile Include="Backend\Map\CheckpointTile.cs" />
     <Compile Include="Backend\Map\DoorTile.cs" />
     <Compile Include="Backend\Map\FloorTile.cs" />
     <Compile Include="Backend\Map\GapTile.cs" />
