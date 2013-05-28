@@ -253,18 +253,33 @@ namespace Gruppe22
             List<Exit> exits = new List<Exit>();
             Random r = new Random();
             Generator tempMap = null;
-
-            for (int i = 1; i < 4; i++) //3 Level a 3 Räume
+<<<<<<< HEAD
+            tempMap = new Generator(this, r.Next(8) + 4, r.Next(8) + 4, true, null, 1, 3, exits, r);
+            tempMap.Save("room1.xml");
+            exits = Map.ExitToEntry(2, tempMap.exits);
+            tempMap.Dispose();
+            tempMap = new Generator(this, r.Next(8) + 4 + exits[0].from.x, r.Next(8) + 4 + exits[0].from.y, true, null, 2, 3, exits, r);
+            tempMap.Save("room2.xml");
+            exits = Map.ExitToEntry(3, tempMap.exits);
+            tempMap.Dispose();
+            tempMap = new Generator(this, r.Next(10) + 8 + exits[0].from.x, r.Next(10) + 8 + exits[0].from.y, true, null, 3, 3, exits, r);
+=======
+            for (int i = 0; i < 3; i++) //3 Level a 3 Räume
             {
-                int minX = 7;
-                int minY = 8;
-                if (exits.Count > 0) minX += exits[0].from.x;
-                if (exits.Count > 0) minY += exits[0].from.y;
-                tempMap = new Generator(this, minX + r.Next(8), minY + r.Next(8), true, null, i, 3, exits, r);
-                tempMap.Save("room" + i.ToString() + ".xml");
-                exits = Map.ExitToEntry(i + 1, tempMap.exits);
+                tempMap = new Generator(this, 7 + r.Next(8), 8 + r.Next(8), true, null, 1, 3, null, r);
+                tempMap.Save("room1.xml");
+                exits = Map.ExitToEntry(2, tempMap.exits);
                 tempMap.Dispose();
             }
+            //tempMap = new Generator(this, r.Next(8) + 4 + exits[0].from.x, r.Next(8) + 4 + exits[0].from.y, true, null, 2, 3, exits, r);
+            //tempMap.Save("room2.xml");
+            //exits = Map.ExitToEntry(3, tempMap.exits);
+            //tempMap.Dispose();
+            //tempMap = new Generator(this, r.Next(10) + 8 + exits[0].from.x, r.Next(10) + 8 + exits[0].from.y, true, null, 3, 3, exits, r);
+>>>>>>> 5cad05ceb8f461417da512c45491d972b1e04f1b
+            tempMap.Save("room3.xml");
+            tempMap.Dispose();
+
         }
 
         /// <summary>
@@ -946,5 +961,3 @@ namespace Gruppe22
 
     }
 }
-
-
