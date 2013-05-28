@@ -38,7 +38,7 @@ namespace Gruppe22
     public class Map : IHandleEvent, IDisposable
     {
         #region Private Fields
-        
+
         private int _currRoomNbr;
 
         private object _parent = null;
@@ -390,7 +390,7 @@ namespace Gruppe22
             _currRoomNbr = Convert.ToInt32(m.Value);
             bool isReady = false;
             Player playerA = null;
-            
+
             if (player == null)
             {
                 player = new Coords(1, 1);
@@ -418,7 +418,10 @@ namespace Gruppe22
             _tiles.Clear();
             _items.Clear();
             _updateTiles.Clear();
-            XmlReader xmlr = XmlReader.Create(filename);
+            XmlReaderSettings settings = new XmlReaderSettings();
+            settings.IgnoreWhitespace = true;
+            settings.IgnoreComments = true;
+            XmlReader xmlr = XmlReader.Create(filename, settings);
             xmlr.MoveToContent();//xml
             _width = int.Parse(xmlr.GetAttribute("width"));
             _height = int.Parse(xmlr.GetAttribute("height"));
@@ -620,6 +623,8 @@ namespace Gruppe22
             xmlw.WriteEndDocument();
             xmlw.Close();
         }
+
+
         #endregion
 
         #region Constructor
@@ -647,6 +652,7 @@ namespace Gruppe22
             _parent = parent;
             Load(filename, playerPos);
         }
+
 
         public virtual void Dispose()
         {

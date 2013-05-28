@@ -114,6 +114,11 @@ namespace Gruppe22
             _clipRect.Y = Int32.Parse(reader.GetAttribute("y"));
             _clipRect.Width = Int32.Parse(reader.GetAttribute("width"));
             _clipRect.Height = Int32.Parse(reader.GetAttribute("height"));
+
+            if (reader.GetAttribute("offsetY") != null) _offsetY = Int32.Parse(reader.GetAttribute("offsetY"));
+            if (reader.GetAttribute("offsetX") != null) _offsetX = Int32.Parse(reader.GetAttribute("offsetX"));
+            if (reader.GetAttribute("cropX") != null) _cropX = Int32.Parse(reader.GetAttribute("cropX"));
+            if (reader.GetAttribute("cropY") != null) _cropY = Int32.Parse(reader.GetAttribute("cropY"));
             _srcFile = reader.GetAttribute("file");
 
             if (_srcFile != "")
@@ -127,7 +132,7 @@ namespace Gruppe22
                 return;
             }
             else
-                reader.Read();                
+                reader.Read();
         }
 
         /// <summary>
@@ -138,6 +143,10 @@ namespace Gruppe22
         {
             writer.WriteAttributeString("x", _clipRect.X.ToString());
             writer.WriteAttributeString("y", _clipRect.Y.ToString());
+            writer.WriteAttributeString("offsetY", _offsetY.ToString());
+            writer.WriteAttributeString("offsetX", _offsetX.ToString());
+            writer.WriteAttributeString("cropX", _cropX.ToString());
+            writer.WriteAttributeString("cropY", _cropY.ToString());
             writer.WriteAttributeString("width", _clipRect.Width.ToString());
             writer.WriteAttributeString("height", _clipRect.Height.ToString());
             writer.WriteAttributeString("file", _srcFile.ToString());
@@ -469,7 +478,7 @@ namespace Gruppe22
         /// <param name="reader">The file from which data will be read</param>
         public void ReadXml(System.Xml.XmlReader reader)
         {
-            
+
             reader.MoveToContent();
             Boolean isEmptyElement = reader.IsEmptyElement;
 

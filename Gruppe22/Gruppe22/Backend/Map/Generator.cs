@@ -84,7 +84,7 @@ namespace Gruppe22
 
                 if ((pos.x >= 0) && (pos.x < _width) && (pos.y < _height) && (pos.y >= 0))
                 {
-                    Enemy enemy = new Enemy(-1,-1,-1,-1,"",r);
+                    Enemy enemy = new Enemy(-1, -1, -1, -1, "", r);
                     ActorTile enemyTile = new ActorTile(_tiles[pos.y][pos.x], enemy);
                     enemy.tile = enemyTile;
                     _tiles[pos.y][pos.x].Add(enemyTile);
@@ -339,7 +339,7 @@ namespace Gruppe22
             }
         }
 
-        
+
 
         /// <summary>
         /// Create a grid of walls
@@ -533,13 +533,102 @@ namespace Gruppe22
             ClearWalls(); // Remove random walls
         }
 
+        public bool FromString(string input, int roomID, int MaxRoom)
+        {
+            int col = 0, row = 0, maxcol = 0;
+            _tiles.Add(new List<GeneratorTile>());
+            foreach (char c in input)
+            {
+                switch (c)
+                {
+                    case '#':
+                        _tiles[row].Add(new GeneratorTile(this, new Coords(col, row)));
+                        _tiles[row][col].Add(TileType.Wall);
+                        col += 1;
+                        break;
+                    case '\n':
+                                                if (col > maxcol) { maxcol = col; };
+
+                        col = 0;
+                        row += 1;
+                        _tiles.Add(new List<GeneratorTile>());
+                        break;
+                    case 'S':
+                        
+                        _tiles[row].Add(new GeneratorTile(this, new Coords(col, row)));
+                        
+                        if (roomID != 1)
+                        {
+                            _tiles[row][col].Add(new TeleportTile(_tiles[row][col], "room" + (roomID - 1).ToString() + ".xml", new Coords(col, row)));
+                            _exits.Add(new Exit(new Coords(col, row), "room" + (roomID).ToString() + ".xml", new Coords(col, row), "room" + (roomID - 1).ToString() + ".xml"));
+                        }
+                        else
+                        {
+                            AddPlayer(new Coords(col, row));
+                        }
+                        col += 1;
+                        break;
+                    case 'G':
+                        _tiles[row].Add(new GeneratorTile(this, new Coords(col, row)));
+                        
+                        if (roomID == MaxRoom)
+                        {
+                            TargetTile target = new TargetTile(_tiles[row][col]);
+                            _tiles[row][col].Add(target);
+                        }
+                        else
+                        {
+                            _tiles[row][col].Add(new TeleportTile(_tiles[row][col], "room" + (roomID + 1).ToString() + ".xml", new Coords(col, row)));
+                            _exits.Add(new Exit(new Coords(col, row), "room" + (roomID).ToString() + ".xml", new Coords(col, row), "room" + (roomID + 1).ToString() + ".xml"));
+                        }
+                        col += 1;
+                        break;
+                    case 'F':
+                        _tiles[row].Add(new GeneratorTile(this, new Coords(col, row)));
+                        
+                        Enemy enemy = new Enemy(-1, -1, -1, -1, "", r);
+                        ActorTile enemyTile = new ActorTile(_tiles[row][col], enemy);
+                        enemy.tile = enemyTile;
+                        _tiles[row][col].Add(enemyTile);
+                        _actors.Add(enemy);
+                        col += 1;
+                        break;
+                    default:
+                        _tiles[row].Add(new GeneratorTile(this, new Coords(col, row)));
+                        col += 1;
+                        break;
+                }
+
+            }
+            if (col > maxcol) { maxcol = col; };
+
+            _width = maxcol;
+            _height = row + 1;
+            // Fill all rows to maximum width
+            for (int i = 0; i < _height; ++i)
+            {
+                while (_tiles[i].Count < maxcol)
+                {
+                    _tiles[i].Add(new GeneratorTile(this, new Coords(_tiles[i].Count + 1, i)));
+                }
+            }
+            return true;
+        }
+
+        public Generator(object parent, string pattern, Coords playerPos = null, int roomNr = 1, int maxRoom = 3, List<Exit> exits = null, Random rnd = null)
+            : base()
+        {
+            if (rnd == null) r = new Random(); else r = rnd;
+            _tiles = new List<List<GeneratorTile>>();
+            FromString(pattern, roomNr, maxRoom);
+        }
 
         /// <summary>
         /// Create an empty map
         /// </summary>
         /// <param name="width">The width of the map</param>
         /// <param name="height">The height of the map</param>
-        public Generator(object parent = null, int width = 10, int height = 10, bool generate = false, Coords playerPos = null, int roomNr = 1, int maxRoom = 3, List<Exit> exits = null, Random rnd=null)
+        public Generator(object parent = null, int width = 10, int height = 10, bool generate = false, Coords playerPos = null, int roomNr = 1, int maxRoom = 3, List<Exit> exits = null, Random rnd = null)
             : base()
         {
             if (rnd == null) r = new Random(); else r = rnd;

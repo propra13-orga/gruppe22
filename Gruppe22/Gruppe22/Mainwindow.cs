@@ -246,10 +246,43 @@ namespace Gruppe22
         /// </summary>
         public void GenerateMaps()
         {
+            string str =
+              "G..............\n" +
+              "...............\n" +
+              "...#.#.#.......\n" +
+              "..#..#..#......\n" +
+              "..S#.#.#.......\n" +
+              "....###........\n" +
+              "...#.#.#.......\n" +
+              "..#..#..#......\n" +
+              "...#...#.......\n" +
+              "...............\n",
+
+            str1 =
+              "...............\n" +
+              "...............\n" +
+              "#....#.........\n" +
+              ".##...#....#...\n" +
+              "...##.#..##....\n" +
+              ".##..####......\n" +
+              "#.....#..##....\n" +
+              ".....#.....#...\n",
+              str2=
+              "....................\n"+
+              "....................\n"+
+              "..#.......#........\n"+
+              "...#.....#.........\n"+
+              "....#...#..........\n"+
+              "...S.#.#...........\n"+
+              "......#............\n"+
+              ".....#.#...........\n"+
+              "....#...#..........\n"+
+              "...#.....#....G....\n"+
+              "..#.......#........\n";
             List<Exit> exits = new List<Exit>();
             Random r = new Random();
             Generator tempMap = null;
-            tempMap = new Generator(this, 7 + r.Next(8), 8 + r.Next(8), true, null, 1, 3, null, r);
+            tempMap = new Generator(this, str);
             tempMap.Save("room1.xml");
             exits = Map.ExitToEntry(2, tempMap.exits);
             tempMap.Dispose();
@@ -260,6 +293,7 @@ namespace Gruppe22
             tempMap = new Generator(this, r.Next(10) + 8 + exits[0].from.x, r.Next(10) + 8 + exits[0].from.y, true, null, 3, 3, exits, r);
             tempMap.Save("room3.xml");
             tempMap.Dispose();
+                 
         }
 
         /// <summary>

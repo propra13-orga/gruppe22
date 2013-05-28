@@ -47,7 +47,7 @@ namespace Gruppe22
         /// <summary>
         /// Number of tiles to render (Square with player in center)
         /// </summary>
-        private int _renderScope = 4;
+        private int _renderScope = 50;
         /// <summary>
         /// Basic texture set (for drawing lines
         /// </summary>
@@ -238,6 +238,7 @@ namespace Gruppe22
                     break;
 
                 default:
+                    System.Diagnostics.Debug.WriteLine("--" + dir.ToString());
                     _spriteBatch.Draw(_walls[(int)dir].animationTexture, new Rectangle(
                         target.Left + _walls[(int)dir].offsetX,
                         target.Top + _walls[(int)dir].offsetY,
@@ -701,14 +702,14 @@ namespace Gruppe22
 
             for (int y = (Math.Max(currentPos.y - _renderScope, 0)); y <= (Math.Min(currentPos.y + _renderScope, _map.height)); ++y)
             {
-                for (int x = (Math.Max(currentPos.x - _renderScope, 0)); x <= (Math.Min(currentPos.x + _renderScope, _map.width)); ++x)
+                for (int x = (Math.Min(currentPos.x + _renderScope, _map.width)); x >= (Math.Max(currentPos.x - _renderScope, 0)); --x)
                 {
                     _drawWall(GetWallStyle(x, y), _tileRect(new Vector2(x + 1, y - 1), true), false);
 
                     foreach (ActorView actor in _actors)
                     {
                         Coords apos = _screen2map(actor.position.x, actor.position.y);
-                        if (((int)apos.x == x) && ((int)apos.y == y + 1))
+                        if (((int)apos.x == x) && ((int)apos.y == y))
                         {
                             _spriteBatch.Draw(actor.animationTexture,
                                 new Rectangle(actor.position.x + actor.offsetX + 25, actor.position.y + actor.offsetY - 25,
@@ -1107,6 +1108,7 @@ namespace Gruppe22
 
             resetActors();
             _camera.position = new Vector2(-38 - _actors[0].position.x, -30 - _actors[0].position.y);
+            _camera.zoom = 0.6f;
             _enabled = enabled;
         }
         #endregion
