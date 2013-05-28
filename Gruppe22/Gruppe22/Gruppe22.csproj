@@ -151,10 +151,8 @@
     <Reference Include="Lidgren.Network">
       <HintPath>$(MSBuildExtensionsPath)\..\MonoGame\v3.0\Assemblies\WindowsGL\Lidgren.Network.dll</HintPath>
     </Reference>
-    <Reference Include="MonoGame.Framework, Version=3.0.1.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\..\..\MonoGame\MonoGame.Framework\bin\WindowsGL\Debug\MonoGame.Framework.dll</HintPath>
-    </Reference>
+    <Reference Include="MonoGame.Framework, Version=3.0.1.0, Culture=neutral, processorArchitecture=MSIL" />
+    <Reference Include="OpenTK, Version=1.1.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL" />
     <Reference Include="System.Net" />
     <Reference Include="System.Net.Http, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="System.Net.Http.WebRequest, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />

@@ -179,8 +179,8 @@ namespace Gruppe22
                                 null,
                                 _camera.matrix);
                     _spriteBatch.Draw(_circle, new Rectangle(
-                        (int)(_actors[0].position.x + 1) - 160 * _renderScope,
-                        (int)(_actors[0].position.y + 1) - 160 * _renderScope, 350 * _renderScope, 350 * _renderScope), Color.White);
+                        (int)(_actors[0].position.X + 1) - 160 * _renderScope,
+                        (int)(_actors[0].position.Y + 1) - 160 * _renderScope, 350 * _renderScope, 350 * _renderScope), Color.White);
                     _spriteBatch.End();
 
 
@@ -699,7 +699,7 @@ namespace Gruppe22
         /// </summary>
         private void _drawWalls(GameTime gametime)
         {
-            Coords currentPos = _screen2map(_actors[0].position.x, _actors[0].position.y);
+            Coords currentPos = _screen2map((int)_actors[0].position.X, (int)_actors[0].position.Y);
 
             //            System.Diagnostics.Debug.WriteLine((Math.Max(currentPos.y - _renderScope, 0)) + " " + (Math.Min(currentPos.y + _renderScope, _map.height)));
             //          System.Diagnostics.Debug.WriteLine((Math.Max(currentPos.x - _renderScope, 0)) + " " + (Math.Min(currentPos.x + _renderScope, _map.height)));
@@ -713,11 +713,11 @@ namespace Gruppe22
 
                     foreach (ActorView actor in _actors)
                     {
-                        Coords apos = _screen2map(actor.position.x, actor.position.y);
+                        Coords apos = _screen2map((int)actor.position.X, (int)actor.position.Y);
                         if (((int)apos.x == x) && ((int)apos.y == y))
                         {
                             _spriteBatch.Draw(actor.animationTexture,
-                                new Rectangle(actor.position.x + actor.offsetX + 25, actor.position.y + actor.offsetY - 25,
+                                new Rectangle((int)actor.position.X + actor.offsetX + 25, (int)actor.position.Y + actor.offsetY - 25,
     actor.width - actor.offsetX - actor.cropX, actor.height - actor.offsetY - actor.cropY
     ), actor.animationRect, Color.White);
                         }
@@ -733,7 +733,7 @@ namespace Gruppe22
         /// <param name="vTiles">Number of horizontal Tiles</param>
         private void _drawFloor()
         {
-            Coords currentPos = _screen2map(_actors[0].position.x, _actors[0].position.y);
+            Coords currentPos = _screen2map((int)_actors[0].position.X, (int)_actors[0].position.Y);
             for (int y = (Math.Max(currentPos.y - _renderScope, 0)); y < (Math.Min(currentPos.y + _renderScope + 1, _map.height)); ++y)
             {
                 for (int x = (Math.Max(currentPos.x - _renderScope, 0)); x < (Math.Min(currentPos.x + _renderScope + 1, _map.width)); ++x)
@@ -814,7 +814,7 @@ namespace Gruppe22
                 if (_actors.Count > 0) _actors.Add(new ActorView(this, count, _content, _map2screen(_map.actorPositions[count]), "Content\\skeleton.xml", 2, _map._actors[count].health > 0));
                 else _actors.Add(new ActorView(this, count, _content, _map2screen(_map.actorPositions[count]), "Content\\player.xml", 5));
             }
-            _camera.position = new Vector2(-38 - _actors[0].position.x, -30 - _actors[0].position.y);
+            _camera.position = new Vector2(-38 - _actors[0].position.X, -30 - _actors[0].position.Y);
         }
         /// <summary>
         /// Move camera, react to mouse
@@ -839,7 +839,7 @@ namespace Gruppe22
                     }
                 }
                 if (_actors[0].isMoving)
-                    _camera.position = new Vector2(-38 - _actors[0].position.x, -30 - _actors[0].position.y);
+                    _camera.position = new Vector2(-38 - _actors[0].position.X, -30 - _actors[0].position.Y);
                 /*   if (Math.Abs(gameTime.TotalGameTime.Milliseconds / 10 - _lastCheck) > 1)
                    {
                        _lastCheck = gameTime.TotalGameTime.Milliseconds / 10;*/
@@ -880,7 +880,7 @@ namespace Gruppe22
         public void CreateTextureList()
         {
 
-            ActorView player = new ActorView(this, 0, _content, null);
+            ActorView player = new ActorView(this, 0, _content, Vector2.Zero);
 
             player.Add(Activity.Walk, Direction.DownRight, "Walk", new Coords(0, 0), 8, 1);
             player.Add(Activity.Walk, Direction.UpRight, "Walk", new Coords(0, 96), 8, 1); // Ok
@@ -938,7 +938,7 @@ namespace Gruppe22
             player.Add(Activity.Attack, Direction.UpLeft, "Attack", new Coords(0, 672), 13, 1);
             player.Save("content\\player.xml");
 
-            ActorView skel = new ActorView(this, 0, _content, new Coords(0, 0), "");
+            ActorView skel = new ActorView(this, 0, _content, new Vector2(0f, 0f), "");
             skel.Add(Activity.Walk, Direction.DownRight, "sWalk", new Coords(0, 0), 8, 1);
             skel.Add(Activity.Walk, Direction.UpRight, "sWalk", new Coords(0, 96), 8, 1);
             skel.Add(Activity.Walk, Direction.Right, "sWalk", new Coords(0, 192), 8, 1);

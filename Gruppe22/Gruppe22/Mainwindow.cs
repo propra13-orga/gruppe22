@@ -925,22 +925,15 @@ namespace Gruppe22
             //SaveGame();
             //Exit();
             _graphics = new GraphicsDeviceManager(this);
-            // _graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height - 200;
-            // _graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width - 40;
-            _graphics.PreferredBackBufferHeight = 600;
-            _graphics.PreferredBackBufferWidth = 1024;
-
-            _graphics.IsFullScreen = true;
-            Window.AllowUserResizing = false;
-            //  Type type = typeof(OpenTKGameWindow);
-
-            _graphics.SynchronizeWithVerticalRetrace = false;
+             _graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height - 200;
+             _graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width - 40;
             _files2fetch = new Queue<String>();
             // Move window to top left corner of the screen
-            // System.Reflection.FieldInfo field = type.GetField("window", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-            //   OpenTK.GameWindow window = (OpenTK.GameWindow)field.GetValue(this.Window);
-            // window.X = 0;
-            // window.Y = 0;
+            Type type = typeof(OpenTKGameWindow);
+             System.Reflection.FieldInfo field = type.GetField("window", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+               OpenTK.GameWindow window = (OpenTK.GameWindow)field.GetValue(this.Window);
+             window.X = 0;
+             window.Y = 0;
         }
         #endregion
 
