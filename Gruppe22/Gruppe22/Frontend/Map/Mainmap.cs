@@ -47,7 +47,7 @@ namespace Gruppe22
         /// <summary>
         /// Number of tiles to render (Square with player in center)
         /// </summary>
-        private int _renderScope = 50;
+        private int _renderScope = 4;
         /// <summary>
         /// Basic texture set (for drawing lines
         /// </summary>
@@ -1108,7 +1108,6 @@ namespace Gruppe22
 
             resetActors();
             _camera.position = new Vector2(-38 - _actors[0].position.x, -30 - _actors[0].position.y);
-            _camera.zoom = 0.6f;
             _enabled = enabled;
         }
         #endregion

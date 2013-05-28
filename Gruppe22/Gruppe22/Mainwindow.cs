@@ -13,6 +13,7 @@ using System.Net;
 using System.IO;
 using System.Threading.Tasks;
 using System.Xml;
+using System.ComponentModel;
 #endregion
 
 
@@ -37,14 +38,16 @@ namespace Gruppe22
         Network,
         Settings,
         Local,
-        LAN
+        LAN,
+        FetchFile
     }
 
     public enum GameStatus
     {
         Running,
         NoRedraw,
-        Paused
+        Paused,
+        FetchingData
     }
 
     /// <summary>
@@ -102,7 +105,8 @@ namespace Gruppe22
         /// Whether the game is paused (for menus etc.)
         /// </summary>
         private GameStatus _status = GameStatus.Running;
-
+        private Queue<string> _files2fetch;
+        private GameStatus _prevState;
         /// <summary>
         /// True if update cycle is in progress (to prevent simultaneous changes)
         /// </summary>
@@ -115,7 +119,7 @@ namespace Gruppe22
         /// Current background color (used to indicate healing or damage)
         /// </summary>
         private Color _backgroundcolor;
-
+        private SpriteFont _font;
         private Mainmap _mainmap1 = null;
         private Mainmap _mainmap2 = null;
         private Minimap _minimap1 = null;
@@ -267,17 +271,17 @@ namespace Gruppe22
               ".##..####......\n" +
               "#.....#..##....\n" +
               ".....#.....#...\n",
-              str2=
-              "....................\n"+
-              "....................\n"+
-              "..#.......#........\n"+
-              "...#.....#.........\n"+
-              "....#...#..........\n"+
-              "...S.#.#...........\n"+
-              "......#............\n"+
-              ".....#.#...........\n"+
-              "....#...#..........\n"+
-              "...#.....#....G....\n"+
+              str2 =
+              "....................\n" +
+              "....................\n" +
+              "..#.......#........\n" +
+              "...#.....#.........\n" +
+              "....#...#..........\n" +
+              "...S.#.#...........\n" +
+              "......#............\n" +
+              ".....#.#...........\n" +
+              "....#...#..........\n" +
+              "...#.....#....G....\n" +
               "..#.......#........\n";
             List<Exit> exits = new List<Exit>();
             Random r = new Random();
@@ -293,7 +297,7 @@ namespace Gruppe22
             tempMap = new Generator(this, r.Next(10) + 8 + exits[0].from.x, r.Next(10) + 8 + exits[0].from.y, true, null, 3, 3, exits, r);
             tempMap.Save("room3.xml");
             tempMap.Dispose();
-                 
+
         }
 
         /// <summary>
@@ -303,6 +307,7 @@ namespace Gruppe22
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             _spriteBatch = new SpriteBatch(GraphicsDevice);
+            _font = Content.Load<SpriteFont>("font");
             _minimap1 = new Minimap(this, _spriteBatch, Content, new Rectangle(_graphics.GraphicsDevice.Viewport.Width - 220, 5, 215, 215), _map1);
             _interfaceElements.Add(_minimap1);
             _mainmap1 = new Mainmap(this, _spriteBatch, Content, new Rectangle(5, 5, _graphics.GraphicsDevice.Viewport.Width - 230, ((_graphics.GraphicsDevice.Viewport.Height - 20)) - 115), _map1, true);
@@ -442,7 +447,7 @@ namespace Gruppe22
                 case Events.Player1:
                     foreach (UIElement element in _interfaceElements)
                     {
-                        element.HandleEvent(null, Events.ToggleButton, Events.Player2,false);
+                        element.HandleEvent(null, Events.ToggleButton, Events.Player2, false);
                         element.HandleEvent(null, Events.ToggleButton, Events.Player1, true);
                         element.HandleEvent(null, Events.ToggleButton, Events.Local, true);
                         element.HandleEvent(null, Events.ToggleButton, Events.LAN, false);
@@ -452,10 +457,24 @@ namespace Gruppe22
                     _mainmap1.Resize(new Rectangle(5, 5, _graphics.GraphicsDevice.Viewport.Width - 230, ((_graphics.GraphicsDevice.Viewport.Height - 20)) - 115));
                     _lan = false;
                     break;
-                case Events.Player2:
+                case Events.FetchFile:
+                    if (data.Length > 0)
+                    {
+                        string file = data[0].ToString();
+                        _files2fetch.Enqueue(file);
+                        if (_status != GameStatus.FetchingData)
+                        {
+                            _prevState = _status;
+                            _status = GameStatus.FetchingData;
+                            _LoadFile(file, wc_DownloadProgressChanged, wc_DownloadFileCompleted);
+                        }
+                    }
+                    break;
+
+                case Events.Player2:                    
                     foreach (UIElement element in _interfaceElements)
                     {
-                        element.HandleEvent(null,Events.ToggleButton,Events.Player2,true);
+                        element.HandleEvent(null, Events.ToggleButton, Events.Player2, true);
                         element.HandleEvent(null, Events.ToggleButton, Events.Player1, false);
                     }
                     _secondPlayer = true;
@@ -469,7 +488,7 @@ namespace Gruppe22
                         _mainmap2.enabled = false;
                         _mainmap1.Resize(new Rectangle(5, 5, _graphics.GraphicsDevice.Viewport.Width - 230, ((_graphics.GraphicsDevice.Viewport.Height - 20)) - 115));
                     }
-                    
+
                     break;
                 case Events.LAN:
                     _secondPlayer = true;
@@ -710,80 +729,83 @@ namespace Gruppe22
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            if (!_updating)
+            if ((!_updating) && (_status != GameStatus.FetchingData))
             {
-                _updating = true;
+                {
+                    _updating = true;
 
-                _events.Update(gameTime);
-                if (_backgroundcolor.R > 0) // Remove Red Tint
-                {
-                    _backgroundcolor.R -= 1;
-                };
-                if (_backgroundcolor.G > 0) // Remove Green Tint
-                {
-                    _backgroundcolor.G -= 1;
-                };
-                for (int i = 0; i < _interfaceElements.Count; ++i)
-                {
-                    UIElement element = _interfaceElements[i];
-                    if (!_dragging)
+                    _events.Update(gameTime);
+                    if (_backgroundcolor.R > 0) // Remove Red Tint
                     {
-                        if (element.IsHit(Mouse.GetState().X, Mouse.GetState().Y))
+                        _backgroundcolor.R -= 1;
+                    };
+                    if (_backgroundcolor.G > 0) // Remove Green Tint
+                    {
+                        _backgroundcolor.G -= 1;
+                    };
+                    for (int i = 0; i < _interfaceElements.Count; ++i)
+                    {
+                        UIElement element = _interfaceElements[i];
+                        if (!_dragging)
                         {
-                            if ((_focus == null) || (!_focus.holdFocus))
+                            if (element.IsHit(Mouse.GetState().X, Mouse.GetState().Y))
                             {
-                                _focus = element;
+                                if ((_focus == null) || (!_focus.holdFocus))
+                                {
+                                    _focus = element;
+                                }
                             }
                         }
+
+                        if (_status == GameStatus.Running || ((_status == GameStatus.Paused) && (element.ignorePause)))
+                            element.Update(gameTime);
                     }
 
-                    if (_status == GameStatus.Running || ((_status == GameStatus.Paused) && (element.ignorePause)))
-                        element.Update(gameTime);
-                }
-
-                if (_status == GameStatus.Running)
-                {
-                    _map1.Update(gameTime);
-                }
-
-                if (_focus != null)
-                {
-
-                    if (Mouse.GetState().ScrollWheelValue != _mouseWheel)
+                    if (_status == GameStatus.Running)
                     {
-
-                        int Difference = _mouseWheel - Mouse.GetState().ScrollWheelValue;
-                        _mouseWheel = Mouse.GetState().ScrollWheelValue;
-                        _focus.ScrollWheel(Difference / Math.Abs(Difference));
+                        _map1.Update(gameTime);
                     }
 
-
-                    if (Mouse.GetState().LeftButton == ButtonState.Pressed)
+                    if (_focus != null)
                     {
-                        if (_mousepos.X != -1)
+
+                        if (Mouse.GetState().ScrollWheelValue != _mouseWheel)
                         {
-                            _dragging = true;
-                            _focus.MoveContent(new Vector2(Mouse.GetState().X - _mousepos.X, Mouse.GetState().Y - _mousepos.Y));
+
+                            int Difference = _mouseWheel - Mouse.GetState().ScrollWheelValue;
+                            _mouseWheel = Mouse.GetState().ScrollWheelValue;
+                            _focus.ScrollWheel(Difference / Math.Abs(Difference));
                         }
-                        _mousepos.X = Mouse.GetState().X;
-                        _mousepos.Y = Mouse.GetState().Y;
+
+
+                        if (Mouse.GetState().LeftButton == ButtonState.Pressed)
+                        {
+                            if (_mousepos.X != -1)
+                            {
+                                _dragging = true;
+                                _focus.MoveContent(new Vector2(Mouse.GetState().X - _mousepos.X, Mouse.GetState().Y - _mousepos.Y));
+                            }
+                            _mousepos.X = Mouse.GetState().X;
+                            _mousepos.Y = Mouse.GetState().Y;
+                        }
+                        else
+                        {
+                            _mousepos.X = -1;
+                            _mousepos.Y = -1;
+                            _dragging = false;
+                        }
+
+
+
+
+
                     }
-                    else
-                    {
-                        _mousepos.X = -1;
-                        _mousepos.Y = -1;
-                        _dragging = false;
-                    }
 
-
-
-
-
+                    _updating = false;
                 }
-
-                base.Update(gameTime);
-                _updating = false;
             }
+            base.Update(gameTime);
+
         }
 
         /// <summary>
@@ -792,20 +814,34 @@ namespace Gruppe22
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            if (!_drawing)
+            if (_status != GameStatus.FetchingData)
             {
-                _drawing = true;
-                if (_status != GameStatus.NoRedraw)
+                if (!_drawing)
                 {
-                    GraphicsDevice.Clear(_backgroundcolor);
-
-                    foreach (UIElement element in _interfaceElements)
+                    _drawing = true;
+                    if (_status != GameStatus.NoRedraw)
                     {
-                        element.Draw(gameTime);
+                        GraphicsDevice.Clear(_backgroundcolor);
+
+                        foreach (UIElement element in _interfaceElements)
+                        {
+                            element.Draw(gameTime);
+                        }
+                        base.Draw(gameTime);
                     }
-                    base.Draw(gameTime);
+                    _drawing = false;
                 }
-                _drawing = false;
+            }
+            else
+            {
+                GraphicsDevice.Clear(Color.DarkBlue);
+                _spriteBatch.Begin();
+
+                string text = "Downloading additional content...";
+                Vector2 position = new Vector2((GraphicsDevice.Viewport.Width - _font.MeasureString(text).X) / 2, (GraphicsDevice.Viewport.Height - _font.MeasureString(text).Y) / 2);
+                _spriteBatch.DrawString(_font, text, position, Color.Gray);
+                _spriteBatch.DrawString(_font, text, new Vector2(position.X - 2, position.Y - 2), Color.White);
+                _spriteBatch.End();
             }
         }
 
@@ -813,13 +849,19 @@ namespace Gruppe22
         /// Download a file from the internet and place it in the local documents directory
         /// </summary>
         /// <param name="_filename">The name of the file to download</param>
-        private static async void _LoadFile(string _filename)
+        private async Task _LoadFile(string _filename, DownloadProgressChangedEventHandler progress, AsyncCompletedEventHandler finished)
         {
             var wc = new WebClient();
 
-            wc.DownloadProgressChanged += wc_DownloadProgressChanged;
-            wc.DownloadFileCompleted += wc_DownloadFileCompleted;
-            await wc.DownloadFileTaskAsync("http://casim.hhu.de/Crawler/" + _filename, _filename);
+            wc.DownloadProgressChanged += progress;
+            wc.DownloadFileCompleted += finished;
+            try
+            {
+                await wc.DownloadFileTaskAsync("http://casim.hhu.de/Crawler/" + _filename, _filename);
+            }
+            catch(Exception e) {
+                finished(null,null);
+            }
         }
 
         /// <summary>
@@ -827,7 +869,7 @@ namespace Gruppe22
         /// </summary>
         /// <param name="sender">The source of the event</param>
         /// <param name="e">Event data</param>
-        static void wc_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
+        public void wc_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
         {
             throw new NotImplementedException();
         }
@@ -837,23 +879,24 @@ namespace Gruppe22
         /// </summary>
         /// <param name="sender">The source of the event</param>
         /// <param name="e">Event data</param>
-        public static void wc_DownloadFileCompleted(object sender, System.ComponentModel.AsyncCompletedEventArgs e)
+        public void wc_DownloadFileCompleted(object sender, System.ComponentModel.AsyncCompletedEventArgs e)
         {
-            throw new NotImplementedException();
-        }
-
-        /// <summary>
-        /// Get Level data (or download it if it is not available)
-        /// </summary>
-        /// <returns></returns>
-        public bool LoadLevel()
-        {
-            string filename = "";
-            if (!System.IO.File.Exists(filename))
-            { // Ressource not available locally: Fetch it from the web
-                _LoadFile(filename);
+            if (_files2fetch.Count == 0)
+            {
+                _status = _prevState;
             }
-            return true;
+            else
+            {
+                string file = "";
+                do
+                { file = _files2fetch.Dequeue(); }
+                while ((System.IO.File.Exists(file)) && (_files2fetch.Count > 0));
+                if ((file != "") && (!System.IO.File.Exists(file)))
+                {
+                    _LoadFile(file, wc_DownloadProgressChanged, wc_DownloadFileCompleted);
+                }
+
+            }
         }
 
         public void LoadSaveGame(string filename = "autosave")
@@ -923,7 +966,7 @@ namespace Gruppe22
             //  Type type = typeof(OpenTKGameWindow);
 
             _graphics.SynchronizeWithVerticalRetrace = false;
-
+            _files2fetch = new Queue<String>();
             // Move window to top left corner of the screen
             // System.Reflection.FieldInfo field = type.GetField("window", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
             //   OpenTK.GameWindow window = (OpenTK.GameWindow)field.GetValue(this.Window);
