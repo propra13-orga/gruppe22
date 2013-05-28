@@ -13,14 +13,19 @@ namespace Gruppe22
     /// </summary>
     public enum Direction
     {
-        Up = 0,
-        Down,
-        Left,
-        Right,
-        UpRight,
-        UpLeft,
-        DownRight,
-        DownLeft,
+        UpLeft = 0,
+        Right = 1, // OK
+        DownLeft = 2,
+        UpRight = 3,
+        DownRight = 4,
+        Up = 5,
+
+        Left = 6,
+
+        Down = 7,
+
+
+
         None = -1
     }
 
@@ -238,7 +243,7 @@ namespace Gruppe22
                     break;
 
                 default:
-                    System.Diagnostics.Debug.WriteLine("--" + dir.ToString());
+                    // System.Diagnostics.Debug.WriteLine("--" + dir.ToString());
                     _spriteBatch.Draw(_walls[(int)dir].animationTexture, new Rectangle(
                         target.Left + _walls[(int)dir].offsetX,
                         target.Top + _walls[(int)dir].offsetY,
@@ -795,6 +800,11 @@ namespace Gruppe22
             return _actors[id].isMoving;
         }
 
+        public void ChangeDir(int id, Direction dir)
+        {
+            _actors[id].direction = dir;
+        }
+
         public void resetActors()
         {
             _actors.Clear();
@@ -804,7 +814,7 @@ namespace Gruppe22
                 if (_actors.Count > 0) _actors.Add(new ActorView(this, count, _content, _map2screen(_map.actorPositions[count]), "Content\\skeleton.xml", 2, _map._actors[count].health > 0));
                 else _actors.Add(new ActorView(this, count, _content, _map2screen(_map.actorPositions[count]), "Content\\player.xml", 5));
             }
-
+            _camera.position = new Vector2(-38 - _actors[0].position.x, -30 - _actors[0].position.y);
         }
         /// <summary>
         /// Move camera, react to mouse
@@ -872,99 +882,99 @@ namespace Gruppe22
 
             ActorView player = new ActorView(this, 0, _content, null);
 
-            player.Add(Activity.Walk, Direction.Right, "Walk", new Coords(0, 0), 8, 1);
-            player.Add(Activity.Walk, Direction.Up, "Walk", new Coords(0, 96), 8, 1);
-            player.Add(Activity.Walk, Direction.UpRight, "Walk", new Coords(0, 192), 8, 1);
-            player.Add(Activity.Walk, Direction.UpLeft, "Walk", new Coords(0, 288), 8, 1);
-            player.Add(Activity.Walk, Direction.Down, "Walk", new Coords(0, 384), 8, 1);
-            player.Add(Activity.Walk, Direction.DownRight, "Walk", new Coords(0, 480), 8, 1);
-            player.Add(Activity.Walk, Direction.DownLeft, "Walk", new Coords(0, 576), 8, 1);
-            player.Add(Activity.Walk, Direction.Left, "Walk", new Coords(0, 672), 8, 1);
+            player.Add(Activity.Walk, Direction.DownRight, "Walk", new Coords(0, 0), 8, 1);
+            player.Add(Activity.Walk, Direction.UpRight, "Walk", new Coords(0, 96), 8, 1); // Ok
+            player.Add(Activity.Walk, Direction.Right, "Walk", new Coords(0, 192), 8, 1); // OK
+            player.Add(Activity.Walk, Direction.Up, "Walk", new Coords(0, 288), 8, 1); // Ok
+            player.Add(Activity.Walk, Direction.DownLeft, "Walk", new Coords(0, 384), 8, 1); // Ok
+            player.Add(Activity.Walk, Direction.Down, "Walk", new Coords(0, 480), 8, 1);
+            player.Add(Activity.Walk, Direction.Left, "Walk", new Coords(0, 576), 8, 1); // OK
+            player.Add(Activity.Walk, Direction.UpLeft, "Walk", new Coords(0, 672), 8, 1);
 
-            player.Add(Activity.Hit, Direction.Right, "Hit", new Coords(0, 0), 7, 1);
-            player.Add(Activity.Hit, Direction.Up, "Hit", new Coords(0, 96), 7, 1);
-            player.Add(Activity.Hit, Direction.UpRight, "Hit", new Coords(0, 192), 7, 1);
-            player.Add(Activity.Hit, Direction.UpLeft, "Hit", new Coords(0, 288), 7, 1);
-            player.Add(Activity.Hit, Direction.Down, "Hit", new Coords(0, 384), 7, 1);
-            player.Add(Activity.Hit, Direction.DownRight, "Hit", new Coords(0, 480), 7, 1);
-            player.Add(Activity.Hit, Direction.DownLeft, "Hit", new Coords(0, 576), 7, 1);
-            player.Add(Activity.Hit, Direction.Left, "Hit", new Coords(0, 672), 7, 1);
+            player.Add(Activity.Hit, Direction.DownRight, "Hit", new Coords(0, 0), 7, 1);
+            player.Add(Activity.Hit, Direction.UpRight, "Hit", new Coords(0, 96), 7, 1);
+            player.Add(Activity.Hit, Direction.Right, "Hit", new Coords(0, 192), 7, 1);
+            player.Add(Activity.Hit, Direction.Up, "Hit", new Coords(0, 288), 7, 1);
+            player.Add(Activity.Hit, Direction.DownLeft, "Hit", new Coords(0, 384), 7, 1);
+            player.Add(Activity.Hit, Direction.Down, "Hit", new Coords(0, 480), 7, 1);
+            player.Add(Activity.Hit, Direction.Left, "Hit", new Coords(0, 576), 7, 1);
+            player.Add(Activity.Hit, Direction.UpLeft, "Hit", new Coords(0, 672), 7, 1);
 
-            player.Add(Activity.Die, Direction.Right, "fall", new Coords(0, 0), 9, 1);
-            player.Add(Activity.Die, Direction.Up, "fall", new Coords(0, 96), 9, 1);
-            player.Add(Activity.Die, Direction.UpRight, "fall", new Coords(0, 192), 9, 1);
-            player.Add(Activity.Die, Direction.UpLeft, "fall", new Coords(0, 288), 9, 1);
-            player.Add(Activity.Die, Direction.Down, "fall", new Coords(0, 384), 9, 1);
-            player.Add(Activity.Die, Direction.DownRight, "fall", new Coords(0, 480), 9, 1);
-            player.Add(Activity.Die, Direction.DownLeft, "fall", new Coords(0, 576), 9, 1);
-            player.Add(Activity.Die, Direction.Left, "fall", new Coords(0, 672), 9, 1);
+            player.Add(Activity.Die, Direction.DownRight, "fall", new Coords(0, 0), 9, 1);
+            player.Add(Activity.Die, Direction.UpRight, "fall", new Coords(0, 96), 9, 1);
+            player.Add(Activity.Die, Direction.Right, "fall", new Coords(0, 192), 9, 1);
+            player.Add(Activity.Die, Direction.Up, "fall", new Coords(0, 288), 9, 1);
+            player.Add(Activity.Die, Direction.DownLeft, "fall", new Coords(0, 384), 9, 1);
+            player.Add(Activity.Die, Direction.Down, "fall", new Coords(0, 480), 9, 1);
+            player.Add(Activity.Die, Direction.Left, "fall", new Coords(0, 576), 9, 1);
+            player.Add(Activity.Die, Direction.UpLeft, "fall", new Coords(0, 672), 9, 1);
 
-            player.Add(Activity.Talk, Direction.Right, "Talk", new Coords(0, 0), 8, 1);
-            player.Add(Activity.Talk, Direction.Up, "Talk", new Coords(0, 96), 8, 1);
-            player.Add(Activity.Talk, Direction.UpRight, "Talk", new Coords(0, 192), 8, 1);
-            player.Add(Activity.Talk, Direction.UpLeft, "Talk", new Coords(0, 288), 8, 1);
-            player.Add(Activity.Talk, Direction.Down, "Talk", new Coords(0, 384), 8, 1);
-            player.Add(Activity.Talk, Direction.DownRight, "Talk", new Coords(0, 480), 8, 1);
-            player.Add(Activity.Talk, Direction.DownLeft, "Talk", new Coords(0, 576), 8, 1);
-            player.Add(Activity.Talk, Direction.Left, "Talk", new Coords(0, 672), 8, 1);
+            player.Add(Activity.Talk, Direction.DownRight, "Talk", new Coords(0, 0), 8, 1);
+            player.Add(Activity.Talk, Direction.UpRight, "Talk", new Coords(0, 96), 8, 1);
+            player.Add(Activity.Talk, Direction.Right, "Talk", new Coords(0, 192), 8, 1);
+            player.Add(Activity.Talk, Direction.Up, "Talk", new Coords(0, 288), 8, 1);
+            player.Add(Activity.Talk, Direction.DownLeft, "Talk", new Coords(0, 384), 8, 1);
+            player.Add(Activity.Talk, Direction.Down, "Talk", new Coords(0, 480), 8, 1);
+            player.Add(Activity.Talk, Direction.Left, "Talk", new Coords(0, 576), 8, 1);
+            player.Add(Activity.Talk, Direction.UpLeft, "Talk", new Coords(0, 672), 8, 1);
 
-            player.Add(Activity.Run, Direction.Right, "Run", new Coords(0, 0), 8, 1);
-            player.Add(Activity.Run, Direction.Up, "Run", new Coords(0, 96), 8, 1);
-            player.Add(Activity.Run, Direction.UpRight, "Run", new Coords(0, 192), 8, 1);
-            player.Add(Activity.Run, Direction.UpLeft, "Run", new Coords(0, 288), 8, 1);
-            player.Add(Activity.Run, Direction.Down, "Run", new Coords(0, 384), 8, 1);
-            player.Add(Activity.Run, Direction.DownRight, "Run", new Coords(0, 480), 8, 1);
-            player.Add(Activity.Run, Direction.DownLeft, "Run", new Coords(0, 576), 8, 1);
-            player.Add(Activity.Run, Direction.Left, "Run", new Coords(0, 672), 8, 1);
+            player.Add(Activity.Run, Direction.DownRight, "Run", new Coords(0, 0), 8, 1);
+            player.Add(Activity.Run, Direction.UpRight, "Run", new Coords(0, 96), 8, 1);
+            player.Add(Activity.Run, Direction.Right, "Run", new Coords(0, 192), 8, 1);
+            player.Add(Activity.Run, Direction.Up, "Run", new Coords(0, 288), 8, 1);
+            player.Add(Activity.Run, Direction.DownLeft, "Run", new Coords(0, 384), 8, 1);
+            player.Add(Activity.Run, Direction.Down, "Run", new Coords(0, 480), 8, 1);
+            player.Add(Activity.Run, Direction.Left, "Run", new Coords(0, 576), 8, 1);
+            player.Add(Activity.Run, Direction.UpLeft, "Run", new Coords(0, 672), 8, 1);
 
 
-            player.Add(Activity.Attack, Direction.Right, "Attack", new Coords(0, 0), 13, 1);
-            player.Add(Activity.Attack, Direction.Up, "Attack", new Coords(0, 96), 13, 1);
-            player.Add(Activity.Attack, Direction.UpRight, "Attack", new Coords(0, 192), 13, 1);
-            player.Add(Activity.Attack, Direction.UpLeft, "Attack", new Coords(0, 288), 13, 1);
-            player.Add(Activity.Attack, Direction.Down, "Attack", new Coords(0, 384), 13, 1);
-            player.Add(Activity.Attack, Direction.DownRight, "Attack", new Coords(0, 480), 13, 1);
-            player.Add(Activity.Attack, Direction.DownLeft, "Attack", new Coords(0, 576), 13, 1);
-            player.Add(Activity.Attack, Direction.Left, "Attack", new Coords(0, 672), 13, 1);
+            player.Add(Activity.Attack, Direction.DownRight, "Attack", new Coords(0, 0), 13, 1);
+            player.Add(Activity.Attack, Direction.UpRight, "Attack", new Coords(0, 96), 13, 1);
+            player.Add(Activity.Attack, Direction.Right, "Attack", new Coords(0, 192), 13, 1);
+            player.Add(Activity.Attack, Direction.Up, "Attack", new Coords(0, 288), 13, 1);
+            player.Add(Activity.Attack, Direction.DownLeft, "Attack", new Coords(0, 384), 13, 1);
+            player.Add(Activity.Attack, Direction.Down, "Attack", new Coords(0, 480), 13, 1);
+            player.Add(Activity.Attack, Direction.Left, "Attack", new Coords(0, 576), 13, 1);
+            player.Add(Activity.Attack, Direction.UpLeft, "Attack", new Coords(0, 672), 13, 1);
             player.Save("content\\player.xml");
 
             ActorView skel = new ActorView(this, 0, _content, new Coords(0, 0), "");
-            skel.Add(Activity.Walk, Direction.Right, "sWalk", new Coords(0, 0), 8, 1);
-            skel.Add(Activity.Walk, Direction.Up, "sWalk", new Coords(0, 96), 8, 1);
-            skel.Add(Activity.Walk, Direction.UpRight, "sWalk", new Coords(0, 192), 8, 1);
-            skel.Add(Activity.Walk, Direction.UpLeft, "sWalk", new Coords(0, 288), 8, 1);
-            skel.Add(Activity.Walk, Direction.Down, "sWalk", new Coords(0, 384), 8, 1);
-            skel.Add(Activity.Walk, Direction.DownRight, "sWalk", new Coords(0, 480), 8, 1);
-            skel.Add(Activity.Walk, Direction.DownLeft, "sWalk", new Coords(0, 576), 8, 1);
-            skel.Add(Activity.Walk, Direction.Left, "sWalk", new Coords(0, 672), 8, 1);
+            skel.Add(Activity.Walk, Direction.DownRight, "sWalk", new Coords(0, 0), 8, 1);
+            skel.Add(Activity.Walk, Direction.UpRight, "sWalk", new Coords(0, 96), 8, 1);
+            skel.Add(Activity.Walk, Direction.Right, "sWalk", new Coords(0, 192), 8, 1);
+            skel.Add(Activity.Walk, Direction.Up, "sWalk", new Coords(0, 288), 8, 1);
+            skel.Add(Activity.Walk, Direction.DownLeft, "sWalk", new Coords(0, 384), 8, 1);
+            skel.Add(Activity.Walk, Direction.Down, "sWalk", new Coords(0, 480), 8, 1);
+            skel.Add(Activity.Walk, Direction.Left, "sWalk", new Coords(0, 576), 8, 1);
+            skel.Add(Activity.Walk, Direction.UpLeft, "sWalk", new Coords(0, 672), 8, 1);
 
 
-            skel.Add(Activity.Attack, Direction.Right, "sattack", new Coords(0, 0), 10, 1);
-            skel.Add(Activity.Attack, Direction.Up, "sattack", new Coords(0, 96), 10, 1);
-            skel.Add(Activity.Attack, Direction.UpRight, "sattack", new Coords(0, 192), 10, 1);
-            skel.Add(Activity.Attack, Direction.UpLeft, "sattack", new Coords(0, 288), 10, 1);
-            skel.Add(Activity.Attack, Direction.Down, "sattack", new Coords(0, 384), 10, 1);
-            skel.Add(Activity.Attack, Direction.DownRight, "sattack", new Coords(0, 480), 10, 1);
-            skel.Add(Activity.Attack, Direction.DownLeft, "sattack", new Coords(0, 576), 10, 1);
-            skel.Add(Activity.Attack, Direction.Left, "sattack", new Coords(0, 672), 10, 1);
+            skel.Add(Activity.Attack, Direction.DownRight, "sattack", new Coords(0, 0), 10, 1);
+            skel.Add(Activity.Attack, Direction.UpRight, "sattack", new Coords(0, 96), 10, 1);
+            skel.Add(Activity.Attack, Direction.Right, "sattack", new Coords(0, 192), 10, 1);
+            skel.Add(Activity.Attack, Direction.Up, "sattack", new Coords(0, 288), 10, 1);
+            skel.Add(Activity.Attack, Direction.DownLeft, "sattack", new Coords(0, 384), 10, 1);
+            skel.Add(Activity.Attack, Direction.Down, "sattack", new Coords(0, 480), 10, 1);
+            skel.Add(Activity.Attack, Direction.Left, "sattack", new Coords(0, 576), 10, 1);
+            skel.Add(Activity.Attack, Direction.UpLeft, "sattack", new Coords(0, 672), 10, 1);
 
-            skel.Add(Activity.Hit, Direction.Right, "shit", new Coords(0, 0), 7, 1);
-            skel.Add(Activity.Hit, Direction.Up, "shit", new Coords(0, 96), 7, 1);
-            skel.Add(Activity.Hit, Direction.UpRight, "shit", new Coords(0, 192), 7, 1);
-            skel.Add(Activity.Hit, Direction.UpLeft, "shit", new Coords(0, 288), 7, 1);
-            skel.Add(Activity.Hit, Direction.Down, "shit", new Coords(0, 384), 7, 1);
-            skel.Add(Activity.Hit, Direction.DownRight, "shit", new Coords(0, 480), 7, 1);
-            skel.Add(Activity.Hit, Direction.DownLeft, "shit", new Coords(0, 576), 7, 1);
-            skel.Add(Activity.Hit, Direction.Left, "shit", new Coords(0, 672), 7, 1);
+            skel.Add(Activity.Hit, Direction.DownRight, "shit", new Coords(0, 0), 7, 1);
+            skel.Add(Activity.Hit, Direction.UpRight, "shit", new Coords(0, 96), 7, 1);
+            skel.Add(Activity.Hit, Direction.Right, "shit", new Coords(0, 192), 7, 1);
+            skel.Add(Activity.Hit, Direction.Up, "shit", new Coords(0, 288), 7, 1);
+            skel.Add(Activity.Hit, Direction.DownLeft, "shit", new Coords(0, 384), 7, 1);
+            skel.Add(Activity.Hit, Direction.Down, "shit", new Coords(0, 480), 7, 1);
+            skel.Add(Activity.Hit, Direction.Left, "shit", new Coords(0, 576), 7, 1);
+            skel.Add(Activity.Hit, Direction.UpLeft, "shit", new Coords(0, 672), 7, 1);
 
-            skel.Add(Activity.Die, Direction.Right, "skill", new Coords(0, 0), 9, 1);
-            skel.Add(Activity.Die, Direction.Up, "skill", new Coords(0, 96), 9, 1);
-            skel.Add(Activity.Die, Direction.UpRight, "skill", new Coords(0, 192), 9, 1);
-            skel.Add(Activity.Die, Direction.UpLeft, "skill", new Coords(0, 288), 9, 1);
-            skel.Add(Activity.Die, Direction.Down, "skill", new Coords(0, 384), 9, 1);
-            skel.Add(Activity.Die, Direction.DownRight, "skill", new Coords(0, 480), 9, 1);
-            skel.Add(Activity.Die, Direction.DownLeft, "skill", new Coords(0, 576), 9, 1);
-            skel.Add(Activity.Die, Direction.Left, "skill", new Coords(0, 672), 9, 1);
+            skel.Add(Activity.Die, Direction.DownRight, "skill", new Coords(0, 0), 9, 1);
+            skel.Add(Activity.Die, Direction.UpRight, "skill", new Coords(0, 96), 9, 1);
+            skel.Add(Activity.Die, Direction.Right, "skill", new Coords(0, 192), 9, 1);
+            skel.Add(Activity.Die, Direction.Up, "skill", new Coords(0, 288), 9, 1);
+            skel.Add(Activity.Die, Direction.DownLeft, "skill", new Coords(0, 384), 9, 1);
+            skel.Add(Activity.Die, Direction.Down, "skill", new Coords(0, 480), 9, 1);
+            skel.Add(Activity.Die, Direction.Left, "skill", new Coords(0, 576), 9, 1);
+            skel.Add(Activity.Die, Direction.UpLeft, "skill", new Coords(0, 672), 9, 1);
 
 
 
@@ -1037,9 +1047,9 @@ namespace Gruppe22
             _tiles.Add("Wall1", WallDir.DiagRightClose2,
             new Rectangle(768, 192, 128, 192));
             _tiles.Add("Column", WallDir.Free, new Rectangle(1920, 0, 128, 192)); */
-            WallTiles _tiles = new WallTiles(_content, 128, 192, "");
+            /*WallTiles _tiles = new WallTiles(_content, 128, 192, "");
             _tiles.Load();
-            _tiles.Save("neu.xml");
+            _tiles.Save("neu.xml");*/
         }
 
         #endregion
@@ -1065,7 +1075,7 @@ namespace Gruppe22
             _highlightedTile = new Coords(-1, -1);
 
             // Load textures to use in environment
-
+            CreateTextureList();
             // 1. Walls
             _walls = new WallTiles(_content, 128, 192, "");
             _walls.Load("Content\\wall1.xml");
@@ -1107,7 +1117,6 @@ namespace Gruppe22
             _actors = new List<ActorView>();
 
             resetActors();
-            _camera.position = new Vector2(-38 - _actors[0].position.x, -30 - _actors[0].position.y);
             _enabled = enabled;
         }
         #endregion

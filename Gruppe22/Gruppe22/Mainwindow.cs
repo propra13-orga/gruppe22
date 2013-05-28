@@ -250,43 +250,10 @@ namespace Gruppe22
         /// </summary>
         public void GenerateMaps()
         {
-            string str =
-              "G..............\n" +
-              "...............\n" +
-              "...#.#.#.......\n" +
-              "..#..#..#......\n" +
-              "..S#.#.#.......\n" +
-              "....###........\n" +
-              "...#.#.#.......\n" +
-              "..#..#..#......\n" +
-              "...#...#.......\n" +
-              "...............\n",
-
-            str1 =
-              "...............\n" +
-              "...............\n" +
-              "#....#.........\n" +
-              ".##...#....#...\n" +
-              "...##.#..##....\n" +
-              ".##..####......\n" +
-              "#.....#..##....\n" +
-              ".....#.....#...\n",
-              str2 =
-              "....................\n" +
-              "....................\n" +
-              "..#.......#........\n" +
-              "...#.....#.........\n" +
-              "....#...#..........\n" +
-              "...S.#.#...........\n" +
-              "......#............\n" +
-              ".....#.#...........\n" +
-              "....#...#..........\n" +
-              "...#.....#....G....\n" +
-              "..#.......#........\n";
             List<Exit> exits = new List<Exit>();
             Random r = new Random();
             Generator tempMap = null;
-            tempMap = new Generator(this, str);
+            tempMap = new Generator(this, r.Next(8) + 4, r.Next(8) + 4, true, null, 1, 3, exits, r);
             tempMap.Save("room1.xml");
             exits = Map.ExitToEntry(2, tempMap.exits);
             tempMap.Dispose();
@@ -471,7 +438,7 @@ namespace Gruppe22
                     }
                     break;
 
-                case Events.Player2:                    
+                case Events.Player2:
                     foreach (UIElement element in _interfaceElements)
                     {
                         element.HandleEvent(null, Events.ToggleButton, Events.Player2, true);
@@ -596,6 +563,7 @@ namespace Gruppe22
                     if (!_mainmap1.IsMoving(id))
                     {
                         Direction dir = (Direction)data[1];
+                        _mainmap1.ChangeDir(id, dir);
                         Coords target = _map1.DirectionTile(_map1.actors[id].tile.coords, dir);
                         if ((id == 0) && (_map1[target.x, target.y].hasTeleport))
                         {
@@ -859,8 +827,9 @@ namespace Gruppe22
             {
                 await wc.DownloadFileTaskAsync("http://casim.hhu.de/Crawler/" + _filename, _filename);
             }
-            catch(Exception e) {
-                finished(null,null);
+            catch (Exception e)
+            {
+                finished(null, null);
             }
         }
 

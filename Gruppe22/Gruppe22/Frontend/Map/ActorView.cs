@@ -138,7 +138,6 @@ namespace Gruppe22
             }
             set
             {
-
                 _elapsed = 0;
                 if (value != Direction.None)
                     _direction = value;
@@ -223,7 +222,7 @@ namespace Gruppe22
         {
             _position.x = _target.x;
             _position.y = _target.y;
-            _activity = activity;
+            this.activity = activity;
             if (locked)
             {
                 _lock = true;
@@ -236,7 +235,7 @@ namespace Gruppe22
         public void Kill()
         {
             _lock = true;
-            _activity = Activity.Die;
+            this.activity = Activity.Die;
             _textures[(int)_activity * 8 + (int)_direction].FinalAnimation();
         }
 
@@ -370,7 +369,7 @@ namespace Gruppe22
                             if (Math.Abs(_target.x - _position.x) <= Math.Abs(_target.y - _position.y))
                                 _position.y += Math.Min(_speed, Math.Abs(_target.y - position.y));
 
-                            _direction = Direction.DownRight;
+                           // _direction = Direction.DownRight;
                         }
                         else
                         {
@@ -379,11 +378,11 @@ namespace Gruppe22
                                 if (Math.Abs(_target.x - _position.x) <= Math.Abs(_target.y - _position.y))
                                     _position.y -= Math.Min(_speed, Math.Abs(_target.y - position.y));
 
-                                _direction = Direction.UpRight;
+                                //  _direction = Direction.UpRight;
                             }
                             else
                             {
-                                _direction = Direction.Right;
+                                //  _direction = Direction.Right;
                             }
                         }
                     }
@@ -398,7 +397,7 @@ namespace Gruppe22
                                 if (Math.Abs(_target.x - _position.x) <= Math.Abs(_target.y - _position.y))
                                     _position.y += Math.Min(_speed, Math.Abs(_target.y - position.y));
 
-                                _direction = Direction.DownLeft;
+                                //  _direction = Direction.DownLeft;
                             }
                             else
                             {
@@ -406,11 +405,11 @@ namespace Gruppe22
                                 {
                                     if (Math.Abs(_target.x - _position.x) <= Math.Abs(_target.y - _position.y))
                                         _position.y -= Math.Min(_speed, Math.Abs(_target.y - position.y));
-                                    _direction = Direction.UpLeft;
+                                    //        _direction = Direction.UpLeft;
                                 }
                                 else
                                 {
-                                    _direction = Direction.Left;
+                                    //    _direction = Direction.Left;
                                 }
                             }
                         }
@@ -419,17 +418,16 @@ namespace Gruppe22
                             if (_target.y > _position.y)
                             {
                                 _position.y += Math.Min(_speed, Math.Abs(_target.y - position.y));
-                                _direction = Direction.Down;
+                                //            _direction = Direction.Down;
                             }
                             else
                                 if (_target.y < _position.y)
                                 {
                                     _position.y -= Math.Min(_speed, Math.Abs(_target.y - position.y));
-                                    _direction = Direction.Up;
+                                    //   _direction = Direction.Up;
                                 }
                         }
                     }
-
                     _textures[(int)_activity * 8 + (int)_direction].NextAnimation();
 
                 }
@@ -437,7 +435,7 @@ namespace Gruppe22
                 {
                     if (_playAfterMove != Activity.Walk)
                     {
-                        _activity = _playAfterMove;
+                        this.activity = _playAfterMove;
                         _playAfterMove = Activity.Walk;
                     }
                 }
@@ -451,7 +449,7 @@ namespace Gruppe22
                             if (_activity != Activity.Die)
                             {
                                 _parent.HandleEvent(null, Events.FinishedAnimation, _id, _activity);
-                                _activity = _playAfterMove;
+                                this.activity = _playAfterMove;
                                 if (_playAfterMove != Activity.Walk) _playAfterMove = Activity.Walk;
                                 _lock = false;
                             }
