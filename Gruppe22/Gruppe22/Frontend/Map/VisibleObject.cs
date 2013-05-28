@@ -373,7 +373,7 @@ namespace Gruppe22
         public bool NextAnimation()
         {
 
-            if (_currentPhase + 2 > _animations.Count)
+            if (_currentPhase + 1 > _animations.Count - 1)
             {
                 if (_loop) _currentPhase = 0;
                 return true;

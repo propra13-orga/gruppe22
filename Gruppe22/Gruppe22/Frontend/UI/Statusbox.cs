@@ -74,6 +74,10 @@ namespace Gruppe22
             _startPos = Math.Max(_text.Count - _numLines, 0);
         }
 
+        public override void HandleEvent(UIElement sender, Events eventID, params object[] data)
+        {
+            
+        }
         /// <summary>
         /// This is called when the game should draw itself.
         /// </summary>
