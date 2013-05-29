@@ -564,7 +564,7 @@ namespace Gruppe22
                     {
                         Direction dir = (Direction)data[1];
                         _mainmap1.ChangeDir(id, dir);
-                        Coords target = _map1.DirectionTile(_map1.actors[id].tile.coords, dir);
+                        Coords target = Map.DirectionTile(_map1.actors[id].tile.coords, dir);
                         if ((id == 0) && (_map1[target.x, target.y].hasTeleport))
                         {
                             HandleEvent(null, Events.ChangeMap, ((TeleportTile)_map1[target.x, target.y].overlay[0]).nextRoom, ((TeleportTile)_map1[target.x, target.y].overlay[0]).nextPlayerPos);

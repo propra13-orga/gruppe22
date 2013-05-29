@@ -266,37 +266,72 @@ namespace Gruppe22
             // Add ItemTile to new Tile
         }
 
-        public Coords DirectionTile(Coords start, Direction dir)
+
+        /// <summary>
+        /// Get coordinates for closest enemy within a specified radius
+        /// </summary>
+        /// <param name="coords"></param>
+        /// <param name="radius"></param>
+        /// <param name="includePlayer"></param>
+        /// <param name="includeNPC"></param>
+        /// <param name="includeEnemy"></param>
+        /// <returns></returns>
+        public Coords ClosestEnemy(Coords coords, int radius = 4, bool includePlayer = true, bool includeNPC = true, bool includeEnemy = true)
         {
-            switch (dir)
+            for (int distance = 1; distance < radius; ++distance)
             {
-                case Direction.Left:
-                    return new Coords(start.x - 1, start.y);
-
-                case Direction.Right:
-                    return new Coords(start.x + 1, start.y);
-
-                case Direction.Down:
-                    return new Coords(start.x, start.y + 1);
-
-                case Direction.Up:
-                    return new Coords(start.x, start.y - 1);
-
-                case Direction.DownLeft:
-                    return new Coords(start.x - 1, start.y + 1);
-
-                case Direction.UpRight:
-                    return new Coords(start.x + 1, start.y - 1);
-
-                case Direction.DownRight:
-                    return new Coords(start.x + 1, start.y + 1);
-
-                case Direction.UpLeft:
-                    return new Coords(start.x - 1, start.y - 1);
+                for (int x = coords.x - distance; x < coords.x + distance; ++x)
+                {
+                    if (((includePlayer && this[x, coords.y - distance].hasPlayer))
+                        //                    ||((includeNPC&&this[coords.x-distance,y].hasNPC))
+                    || ((includeEnemy && this[x, coords.y - distance].hasEnemy)))
+                    {
+                        return new Coords(x, coords.y - distance);
+                    }
+                    if (((includePlayer && this[x, coords.y - distance].hasPlayer))
+                        //                    ||((includeNPC&&this[coords.x-distance,y].hasNPC))
+                    || ((includeEnemy && this[x, coords.y + distance].hasEnemy)))
+                    {
+                        return new Coords(x, coords.y + distance);
+                    }
+                }
+                for (int y = coords.y - distance; y < coords.y + distance; ++y)
+                {
+                    if (((includePlayer && this[coords.x - distance, y].hasPlayer))
+                        //                    ||((includeNPC&&this[coords.x-distance,y].hasNPC))
+                    || ((includeEnemy && this[coords.x - distance, y].hasEnemy)))
+                    {
+                        return new Coords(coords.x - distance, y);
+                    }
+                    if (((includePlayer && this[coords.x + distance, y].hasPlayer))
+                        //                    ||((includeNPC&&this[coords.x-distance,y].hasNPC))
+                    || ((includeEnemy && this[coords.x + distance, y].hasEnemy)))
+                    {
+                        return new Coords(coords.x + distance, y);
+                    }
+                }
             }
-            return start;
+            return new Coords(-1, -1);
         }
 
+        public List<Coords> PathTo(Coords from, Coords to, int maxlength = 20)
+        {
+            List<Coords> result = new List<Coords>();
+
+            Direction dir = WhichWayIs(from, to, true); // start by direct route
+            int count = 0;
+            while ((!TileByCoords(Map.DirectionTile(from, dir)).canEnter) && (count < 4))
+            {
+                dir = NextDirection(dir, true);
+            }
+            result.Add(Map.DirectionTile(from, dir));
+            //PathTo(from, to, maxlength - 1);
+            return result;
+        }
+        public FloorTile TileByCoords(Coords coords)
+        {
+            return this[coords.x, coords.y];
+        }
         public void RemoveActor(int x, int y)
         {
             _tiles[y][x].Remove(TileType.Enemy);
@@ -674,20 +709,25 @@ namespace Gruppe22
         #endregion
 
         #region Static Helpers
-        public static Direction WhichWayIs(Coords from, Coords to)
+        public static Direction WhichWayIs(Coords from, Coords to, bool DirectOnly = false)
         {
             if (from.x < to.x)
             {
                 if (from.y < to.y)
                 {
-
-                    return Direction.UpLeft;
+                    if (!DirectOnly)
+                        return Direction.UpLeft;
+                    else
+                        return Direction.Up;
                 }
                 else
                 {
                     if (from.y > to.y)
                     {
-                        return Direction.DownLeft;
+                        if (!DirectOnly)
+                            return Direction.DownLeft;
+                        else
+                            return Direction.Left;
                     }
                     else
                     {
@@ -702,13 +742,19 @@ namespace Gruppe22
 
                     if (from.y < to.y)
                     {
-                        return Direction.UpRight;
+                        if (!DirectOnly)
+                            return Direction.UpRight;
+                        else
+                            return Direction.Up;
                     }
                     else
                     {
                         if (from.y > to.y)
                         {
-                            return Direction.DownRight;
+                            if (!DirectOnly)
+                                return Direction.DownRight;
+                            else
+                                return Direction.Right;
                         }
                         else
                         {
@@ -730,6 +776,97 @@ namespace Gruppe22
                         }
                     }
                 }
+            }
+            return Direction.None;
+        }
+
+        public static Direction OppositeDirection(Direction dir)
+        {
+            switch (dir)
+            {
+                case Direction.Down:
+                    return Direction.Up;
+                case Direction.Up:
+                    return Direction.Down;
+                case Direction.Left:
+                    return Direction.Right;
+                case Direction.Right:
+                    return Direction.Left;
+                case Direction.UpLeft:
+                    return Direction.DownRight;
+                case Direction.DownRight:
+                    return Direction.UpLeft;
+                case Direction.UpRight:
+                    return Direction.DownLeft;
+                case Direction.DownLeft:
+                    return Direction.UpRight;
+            }
+            return Direction.None;
+        }
+
+        public static Coords DirectionTile(Coords start, Direction dir)
+        {
+            switch (dir)
+            {
+                case Direction.Left:
+                    return new Coords(start.x - 1, start.y);
+
+                case Direction.Right:
+                    return new Coords(start.x + 1, start.y);
+
+                case Direction.Down:
+                    return new Coords(start.x, start.y + 1);
+
+                case Direction.Up:
+                    return new Coords(start.x, start.y - 1);
+
+                case Direction.DownLeft:
+                    return new Coords(start.x - 1, start.y + 1);
+
+                case Direction.UpRight:
+                    return new Coords(start.x + 1, start.y - 1);
+
+                case Direction.DownRight:
+                    return new Coords(start.x + 1, start.y + 1);
+
+                case Direction.UpLeft:
+                    return new Coords(start.x - 1, start.y - 1);
+            }
+            return start;
+        }
+
+        public static Direction NextDirection(Direction dir, bool directOnly = false)
+        {
+            switch (dir)
+            {
+                case Direction.Up:
+                    if (!directOnly)
+                        return Direction.UpRight;
+                    else
+                        return Direction.Right;
+                case Direction.UpRight:
+                    return Direction.Right;
+                case Direction.Right:
+                    if (!directOnly)
+                        return Direction.DownRight;
+                    else
+                        return Direction.Down;
+                case Direction.DownRight:
+                    return Direction.Down;
+                case Direction.Down:
+                    if (!directOnly)
+                        return Direction.DownLeft;
+                    else
+                        return Direction.Left;
+                case Direction.DownLeft:
+                    return Direction.Left;
+                case Direction.Left:
+                    if (!directOnly)
+                        return Direction.UpLeft;
+                    else
+                        return Direction.Up;
+                case Direction.UpLeft:
+                    return Direction.Up;
             }
             return Direction.None;
         }

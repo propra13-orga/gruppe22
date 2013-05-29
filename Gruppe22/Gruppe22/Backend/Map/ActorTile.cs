@@ -10,8 +10,12 @@ namespace Gruppe22
     {
         #region Private Fields
         private Actor _actor;
-        private int _count = 0;
+        private int _elapsed = 0;
+        private int _timeToThink = 0;
         private bool _disabled = false;
+        private Direction _lastDir = Direction.None;
+        private Random _random = null;
+        private bool _working = false;
         #endregion
 
         #region Public Fields
@@ -62,22 +66,71 @@ namespace Gruppe22
 
         public override void Update(Microsoft.Xna.Framework.GameTime gameTime)
         {
-            if (!(actor is Player))
+            if (!(actor is Player) && (!_working))
             {
-                Random r = new Random();
-                if (!actor.IsDead() && (_count > 20))
+                _working = true;
+                _elapsed += gameTime.ElapsedGameTime.Milliseconds;
+                if (_elapsed > _timeToThink)
                 {
-                    Direction dir = (Direction)r.Next(4);
-                    ((IHandleEvent)parent).HandleEvent(null, Events.MoveActor, actor.id, dir);
-                    _count = 0;
+                    _elapsed -= _timeToThink;
+                    Map map = (Map)((FloorTile)_parent).parent;
+                    if (!actor.IsDead())
+                    {
+
+                        Direction dir = Direction.None;
+                        Coords closestEnemy = map.ClosestEnemy(coords);
+                        if (closestEnemy.x > -1) // There is an enemy close by
+                        {
+                            if (actor.health < actor.maxHealth / 4)
+                            {
+                                // Low health => try to flee
+
+                                dir = Map.OppositeDirection(Map.WhichWayIs(coords, map.PathTo(coords, closestEnemy, 5)[0]));
+                                int count = 1;
+
+                                while ((!map.TileByCoords(Map.DirectionTile(coords, dir)).canEnter) && (count < 9))
+                                {
+                                    dir = Map.NextDirection(dir);
+                                    count += 1;
+                                }
+                            }
+                            else
+                            {
+                                // High health => Follow opponent or attack
+                                dir = Map.WhichWayIs(coords, map.PathTo(coords, closestEnemy, 5)[0]);
+                            }
+                            if (!map.TileByCoords(Map.DirectionTile(coords, dir)).canEnter) dir = Direction.None;
+
+                        }
+                        else
+                        {
+                            // Nobody close by, just wander aimlessly
+                            // TODO: Try to grab nearby items
+                            dir = (Direction)_random.Next(4);
+                            int count = 1;
+                            while (((dir == Map.OppositeDirection(_lastDir)) || (!map.TileByCoords(Map.DirectionTile(coords, dir)).canEnter)) && (count < 9))
+                            {
+                                dir = Map.NextDirection(dir);
+                                count += 1;
+                            }
+                            if ((dir == Map.OppositeDirection(_lastDir)) || (!map.TileByCoords(Map.DirectionTile(coords, dir)).canEnter)) dir = Direction.None;
+                        }
+                        if (dir != Direction.None)
+                            ((IHandleEvent)parent).HandleEvent(null, Events.MoveActor, actor.id, dir);
+                        _working = false;
+                    }
                 }
-                _count += 1;
+
+
             }
         }
 
-        public ActorTile(object parent)
+        public ActorTile(object parent, Random r = null)
             : base(parent)
         {
+            if (_random == null)
+                _random = new Random();
+
         }
         #endregion
 

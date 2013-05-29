@@ -179,8 +179,8 @@ namespace Gruppe22
                                 null,
                                 _camera.matrix);
                     _spriteBatch.Draw(_circle, new Rectangle(
-                        (int)(_actors[0].position.X + 1) - 160 * _renderScope,
-                        (int)(_actors[0].position.Y + 1) - 160 * _renderScope, 350 * _renderScope, 350 * _renderScope), Color.White);
+                        (int)(_actors[_playerID].position.X + 1) - 160 * _renderScope,
+                        (int)(_actors[_playerID].position.Y + 1) - 160 * _renderScope, 350 * _renderScope, 350 * _renderScope), Color.White);
                     _spriteBatch.End();
 
 
@@ -699,7 +699,7 @@ namespace Gruppe22
         /// </summary>
         private void _drawWalls(GameTime gametime)
         {
-            Coords currentPos = _screen2map((int)_actors[0].position.X, (int)_actors[0].position.Y);
+            Coords currentPos = _map.actors[_playerID].tile.coords;
 
             //            System.Diagnostics.Debug.WriteLine((Math.Max(currentPos.y - _renderScope, 0)) + " " + (Math.Min(currentPos.y + _renderScope, _map.height)));
             //          System.Diagnostics.Debug.WriteLine((Math.Max(currentPos.x - _renderScope, 0)) + " " + (Math.Min(currentPos.x + _renderScope, _map.height)));
@@ -716,10 +716,7 @@ namespace Gruppe22
                         Coords apos = _screen2map((int)actor.position.X, (int)actor.position.Y);
                         if (((int)apos.x == x) && ((int)apos.y == y))
                         {
-                            _spriteBatch.Draw(actor.animationTexture,
-                                new Rectangle((int)actor.position.X + actor.offsetX + 25, (int)actor.position.Y + actor.offsetY - 25,
-    actor.width - actor.offsetX - actor.cropX, actor.height - actor.offsetY - actor.cropY
-    ), actor.animationRect, Color.White);
+                            _spriteBatch.Draw(actor.animationTexture, new Vector2((float)(actor.position.X + actor.offsetX + 25), (float)(actor.position.Y + actor.offsetY - 25)), actor.animationRect, Color.White);
                         }
                     }
                 }
@@ -733,7 +730,7 @@ namespace Gruppe22
         /// <param name="vTiles">Number of horizontal Tiles</param>
         private void _drawFloor()
         {
-            Coords currentPos = _screen2map((int)_actors[0].position.X, (int)_actors[0].position.Y);
+            Coords currentPos = _map.actors[_playerID].tile.coords;
             for (int y = (Math.Max(currentPos.y - _renderScope, 0)); y < (Math.Min(currentPos.y + _renderScope + 1, _map.height)); ++y)
             {
                 for (int x = (Math.Max(currentPos.x - _renderScope, 0)); x < (Math.Min(currentPos.x + _renderScope + 1, _map.width)); ++x)
@@ -811,10 +808,10 @@ namespace Gruppe22
             for (int count = 0; count < _map.actorPositions.Count; ++count)
             {
 
-                if (_actors.Count > 0) _actors.Add(new ActorView(this, count, _content, _map2screen(_map.actorPositions[count]), "Content\\skeleton.xml", 2, _map._actors[count].health > 0));
+                if (_actors.Count != _playerID) _actors.Add(new ActorView(this, count, _content, _map2screen(_map.actorPositions[count]), "Content\\skeleton.xml", 2, _map._actors[count].health > 0));
                 else _actors.Add(new ActorView(this, count, _content, _map2screen(_map.actorPositions[count]), "Content\\player.xml", 5));
             }
-            _camera.position = new Vector2(-38 - _actors[0].position.X, -30 - _actors[0].position.Y);
+            _camera.position = new Vector2(-38 - _actors[_playerID].position.X, -30 - _actors[_playerID].position.Y);
         }
         /// <summary>
         /// Move camera, react to mouse
@@ -827,19 +824,18 @@ namespace Gruppe22
                 if (IsHit(Mouse.GetState().X, Mouse.GetState().Y))
                 {
                     _UpdateMouse(new Vector2(Mouse.GetState().X, Mouse.GetState().Y));
-                    Coords currentPos = _screen2map(_actors[0].target.x, _actors[0].target.y);
 
                     if (Mouse.GetState().LeftButton == ButtonState.Pressed)
                     {
-                        if (!_actors[0].isMoving)
+                        if (!_actors[_playerID].isMoving)
                         {
 
-                            MovePlayer(Map.WhichWayIs(_highlightedTile, currentPos));
+                            MovePlayer(Map.WhichWayIs(_highlightedTile, _map.actors[_playerID].tile.coords));
                         }
                     }
                 }
-                if (_actors[0].isMoving)
-                    _camera.position = new Vector2(-38 - _actors[0].position.X, -30 - _actors[0].position.Y);
+                if (_actors[_playerID].isMoving)
+                    _camera.position = new Vector2(-38 - _actors[_playerID].position.X, -30 - _actors[_playerID].position.Y);
                 /*   if (Math.Abs(gameTime.TotalGameTime.Milliseconds / 10 - _lastCheck) > 1)
                    {
                        _lastCheck = gameTime.TotalGameTime.Milliseconds / 10;*/
