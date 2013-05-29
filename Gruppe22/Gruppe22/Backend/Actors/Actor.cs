@@ -26,6 +26,7 @@ namespace Gruppe22
         private int _maxMana;
         private int _manaReg;
         private int _gold;
+        private bool _locked = false;
         //private List<Spell> _spellbook = null;
 
         /// <summary>
@@ -43,6 +44,11 @@ namespace Gruppe22
         #endregion
 
         #region Public Fields
+        public bool locked
+        {
+            get { return _locked; }
+            set { _locked = value; }
+        }
         public ActorTile tile
         {
             get { return _tile; }
@@ -227,13 +233,13 @@ namespace Gruppe22
                 _exp = value;
             }
         }
+        public bool isDead { get { return _health <= 0 ? true : false; } }
 
         public int id { get { return _id; } set { _id = value; } }
         #endregion
 
         #region Public Methods
 
-        public bool IsDead() { return _health <= 0 ? true : false; }
 
         public void LevelUp(Actor actor)
         {

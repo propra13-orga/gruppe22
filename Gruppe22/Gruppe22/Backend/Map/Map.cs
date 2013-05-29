@@ -68,9 +68,9 @@ namespace Gruppe22
         /// <summary>
         /// A list of Actors in the current room
         /// </summary>
-        public List<Actor> _actors = null;
-        public List<Item> _items = null;
-        private List<Coords> _updateTiles = null;
+        protected List<Actor> _actors = null;
+        protected List<Item> _items = null;
+        protected List<Coords> _updateTiles = null;
         #endregion
 
         #region Public Fields

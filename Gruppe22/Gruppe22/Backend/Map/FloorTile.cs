@@ -48,6 +48,19 @@ namespace Gruppe22
             }
         }
 
+        public List<Item> items
+        {
+            get
+            {
+                List<Item> result = new List<Item>();
+                foreach (Tile tile in _overlay)
+                {
+                    if (tile is ItemTile) result.Add(((ItemTile)tile).item);
+                }
+                return result;
+            }
+        }
+
         public int trapDamage
         {
             get

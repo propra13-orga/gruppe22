@@ -48,7 +48,7 @@ namespace Gruppe22
         /// <summary>
         /// Number of milliseconds to wait until displaying next frame of animation
         /// </summary>
-        private int _animationTime = 50;
+        private int _animationTime = 20;
         /// <summary>
         /// Seconds elapsed since last redraw
         /// </summary>
@@ -86,7 +86,13 @@ namespace Gruppe22
                 _position = value;
             }
         }
-
+        public int id
+        {
+            get
+            {
+                return _id;
+            }
+        }
         public int speed
         {
             set
@@ -435,10 +441,11 @@ namespace Gruppe22
                             {
                                 if (_id == 0) System.Diagnostics.Debug.WriteLine("/0");
                             }
-                        if (EndMove)
+                        if (EndMove || ((Math.Abs(_target.x - _position.X) < 0.1) && (Math.Abs(_target.y - _position.Y) < 0.1)))
                         {
                             _target.x = (int)_position.X;
                             _target.y = (int)_position.Y;
+                            _parent.HandleEvent(null, Events.TileEntered, _id, _direction);
                         }
                     }
                     else

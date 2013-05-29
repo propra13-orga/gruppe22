@@ -39,7 +39,9 @@ namespace Gruppe22
         Settings,
         Local,
         LAN,
-        FetchFile
+        FetchFile,
+        TileEntered,
+        Attack
     }
 
     public enum GameStatus
@@ -510,6 +512,8 @@ namespace Gruppe22
                     else
                         _map1.Load((string)data[0], (Coords)data[1]);
                     _mainmap1.resetActors();
+                    _mainmap2.resetActors();
+
                     AddMessage("You entered room number " + data[0].ToString().Substring(4, 1) + ".");
                     _status = GameStatus.Running;
                     break;
@@ -521,6 +525,9 @@ namespace Gruppe22
                     DeleteSavedRooms();
                     _map1.Load("room1.xml", null);
                     _mainmap1.resetActors();
+
+                    _mainmap2.resetActors();
+
                     _status = GameStatus.Paused;
                     HandleEvent(null, Events.ContinueGame);
                     break;
@@ -531,6 +538,7 @@ namespace Gruppe22
                     _map1.Dispose();
                     _map1.Load("room1.xml", null);
                     _mainmap1.resetActors();
+                    _mainmap2.resetActors();
                     _status = GameStatus.Paused;
                     HandleEvent(null, Events.ContinueGame);
                     break;
@@ -548,6 +556,7 @@ namespace Gruppe22
                         {
                             ((ActorTile)_map1.actors[FinishedID].tile).enabled = false;
                             AddMessage(_map1.actors[FinishedID].name + " is dead.");
+                            ((ActorTile)_map1.actors[FinishedID].tile).DropItems();
                         }
                         else
                         {
@@ -558,101 +567,140 @@ namespace Gruppe22
                     }
                     break;
 
-                case Events.MoveActor:
-                    int id = (int)data[0];
-                    if (!_mainmap1.IsMoving(id))
+                case Events.TileEntered:
                     {
+                        int id = (int)data[0];
                         Direction dir = (Direction)data[1];
-                        _mainmap1.ChangeDir(id, dir);
-                        Coords target = Map.DirectionTile(_map1.actors[id].tile.coords, dir);
+                        Coords target = _map1.actors[id].tile.coords;
+
+                        // Pickup any items
+                        // Apply teleporter (move to next room)
                         if ((id == 0) && (_map1[target.x, target.y].hasTeleport))
                         {
                             HandleEvent(null, Events.ChangeMap, ((TeleportTile)_map1[target.x, target.y].overlay[0]).nextRoom, ((TeleportTile)_map1[target.x, target.y].overlay[0]).nextPlayerPos);
                         }
 
+                        // Apply trap damage
+                        // Trigger floor switches
 
-                        if ((_map1[target.x, target.y].hasEnemy) || (_map1[target.x, target.y].hasPlayer))
+
+                        while (_map1[target.x, target.y].hasTreasure)
                         {
-                            if ((_map1.firstActorID(target.x, target.y) != id) && (!_map1[target.x, target.y].firstActor.IsDead()))
-                            {
-                                // Display enemy statistics
-                                if (_map1[target.x, target.y].firstActor is Player)
-                                {
-                                    _enemyStats.actor = _map1.actors[id]; // Enemy attacked
-                                }
-                                else
-                                {
-                                    if (id == 0)
-                                    {
-                                        _enemyStats.actor = _map1[target.x, target.y].firstActor; // Player attacked enemy
-                                    }
-                                }
-                                // Aktuelle Figur attackiert
-                                // Spieler verletzt
-                                // oder tot
-                                _map1[target.x, target.y].firstActor.SetDamage(_map1.actors[id]);
-                                if (_map1[target.x, target.y].firstActor is Player) RemoveHealth();
-                                if (_map1[target.x, target.y].firstActor.IsDead())
-                                {
-                                    _mainmap1.HandleEvent(null, Events.AnimateActor, _map1.firstActorID(target.x, target.y), Activity.Die, false, Map.WhichWayIs(_map1.actors[id].tile.coords, target));
-                                    AddMessage((_map1.actors[id] is Player ? "<green>You" : _map1.actors[id].name) + " killed " + (_map1.actors[_map1.firstActorID(target.x, target.y)] is Player ? "you" : _map1.actors[_map1.firstActorID(target.x, target.y)].name) + " doing " + _map1.actors[id].damage.ToString() + " points of damage.");
+                            _map1.actors[id].inventory.Add(_map1[target.x, target.y].firstItem.item);
+                            AddMessage((_map1.actors[id] is Player ? "You found " : _map1.actors[id].name + " found ") + _map1[target.x, target.y].firstItem.item.name + " .");
+                            _map1[target.x, target.y].firstItem.item.EquipItem(_map1.actors[id]);
+                            _map1[target.x, target.y].Remove(_map1[target.x, target.y].firstItem);
+                        }
 
-                                }
-                                else
-                                {
-                                    _mainmap1.HandleEvent(null, Events.AnimateActor, _map1.firstActorID(target.x, target.y), Activity.Hit, false, Map.WhichWayIs(_map1.actors[id].tile.coords, target));
-                                    AddMessage(((_map1.actors[_map1.firstActorID(target.x, target.y)] is Player) ? "<red>" : "") + (_map1.actors[id] is Player ? "<green>You" : _map1.actors[id].name) + " attacked " + (_map1.actors[_map1.firstActorID(target.x, target.y)] is Player ? "you" : _map1.actors[_map1.firstActorID(target.x, target.y)].name));
-                                    AddMessage(((_map1.actors[_map1.firstActorID(target.x, target.y)] is Player) ? "<red>" : "") + "The attack caused " + (_map1[target.x, target.y].firstActor.armour - _map1.actors[id].damage).ToString() + " points of damage (" + _map1.actors[id].damage.ToString() + " attack strength - " + _map1[target.x, target.y].firstActor.armour + " defense)");
-                                }
-                                _mainmap1.HandleEvent(null, Events.AnimateActor, id, Activity.Attack, false, dir, true);
+                        if (_map1[target.x, target.y].hasTrap)
+                        {
+                            _map1.actors[id].SetDamage(_map1[target.x, target.y].trapDamage);
+                            if (_map1.actors[id].isDead)
+                            {
+                                _mainmap1.HandleEvent(null, Events.AnimateActor, id, Activity.Die);
+                                _mainmap2.HandleEvent(null, Events.AnimateActor, id, Activity.Die);
+
+                                AddMessage((_map1.actors[id] is Player ? "You were" : _map1.actors[id].name + " was") + " killed by a trap  doing " + (_map1[target.x, target.y].trapDamage - _map1.actors[id].armour).ToString() + " points of damage (" + _map1[target.x, target.y].trapDamage.ToString() + " - " + _map1.actors[id].armour + " protection)");
+
                             }
+                            else
+                            {
+                                _mainmap1.HandleEvent(null, Events.AnimateActor, id, Activity.Hit);
+                                _mainmap2.HandleEvent(null, Events.AnimateActor, id, Activity.Hit);
+
+                                AddMessage((_map1.actors[id] is Player ? "You were" : _map1.actors[id].name + "  was") + " hit for " + (_map1[target.x, target.y].trapDamage - _map1.actors[id].armour).ToString() + " points of damage (" + _map1[target.x, target.y].trapDamage.ToString() + " - " + _map1.actors[id].armour + " protection)");
+                            }
+                            if (_map1.actors[id] is Player) RemoveHealth();
+
+                        }
+
+                        if ((_map1[_map1.actors[id].tile.coords.x, _map1.actors[id].tile.coords.y].hasTarget) && (id == 0))
+                        {
+                            _mainmap1.HandleEvent(null, Events.AnimateActor, id, Activity.Talk);
+                            _mainmap2.HandleEvent(null, Events.AnimateActor, id, Activity.Talk);
+
+                            ShowEndGame("You have successfully found the hidden treasure. Can you do it again?", "Congratulations!");
+                        }
+
+
+                        _map1.actors[id].locked = false;
+
+                    }
+                    // Allow to choose next turn
+                    break;
+
+                case Events.Attack:
+                    {
+                        int id = (int)data[0];
+                        Direction dir = (Direction)data[1];
+                        Coords target = Map.DirectionTile(_map1.actors[id].tile.coords, dir);
+
+                        // Display enemy statistics
+                        if (_map1[target.x, target.y].firstActor is Player)
+                        {
+                            _enemyStats.actor = _map1.actors[id]; // Enemy attacked
                         }
                         else
                         {
-                            if (_map1.CanMove(_map1.actors[id].tile.coords, dir))
+                            if (id == 0)
                             {
-                                _map1.MoveActor(_map1.actors[id], dir);
-                                if (_map1.actors[id] is Player)
-                                    _minimap1.MoveCamera(_map1.actors[id].tile.coords);
-                                _mainmap1.HandleEvent(null, Events.MoveActor, id, _map1.actors[id].tile.coords);
+                                _enemyStats.actor = _map1[target.x, target.y].firstActor; // Player attacked enemy
+                            }
+                        }
+                        // Aktuelle Figur attackiert
+                        // Spieler verletzt
+                        // oder tot
+                        _map1[target.x, target.y].firstActor.SetDamage(_map1.actors[id]);
+                        if (_map1[target.x, target.y].firstActor is Player) RemoveHealth();
+                        if (_map1[target.x, target.y].firstActor.isDead)
+                        {
+                            _mainmap1.HandleEvent(null, Events.AnimateActor, _map1.firstActorID(target.x, target.y), Activity.Die, false, Map.WhichWayIs(_map1.actors[id].tile.coords, target));
+                            AddMessage((_map1.actors[id] is Player ? "<green>You" : _map1.actors[id].name) + " killed " + (_map1.actors[_map1.firstActorID(target.x, target.y)] is Player ? "you" : _map1.actors[_map1.firstActorID(target.x, target.y)].name) + " doing " + _map1.actors[id].damage.ToString() + " points of damage.");
 
-                                if (_map1[target.x, target.y].hasTreasure)
+                        }
+                        else
+                        {
+                            _mainmap1.HandleEvent(null, Events.AnimateActor, _map1.firstActorID(target.x, target.y), Activity.Hit, false, Map.WhichWayIs(_map1.actors[id].tile.coords, target));
+                            AddMessage(((_map1.actors[_map1.firstActorID(target.x, target.y)] is Player) ? "<red>" : "") + (_map1.actors[id] is Player ? "<green>You" : _map1.actors[id].name) + " attacked " + (_map1.actors[_map1.firstActorID(target.x, target.y)] is Player ? "you" : _map1.actors[_map1.firstActorID(target.x, target.y)].name));
+                            AddMessage(((_map1.actors[_map1.firstActorID(target.x, target.y)] is Player) ? "<red>" : "") + "The attack caused " + (_map1[target.x, target.y].firstActor.armour - _map1.actors[id].damage).ToString() + " points of damage (" + _map1.actors[id].damage.ToString() + " attack strength - " + _map1[target.x, target.y].firstActor.armour + " defense)");
+                        }
+                        _mainmap1.HandleEvent(null, Events.AnimateActor, id, Activity.Attack, false, dir, true);
+                    }
+
+                    break;
+
+                case Events.MoveActor:
+                    {
+                        int id = (int)data[0];
+                        if (!_mainmap1.IsMoving(id))
+                        {
+                            Direction dir = (Direction)data[1];
+                            Coords target = Map.DirectionTile(_map1.actors[id].tile.coords, dir);
+
+                            _mainmap1.ChangeDir(id, dir); // Look into different direction
+
+
+                            if ((_map1[target.x, target.y].hasEnemy) || (_map1[target.x, target.y].hasPlayer))
+                            {
+                                if ((_map1.firstActorID(target.x, target.y) != id) && (!_map1[target.x, target.y].firstActor.isDead))
                                 {
-                                    while (_map1[target.x, target.y].hasTreasure)
-                                    {
-                                        _map1._actors[id].inventory.Add(_map1[target.x, target.y].firstItem.item);
-                                        AddMessage((_map1.actors[id] is Player ? "You found " : _map1.actors[id].name + " found ") + _map1[target.x, target.y].firstItem.item.name + " .");
-                                        _map1[target.x, target.y].firstItem.item.EquipItem(_map1._actors[id]);
-                                        _map1[target.x, target.y].Remove(_map1[target.x, target.y].firstItem);
-                                    }
+                                    HandleEvent(null, Events.Attack, id, dir);
+                                    _map1.actors[id].locked = true;
                                 }
-                                else
+                            }
+                            else
+                            {
+                                if (_map1.CanMove(_map1.actors[id].tile.coords, dir))
                                 {
-                                    if (_map1[target.x, target.y].hasTrap)
-                                    {
-                                        _map1.actors[id].SetDamage(_map1[target.x, target.y].trapDamage);
-                                        if (_map1.actors[id].IsDead())
-                                        {
-                                            _mainmap1.HandleEvent(null, Events.AnimateActor, id, Activity.Die, true, dir, true);
-                                            AddMessage((_map1.actors[id] is Player ? "You were" : _map1.actors[id].name + " was") + " killed by a trap  doing " + (_map1[target.x, target.y].trapDamage - _map1.actors[id].armour).ToString() + " points of damage (" + _map1[target.x, target.y].trapDamage.ToString() + " - " + _map1.actors[id].armour + " protection)");
+                                    _map1.MoveActor(_map1.actors[id], dir);
+                                    if (_map1.actors[id] is Player)
+                                        _minimap1.MoveCamera(_map1.actors[id].tile.coords);
+                                    _map1.actors[id].locked = true;
 
-                                        }
-                                        else
-                                        {
-                                            _mainmap1.HandleEvent(null, Events.AnimateActor, id, Activity.Hit, true, dir, true);
-                                            AddMessage((_map1.actors[id] is Player ? "You were" : _map1.actors[id].name + "  was") + " hit for " + (_map1[target.x, target.y].trapDamage - _map1.actors[id].armour).ToString() + " points of damage (" + _map1[target.x, target.y].trapDamage.ToString() + " - " + _map1.actors[id].armour + " protection)");
-                                        }
-                                        if (_map1._actors[id] is Player) RemoveHealth();
+                                    _mainmap1.HandleEvent(null, Events.MoveActor, id, _map1.actors[id].tile.coords);
+                                    _mainmap2.HandleEvent(null, Events.MoveActor, id, _map1.actors[id].tile.coords);
 
-                                    }
-                                    else
-                                    {
-                                        if ((_map1[_map1.actors[id].tile.coords.x, _map1.actors[id].tile.coords.y].hasTarget) && (id == 0))
-                                        {
-                                            _mainmap1.HandleEvent(null, Events.AnimateActor, id, Activity.Talk, true);
-                                            ShowEndGame("You have successfully found the hidden treasure. Can you do it again?", "Congratulations!");
-                                        }
-                                    }
+
                                 }
                             }
                         }
@@ -925,15 +973,15 @@ namespace Gruppe22
             //SaveGame();
             //Exit();
             _graphics = new GraphicsDeviceManager(this);
-             _graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height - 200;
-             _graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width - 40;
+            _graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height - 200;
+            _graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width - 40;
             _files2fetch = new Queue<String>();
             // Move window to top left corner of the screen
             Type type = typeof(OpenTKGameWindow);
-             System.Reflection.FieldInfo field = type.GetField("window", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-               OpenTK.GameWindow window = (OpenTK.GameWindow)field.GetValue(this.Window);
-             window.X = 0;
-             window.Y = 0;
+            System.Reflection.FieldInfo field = type.GetField("window", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+            OpenTK.GameWindow window = (OpenTK.GameWindow)field.GetValue(this.Window);
+            window.X = 0;
+            window.Y = 0;
         }
         #endregion
 

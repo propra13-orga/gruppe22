@@ -16,6 +16,19 @@ namespace Gruppe22
         #endregion
 
         #region Public Fields
+        public void Update()
+        {
+            _icons.Clear();
+            for (int i = 0; i < _actor.inventory.Count; ++i)
+            {
+                _icons.Add(new VisibleObject());
+            }
+        }
+
+        public override void Click(int Button)
+        {
+            
+        }
         #endregion
 
         #region Constructor        

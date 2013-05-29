@@ -64,9 +64,19 @@ namespace Gruppe22
             _actor = actor;
         }
 
+        public void DropItems()
+        {
+            while (actor.inventory.Count>0) {
+                ItemTile temp=new ItemTile(_parent,actor.inventory[0]);
+                actor.inventory[0].tile = temp;
+                ((FloorTile)_parent).Add(temp);
+                actor.inventory.RemoveAt(0);
+            }
+        }
+
         public override void Update(Microsoft.Xna.Framework.GameTime gameTime)
         {
-            if (!(actor is Player) && (!_working))
+            if (enabled && !(actor is Player) && (!_working))
             {
                 _working = true;
                 _elapsed += gameTime.ElapsedGameTime.Milliseconds;
@@ -74,7 +84,7 @@ namespace Gruppe22
                 {
                     _elapsed -= _timeToThink;
                     Map map = (Map)((FloorTile)_parent).parent;
-                    if (!actor.IsDead())
+                    if (!actor.isDead)
                     {
 
                         Direction dir = Direction.None;
@@ -118,6 +128,10 @@ namespace Gruppe22
                         if (dir != Direction.None)
                             ((IHandleEvent)parent).HandleEvent(null, Events.MoveActor, actor.id, dir);
                         _working = false;
+                    }
+                    else
+                    {
+                        enabled = false;
                     }
                 }
 

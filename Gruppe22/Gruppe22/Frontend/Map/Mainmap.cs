@@ -49,6 +49,8 @@ namespace Gruppe22
         /// Internal reference to map data to be displayed
         /// </summary>
         private Map _map;
+
+        private TileTooltip _tooltip = null;
         /// <summary>
         /// Number of tiles to render (Square with player in center)
         /// </summary>
@@ -73,6 +75,14 @@ namespace Gruppe22
         #endregion
 
         #region Public Fields
+        public Matrix transformMatrix
+        {
+            get
+            {
+                return _camera.matrix;
+            }
+        }
+
         public bool enabled
         {
             get
@@ -90,6 +100,9 @@ namespace Gruppe22
         {
             switch (eventID)
             {
+                case Events.TileEntered:
+                    _parent.HandleEvent(this, eventID, data);
+                    break;
                 case Events.MoveActor:
                     {
                         int id = (int)data[0];
@@ -135,6 +148,7 @@ namespace Gruppe22
         {
             if (_enabled)
             {
+
                 // Rasterizer: Enable cropping at borders (otherwise map would be overlapping everything else)
                 RasterizerState rstate = new RasterizerState();
                 rstate.ScissorTestEnable = true;
@@ -191,6 +205,9 @@ namespace Gruppe22
                     rstate.Dispose();
                     blendState.Dispose();
                 }
+
+                if (_highlightedTile.x > -1)
+                    _tooltip.DisplayToolTip(_map[_highlightedTile.x, _highlightedTile.y]);
             }
         }
         #endregion
@@ -214,29 +231,29 @@ namespace Gruppe22
         /// <param name="x">Horizontal position</param>
         /// <param name="y">Vertical position</param>
         /// <param name="transparent"></param>
-        private void _drawWall(WallDir dir, Rectangle target, bool transparent)
+        private void _drawWall(WallDir dir, Rectangle target, bool transparent, bool active)
         {
             switch (dir)
             {
 
                 case WallDir.DiagUpDownClose: // Done
-                    _drawWall(WallDir.DiagUpClose, target, transparent);
-                    _drawWall(WallDir.DiagDownClose, target, transparent);
+                    _drawWall(WallDir.DiagUpClose, target, transparent, active);
+                    _drawWall(WallDir.DiagDownClose, target, transparent, active);
                     break;
 
                 case WallDir.DiagUpDownClose2: // Done
-                    _drawWall(WallDir.DiagUpClose2, target, transparent);
-                    _drawWall(WallDir.DiagDownClose2, target, transparent);
+                    _drawWall(WallDir.DiagUpClose2, target, transparent, active);
+                    _drawWall(WallDir.DiagDownClose2, target, transparent, active);
                     break;
 
                 case WallDir.DiagLeftRightClose: // Done
-                    _drawWall(WallDir.DiagRightClose, target, transparent);
-                    _drawWall(WallDir.DiagLeftClose, target, transparent);
+                    _drawWall(WallDir.DiagRightClose, target, transparent, active);
+                    _drawWall(WallDir.DiagLeftClose, target, transparent, active);
                     break;
 
                 case WallDir.DiagLeftRightClose2: // Done
-                    _drawWall(WallDir.DiagRightClose2, target, transparent);
-                    _drawWall(WallDir.DiagLeftClose2, target, transparent);
+                    _drawWall(WallDir.DiagRightClose2, target, transparent, active);
+                    _drawWall(WallDir.DiagLeftClose2, target, transparent, active);
                     break;
 
                 case WallDir.None:
@@ -244,12 +261,13 @@ namespace Gruppe22
 
                 default:
                     // System.Diagnostics.Debug.WriteLine("--" + dir.ToString());
+                    Color color = active ? Color.Red : Color.White;
                     _spriteBatch.Draw(_walls[(int)dir].animationTexture, new Rectangle(
                         target.Left + _walls[(int)dir].offsetX,
                         target.Top + _walls[(int)dir].offsetY,
                         target.Width - _walls[(int)dir].offsetX - _walls[(int)dir].cropX,
                         target.Height - _walls[(int)dir].offsetY - _walls[(int)dir].cropY),
-                        _walls[(int)dir].animationRect, transparent ? new Color(Color.White, (float)0.5) : Color.White);
+                        _walls[(int)dir].animationRect, transparent ? new Color(color, (float)0.5) : color);
                     break;
 
             }
@@ -614,7 +632,7 @@ namespace Gruppe22
         /// <param name="coords"></param>
         /// <param name="tall"></param>
         /// <returns></returns>
-        private Rectangle _tileRect(Vector2 coords, bool tall = false)
+        public static Rectangle _tileRect(Vector2 coords, bool tall = false)
         {
 
             return new Rectangle((int)coords.X * 64 + ((int)coords.Y) * 64
@@ -629,7 +647,7 @@ namespace Gruppe22
         /// <param name="coords"></param>
         /// <param name="tall"></param>
         /// <returns></returns>
-        private Coords _map2screen(Coords mapC, bool tall = false)
+        public static Coords _map2screen(Coords mapC, bool tall = false)
         {
 
             return new Coords((int)mapC.x * 64 + ((int)mapC.y) * 64
@@ -642,7 +660,7 @@ namespace Gruppe22
         /// <param name="coords"></param>
         /// <param name="tall"></param>
         /// <returns></returns>
-        private Coords _map2screen(int x, int y, bool tall = false)
+        public static Coords _map2screen(int x, int y, bool tall = false)
         {
             return new Coords(x * 64 + y * 64
                                     , y * 48 - x * 48);
@@ -655,7 +673,7 @@ namespace Gruppe22
         /// <param name="coords"></param>
         /// <param name="tall"></param>
         /// <returns></returns>
-        private Coords _screen2map(Coords screenC, bool tall = false)
+        private static Coords _screen2map(Coords screenC, bool tall = false)
         {
             // TODO: This does not work perfectly yet. Check the formula!
             screenC.x -= 32;
@@ -671,7 +689,7 @@ namespace Gruppe22
         /// <param name="coords"></param>
         /// <param name="tall"></param>
         /// <returns></returns>
-        private Coords _screen2map(int x, int y, bool tall = false)
+        public static Coords _screen2map(int x, int y, bool tall = false)
         {
             // TODO: This does not work perfectly yet. Check the formula!
 
@@ -685,7 +703,7 @@ namespace Gruppe22
         /// <param name="coords"></param>
         /// <param name="tall"></param>
         /// <returns></returns>
-        private Coords _pos2Tile(Vector2 coords, bool tall = false)
+        public static Coords _pos2Tile(Vector2 coords, bool tall = false)
         {
             // TODO: This does not work perfectly yet. Check the formula!
             coords.X -= 32;
@@ -709,14 +727,14 @@ namespace Gruppe22
             {
                 for (int x = (Math.Min(currentPos.x + _renderScope, _map.width)); x >= (Math.Max(currentPos.x - _renderScope, 0)); --x)
                 {
-                    _drawWall(GetWallStyle(x, y), _tileRect(new Vector2(x + 1, y - 1), true), false);
+                    _drawWall(GetWallStyle(x, y), _tileRect(new Vector2(x + 1, y - 1), true), false, ((y == (int)_highlightedTile.y) && (x == (int)_highlightedTile.x)));
 
                     foreach (ActorView actor in _actors)
                     {
                         Coords apos = _screen2map((int)actor.position.X, (int)actor.position.Y);
                         if (((int)apos.x == x) && ((int)apos.y == y))
                         {
-                            _spriteBatch.Draw(actor.animationTexture, new Vector2((float)(actor.position.X + actor.offsetX + 25), (float)(actor.position.Y + actor.offsetY - 25)), actor.animationRect, Color.White);
+                            _spriteBatch.Draw(actor.animationTexture, new Vector2((float)(actor.position.X + actor.offsetX + 25), (float)(actor.position.Y + actor.offsetY - 25)), actor.animationRect, ((_map.actors[actor.id].tile.coords.y == (int)_highlightedTile.y) && (_map.actors[actor.id].tile.coords.x == (int)_highlightedTile.x)) ? Color.Red : Color.White);
                         }
                     }
                 }
@@ -764,27 +782,29 @@ namespace Gruppe22
 
                     if (_map[x, y].hasTrap)
                     {
-                        _spriteBatch.Draw(_environment[2][1].animationTexture, new Rectangle(_map2screen(x, y).x + 32, _map2screen(x, y).y + 16, 64, 64), _environment[2][1].animationRect, Color.White);
+                        _spriteBatch.Draw(_environment[2][1].animationTexture, new Rectangle(_map2screen(x, y).x + 32, _map2screen(x, y).y + 16, 64, 64), _environment[2][1].animationRect, ((y == (int)_highlightedTile.y) && (x == (int)_highlightedTile.x)) ? Color.Red : Color.White);
                     }
                     if (_map[x, y].hasTarget)
                     {
-                        _spriteBatch.Draw(_environment[3][0].animationTexture, new Rectangle(_map2screen(x, y).x + 32, _map2screen(x, y).y + 16, 64, 48), _environment[3][0].animationRect, Color.White);
+                        _spriteBatch.Draw(_environment[3][0].animationTexture, new Rectangle(_map2screen(x, y).x + 32, _map2screen(x, y).y + 16, 64, 48), _environment[3][0].animationRect, ((y == (int)_highlightedTile.y) && (x == (int)_highlightedTile.x)) ? Color.Red : Color.White);
                     }
                     if (_map[x, y].hasTreasure)
                     {
-                        switch (_map[x, y].firstItem.itemType)
+                        foreach (Item item in (_map[x, y].items))
                         {
-                            case ItemType.Armor:
-                                _spriteBatch.Draw(_environment[1][0].animationTexture, new Rectangle(_map2screen(x, y).x + 32, _map2screen(x, y).y + 16, _environment[1][0].animationRect.Width, _environment[1][0].animationRect.Height), _environment[1][0].animationRect, Color.White);
-                                break;
-                            case ItemType.Weapon:
-                                _spriteBatch.Draw(_environment[1][4].animationTexture, new Rectangle(_map2screen(x, y).x + 32, _map2screen(x, y).y + 16, _environment[1][4].animationRect.Width, _environment[1][4].animationRect.Height), _environment[1][4].animationRect, Color.White);
-                                break;
-                            case ItemType.Potion:
-                                _spriteBatch.Draw(_environment[1][5].animationTexture, new Rectangle(_map2screen(x, y).x + 32, _map2screen(x, y).y + 16, _environment[1][5].animationRect.Width, _environment[1][5].animationRect.Height), _environment[1][5].animationRect, Color.White);
-                                break;
+                            switch (item.itemType)
+                            {
+                                case ItemType.Armor:
+                                    _spriteBatch.Draw(_environment[1][0].animationTexture, new Rectangle(_map2screen(x, y).x + 32, _map2screen(x, y).y + 16, _environment[1][0].animationRect.Width, _environment[1][0].animationRect.Height), _environment[1][0].animationRect, ((y == (int)_highlightedTile.y) && (x == (int)_highlightedTile.x)) ? Color.Red : Color.White);
+                                    break;
+                                case ItemType.Weapon:
+                                    _spriteBatch.Draw(_environment[1][4].animationTexture, new Rectangle(_map2screen(x, y).x + 32, _map2screen(x, y).y + 16, _environment[1][4].animationRect.Width, _environment[1][4].animationRect.Height), _environment[1][4].animationRect, ((y == (int)_highlightedTile.y) && (x == (int)_highlightedTile.x)) ? Color.Red : Color.White);
+                                    break;
+                                case ItemType.Potion:
+                                    _spriteBatch.Draw(_environment[1][5].animationTexture, new Rectangle(_map2screen(x, y).x + 32, _map2screen(x, y).y + 16, _environment[1][5].animationRect.Width, _environment[1][5].animationRect.Height), _environment[1][5].animationRect, ((y == (int)_highlightedTile.y) && (x == (int)_highlightedTile.x)) ? Color.Red : Color.White);
+                                    break;
+                            }
                         }
-
 
                     }
                 }
@@ -808,7 +828,7 @@ namespace Gruppe22
             for (int count = 0; count < _map.actorPositions.Count; ++count)
             {
 
-                if (_actors.Count != _playerID) _actors.Add(new ActorView(this, count, _content, _map2screen(_map.actorPositions[count]), "Content\\skeleton.xml", 2, _map._actors[count].health > 0));
+                if (_actors.Count != _playerID) _actors.Add(new ActorView(this, count, _content, _map2screen(_map.actorPositions[count]), "Content\\skeleton.xml", 2, _map.actors[count].health > 0));
                 else _actors.Add(new ActorView(this, count, _content, _map2screen(_map.actorPositions[count]), "Content\\player.xml", 5));
             }
             _camera.position = new Vector2(-38 - _actors[_playerID].position.X, -30 - _actors[_playerID].position.Y);
@@ -840,9 +860,9 @@ namespace Gruppe22
                    {
                        _lastCheck = gameTime.TotalGameTime.Milliseconds / 10;*/
                 // Avoid asynchronous updates, makes for smoother appearance
-                foreach (ActorView actor in _actors)
+                for (int i = 0; i < _actors.Count; ++i)
                 {
-                    actor.Update(gameTime);
+                    _actors[i].Update(gameTime);
                 }
                 // }
             }
@@ -1069,7 +1089,7 @@ namespace Gruppe22
             _background = _content.Load<Texture2D>("Minimap");
             _circle = _content.Load<Texture2D>("Light2");
             _highlightedTile = new Coords(-1, -1);
-
+            _tooltip = new TileTooltip(this, _spriteBatch, _content, _displayRect);
             // Load textures to use in environment
             CreateTextureList();
             // 1. Walls
