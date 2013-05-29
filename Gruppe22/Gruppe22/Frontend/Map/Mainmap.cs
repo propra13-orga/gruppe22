@@ -934,7 +934,7 @@ namespace Gruppe22
             player.Add(Activity.Attack, Direction.UpLeft, "Attack", new Coords(0, 672), 13, 1);
             player.Save("content\\player.xml");
 
-            ActorView skel = new ActorView(this, 0, _content, new Vector2(0f, 0f), "");
+            ActorView skel = new ActorView(this, 0, _content, Vector2.Zero, "");
             skel.Add(Activity.Walk, Direction.DownRight, "sWalk", new Coords(0, 0), 8, 1);
             skel.Add(Activity.Walk, Direction.UpRight, "sWalk", new Coords(0, 96), 8, 1);
             skel.Add(Activity.Walk, Direction.Right, "sWalk", new Coords(0, 192), 8, 1);
