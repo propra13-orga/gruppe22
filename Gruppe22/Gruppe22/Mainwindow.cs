@@ -566,7 +566,9 @@ namespace Gruppe22
                         // Pickup any items
                         while (_map1[target.x, target.y].hasTreasure)
                         {
-                            AddMessage((_map1.actors[id] is Player ? "You found " : _map1.actors[id].name + " found ") + _map1[target.x, target.y].firstItem.item.name + " .");
+                            AddMessage(((id == 0) ? "You found " : _map1.actors[id].name + " found ") + _map1[target.x, target.y].firstItem.item.name + " .");
+                            if (id == 0)
+                                _mainmap1.floatNumber(target, "Found " + _map1[target.x, target.y].firstItem.item.name, Color.DarkGreen);
                             _map1[target.x, target.y].firstItem.item.Pickup(_map1.actors[id]);
                             _map1[target.x, target.y].Remove(_map1[target.x, target.y].firstItem);
                             _inventory.Update();
@@ -641,7 +643,7 @@ namespace Gruppe22
                         // oder tot
                         _map1[target.x, target.y].firstActor.SetDamage(_map1.actors[id]);
 
-                        if (id == 0) 
+                        if (id == 0)
                             _mainmap1.floatNumber(target, _map1.actors[id].damage.ToString(), Color.White);
 
                         if (_map1[target.x, target.y].firstActor is Player)

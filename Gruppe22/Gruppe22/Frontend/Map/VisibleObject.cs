@@ -75,7 +75,7 @@ namespace Gruppe22
             _srcFile = srcFile;
             _clipRect = clipRect;
             _content = content;
-            if (_srcFile != "")
+            if ((_srcFile != null) && (_srcFile != ""))
             {
                 _texture = _content.Load<Texture2D>(_srcFile);
             }

@@ -24,17 +24,17 @@ namespace Gruppe22
 
         public void Draw()
         {
-            _spritebatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, null, _camera.matrix);
-            _spritebatch.DrawString(_font, _text, _pos, new Color(_color, (float)_counter / 10), 0f, new Vector2(_width / 2, _height / 2), (10 - _counter)/3, SpriteEffects.None, 0);
+            _spritebatch.Begin(SpriteSortMode.Texture, BlendState.AlphaBlend, null, null, null, null, _camera.matrix);
+            _spritebatch.DrawString(_font, _text, _pos, new Color(_color, (float)_counter / 10), 0f, new Vector2(_width / 2, _height / 2), (10 - _counter) / 3, SpriteEffects.None, 0);
             _spritebatch.End();
         }
 
         public bool Update(GameTime gametime)
         {
             _timer += gametime.ElapsedGameTime.Milliseconds;
-            if (_timer > 50)
+            if (_timer > 100)
             {
-                _timer -= 50;
+                _timer -= 100;
                 _counter -= 1;
                 if (_counter < 1) return true;
             }
@@ -51,7 +51,7 @@ namespace Gruppe22
         public FloatNumber(ContentManager content, SpriteBatch batch, Coords coords, string text, Camera camera)
         {
             _text = text;
-            _pos = new Vector2(Mainmap._map2screen(coords).x+52, Mainmap._map2screen(coords).y-16);
+            _pos = new Vector2(Mainmap._map2screen(coords).x + 52, Mainmap._map2screen(coords).y - 16);
             _spritebatch = batch;
             _font = content.Load<SpriteFont>("font");
             _height = _font.MeasureString(_text).Y;
@@ -220,7 +220,7 @@ namespace Gruppe22
                 _spriteBatch.Draw(_background, new Rectangle(_displayRect.X + 1, _displayRect.Y + 1, _displayRect.Width - 2, _displayRect.Height - 2), new Rectangle(39, 6, 1, 1), Color.Black);
                 _spriteBatch.End();
 
-                _spriteBatch.Begin(SpriteSortMode.Immediate,
+                _spriteBatch.Begin(SpriteSortMode.Deferred,
                             BlendState.AlphaBlend,
                             null,
                             null,
@@ -237,14 +237,14 @@ namespace Gruppe22
 
 
                 // Draw circle of light / fog of war
-                _spriteBatch.Begin(SpriteSortMode.Deferred, blendState, null,
+                _spriteBatch.Begin(SpriteSortMode.Texture, blendState, null,
                             null,
                             rstate,
                             null,
                             _camera.matrix);
                 _spriteBatch.Draw(_circle, new Rectangle(
-                    (int)(_actors[_playerID].position.X + 1) - 160 * _renderScope,
-                    (int)(_actors[_playerID].position.Y + 1) - 160 * _renderScope, 350 * _renderScope, 350 * _renderScope), Color.White);
+                    (int)(_actors[_playerID].position.X + 1) - 250 * _renderScope,
+                    (int)(_actors[_playerID].position.Y + 1) - 250 * _renderScope, 520 * _renderScope, 520 * _renderScope), Color.White);
                 _spriteBatch.End();
 
 
@@ -774,10 +774,9 @@ namespace Gruppe22
             //            System.Diagnostics.Debug.WriteLine((Math.Max(currentPos.y - _renderScope, 0)) + " " + (Math.Min(currentPos.y + _renderScope, _map.height)));
             //          System.Diagnostics.Debug.WriteLine((Math.Max(currentPos.x - _renderScope, 0)) + " " + (Math.Min(currentPos.x + _renderScope, _map.height)));
 
-
-            for (int y = (Math.Max(currentPos.y - _renderScope, 0)); y <= (Math.Min(currentPos.y + _renderScope, _map.height)); ++y)
+            for (int y = (Math.Max(currentPos.y - _renderScope, 0)); y < (Math.Min(currentPos.y + _renderScope + 1, _map.height)); ++y)
             {
-                for (int x = (Math.Min(currentPos.x + _renderScope, _map.width)); x >= (Math.Max(currentPos.x - _renderScope, 0)); --x)
+                for (int x = (Math.Min(currentPos.x + _renderScope + 1, _map.width)); x >= (Math.Max(currentPos.x - _renderScope, 0)); --x)
                 {
                     _drawWall(GetWallStyle(x, y), _tileRect(new Vector2(x + 1, y - 1), true), false, ((y == (int)_highlightedTile.y) && (x == (int)_highlightedTile.x)));
 
@@ -839,6 +838,32 @@ namespace Gruppe22
                     if (_map[x, y].hasTarget)
                     {
                         _spriteBatch.Draw(_environment[3][0].animationTexture, new Rectangle(_map2screen(x, y).x + 32, _map2screen(x, y).y + 16, 64, 48), _environment[3][0].animationRect, ((y == (int)_highlightedTile.y) && (x == (int)_highlightedTile.x)) ? Color.Red : Color.White);
+                    }
+                    if (_map[x, y].hasTeleport)
+                    {
+                        if (y == _map.height - 1)
+                        {
+                            _environment[1][6].NextAnimation();
+                            _spriteBatch.Draw(_environment[1][6].animationTexture, new Rectangle(_map2screen(x, y).x + 32, _map2screen(x, y).y + 16, 64, 48), _environment[1][6].animationRect, ((y == (int)_highlightedTile.y) && (x == (int)_highlightedTile.x)) ? Color.Red : Color.White);
+                        }
+                        else if (y == 0)
+                        {
+                            _environment[1][4].NextAnimation();
+                            _spriteBatch.Draw(_environment[1][4].animationTexture, new Rectangle(_map2screen(x, y).x + 32, _map2screen(x, y).y + 16, 64, 48), _environment[1][4].animationRect, ((y == (int)_highlightedTile.y) && (x == (int)_highlightedTile.x)) ? Color.Red : Color.White);
+
+                        }
+                        else if (x == 0)
+                        {
+                            _environment[1][7].NextAnimation();
+                            _spriteBatch.Draw(_environment[1][7].animationTexture, new Rectangle(_map2screen(x, y).x + 32, _map2screen(x, y).y + 16, 64, 48), _environment[1][7].animationRect, ((y == (int)_highlightedTile.y) && (x == (int)_highlightedTile.x)) ? Color.Red : Color.White);
+
+                        }
+                        else if (x == _map.width - 1)
+                        {
+                            _environment[1][3].NextAnimation();
+                            _spriteBatch.Draw(_environment[1][3].animationTexture, new Rectangle(_map2screen(x, y).x + 32, _map2screen(x, y).y + 16, 64, 48), _environment[1][3].animationRect, ((y == (int)_highlightedTile.y) && (x == (int)_highlightedTile.x)) ? Color.Red : Color.White);
+
+                        }
                     }
                     if (_map[x, y].hasTreasure)
                     {
@@ -1161,15 +1186,18 @@ namespace Gruppe22
             _environment[0].Save("Content\\floor.xml");
             _environment[0].Load("Content\\floor.xml");
             _environment.Add(new TileSet(_content, 64, 64));
-            _environment[1].Add("items", 0, new Rectangle(0, 0, 64, 64));
-            _environment[1].Add("items", 1, new Rectangle(64, 0, 64, 64));
-            _environment[1].Add("items", 2, new Rectangle(128, 0, 64, 64));
-            _environment[1].Add("items", 3, new Rectangle(192, 0, 64, 64));
-            _environment[1].Add("items", 4, new Rectangle(320, 0, 64, 64));
-            _environment[1].Add("items", 5, new Rectangle(160, 256, 32, 32));
-            _environment[1].Save("Content\\items.xml");
-            _environment[1].Load("Content\\items.xml");
             _environment.Add(new TileSet(_content, 64, 64));
+            _environment[1].Add("Aniarrow", 1, new Rectangle(0, 0, 64, 64), 16, 1, false);
+            _environment[1].Add("Aniarrow", 2, new Rectangle(0, 64, 64, 64), 16, 1, false);
+            _environment[1].Add("Aniarrow", 3, new Rectangle(0, 128, 64, 64), 16, 1, false);
+            _environment[1].Add("Aniarrow", 4, new Rectangle(0, 192, 64, 64), 16, 1, false);
+            _environment[1].Add("Aniarrow", 5, new Rectangle(0, 256, 64, 64), 16, 1, false);
+            _environment[1].Add("Aniarrow", 6, new Rectangle(0, 320, 64, 64), 16, 1, false);
+            _environment[1].Add("Aniarrow", 7, new Rectangle(0, 384, 64, 64), 16, 1, false);
+            _environment[1].Add("Aniarrow", 8, new Rectangle(0, 448, 64, 64), 16, 1, false);
+
+
+
             _environment[2].Add("spikefield", 0, new Rectangle(64, 127, 64, 64));
             _environment[2].Add("spikefield", 1, new Rectangle(64, 196, 64, 64));
             _environment[2].Save("Content\\spikefield.xml");

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.Xna.Framework.Content;
 
 namespace Gruppe22
 {
@@ -11,8 +12,8 @@ namespace Gruppe22
         /// <summary>
         /// Constructor 
         /// </summary>
-        public Player(int health = 100, int armour = 30, int damage = 20, int maxHealth = -1, string name = "")
-            : base(ActorType.Player, health, armour, damage, maxHealth, name)
+        public Player(ContentManager content, int health = 100, int armour = 30, int damage = 20, int maxHealth = -1, string name = "")
+            : base(content, ActorType.Player, health, armour, damage, maxHealth, name)
         {
         }
     }

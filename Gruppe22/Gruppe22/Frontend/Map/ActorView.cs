@@ -48,7 +48,7 @@ namespace Gruppe22
         /// <summary>
         /// Number of milliseconds to wait until displaying next frame of animation
         /// </summary>
-        private int _animationTime = 45;
+        private int _animationTime = 35;
         /// <summary>
         /// Seconds elapsed since last redraw
         /// </summary>
@@ -112,8 +112,8 @@ namespace Gruppe22
             }
             set
             {
-                if (_id == 0)
-                    System.Diagnostics.Debug.WriteLine("Move from " + _position.X.ToString() + "/" + _position.Y.ToString() + " to " + _target.x.ToString() + "/" + value.y.ToString());
+               // if (_id == 0)
+                //    System.Diagnostics.Debug.WriteLine("Move from " + _position.X.ToString() + "/" + _position.Y.ToString() + " to " + _target.x.ToString() + "/" + value.y.ToString());
                 _blockUpdates = true;
                 if ((value.x != (int)_position.X) || (value.y != (int)_position.Y))
                 {
@@ -403,7 +403,7 @@ namespace Gruppe22
                         hasMoved = true;
                         if (_target.x > _position.X)
                         {
-                            if (_id == 0) System.Diagnostics.Debug.Write(_xpertick.ToString());
+                         //   if (_id == 0) System.Diagnostics.Debug.Write(_xpertick.ToString());
 
                             _position.X += _xpertick;
                             if (_target.x < _position.X) { EndMove = true; }
@@ -413,33 +413,33 @@ namespace Gruppe22
                         {
                             if (_target.x < _position.X)
                             {
-                                if (_id == 0) System.Diagnostics.Debug.Write(-_xpertick);
+                           //     if (_id == 0) System.Diagnostics.Debug.Write(-_xpertick);
 
                                 _position.X -= Math.Min(_xpertick, (float)Math.Abs(_target.x - position.X));
                                 if (_target.x > _position.X) { EndMove = true; }
 
                             }
-                            else
-                                if (_id == 0) System.Diagnostics.Debug.Write("0");
+                            //else
+                           //     if (_id == 0) System.Diagnostics.Debug.Write("0");
                         }
 
                         if (_target.y > _position.Y)
                         {
-                            if (_id == 0) System.Diagnostics.Debug.WriteLine("/" + _ypertick.ToString());
+                         //   if (_id == 0) System.Diagnostics.Debug.WriteLine("/" + _ypertick.ToString());
                             _position.Y += _ypertick;
                             if (_target.y < _position.Y) { EndMove = true; }
                         }
                         else
                             if (_target.y < _position.Y)
                             {
-                                if (_id == 0) System.Diagnostics.Debug.WriteLine("/-" + _ypertick.ToString());
+                               // if (_id == 0) System.Diagnostics.Debug.WriteLine("/-" + _ypertick.ToString());
 
                                 _position.Y -= _ypertick;
                                 if (_target.y > _position.Y) { EndMove = true; }
                             }
                             else
                             {
-                                if (_id == 0) System.Diagnostics.Debug.WriteLine("/0");
+                              //  if (_id == 0) System.Diagnostics.Debug.WriteLine("/0");
                             }
                         if (EndMove || ((Math.Abs(_target.x - _position.X) < 0.1) && (Math.Abs(_target.y - _position.Y) < 0.1)))
                         {

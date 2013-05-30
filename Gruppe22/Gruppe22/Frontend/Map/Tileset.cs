@@ -153,7 +153,7 @@ namespace Gruppe22
                 int _id = Int32.Parse(reader.GetAttribute("ID").ToString());
                 while (_id > _textures.Count)
                 {
-                    _textures.Add(new TileObject(_content,_width,_height));
+                    _textures.Add(new TileObject(_content, _width, _height));
                 }
                 _textures[_id].ReadXml(reader);
             }
@@ -163,19 +163,20 @@ namespace Gruppe22
             if (reader.NodeType == System.Xml.XmlNodeType.EndElement) reader.ReadEndElement();
         }
 
+
         /// <summary>
         /// 
         /// </summary>
         /// <param name="filename"></param>
         /// <param name="id"></param>
         /// <param name="cutOut"></param>
-        public virtual void Add(string filename, int id, Rectangle cutOut)
+        public virtual void Add(string filename, int id, Rectangle cutOut, int rows = 1, int cols = 1, bool dir = false)
         {
-            while ((int)id > _textures.Count-1)
+            while ((int)id > _textures.Count - 1)
             {
                 _textures.Add(new TileObject(_content, cutOut.Width, cutOut.Height));
             }
-            _textures[id].AddAnimation(filename, new Coords(cutOut.Left, cutOut.Top), 1, 1, false);
+            _textures[id].AddAnimation(filename, new Coords(cutOut.Left, cutOut.Top), rows, cols, dir);
         }
 
         /// <summary>

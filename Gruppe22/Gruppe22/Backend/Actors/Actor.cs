@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml;
+using Microsoft.Xna.Framework.Content;
 
 namespace Gruppe22
 {
@@ -51,6 +52,7 @@ namespace Gruppe22
         private int _armor = 40;
         private int _abilityPoints = 0;
         private int _skills = 0;
+        private ContentManager _content;
         #endregion
 
         #region Public Fields
@@ -633,7 +635,16 @@ namespace Gruppe22
                 reader.Read();
                 return;
             }
+
+            while (reader.NodeType != XmlNodeType.EndElement)
+            {
+                Item item = new Item(_content);
+                item.Load(reader);
+                _inventory.Add(item);
+            }
             reader.ReadEndElement();
+            reader.Read(); // End Effects
+
         }
 
         /// <summary>
@@ -771,8 +782,9 @@ namespace Gruppe22
         /// <param name="health"></param>
         /// <param name="armor"></param>
         /// <param name="damage"></param>
-        public Actor(ActorType actorType, int health, int armor, int damage, int maxHealth = -1, string name = "", Random r = null, string animationFile = "")
+        public Actor(ContentManager content, ActorType actorType, int health, int armor, int damage, int maxHealth = -1, string name = "", Random r = null, string animationFile = "")
         {
+            _content = content;
             this._actorType = actorType;
             if (r == null) r = new Random();
             if (health < 0)

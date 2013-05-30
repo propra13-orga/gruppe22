@@ -84,30 +84,45 @@ namespace Gruppe22
                     {
 
                         Direction dir = Direction.None;
-                        Coords closestEnemy = map.ClosestEnemy(coords);
+                        Coords closestEnemy = map.ClosestEnemy(coords, 6);
+
                         if (closestEnemy.x > -1) // There is an enemy close by
                         {
+                            if ((Math.Abs(closestEnemy.x - coords.x) < 2) &&
+                                (Math.Abs(closestEnemy.y - coords.y) < 2))
+                            {
+                                dir = Map.WhichWayIs(closestEnemy, coords);
+                                System.Diagnostics.Debug.WriteLine("-------");
+                                System.Diagnostics.Debug.WriteLine(coords.x + "/" + coords.y + "->" + closestEnemy.x + "/" + closestEnemy.y + "=>" + dir);
+                                System.Diagnostics.Debug.WriteLine("-------");
+
+                            }
+                            else
+                            {
+                                List<Coords> path = map.PathTo(coords, closestEnemy, 4);
+                                if ((path != null) && (path.Count > 0))
+                                {
+                                    dir = Map.WhichWayIs(path[1], coords);
+                                }
+                            }
+
                             if (actor.health < actor.maxHealth / 4)
                             {
                                 // Low health => try to flee
 
-                                dir = Map.OppositeDirection(Map.WhichWayIs(coords, map.PathTo(coords, closestEnemy, 5)[0]));
-                                int count = 1;
-
-                                while ((!map.TileByCoords(Map.DirectionTile(coords, dir)).canEnter) && (count < 9))
-                                {
-                                    dir = Map.NextDirection(dir);
-                                    count += 1;
-                                }
+                                dir = Map.OppositeDirection(dir);
                             }
-                            else
+                            int count = 1;
+
+                            while ((!map.TileByCoords(Map.DirectionTile(coords, dir)).canEnter) && (count < 9))
                             {
-                                // High health => Follow opponent or attack
-                                dir = Map.WhichWayIs(coords, map.PathTo(coords, closestEnemy, 5)[0]);
+                                dir = Map.NextDirection(dir);
+                                count += 1;
                             }
-                            if (!map.TileByCoords(Map.DirectionTile(coords, dir)).canEnter) dir = Direction.None;
 
+                            if (!map.TileByCoords(Map.DirectionTile(coords, dir)).canEnter) dir = Direction.None;
                         }
+
                         else
                         {
                             // Nobody close by, just wander aimlessly
@@ -120,6 +135,10 @@ namespace Gruppe22
                                 count += 1;
                             }
                             if ((dir == Map.OppositeDirection(_lastDir)) || (!map.TileByCoords(Map.DirectionTile(coords, dir)).canEnter)) dir = Direction.None;
+                        }
+                        if (dir == Direction.None)
+                        {
+                            dir = (Direction)_random.Next(4);
                         }
                         if (dir != Direction.None)
                             ((IHandleEvent)parent).HandleEvent(null, Events.MoveActor, actor.id, dir);

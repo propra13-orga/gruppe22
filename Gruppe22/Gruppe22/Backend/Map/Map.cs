@@ -279,20 +279,23 @@ namespace Gruppe22
         /// <returns></returns>
         public Coords ClosestEnemy(Coords coords, int radius = 4, bool includePlayer = true, bool includeNPC = true, bool includeEnemy = true)
         {
-            for (int distance = 1; distance < radius; ++distance)
+            for (int distance = 1; distance <= radius; ++distance)
             {
-                for (int x = coords.x - distance; x < coords.x + distance; ++x)
+                for (int x = coords.x - distance; x <= coords.x + distance; ++x)
                 {
                     if (((includePlayer && this[x, coords.y - distance].hasPlayer))
                         //                    ||((includeNPC&&this[coords.x-distance,y].hasNPC))
                     || ((includeEnemy && this[x, coords.y - distance].hasEnemy)))
                     {
+                        //System.Diagnostics.Debug.WriteLine(coords.x + "/" + coords.y + "->" + x + "/" + (coords.y - distance).ToString() + " = " + (this[x, coords.y - distance].hasPlayer ? "Player" : "Enemy"));
                         return new Coords(x, coords.y - distance);
                     }
                     if (((includePlayer && this[x, coords.y - distance].hasPlayer))
                         //                    ||((includeNPC&&this[coords.x-distance,y].hasNPC))
                     || ((includeEnemy && this[x, coords.y + distance].hasEnemy)))
                     {
+                        // System.Diagnostics.Debug.WriteLine(coords.x + "/" + coords.y + "->" + x + "/" + (coords.y + distance).ToString() + " = " + (this[x, coords.y + distance].hasPlayer ? "Player" : "Enemy"));
+
                         return new Coords(x, coords.y + distance);
                     }
                 }
@@ -302,12 +305,16 @@ namespace Gruppe22
                         //                    ||((includeNPC&&this[coords.x-distance,y].hasNPC))
                     || ((includeEnemy && this[coords.x - distance, y].hasEnemy)))
                     {
+                        //   System.Diagnostics.Debug.WriteLine(coords.x + "/" + coords.y + "->" + (coords.x - distance) + "/" + y.ToString() + " = " + (this[coords.x - distance, y].hasPlayer ? "Player" : "Enemy"));
+
                         return new Coords(coords.x - distance, y);
                     }
                     if (((includePlayer && this[coords.x + distance, y].hasPlayer))
                         //                    ||((includeNPC&&this[coords.x-distance,y].hasNPC))
                     || ((includeEnemy && this[coords.x + distance, y].hasEnemy)))
                     {
+                      //  System.Diagnostics.Debug.WriteLine(coords.x + "/" + coords.y + "->" + (coords.x + distance) + "/" + y.ToString() + " = " + (this[coords.x + distance, y].hasPlayer ? "Player" : "Enemy"));
+
                         return new Coords(coords.x + distance, y);
                     }
                 }
@@ -317,18 +324,40 @@ namespace Gruppe22
 
         public List<Coords> PathTo(Coords from, Coords to, int maxlength = 20)
         {
-            List<Coords> result = new List<Coords>();
-
-            Direction dir = WhichWayIs(from, to, true); // start by direct route
-            int count = 0;
-            while ((!TileByCoords(Map.DirectionTile(from, dir)).canEnter) && (count < 4))
+            List<Coords> result;
+            if (maxlength > 0)
             {
-                dir = NextDirection(dir, true);
+                if ((from.x == to.x) && (from.y == to.y))
+                {
+                    result = new List<Coords>();
+                    System.Diagnostics.Debug.Write("###" + from.x + "/" + from.y);
+                    result.Add(to);
+                    return result;
+                }
+
+                Direction dir = WhichWayIs(from, to, true); // start by direct route
+                int count = 0;
+                while (count < 4)
+                {
+                    Coords tmp = Map.DirectionTile(from, dir);
+                    if (this[tmp.x, tmp.y].canEnter)
+                    {
+                        result = PathTo(tmp, to, maxlength - 1);
+                        if (result != null)
+                        {
+                            System.Diagnostics.Debug.WriteLine(" - " + from.x + "/" + from.y);
+                            result.Insert(0, from);
+                            return result;
+                        }
+                    }
+                    dir = NextDirection(dir, true);
+                    count += 1;
+                }
             }
-            result.Add(Map.DirectionTile(from, dir));
             //PathTo(from, to, maxlength - 1);
-            return result;
+            return null;
         }
+
         public FloorTile TileByCoords(Coords coords)
         {
             return this[coords.x, coords.y];
@@ -447,7 +476,7 @@ namespace Gruppe22
             }
             else
             {
-                playerA = new Player(100, 0, 30);
+                playerA = new Player(_content, 100, 0, 30);
             }
             _actors.Add(playerA);
 
@@ -512,15 +541,15 @@ namespace Gruppe22
                                         switch (xmlr.Name)
                                         {
                                             case "Enemy":
-                                                actor = new Enemy();
+                                                actor = new Enemy(_content);
                                                 actor.Load(xmlr);
                                                 break;
                                             case "Player":
-                                                actor = new Player();
+                                                actor = new Player(_content);
                                                 actor.Load(xmlr);
                                                 break;
                                             default:
-                                                actor = new NPC();
+                                                actor = new NPC(_content);
                                                 actor.Load(xmlr);
                                                 break;
                                         }
