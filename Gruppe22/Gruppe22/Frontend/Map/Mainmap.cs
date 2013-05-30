@@ -8,6 +8,61 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Gruppe22
 {
+
+    public class FloatNumber
+    {
+        private Coords _tile;
+        private int _counter = 10;
+        private Color _color = Color.White;
+        private string _text;
+        private SpriteBatch _spritebatch;
+        float _width = 0;
+        float _height = 0;
+        private SpriteFont _font;
+        private int _timer = 0;
+        private Camera _camera;
+
+        public void Draw()
+        {
+            _spritebatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, null, null, null, null, _camera.matrix);
+            Vector2 pos = new Vector2(Mainmap._map2screen(_tile).x, Mainmap._map2screen(_tile).y);
+                        _spritebatch.DrawString(_font, _text, pos, new Color(_color, (float)_counter / 10), 0f, new Vector2(_width / 2, _height / 2), 10 - _counter, SpriteEffects.None, 1f);
+            //_spritebatch.DrawString(_font, _text, pos,Color.Red);
+
+            _spritebatch.End();
+        }
+
+        public bool Update(GameTime gametime)
+        {
+            _timer += gametime.ElapsedGameTime.Milliseconds;
+            if (_timer > 50)
+            {
+                _timer -= 50;
+                _counter -= 1;
+                if (_counter < 1) return true;
+            }
+            return false;
+        }
+
+        public FloatNumber(ContentManager content, SpriteBatch batch, Coords coords, string text, Camera camera, Color color, int counter = 10)
+            : this(content, batch, coords, text, camera)
+        {
+            _color = color;
+            _counter = counter;
+        }
+
+        public FloatNumber(ContentManager content, SpriteBatch batch, Coords coords, string text, Camera camera)
+        {
+            _text = text;
+            _tile = coords;
+            _spritebatch = batch;
+            _font = content.Load<SpriteFont>("font");
+            _height = _font.MeasureString(_text).Y;
+            _width = _font.MeasureString(_text).X;
+            _camera = camera;
+        }
+
+    }
     /// <summary>
     /// Enumeration of eight ways of movement
     /// </summary>
@@ -72,6 +127,7 @@ namespace Gruppe22
         /// </summary>
         private WallTiles _walls;
         private WallTiles _floors;
+        private List<FloatNumber> _floatnumbers = null;
         #endregion
 
         #region Public Fields
@@ -203,6 +259,10 @@ namespace Gruppe22
 
                 if (_highlightedTile.x > -1)
                     _tooltip.DisplayToolTip(_map[_highlightedTile.x, _highlightedTile.y]);
+                for (int i = 0; i < _floatnumbers.Count; ++i)
+                {
+                    _floatnumbers[i].Draw();
+                }
             }
         }
         #endregion
@@ -818,6 +878,11 @@ namespace Gruppe22
             }
             _camera.position = new Vector2(-38 - _actors[_playerID].position.X, -30 - _actors[_playerID].position.Y);
         }
+
+        public void floatNumber(Coords tile, string text, Color color)
+        {
+            _floatnumbers.Add(new FloatNumber(_content, _spriteBatch, tile, text, _camera, color));
+        }
         /// <summary>
         /// Move camera, react to mouse
         /// </summary>
@@ -826,6 +891,14 @@ namespace Gruppe22
         {
             if (_enabled)
             {
+                for (int i = 0; i < _floatnumbers.Count; ++i)
+                {
+                    if (_floatnumbers[i].Update(gameTime))
+                    {
+                        _floatnumbers.RemoveAt(i);
+                        i -= 1;
+                    }
+                }
                 if (IsHit(Mouse.GetState().X, Mouse.GetState().Y))
                 {
                     _UpdateMouse(new Vector2(Mouse.GetState().X, Mouse.GetState().Y));
@@ -1118,6 +1191,7 @@ namespace Gruppe22
             _actors = new List<ActorView>();
 
             resetActors();
+            _floatnumbers = new List<FloatNumber>();
             _enabled = enabled;
         }
         #endregion

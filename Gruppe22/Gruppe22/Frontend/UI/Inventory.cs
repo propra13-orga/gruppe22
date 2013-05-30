@@ -17,6 +17,17 @@ namespace Gruppe22
         #endregion
 
         #region Public Fields
+        public Actor actor
+        {
+            get
+            {
+                return _actor;
+            }
+            set
+            {
+                _actor = value;
+            }
+        }
         public void Update()
         {
             _icons.Clear();

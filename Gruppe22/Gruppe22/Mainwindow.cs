@@ -515,25 +515,19 @@ namespace Gruppe22
 
                 case Events.NewMap:
                     _status = GameStatus.NoRedraw;
-                    _map1.Dispose();
                     GenerateMaps();
-                    DeleteSavedRooms();
-                    _map1.Load("room1.xml", null);
-                    _mainmap1.resetActors();
-                    _inventory.Update();
-                    _mainmap2.resetActors();
-
-                    _status = GameStatus.Paused;
-                    HandleEvent(null, Events.ContinueGame);
+                    HandleEvent(null, Events.ResetGame);
                     break;
 
                 case Events.ResetGame:
-                    DeleteSavedRooms();
                     _status = GameStatus.NoRedraw;
+                    DeleteSavedRooms();
                     _map1.Dispose();
                     _map1.Load("room1.xml", null);
                     _mainmap1.resetActors();
                     _mainmap2.resetActors();
+                    _inventory.actor = _map1.actors[0];
+                    _playerStats.actor = _map1.actors[0];
                     _inventory.Update();
                     _status = GameStatus.Paused;
                     HandleEvent(null, Events.ContinueGame);
@@ -588,6 +582,8 @@ namespace Gruppe22
                         if (_map1[target.x, target.y].hasTrap)
                         {
                             _map1.actors[id].SetDamage(_map1[target.x, target.y].trapDamage);
+                            if (id == 0)
+                                _mainmap1.floatNumber(target, _map1[target.x, target.y].trapDamage.ToString(), Color.DarkRed);
                             if (_map1.actors[id].isDead)
                             {
                                 _mainmap1.HandleEvent(null, Events.AnimateActor, id, Activity.Die);
@@ -628,7 +624,6 @@ namespace Gruppe22
                         int id = (int)data[0];
                         Direction dir = (Direction)data[1];
                         Coords target = Map.DirectionTile(_map1.actors[id].tile.coords, dir);
-
                         // Display enemy statistics
                         if (_map1[target.x, target.y].firstActor is Player)
                         {
@@ -645,6 +640,13 @@ namespace Gruppe22
                         // Spieler verletzt
                         // oder tot
                         _map1[target.x, target.y].firstActor.SetDamage(_map1.actors[id]);
+
+                        if (id == 0) 
+                            _mainmap1.floatNumber(target, _map1.actors[id].damage.ToString(), Color.White);
+
+                        if (_map1[target.x, target.y].firstActor is Player)
+                            _mainmap1.floatNumber(target, _map1.actors[id].damage.ToString(), Color.DarkRed);
+
                         if (_map1[target.x, target.y].firstActor is Player) RemoveHealth();
                         if (_map1[target.x, target.y].firstActor.isDead)
                         {
@@ -742,7 +744,7 @@ namespace Gruppe22
             if ((!_updating) && (_status != GameStatus.FetchingData))
             {
                 {
-                    _updating = true;
+                    // _updating = true;
 
                     _events.Update(gameTime);
                     if (_backgroundcolor.R > 0) // Remove Red Tint

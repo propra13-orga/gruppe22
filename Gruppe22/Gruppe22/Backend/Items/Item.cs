@@ -54,7 +54,7 @@ namespace Gruppe22
 
         public virtual void UseItem()
         {
-            if (_owner!= null)
+            if (_owner != null)
             {
                 _destroyed = true;
                 foreach (ItemEffect effect in _effects)
@@ -303,6 +303,8 @@ namespace Gruppe22
             _icon.offsetY = Convert.ToInt32(reader.GetAttribute("iconcropY"));
             _equipped = Convert.ToBoolean(reader.GetAttribute("equipped"));
             _destroyed = Convert.ToBoolean(reader.GetAttribute("destroyed"));
+            _itemType = (ItemType)Enum.Parse(typeof(ItemType), reader.GetAttribute("type"));
+
             _name = reader.GetAttribute("name");
             _description = reader.GetAttribute("description");
             reader.Read(); // Begin Effect
@@ -341,6 +343,8 @@ namespace Gruppe22
                 xmlw.WriteAttributeString("clipRectH", Convert.ToString(_icon.clipRect.Height));
             }
             xmlw.WriteAttributeString("equipped", Convert.ToString(_equipped));
+            xmlw.WriteAttributeString("type", Convert.ToString(_itemType));
+
             xmlw.WriteAttributeString("destroyed", Convert.ToString(_destroyed));
             xmlw.WriteAttributeString("name", Convert.ToString(name));
             xmlw.WriteAttributeString("description", Convert.ToString(_description));

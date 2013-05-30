@@ -787,9 +787,9 @@ namespace Gruppe22
                 }
             }
             this._health = health;
-            if (_maxhealth == -1)
+            if (maxHealth == -1)
             {
-                maxHealth = health;
+                _maxhealth = health;
             }
             if (armor < 0)
             {
