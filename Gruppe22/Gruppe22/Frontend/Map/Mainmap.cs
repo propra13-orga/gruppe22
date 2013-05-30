@@ -11,7 +11,7 @@ namespace Gruppe22
 
     public class FloatNumber
     {
-        private Coords _tile;
+        Vector2 _pos;
         private int _counter = 10;
         private Color _color = Color.White;
         private string _text;
@@ -24,11 +24,8 @@ namespace Gruppe22
 
         public void Draw()
         {
-            _spritebatch.Begin(SpriteSortMode.FrontToBack, BlendState.AlphaBlend, null, null, null, null, _camera.matrix);
-            Vector2 pos = new Vector2(Mainmap._map2screen(_tile).x, Mainmap._map2screen(_tile).y);
-                        _spritebatch.DrawString(_font, _text, pos, new Color(_color, (float)_counter / 10), 0f, new Vector2(_width / 2, _height / 2), 10 - _counter, SpriteEffects.None, 1f);
-            //_spritebatch.DrawString(_font, _text, pos,Color.Red);
-
+            _spritebatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend, null, null, null, null, _camera.matrix);
+            _spritebatch.DrawString(_font, _text, _pos, new Color(_color, (float)_counter / 10), 0f, new Vector2(_width / 2, _height / 2), (10 - _counter)/3, SpriteEffects.None, 0);
             _spritebatch.End();
         }
 
@@ -54,7 +51,7 @@ namespace Gruppe22
         public FloatNumber(ContentManager content, SpriteBatch batch, Coords coords, string text, Camera camera)
         {
             _text = text;
-            _tile = coords;
+            _pos = new Vector2(Mainmap._map2screen(coords).x+52, Mainmap._map2screen(coords).y-16);
             _spritebatch = batch;
             _font = content.Load<SpriteFont>("font");
             _height = _font.MeasureString(_text).Y;

@@ -297,10 +297,10 @@ namespace Gruppe22
                 Convert.ToInt32(reader.GetAttribute("clipRectY")),
                 Convert.ToInt32(reader.GetAttribute("clipRectW")),
                 Convert.ToInt32(reader.GetAttribute("clipRectH"))));
-            _icon.cropX = Convert.ToInt32(reader.GetAttribute("iconoffsetX"));
-            _icon.cropY = Convert.ToInt32(reader.GetAttribute("iconoffsetY"));
-            _icon.offsetX = Convert.ToInt32(reader.GetAttribute("iconcropX"));
-            _icon.offsetY = Convert.ToInt32(reader.GetAttribute("iconcropY"));
+            _icon.offsetX = Convert.ToInt32(reader.GetAttribute("iconoffsetX"));
+            _icon.offsetY = Convert.ToInt32(reader.GetAttribute("iconoffsetY"));
+            _icon.cropX = Convert.ToInt32(reader.GetAttribute("iconcropX"));
+            _icon.cropY = Convert.ToInt32(reader.GetAttribute("iconcropY"));
             _equipped = Convert.ToBoolean(reader.GetAttribute("equipped"));
             _destroyed = Convert.ToBoolean(reader.GetAttribute("destroyed"));
             _itemType = (ItemType)Enum.Parse(typeof(ItemType), reader.GetAttribute("type"));
