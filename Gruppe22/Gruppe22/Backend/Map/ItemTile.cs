@@ -14,6 +14,7 @@ namespace Gruppe22
         {
             get { return _item; }
         }
+
         public ItemType itemType
         {
             get
@@ -25,27 +26,24 @@ namespace Gruppe22
             }
         }
 
+
+
+        public override void Save(XmlWriter xmlw)
+        {
+            xmlw.WriteStartElement("ItemTile");
+            _item.Save(xmlw);
+            xmlw.WriteEndElement();
+        }
+
         public ItemTile(object parent, Item item)
             : base(parent)
         {
             _item = item;
         }
 
-
-        public override void Save(XmlWriter xmlw)
-        {
-            xmlw.WriteStartElement("ItemTile");
-            xmlw.WriteAttributeString("name", item.name);
-            xmlw.WriteAttributeString("strength", item.strength.ToString());
-            xmlw.WriteAttributeString("type", item.itemType.ToString());
-            xmlw.WriteEndElement();
-            _parent = parent;
-        }
-
         public ItemTile(object parent)
             : base(parent)
         {
-
         }
     }
 }

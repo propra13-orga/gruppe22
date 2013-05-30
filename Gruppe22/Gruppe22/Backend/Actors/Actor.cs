@@ -21,26 +21,36 @@ namespace Gruppe22
         protected ActorType _actorType;
         private int _id = 0;
         private string _name = "";
+        private string _animationFile = "";
         private List<Item> _inventory = null;
-        private int _currMana;
-        private int _maxMana;
-        private int _manaReg;
-        private int _gold;
+        private int _mana = 0;
+        private int _evade = 0;
+        private int _block = 0;
+        private int _penetrate = 0;
+        private int _healthReg = 0;
+        private int _stealHealth = 0;
+        private int _stealMana = 0;
+        private int _fireDamage = 0;
+        private int _iceDamage = 0;
+        private int _fireDefense = 0;
+        private int _iceDefense = 0;
+        private int _destroyWeapon = 0;
+        private int _destroyArmor = 0;
+        private int _maxMana = 0;
+        private int _manaReg = 0;
+        private int _gold = 0;
         private bool _locked = false;
         //private List<Spell> _spellbook = null;
-
-        /// <summary>
-        /// later used to calculate Health, Damage, etc
-        /// </summary>
-        private int _level;
-        private int _strength;
-        private int _vitality;
-        private int _exp;
-        private int _expNeeded;
-
-        //Lebenspunkte, Rüstung, Schaden/Angriffsstärke
-        protected int
-            _maxhealth = 100, _health = 50, _armour = 40, _damage = 20;
+        private int _level = 0;
+        private int _damage = 0;
+        private int _resist = 0;
+        private int _exp = 0;
+        private int _expNeeded = 0;
+        private int _maxhealth = 100;
+        private int _health = 50;
+        private int _armor = 40;
+        private int _abilityPoints = 0;
+        private int _skills = 0;
         #endregion
 
         #region Public Fields
@@ -49,6 +59,13 @@ namespace Gruppe22
             get { return _locked; }
             set { _locked = value; }
         }
+
+        public string animationFile
+        {
+            get { return _animationFile; }
+            set { _animationFile = value; }
+        }
+
         public ActorTile tile
         {
             get { return _tile; }
@@ -63,15 +80,15 @@ namespace Gruppe22
             }
         }
 
-        public int currMana
+        public int mana
         {
             get
             {
-                return _currMana;
+                return _mana;
             }
             set
             {
-                _currMana = value;
+                _mana = value;
             }
         }
 
@@ -154,15 +171,15 @@ namespace Gruppe22
             }
         }
 
-        public int armour
+        public int armor
         {
             get
             {
-                return _armour;
+                return _armor;
             }
             set
             {
-                _armour = value;
+                _armor = value;
             }
         }
 
@@ -198,29 +215,6 @@ namespace Gruppe22
             }
         }
 
-        public int strength
-        {
-            get
-            {
-                return _strength;
-            }
-            set
-            {
-                _strength = value;
-            }
-        }
-
-        public int vitality
-        {
-            get
-            {
-                return _vitality;
-            }
-            set
-            {
-                _vitality = value;
-            }
-        }
 
         public int exp
         {
@@ -233,21 +227,233 @@ namespace Gruppe22
                 _exp = value;
             }
         }
-        public bool isDead { get { return _health <= 0 ? true : false; } }
 
-        public int id { get { return _id; } set { _id = value; } }
+        public bool isDead
+        {
+            get
+            {
+                return _health <= 0 ? true : false;
+            }
+        }
+
+        public int id
+        {
+            get
+            {
+                return _id;
+            }
+            set
+            {
+                _id = value;
+            }
+        }
+
+
+
+
+
+
+
+        public int evade
+        {
+            get
+            {
+                return _evade;
+            }
+            set
+            {
+                _evade = value;
+            }
+        }
+
+        public int block
+        {
+            get
+            {
+                return _block;
+            }
+            set
+            {
+                _block = value;
+            }
+        }
+
+        public int penetrate
+        {
+            get
+            {
+                return _penetrate;
+            }
+            set
+            {
+                _penetrate = value;
+            }
+        }
+
+        public int healthReg
+        {
+            get
+            {
+                return _healthReg;
+            }
+            set
+            {
+                _healthReg = value;
+            }
+        }
+
+        public int stealHealth
+        {
+            get
+            {
+                return _stealHealth;
+            }
+            set
+            {
+                _stealHealth = value;
+            }
+        }
+
+        public int stealMana
+        {
+            get
+            {
+                return _stealMana;
+            }
+            set
+            {
+                _stealMana = value;
+            }
+        }
+
+        public int fireDamage
+        {
+            get
+            {
+                return _fireDamage;
+            }
+            set
+            {
+                _fireDamage = value;
+            }
+        }
+
+        public int iceDamage
+        {
+            get
+            {
+                return _iceDamage;
+            }
+            set
+            {
+                _iceDamage = value;
+            }
+        }
+
+        public int fireDefense
+        {
+            get
+            {
+                return _fireDamage;
+            }
+            set
+            {
+                _fireDamage = value;
+            }
+        }
+
+        public int iceDefense
+        {
+            get
+            {
+                return _iceDefense;
+            }
+            set
+            {
+                _iceDefense = value;
+            }
+        }
+
+        public int destroyWeapon
+        {
+            get
+            {
+                return _destroyWeapon;
+            }
+            set
+            {
+                _destroyWeapon = value;
+            }
+        }
+
+        public int destroyArmor
+        {
+            get
+            {
+                return _destroyArmor;
+            }
+            set
+            {
+                _destroyArmor = value;
+            }
+        }
+        public int resist
+        {
+            get
+            {
+                return _resist;
+            }
+            set
+            {
+                _resist = value;
+            }
+        }
+        public int maxhealth
+        {
+            get
+            {
+                return _maxhealth;
+            }
+            set
+            {
+                _maxhealth = value;
+            }
+        }
+
+        public int abilityPoints
+        {
+            get
+            {
+                return _abilityPoints;
+            }
+            set
+            {
+                _abilityPoints = value;
+            }
+        }
+        public int skills
+        {
+            get
+            {
+                return _skills;
+            }
+            set
+            {
+                _skills = value;
+            }
+        }
         #endregion
 
         #region Public Methods
 
 
-        public void LevelUp(Actor actor)
+        public void LevelUp()
         {
-            actor._vitality++;
-            actor._strength++;
-            actor._exp = 0;
-            actor._level++;
-            actor._health = actor._maxhealth;
+            _level++;
+            _abilityPoints += 40;
+            _skills += 1;
+            _expNeeded = 3 * _level ^ 2 + 83 * _level + 41;
+            _health = _maxhealth;
         }
 
         public void SetDamage(Actor actor)
@@ -262,16 +468,16 @@ namespace Gruppe22
         /// <param name="damage"></param>
         public void SetDamage(int damage)
         {
-            int tmp = _armour - damage;
+            int tmp = _armor - damage;
             if (tmp < 0)
                 _health = (_health + tmp > 0) ? (_health + tmp) : 0;
         }
 
         public void AddProtection(int amount)
         {
-            if (amount > _armour)
+            if (amount > _armor)
             {
-                _armour = amount;
+                _armor = amount;
                 _tile.HandleEvent(null, Events.ShowMessage, ((_actorType == ActorType.Player) ? "You equip  " : (_name + " equips ")) + " new armor.");
             }
             else
@@ -308,39 +514,126 @@ namespace Gruppe22
             }
         }
 
-        public void SaveActor(XmlWriter writer)
+        public void Save(XmlWriter writer)
         {
-            writer.WriteStartElement("actor");
+            switch (_actorType)
+            {
+                case ActorType.Enemy:
+                    writer.WriteStartElement("Enemy");
+
+                    break;
+                case ActorType.NPC:
+                    writer.WriteStartElement("NPC");
+
+                    break;
+                case ActorType.Player:
+                    writer.WriteStartElement("Player");
+
+                    break;
+                default:
+                    writer.WriteStartElement("Actor");
+                    break;
+            }
+            
             writer.WriteAttributeString("name", _name);
             writer.WriteAttributeString("maxhp", Convert.ToString(_maxhealth));
-            writer.WriteAttributeString("currhp", Convert.ToString(_health));
-            writer.WriteAttributeString("arm", Convert.ToString(_armour));
-            writer.WriteAttributeString("lev", Convert.ToString(_level));
-            writer.WriteAttributeString("str", Convert.ToString(_strength));
-            writer.WriteAttributeString("vit", Convert.ToString(_vitality));
-            writer.WriteAttributeString("#items", Convert.ToString(_inventory.Count()));
+            writer.WriteAttributeString("hp", Convert.ToString(_health));
+            writer.WriteAttributeString("level", Convert.ToString(_level));
+            writer.WriteAttributeString("mana", Convert.ToString(_mana));
+            writer.WriteAttributeString("evade", Convert.ToString(_evade));
+            writer.WriteAttributeString("block", Convert.ToString(_block));
+            writer.WriteAttributeString("penetrate", Convert.ToString(_penetrate));
+            writer.WriteAttributeString("healthReg", Convert.ToString(_healthReg));
+            writer.WriteAttributeString("skills", Convert.ToString(_skills));
+            writer.WriteAttributeString("abilityPoints", Convert.ToString(_abilityPoints));
+            writer.WriteAttributeString("armor", Convert.ToString(_armor));
+            writer.WriteAttributeString("stealHealth", Convert.ToString(_stealHealth));
+            writer.WriteAttributeString("stealMana", Convert.ToString(_stealMana));
+            writer.WriteAttributeString("fireDamage", Convert.ToString(_fireDamage));
+            writer.WriteAttributeString("iceDamage", Convert.ToString(_iceDamage));
+            writer.WriteAttributeString("fireDefense", Convert.ToString(_fireDefense));
+            writer.WriteAttributeString("iceDefense", Convert.ToString(_iceDefense));
+            writer.WriteAttributeString("expNeeded", Convert.ToString(_expNeeded));
+            writer.WriteAttributeString("exp", Convert.ToString(_exp));
+            writer.WriteAttributeString("resist", Convert.ToString(_resist));
+            writer.WriteAttributeString("damage", Convert.ToString(_damage));
+            writer.WriteAttributeString("locked", Convert.ToString(_locked));
+            writer.WriteAttributeString("gold", Convert.ToString(_gold));
+            writer.WriteAttributeString("manaReg", Convert.ToString(_manaReg));
+            writer.WriteAttributeString("maxMana", Convert.ToString(_maxMana));
+            writer.WriteAttributeString("destroyWeapon", Convert.ToString(_destroyWeapon));
+            writer.WriteAttributeString("destroyArmor", Convert.ToString(_destroyArmor));
+            writer.WriteAttributeString("animation", Convert.ToString(_animationFile));
+
+
+
             writer.WriteStartElement("Inventory");
-            foreach (Item itm in _inventory)
+            foreach (Item item in _inventory)
             {
-                //save inventory
+                item.Save(writer);
             }
             writer.WriteEndElement();
             writer.WriteEndElement();
         }
 
-        public void LoadActor(XmlReader reader)
+        public void copyFrom(Actor a)
+        {
+            _actorType = a.actorType;
+            _armor = a.armor;
+            _mana = a.mana;
+            _damage = a.damage;
+            _exp = a.exp;
+            _expNeeded = a.expNeeded;
+            _gold = a.gold;
+            _health = a.health;
+            _inventory = a.inventory;
+            _level = a.level;
+            _manaReg = a.manaReg;
+            _maxhealth = a.maxHealth;
+            _maxMana = a.maxMana;
+            _name = a.name;
+
+        }
+
+        public void Load(XmlReader reader)
         {
             _name = reader.GetAttribute("name");
             _maxhealth = Convert.ToInt32(reader.GetAttribute("maxhp"));
-            _health = Convert.ToInt32(reader.GetAttribute("currhp"));
-            _armour = Convert.ToInt32(reader.GetAttribute("arm"));
-            _level = Convert.ToInt32(reader.GetAttribute("lev"));
-            _strength = Convert.ToInt32(reader.GetAttribute("str"));
-            _vitality = Convert.ToInt32(reader.GetAttribute("vit"));
-            for (int i = 0; i < Convert.ToInt32(reader.GetAttribute("#items")); i++)
+            _health = Convert.ToInt32(reader.GetAttribute("hp"));
+            _level = Convert.ToInt32(reader.GetAttribute("level"));
+            _mana = Convert.ToInt32(reader.GetAttribute("mana"));
+            _evade = Convert.ToInt32(reader.GetAttribute("evade"));
+            _block = Convert.ToInt32(reader.GetAttribute("block"));
+            _penetrate = Convert.ToInt32(reader.GetAttribute("penetrate"));
+            _healthReg = Convert.ToInt32(reader.GetAttribute("healthReg"));
+            _skills = Convert.ToInt32(reader.GetAttribute("skills"));
+            _abilityPoints = Convert.ToInt32(reader.GetAttribute("abilityPoints"));
+            _armor = Convert.ToInt32(reader.GetAttribute("armor"));
+            _stealHealth = Convert.ToInt32(reader.GetAttribute("stealHealth"));
+            _stealMana = Convert.ToInt32(reader.GetAttribute("stealMana"));
+            _fireDamage = Convert.ToInt32(reader.GetAttribute("fireDamage"));
+            _iceDamage = Convert.ToInt32(reader.GetAttribute("iceDamage"));
+            _fireDefense = Convert.ToInt32(reader.GetAttribute("fireDefense"));
+            _iceDefense = Convert.ToInt32(reader.GetAttribute("iceDefense"));
+            _expNeeded = Convert.ToInt32(reader.GetAttribute("expNeeded"));
+            _exp = Convert.ToInt32(reader.GetAttribute("exp"));
+            _resist = Convert.ToInt32(reader.GetAttribute("resist"));
+            _damage = Convert.ToInt32(reader.GetAttribute("damage"));
+            _level = Convert.ToInt32(reader.GetAttribute("level"));
+            _locked = Convert.ToBoolean(reader.GetAttribute("locked"));
+            _gold = Convert.ToInt32(reader.GetAttribute("gold"));
+            _manaReg = Convert.ToInt32(reader.GetAttribute("manaReg"));
+            _maxMana = Convert.ToInt32(reader.GetAttribute("maxMana"));
+            _destroyWeapon = Convert.ToInt32(reader.GetAttribute("destroyWeapon"));
+            _destroyArmor = Convert.ToInt32(reader.GetAttribute("destroyArmor"));
+            _animationFile = reader.GetAttribute("animation");
+            reader.Read();
+            if (reader.IsEmptyElement)
             {
-                //read inventory
+                reader.Read();
+                return;
             }
+            reader.ReadEndElement();
         }
 
         /// <summary>
@@ -476,9 +769,9 @@ namespace Gruppe22
         /// </summary>
         /// <param name="actorType"></param>
         /// <param name="health"></param>
-        /// <param name="armour"></param>
+        /// <param name="armor"></param>
         /// <param name="damage"></param>
-        public Actor(ActorType actorType, int health, int armour, int damage, int maxHealth = -1, string name = "", Random r = null)
+        public Actor(ActorType actorType, int health, int armor, int damage, int maxHealth = -1, string name = "", Random r = null, string animationFile = "")
         {
             this._actorType = actorType;
             if (r == null) r = new Random();
@@ -498,11 +791,11 @@ namespace Gruppe22
             {
                 maxHealth = health;
             }
-            if (armour < 0)
+            if (armor < 0)
             {
-                armour = r.Next(10);
+                armor = r.Next(10);
             }
-            this._armour = armour;
+            this._armor = armor;
             if (damage < 0)
             {
                 damage = 12 + r.Next(10);
@@ -511,6 +804,7 @@ namespace Gruppe22
             if (name.Trim() == "") GenerateName(r);
             else _name = name;
             this._inventory = new List<Item>();
+            _animationFile = animationFile;
         }
 
         #endregion

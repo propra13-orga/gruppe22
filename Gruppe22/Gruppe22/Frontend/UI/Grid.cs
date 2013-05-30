@@ -6,19 +6,57 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 namespace Gruppe22
 {
+
+    public class GridElement
+    {
+        private int _id = 0;
+        private string _tooltip = "";
+        private VisibleObject _icon = null;
+        private bool _checked = false;
+        public VisibleObject icon
+        {
+            get { return _icon; }
+            set { _icon = value; }
+        }
+        public string tooltip
+        {
+            get { return _tooltip; }
+            set { _tooltip = value; }
+        }
+        public int id
+        {
+            get { return _id; }
+        }
+        public bool isChecked
+        {
+            get { return _checked; }
+            set { _checked = value; }
+        }
+
+        public GridElement(int id, string tooltip, VisibleObject icon, bool isChecked)
+        {
+            _id = id;
+            _tooltip = tooltip;
+            _icon = icon;
+            _checked = isChecked;
+        }
+    }
     /// <summary>
     /// 
     /// </summary>
     public class Grid : UIElement
     {
         #region Private Fields
+        private SpriteFont _font = null;
+
         /// <summary>
         /// 
         /// </summary>
-        public List<VisibleObject> _icons;
+        protected List<GridElement> _icons;
 
         /// <summary>
         /// 
@@ -48,12 +86,12 @@ namespace Gruppe22
         /// <summary>
         /// 
         /// </summary>
-        private int _totalPages = 3;
+        private int _totalPages = 1;
 
         /// <summary>
         /// 
         /// </summary>
-        private int _page = -1;
+        private int _page = 0;
 
         private Texture2D _arrows = null;
         private Texture2D _background = null;
@@ -141,19 +179,71 @@ namespace Gruppe22
         #endregion
         #region Public Methods
 
+        public int Pos2Tile(int x, int y)
+        {
+            int result = -1;
+            if (_displayRect.Contains(x, y))
+            {
+                x -= _displayRect.Left;
+                y -= _displayRect.Top;
+                x = x / (_width + 3);
+                y = y / (_height + 3);
+                result = y * _cols + x + (_page * _cols * _rows);
+            }
+            return result;
+        }
         /// <summary>
         /// 
         /// </summary>
         /// <param name="gameTime"></param>
         public override void Draw(GameTime gameTime)
         {
+            int _selected = Pos2Tile(Mouse.GetState().X, Mouse.GetState().Y);
             _spriteBatch.Begin();
+            int icon = _page * _cols * _rows;
+
             for (int y = 0; y < _rows; ++y)
             {
                 for (int x = 0; x < _cols; ++x)
                 {
                     _spriteBatch.Draw(_background, new Rectangle(_displayRect.Left + x * (_width + 3), _displayRect.Top + y * (_height + 3), _width + 2, _height + 2), new Rectangle(39, 6, 1, 1), Color.White);
-                    _spriteBatch.Draw(_background, new Rectangle(_displayRect.Left + x * (_width + 3) + 1, _displayRect.Top + y * (_height + 3) + 1, _width, _height), new Rectangle(39, 6, 1, 1), Color.Black);
+                    if (icon != _selected)
+                        _spriteBatch.Draw(_background, new Rectangle(_displayRect.Left + x * (_width + 3) + 1, _displayRect.Top + y * (_height + 3) + 1, _width, _height), new Rectangle(39, 6, 1, 1), Color.Black);
+
+                    if ((icon < _icons.Count) && (_icons[icon] != null))
+                    {
+                        _spriteBatch.Draw(_icons[icon].icon.texture, new Rectangle(_displayRect.Left + x * (_width + 3) + 1, _displayRect.Top + y * (_height + 3) + 1, _width, _height), _icons[icon].icon.clipRect, Color.White);
+                        if (_icons[icon].isChecked)
+                        {
+                            _spriteBatch.Draw(_background, new Rectangle(_displayRect.Left + (x + 1) * (_width + 3) - 16, _displayRect.Top + y * (_height + 3) + 2, 16, 16), new Rectangle(48, 16, 16, 16), Color.White);
+                        }
+                        if (icon == _selected)
+                        {
+                            int textwidth = (int)_font.MeasureString(_icons[icon].tooltip).X + 1;
+                            int textheight = (int)_font.MeasureString(_icons[icon].tooltip).Y + 1;
+
+                            _spriteBatch.Draw(_background, new Rectangle(_displayRect.Left + x * (_width + 3)
+                                - textwidth - 2
+
+                                , _displayRect.Top + y * (_height + 3)
+
+                                - textheight - 2
+                                , textwidth + 5, textheight + 5), new Rectangle(39, 6, 1, 1), new Color(Color.DarkRed, 0.8f));
+                            _spriteBatch.DrawString(_font, _icons[icon].tooltip, new Vector2(_displayRect.Left + x * (_width + 3)
+                       - textwidth
+
+                       , _displayRect.Top + y * (_height + 3)
+
+                       - textheight), Color.Black);
+                            _spriteBatch.DrawString(_font, _icons[icon].tooltip, new Vector2(_displayRect.Left + x * (_width + 3)
+                                - textwidth +1
+
+                                , _displayRect.Top + y * (_height + 3)
+
+                                - textheight +1), Color.White);
+                        }
+                    }
+                    ++icon;
                 }
             }
             if (_totalPages > 1)
@@ -166,14 +256,12 @@ namespace Gruppe22
             base.Draw(gameTime);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="Button"></param>
-        public override void Click(int Button)
+        public override void OnMouseDown(int button)
         {
-            base.Click(Button);
+
         }
+
+
         #endregion
 
         #region Constructor
@@ -189,8 +277,11 @@ namespace Gruppe22
         {
             _background = _content.Load<Texture2D>("Minimap");
             _arrows = _content.Load<Texture2D>("Arrows");
-            _cols = (int)((_displayRect.Width - 35) / (_width+3));
-            _rows = (int)((_displayRect.Height) / (_height+3));
+            _cols = (int)((_displayRect.Width - 35) / (_width + 3));
+            _rows = (int)((_displayRect.Height) / (_height + 3));
+            _icons = new List<GridElement>();
+            _font = _content.Load<SpriteFont>("SmallFont");
+
         }
         #endregion
     }

@@ -147,7 +147,7 @@ namespace Gruppe22
         {
             if (!(a is ItemTile)) return "";
             ItemTile item = a as ItemTile;
-            return item.item.name.ToString() + " (" + item.item.strength.ToString() + ")\n";
+            return item.item.name.ToString() +"\n";
         }
 
         /// <summary>

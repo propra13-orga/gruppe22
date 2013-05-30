@@ -76,7 +76,7 @@ namespace Gruppe22
 
         public override void HandleEvent(UIElement sender, Events eventID, params object[] data)
         {
-            
+
         }
         /// <summary>
         /// This is called when the game should draw itself.
@@ -87,61 +87,54 @@ namespace Gruppe22
             _spriteBatch.GraphicsDevice.ScissorRectangle = _displayRect;
             RasterizerState rstate = new RasterizerState();
             rstate.ScissorTestEnable = true;
-            try
-            {
-                _spriteBatch.Begin(SpriteSortMode.Immediate,
-                            BlendState.AlphaBlend,
-                            null,
-                            null,
-                            rstate,
-                            null);
-                if (_hasBorder)
-                {
-                    _spriteBatch.Draw(_background, _displayRect, new Rectangle(39, 6, 1, 1), Color.White);
-                    _spriteBatch.Draw(_background, new Rectangle(_displayRect.X + 1, _displayRect.Y + 1, _displayRect.Width - 2, _displayRect.Height - 2), new Rectangle(39, 6, 1, 1), Color.Black);
-                }
-                //_startPos = 2;
-                for (int count = _startPos; count < Math.Min(_numLines + _startPos, _text.Count); ++count)
-                {
-                    int centerX = _displayRect.Left + 5;
-                    if (_center)
-                    {
-                        centerX = 5 + _displayRect.X + ((int)(_displayRect.Width - 55 - _font.MeasureString(_text[count]).X) / 2);
-                    }
 
-                    _spriteBatch.DrawString(_font, _text[count], new Vector2(centerX, _displayRect.Top + 5 +
-                        (count - _startPos) * _lineHeight), _color[count]);
-
-                }
-                if (_numLines < _text.Count)
-                {
-                    _spriteBatch.Draw(_arrows, new Rectangle(_displayRect.Right - 35, _displayRect.Top + 5, 28, 28), new Rectangle(32, 0, 28, 28), Color.White);
-                    _spriteBatch.Draw(_arrows, new Rectangle(_displayRect.Right - 35, _displayRect.Bottom - 35, 28, 28), new Rectangle(0, 0, 28, 28), Color.White);
-                }
-                _spriteBatch.End();
-                _spriteBatch.GraphicsDevice.RasterizerState.ScissorTestEnable = false;
-            }
-            finally
+            _spriteBatch.Begin(SpriteSortMode.Immediate,
+                        BlendState.AlphaBlend,
+                        null,
+                        null,
+                        rstate,
+                        null);
+            if (_hasBorder)
             {
-                rstate.Dispose();
+                _spriteBatch.Draw(_background, _displayRect, new Rectangle(39, 6, 1, 1), Color.White);
+                _spriteBatch.Draw(_background, new Rectangle(_displayRect.X + 1, _displayRect.Y + 1, _displayRect.Width - 2, _displayRect.Height - 2), new Rectangle(39, 6, 1, 1), Color.Black);
             }
+            //_startPos = 2;
+            for (int count = _startPos; count < Math.Min(_numLines + _startPos, _text.Count); ++count)
+            {
+                int centerX = _displayRect.Left + 5;
+                if (_center)
+                {
+                    centerX = 5 + _displayRect.X + ((int)(_displayRect.Width - 55 - _font.MeasureString(_text[count]).X) / 2);
+                }
+
+                _spriteBatch.DrawString(_font, _text[count], new Vector2(centerX, _displayRect.Top + 5 +
+                    (count - _startPos) * _lineHeight), _color[count]);
+
+            }
+            if (_numLines < _text.Count)
+            {
+                _spriteBatch.Draw(_arrows, new Rectangle(_displayRect.Right - 35, _displayRect.Top + 5, 28, 28), new Rectangle(32, 0, 28, 28), Color.White);
+                _spriteBatch.Draw(_arrows, new Rectangle(_displayRect.Right - 35, _displayRect.Bottom - 35, 28, 28), new Rectangle(0, 0, 28, 28), Color.White);
+            }
+            _spriteBatch.End();
+            _spriteBatch.GraphicsDevice.RasterizerState.ScissorTestEnable = false;
+
+            rstate.Dispose();
+
 
         }
 
 
-        public override void MouseClick(int X, int Y, int _lastCheck)
+        public virtual void OnMouseDown(int button)
         {
-            if ((_lastKey != Keys.Zoom) || (_lastCheck > 90))
+            if ((new Rectangle(_displayRect.Right - 35, _displayRect.Top + 5, 28, 28).Contains(Mouse.GetState().X, Mouse.GetState().Y)) && (_startPos > 0))
             {
-                if ((new Rectangle(_displayRect.Right - 35, _displayRect.Top + 5, 28, 28).Contains(X, Y)) && (_startPos > 0))
-                {
-                    _startPos -= 1;
-                }
-                if ((new Rectangle(_displayRect.Right - 35, _displayRect.Bottom - 35, 28, 28).Contains(X, Y)) && (_startPos < _text.Count - 1))
-                {
-                    _startPos += 1;
-                }
-                _lastKey = Keys.Zoom;
+                _startPos -= 1;
+            }
+            if ((new Rectangle(_displayRect.Right - 35, _displayRect.Bottom - 35, 28, 28).Contains(Mouse.GetState().X, Mouse.GetState().Y)) && (_startPos < _text.Count - 1))
+            {
+                _startPos += 1;
             }
         }
 

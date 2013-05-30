@@ -54,14 +54,14 @@ namespace Gruppe22
                     _healthBar.total = _actor.maxHealth;
                 }
 
-                if (_actor.currMana != _manaBar.value)
+                if (_actor.mana!= _manaBar.value)
                 {
-                    _manaBar.value = _actor.currMana;
+                    _manaBar.value = _actor.mana;
                 }
                 if (_actor.maxMana != _manaBar.total)
                 {
                     _manaBar.total = _actor.maxMana;
-                } 
+                }
             }
         }
         /// <summary>
@@ -87,7 +87,7 @@ namespace Gruppe22
 
 
                 // Statistics
-                _spriteBatch.DrawString(_font, "ATK: " + _actor.damage.ToString() + " - DEF:" + _actor.armour.ToString(), new Vector2(_displayRect.Left + 10, _displayRect.Top + _lineheight * 3 + 8), color);
+                _spriteBatch.DrawString(_font, "ATK: " + _actor.damage.ToString() + " - DEF:" + _actor.armor.ToString(), new Vector2(_displayRect.Left + 10, _displayRect.Top + _lineheight * 3 + 8), color);
 
                 // Additional Data for player: Experience
                 if (_actor is Player)
@@ -116,7 +116,7 @@ namespace Gruppe22
 _displayRect.Left + 10, _displayRect.Top + _lineheight, _displayRect.Width - 20, _lineheight + 4), ProgressStyle.Precise, (actor != null) ? actor.maxHealth : 0, (actor != null) ? actor.health : 0);
             _healthBar.color = Color.Red;
             _manaBar = new ProgressBar(this, _spriteBatch, _content, new Rectangle(
-_displayRect.Left + 10, _displayRect.Top + 2 * _lineheight, _displayRect.Width - 20, _lineheight + 4), ProgressStyle.Precise, (actor != null) ? actor.maxMana : 0, (actor != null) ? actor.currMana : 0); //TODO: Mana public fields
+_displayRect.Left + 10, _displayRect.Top + 2 * _lineheight, _displayRect.Width - 20, _lineheight + 4), ProgressStyle.Precise, (actor != null) ? actor.maxMana : 0, (actor != null) ? actor.mana : 0); //TODO: Mana public fields
             _manaBar.color = Color.Blue;
             _background = _content.Load<Texture2D>("Minimap");
 

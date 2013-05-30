@@ -4,6 +4,7 @@ using System.Text;
 using System.Xml;
 using Microsoft.Xna.Framework;
 using System.Text.RegularExpressions;
+using Microsoft.Xna.Framework.Content;
 
 namespace Gruppe22
 {
@@ -13,7 +14,6 @@ namespace Gruppe22
         private Coords _to;
         private string _fromRoom;
         private string _toRoom;
-
         public Coords from
         {
             get { return _from; }
@@ -38,8 +38,9 @@ namespace Gruppe22
     public class Map : IHandleEvent, IDisposable
     {
         #region Private Fields
+        protected ContentManager _content;
 
-        private int _currRoomNbr;
+        protected int _id;
 
         private object _parent = null;
 
@@ -79,7 +80,7 @@ namespace Gruppe22
         {
             get
             {
-                return _currRoomNbr;
+                return _id;
             }
         }
 
@@ -422,7 +423,7 @@ namespace Gruppe22
         {
             Regex re = new Regex(@"\d+");
             Match m = re.Match(filename);
-            _currRoomNbr = Convert.ToInt32(m.Value);
+            _id = Convert.ToInt32(m.Value);
             bool isReady = false;
             Player playerA = null;
 
@@ -489,28 +490,8 @@ namespace Gruppe22
                                         tile.Add(TileType.Wall);
                                         break;
                                     case "ItemTile":
-
-                                        ItemType type = ItemType.Armor;
-                                        string name = "";
-                                        int strength = 0;
-
-
-                                        if (xmlr.GetAttribute("type") != null)
-                                        {
-                                            type = (ItemType)Enum.Parse(typeof(ItemType), xmlr.GetAttribute("type").ToString());
-                                        }
-
-                                        if (xmlr.GetAttribute("name") != null)
-                                        {
-                                            name = xmlr.GetAttribute("name").ToString();
-                                        }
-
-                                        if (xmlr.GetAttribute("strength") != null)
-                                        {
-                                            strength = Int32.Parse(xmlr.GetAttribute("strength").ToString());
-                                        }
-                                        Item item = new Item(type, name, strength);
-
+                                        Item item = new Item(_content);
+                                        item.Load(xmlr);
                                         ItemTile itemTile = new ItemTile(tile, item);
                                         item.tile = itemTile;
                                         tile.Add(itemTile);
@@ -526,69 +507,44 @@ namespace Gruppe22
                                         tile.Add(new TeleportTile(tile, xmlr.GetAttribute("nextRoom"), new Coords(Int32.Parse(xmlr.GetAttribute("nextX")), Int32.Parse(xmlr.GetAttribute("nextY")))));
                                         break;
                                     case "ActorTile":
-                                        string actorname = "";
-                                        int actorhealth = 40;
-                                        int maxHealth = -1;
-                                        int armour = 0;
-                                        int damage = 20;
-                                        ActorType atype = ActorType.Enemy;
-
-                                        if (xmlr.GetAttribute("name") != null)
+                                        Actor actor;
+                                        xmlr.Read();
+                                        switch (xmlr.Name)
                                         {
-                                            actorname = xmlr.GetAttribute("name").ToString();
+                                            case "Enemy":
+                                                actor = new Enemy();
+                                                actor.Load(xmlr);
+                                                break;
+                                            case "Player":
+                                                actor = new Player();
+                                                actor.Load(xmlr);
+                                                break;
+                                            default:
+                                                actor = new NPC();
+                                                actor.Load(xmlr);
+                                                break;
                                         }
 
-                                        if (xmlr.GetAttribute("health") != null)
+                                        if (!(actor is Player))
                                         {
-                                            actorhealth = Int32.Parse(xmlr.GetAttribute("health").ToString());
-                                        }
-
-                                        if (xmlr.GetAttribute("maxhealth") != null)
-                                        {
-                                            maxHealth = Int32.Parse(xmlr.GetAttribute("maxhealth").ToString());
-                                        }
-
-                                        if (xmlr.GetAttribute("armor") != null)
-                                        {
-                                            armour = Int32.Parse(xmlr.GetAttribute("armor").ToString());
-                                        }
-                                        if (xmlr.GetAttribute("damage") != null)
-                                        {
-                                            damage = Int32.Parse(xmlr.GetAttribute("damage").ToString());
-                                        }
-
-                                        if (xmlr.GetAttribute("type") != null)
-                                        {
-                                            atype = (ActorType)Enum.Parse(typeof(ActorType), xmlr.GetAttribute("type").ToString());
-                                        }
-
-                                        if (xmlr.GetAttribute("player") != null)
-                                        {
-                                            atype = ActorType.Player;
-                                        }
-                                        if (atype != ActorType.Player)
-                                        {
-                                            Enemy enemy = (new Enemy(actorhealth, armour, damage, maxHealth, actorname));
-                                            ActorTile tile2 = new ActorTile(tile, enemy);
-                                            enemy.tile = tile2;
-                                            tile2.enabled = (actorhealth > 0);
+                                            ActorTile tile2 = new ActorTile(tile, actor);
+                                            actor.tile = tile2;
+                                            tile2.enabled = (actor.health > 0);
                                             tile.Add(tile2);
-                                            _actors.Add(enemy);
+                                            _actors.Add(actor);
                                             _updateTiles.Add(tile.coords);
                                         }
                                         else
                                         {
-                                            _actors[0].armour = armour;
-                                            _actors[0].health = actorhealth;
-                                            _actors[0].damage = damage;
-                                            _actors[0].maxHealth = maxHealth;
-                                            _actors[0].name = actorname;
+                                            _actors[0].copyFrom(actor);
                                             if (!isReady)
                                             {
                                                 player.x = tile.coords.x;
                                                 player.y = tile.coords.y;
                                             }
                                         }
+                                        xmlr.Read();
+
                                         break;
                                 }
                                 xmlr.Read();
@@ -664,8 +620,9 @@ namespace Gruppe22
 
         #region Constructor
 
-        public Map()
+        public Map(ContentManager content)
         {
+            _content = content;
             _updateTiles = new List<Coords>();
             _actors = new List<Actor>();
             _items = new List<Item>();
@@ -681,8 +638,8 @@ namespace Gruppe22
         /// Constructor for using a previously saved map
         /// </summary>
         /// <param name="filename"></param>
-        public Map(object parent, string filename = "", Coords playerPos = null)
-            : this()
+        public Map(ContentManager content, object parent, string filename = "", Coords playerPos = null)
+            : this(content)
         {
             _parent = parent;
             Load(filename, playerPos);

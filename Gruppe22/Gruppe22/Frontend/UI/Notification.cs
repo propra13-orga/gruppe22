@@ -5,6 +5,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 namespace Gruppe22
 {
@@ -43,10 +44,6 @@ namespace Gruppe22
             base.HandleEvent(sender, eventID, data);
         }
 
-        public override void MouseClick(int X, int Y, int _lastCheck)
-        {
-            base.MouseClick(X, Y, _lastCheck);
-        }
 
         public override bool IsHit(int x, int y)
         {
@@ -89,11 +86,10 @@ namespace Gruppe22
         /// <param name="X"></param>
         /// <param name="Y"></param>
         /// <param name="_lastCheck"></param>
-        public override void MouseClick(int X, int Y, int _lastCheck)
+        public override void OnMouseDown(int button)
         {
-            if (_displayRect.Contains(X, Y))
+            if (_displayRect.Contains(Mouse.GetState().X, Mouse.GetState().Y))
                 _vTarget = 1.0f;
-            base.MouseClick(X, Y, _lastCheck);
         }
 
         /// <summary>

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
+using Microsoft.Xna.Framework.Content;
 
 namespace Gruppe22
 {
@@ -11,7 +12,6 @@ namespace Gruppe22
     {
         private new List<List<GeneratorTile>> _tiles = null;
         private Random r;
-
         public void AddPlayer(Coords pos)
         {
             if (pos == null)
@@ -229,7 +229,7 @@ namespace Gruppe22
 
                 if ((pos.x >= 0) && (pos.x < _width) && (pos.y < _height) && (pos.y >= 0))
                 {
-                    Item item = new Item(r);
+                    Item item = new Item(_content, r);
                     ItemTile itemTile = new ItemTile(_tiles[pos.y][pos.x], item);
                     item.tile = itemTile;
                     _tiles[pos.y][pos.x].Add(itemTile);
@@ -547,16 +547,16 @@ namespace Gruppe22
                         col += 1;
                         break;
                     case '\n':
-                                                if (col > maxcol) { maxcol = col; };
+                        if (col > maxcol) { maxcol = col; };
 
                         col = 0;
                         row += 1;
                         _tiles.Add(new List<GeneratorTile>());
                         break;
                     case 'S':
-                        
+
                         _tiles[row].Add(new GeneratorTile(this, new Coords(col, row)));
-                        
+
                         if (roomID != 1)
                         {
                             _tiles[row][col].Add(new TeleportTile(_tiles[row][col], "room" + (roomID - 1).ToString() + ".xml", new Coords(col, row)));
@@ -570,7 +570,7 @@ namespace Gruppe22
                         break;
                     case 'G':
                         _tiles[row].Add(new GeneratorTile(this, new Coords(col, row)));
-                        
+
                         if (roomID == MaxRoom)
                         {
                             TargetTile target = new TargetTile(_tiles[row][col]);
@@ -585,7 +585,7 @@ namespace Gruppe22
                         break;
                     case 'F':
                         _tiles[row].Add(new GeneratorTile(this, new Coords(col, row)));
-                        
+
                         Enemy enemy = new Enemy(-1, -1, -1, -1, "", r);
                         ActorTile enemyTile = new ActorTile(_tiles[row][col], enemy);
                         enemy.tile = enemyTile;
@@ -615,8 +615,8 @@ namespace Gruppe22
             return true;
         }
 
-        public Generator(object parent, string pattern, Coords playerPos = null, int roomNr = 1, int maxRoom = 3, List<Exit> exits = null, Random rnd = null)
-            : base()
+        public Generator(ContentManager content, object parent, string pattern, Coords playerPos = null, int roomNr = 1, int maxRoom = 3, List<Exit> exits = null, Random rnd = null)
+            : base(content)
         {
             if (rnd == null) r = new Random(); else r = rnd;
             _tiles = new List<List<GeneratorTile>>();
@@ -628,8 +628,8 @@ namespace Gruppe22
         /// </summary>
         /// <param name="width">The width of the map</param>
         /// <param name="height">The height of the map</param>
-        public Generator(object parent = null, int width = 10, int height = 10, bool generate = false, Coords playerPos = null, int roomNr = 1, int maxRoom = 3, List<Exit> exits = null, Random rnd = null)
-            : base()
+        public Generator(ContentManager content, object parent = null, int width = 10, int height = 10, bool generate = false, Coords playerPos = null, int roomNr = 1, int maxRoom = 3, List<Exit> exits = null, Random rnd = null)
+            : base(content)
         {
             if (rnd == null) r = new Random(); else r = rnd;
             _tiles = new List<List<GeneratorTile>>();

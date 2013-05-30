@@ -10,8 +10,8 @@ namespace Gruppe22
         /// <summary>
         /// Constructor
         /// </summary>
-        public NPC(int health, int armour, int damage, int maxHealth = -1, string name = "")
-            : base(ActorType.NPC, health, armour, damage, maxHealth, name)
+        public NPC(int health=10, int armor=0, int damage=0, int maxHealth = 10, string name = "")
+            : base(ActorType.NPC, health, armor, damage, maxHealth, name)
         {
         }
     }

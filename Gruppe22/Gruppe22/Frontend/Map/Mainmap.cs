@@ -167,44 +167,39 @@ namespace Gruppe22
                 _spriteBatch.Draw(_background, new Rectangle(_displayRect.X + 1, _displayRect.Y + 1, _displayRect.Width - 2, _displayRect.Height - 2), new Rectangle(39, 6, 1, 1), Color.Black);
                 _spriteBatch.End();
 
+                _spriteBatch.Begin(SpriteSortMode.Immediate,
+                            BlendState.AlphaBlend,
+                            null,
+                            null,
+                            rstate,
+                            null,
+                            _camera.matrix);
 
-                try // This might throw exceptions, so be careful to avoid memory leaks
-                {
-                    _spriteBatch.Begin(SpriteSortMode.Immediate,
-                                BlendState.AlphaBlend,
-                                null,
-                                null,
-                                rstate,
-                                null,
-                                _camera.matrix);
+                _spriteBatch.GraphicsDevice.ScissorRectangle = new Rectangle(_displayRect.Left + 5, _displayRect.Top + 5, _displayRect.Width - 10, _displayRect.Height - 10);
 
-                    _spriteBatch.GraphicsDevice.ScissorRectangle = new Rectangle(_displayRect.Left + 5, _displayRect.Top + 5, _displayRect.Width - 10, _displayRect.Height - 10);
+                _drawFloor(); // Draw the floow
+                _drawWalls(gametime); // Draw walls, other objects, player and enemies
 
-                    _drawFloor(); // Draw the floow
-                    _drawWalls(gametime); // Draw walls, other objects, player and enemies
-
-                    _spriteBatch.End();
+                _spriteBatch.End();
 
 
-                    // Draw circle of light / fog of war
-                    _spriteBatch.Begin(SpriteSortMode.Deferred, blendState, null,
-                                null,
-                                rstate,
-                                null,
-                                _camera.matrix);
-                    _spriteBatch.Draw(_circle, new Rectangle(
-                        (int)(_actors[_playerID].position.X + 1) - 160 * _renderScope,
-                        (int)(_actors[_playerID].position.Y + 1) - 160 * _renderScope, 350 * _renderScope, 350 * _renderScope), Color.White);
-                    _spriteBatch.End();
+                // Draw circle of light / fog of war
+                _spriteBatch.Begin(SpriteSortMode.Deferred, blendState, null,
+                            null,
+                            rstate,
+                            null,
+                            _camera.matrix);
+                _spriteBatch.Draw(_circle, new Rectangle(
+                    (int)(_actors[_playerID].position.X + 1) - 160 * _renderScope,
+                    (int)(_actors[_playerID].position.Y + 1) - 160 * _renderScope, 350 * _renderScope, 350 * _renderScope), Color.White);
+                _spriteBatch.End();
 
 
-                    _spriteBatch.GraphicsDevice.RasterizerState.ScissorTestEnable = false;
-                }
-                finally
-                {
-                    rstate.Dispose();
-                    blendState.Dispose();
-                }
+                _spriteBatch.GraphicsDevice.RasterizerState.ScissorTestEnable = false;
+
+                rstate.Dispose();
+                blendState.Dispose();
+
 
                 if (_highlightedTile.x > -1)
                     _tooltip.DisplayToolTip(_map[_highlightedTile.x, _highlightedTile.y]);
@@ -792,18 +787,8 @@ namespace Gruppe22
                     {
                         foreach (Item item in (_map[x, y].items))
                         {
-                            switch (item.itemType)
-                            {
-                                case ItemType.Armor:
-                                    _spriteBatch.Draw(_environment[1][0].animationTexture, new Rectangle(_map2screen(x, y).x + 32, _map2screen(x, y).y + 16, _environment[1][0].animationRect.Width, _environment[1][0].animationRect.Height), _environment[1][0].animationRect, ((y == (int)_highlightedTile.y) && (x == (int)_highlightedTile.x)) ? Color.Red : Color.White);
-                                    break;
-                                case ItemType.Weapon:
-                                    _spriteBatch.Draw(_environment[1][4].animationTexture, new Rectangle(_map2screen(x, y).x + 32, _map2screen(x, y).y + 16, _environment[1][4].animationRect.Width, _environment[1][4].animationRect.Height), _environment[1][4].animationRect, ((y == (int)_highlightedTile.y) && (x == (int)_highlightedTile.x)) ? Color.Red : Color.White);
-                                    break;
-                                case ItemType.Potion:
-                                    _spriteBatch.Draw(_environment[1][5].animationTexture, new Rectangle(_map2screen(x, y).x + 32, _map2screen(x, y).y + 16, _environment[1][5].animationRect.Width, _environment[1][5].animationRect.Height), _environment[1][5].animationRect, ((y == (int)_highlightedTile.y) && (x == (int)_highlightedTile.x)) ? Color.Red : Color.White);
-                                    break;
-                            }
+                            _spriteBatch.Draw(item.icon.texture, new Rectangle(_map2screen(x, y).x + item.icon.offsetX + 32, _map2screen(x, y).y + 16 + item.icon.offsetY,
+                                item.icon.clipRect.Width - item.icon.cropX, item.icon.clipRect.Height - item.icon.cropY), item.icon.clipRect, ((y == (int)_highlightedTile.y) && (x == (int)_highlightedTile.x)) ? Color.Red : Color.White);
                         }
 
                     }

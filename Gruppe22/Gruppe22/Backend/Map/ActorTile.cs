@@ -44,15 +44,10 @@ namespace Gruppe22
             }
         }
 
-        override public void Save(XmlWriter xmlw)
+        public override void Save(XmlWriter xmlw)
         {
             xmlw.WriteStartElement("ActorTile");
-            xmlw.WriteAttributeString("type", _actor.actorType.ToString());
-            xmlw.WriteAttributeString("name", _actor.name.ToString());
-            xmlw.WriteAttributeString("health", _actor.health.ToString());
-            xmlw.WriteAttributeString("maxhealth", _actor.maxHealth.ToString());
-            xmlw.WriteAttributeString("armor", _actor.armour.ToString());
-            xmlw.WriteAttributeString("damage", _actor.damage.ToString());
+            actor.Save(xmlw);
             xmlw.WriteEndElement();
         }
         #endregion
@@ -66,8 +61,9 @@ namespace Gruppe22
 
         public void DropItems()
         {
-            while (actor.inventory.Count>0) {
-                ItemTile temp=new ItemTile(_parent,actor.inventory[0]);
+            while (actor.inventory.Count > 0)
+            {
+                ItemTile temp = new ItemTile(_parent, actor.inventory[0]);
                 actor.inventory[0].tile = temp;
                 ((FloorTile)_parent).Add(temp);
                 actor.inventory.RemoveAt(0);

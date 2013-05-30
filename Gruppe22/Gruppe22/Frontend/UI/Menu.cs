@@ -7,11 +7,12 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-namespace Gruppe22{
+namespace Gruppe22
+{
 
-    public class Menu:UIElement
+    public class Menu : UIElement
     {
-        
+
         #region Private Fields
         SpriteFont _font = null;
         Texture2D _background = null;
@@ -19,7 +20,7 @@ namespace Gruppe22{
         int _startPos = 0;
         int _numLines = 0;
         int _lineHeight = 0;
-        int _selected=0;
+        int _selected = 0;
         Texture2D _arrows = null;
         int _lastTime = 0;
         Keys _lastKey = Keys.A;
@@ -45,14 +46,17 @@ namespace Gruppe22{
                 {
                     if (text.LastIndexOf(' ') > 0)
                     {
-                        text = text.Remove(text.LastIndexOf(' '))+"...";
+                        text = text.Remove(text.LastIndexOf(' ')) + "...";
                     }
                     else
                     {
-                        if(text.Length>3){
-                        text = text.Remove(text.Length - 2)+"...";
-                            } else {
-                            text="";
+                        if (text.Length > 3)
+                        {
+                            text = text.Remove(text.Length - 2) + "...";
+                        }
+                        else
+                        {
+                            text = "";
                         }
                     }
                 }
@@ -69,36 +73,33 @@ namespace Gruppe22{
             _spriteBatch.GraphicsDevice.ScissorRectangle = _displayRect;
             RasterizerState rstate = new RasterizerState();
             rstate.ScissorTestEnable = true;
-            try
-            {
-                _spriteBatch.Begin(SpriteSortMode.Immediate,
-                            BlendState.AlphaBlend,
-                            null,
-                            null,
-                            rstate,
-                            null);
-                _spriteBatch.Draw(_background, _displayRect, new Rectangle(39, 6, 1, 1), Color.White);
-                _spriteBatch.Draw(_background, new Rectangle(_displayRect.X + 2, _displayRect.Y + 2, _displayRect.Width - 4, _displayRect.Height - 4), new Rectangle(39, 6, 1, 1), Color.Black);
-                //_startPos = 2;
-                for (int count = _startPos; count < Math.Min(_numLines + _startPos, _text.Count); ++count)
-                {
-                    _spriteBatch.DrawString(_font, _text[count], new Vector2(_displayRect.Left + 20, _displayRect.Top +
-                        (count - _startPos) * _lineHeight), Color.White);
-                }
-                _spriteBatch.Draw(_arrows, new Rectangle(_displayRect.Right - 35, _displayRect.Top + 5, 28, 28), new Rectangle(32, 0, 28, 28), Color.White);
-                _spriteBatch.Draw(_arrows, new Rectangle(_displayRect.Right - 35, _displayRect.Bottom - 35, 28, 28), new Rectangle(0, 0, 28, 28), Color.White);
 
-                _spriteBatch.End();
-                _spriteBatch.GraphicsDevice.RasterizerState.ScissorTestEnable = false;
-            }
-            finally
+            _spriteBatch.Begin(SpriteSortMode.Immediate,
+                        BlendState.AlphaBlend,
+                        null,
+                        null,
+                        rstate,
+                        null);
+            _spriteBatch.Draw(_background, _displayRect, new Rectangle(39, 6, 1, 1), Color.White);
+            _spriteBatch.Draw(_background, new Rectangle(_displayRect.X + 2, _displayRect.Y + 2, _displayRect.Width - 4, _displayRect.Height - 4), new Rectangle(39, 6, 1, 1), Color.Black);
+            //_startPos = 2;
+            for (int count = _startPos; count < Math.Min(_numLines + _startPos, _text.Count); ++count)
             {
-                rstate.Dispose();
+                _spriteBatch.DrawString(_font, _text[count], new Vector2(_displayRect.Left + 20, _displayRect.Top +
+                    (count - _startPos) * _lineHeight), Color.White);
             }
+            _spriteBatch.Draw(_arrows, new Rectangle(_displayRect.Right - 35, _displayRect.Top + 5, 28, 28), new Rectangle(32, 0, 28, 28), Color.White);
+            _spriteBatch.Draw(_arrows, new Rectangle(_displayRect.Right - 35, _displayRect.Bottom - 35, 28, 28), new Rectangle(0, 0, 28, 28), Color.White);
+
+            _spriteBatch.End();
+            _spriteBatch.GraphicsDevice.RasterizerState.ScissorTestEnable = false;
+
+            rstate.Dispose();
+
 
         }
 
-
+        /*
         public override void MouseClick(int X, int Y, int _lastCheck)
         {
             if ((_lastKey != Keys.Zoom) || (_lastCheck > 90))
@@ -114,7 +115,7 @@ namespace Gruppe22{
                 _lastKey = Keys.Zoom;
             }
         }
-
+        */
 
         /// <summary>
         /// 

@@ -242,7 +242,7 @@ namespace Gruppe22
             {
                 GenerateMaps();
             }
-            _map1 = new Map(this, "room1.xml", null);
+            _map1 = new Map(Content, this, "room1.xml", null);
             _interfaceElements = new List<UIElement>();
             base.Initialize();
         }
@@ -262,7 +262,7 @@ namespace Gruppe22
                 int minY = 8;
                 if (exits.Count > 0) minX += exits[0].from.x;
                 if (exits.Count > 0) minY += exits[0].from.y;
-                tempMap = new Generator(this, minX + r.Next(8), minY + r.Next(8), true, null, i, 3, exits, r);
+                tempMap = new Generator(Content, this, minX + r.Next(8), minY + r.Next(8), true, null, i, 3, exits, r);
                 tempMap.Save("room" + i.ToString() + ".xml");
                 exits = Map.ExitToEntry(i + 1, tempMap.exits);
                 tempMap.Dispose();
@@ -387,18 +387,9 @@ namespace Gruppe22
         /// </summary>
         public void DeleteSavedRooms()
         {
-            if (File.Exists("savedroom1.xml"))
+            while (Directory.GetFiles(".", "savedroom*.xml").Length > 0)
             {
-                try
-                {
-                    File.Delete("savedroom1.xml");
-                    File.Delete("savedroom2.xml");
-                    File.Delete("savedroom3.xml");
-                }
-                catch
-                {
-                    Exit();
-                }
+                File.Delete(Directory.GetFiles(".", "savedroom*.xml")[0]);
             }
         }
 
@@ -482,11 +473,15 @@ namespace Gruppe22
                     _mainmap2.enabled = true;
                     _mainmap1.Resize(new Rectangle(5, 5, _graphics.GraphicsDevice.Viewport.Width - 230, ((_graphics.GraphicsDevice.Viewport.Height - 20) / 2) - 60));
                     break;
+
                 case Events.ContinueGame:
                     if (_status != GameStatus.NoRedraw)
                     {
-                        _focus.Dispose();
-                        _interfaceElements.Remove(_focus);
+                        if (_focus != null)
+                        {
+                            _focus.Dispose();
+                            _interfaceElements.Remove(_focus);
+                        }
                         _focus = null;
                         _status = GameStatus.Running;
                     }
@@ -525,7 +520,7 @@ namespace Gruppe22
                     DeleteSavedRooms();
                     _map1.Load("room1.xml", null);
                     _mainmap1.resetActors();
-
+                    _inventory.Update();
                     _mainmap2.resetActors();
 
                     _status = GameStatus.Paused;
@@ -539,6 +534,7 @@ namespace Gruppe22
                     _map1.Load("room1.xml", null);
                     _mainmap1.resetActors();
                     _mainmap2.resetActors();
+                    _inventory.Update();
                     _status = GameStatus.Paused;
                     HandleEvent(null, Events.ContinueGame);
                     break;
@@ -574,24 +570,21 @@ namespace Gruppe22
                         Coords target = _map1.actors[id].tile.coords;
 
                         // Pickup any items
+                        while (_map1[target.x, target.y].hasTreasure)
+                        {
+                            AddMessage((_map1.actors[id] is Player ? "You found " : _map1.actors[id].name + " found ") + _map1[target.x, target.y].firstItem.item.name + " .");
+                            _map1[target.x, target.y].firstItem.item.Pickup(_map1.actors[id]);
+                            _map1[target.x, target.y].Remove(_map1[target.x, target.y].firstItem);
+                            _inventory.Update();
+                        }
                         // Apply teleporter (move to next room)
                         if ((id == 0) && (_map1[target.x, target.y].hasTeleport))
                         {
                             HandleEvent(null, Events.ChangeMap, ((TeleportTile)_map1[target.x, target.y].overlay[0]).nextRoom, ((TeleportTile)_map1[target.x, target.y].overlay[0]).nextPlayerPos);
+
                         }
 
                         // Apply trap damage
-                        // Trigger floor switches
-
-
-                        while (_map1[target.x, target.y].hasTreasure)
-                        {
-                            _map1.actors[id].inventory.Add(_map1[target.x, target.y].firstItem.item);
-                            AddMessage((_map1.actors[id] is Player ? "You found " : _map1.actors[id].name + " found ") + _map1[target.x, target.y].firstItem.item.name + " .");
-                            _map1[target.x, target.y].firstItem.item.EquipItem(_map1.actors[id]);
-                            _map1[target.x, target.y].Remove(_map1[target.x, target.y].firstItem);
-                        }
-
                         if (_map1[target.x, target.y].hasTrap)
                         {
                             _map1.actors[id].SetDamage(_map1[target.x, target.y].trapDamage);
@@ -600,7 +593,7 @@ namespace Gruppe22
                                 _mainmap1.HandleEvent(null, Events.AnimateActor, id, Activity.Die);
                                 _mainmap2.HandleEvent(null, Events.AnimateActor, id, Activity.Die);
 
-                                AddMessage((_map1.actors[id] is Player ? "You were" : _map1.actors[id].name + " was") + " killed by a trap  doing " + (_map1[target.x, target.y].trapDamage - _map1.actors[id].armour).ToString() + " points of damage (" + _map1[target.x, target.y].trapDamage.ToString() + " - " + _map1.actors[id].armour + " protection)");
+                                AddMessage((_map1.actors[id] is Player ? "You were" : _map1.actors[id].name + " was") + " killed by a trap  doing " + (_map1[target.x, target.y].trapDamage - _map1.actors[id].armor).ToString() + " points of damage (" + _map1[target.x, target.y].trapDamage.ToString() + " - " + _map1.actors[id].armor + " protection)");
 
                             }
                             else
@@ -608,12 +601,13 @@ namespace Gruppe22
                                 _mainmap1.HandleEvent(null, Events.AnimateActor, id, Activity.Hit);
                                 _mainmap2.HandleEvent(null, Events.AnimateActor, id, Activity.Hit);
 
-                                AddMessage((_map1.actors[id] is Player ? "You were" : _map1.actors[id].name + "  was") + " hit for " + (_map1[target.x, target.y].trapDamage - _map1.actors[id].armour).ToString() + " points of damage (" + _map1[target.x, target.y].trapDamage.ToString() + " - " + _map1.actors[id].armour + " protection)");
+                                AddMessage((_map1.actors[id] is Player ? "You were" : _map1.actors[id].name + "  was") + " hit for " + (_map1[target.x, target.y].trapDamage - _map1.actors[id].armor).ToString() + " points of damage (" + _map1[target.x, target.y].trapDamage.ToString() + " - " + _map1.actors[id].armor + " protection)");
                             }
                             if (_map1.actors[id] is Player) RemoveHealth();
 
                         }
 
+                        // Trigger floor switches
                         if ((_map1[_map1.actors[id].tile.coords.x, _map1.actors[id].tile.coords.y].hasTarget) && (id == 0))
                         {
                             _mainmap1.HandleEvent(null, Events.AnimateActor, id, Activity.Talk);
@@ -662,7 +656,7 @@ namespace Gruppe22
                         {
                             _mainmap1.HandleEvent(null, Events.AnimateActor, _map1.firstActorID(target.x, target.y), Activity.Hit, false, Map.WhichWayIs(_map1.actors[id].tile.coords, target));
                             AddMessage(((_map1.actors[_map1.firstActorID(target.x, target.y)] is Player) ? "<red>" : "") + (_map1.actors[id] is Player ? "<green>You" : _map1.actors[id].name) + " attacked " + (_map1.actors[_map1.firstActorID(target.x, target.y)] is Player ? "you" : _map1.actors[_map1.firstActorID(target.x, target.y)].name));
-                            AddMessage(((_map1.actors[_map1.firstActorID(target.x, target.y)] is Player) ? "<red>" : "") + "The attack caused " + (_map1[target.x, target.y].firstActor.armour - _map1.actors[id].damage).ToString() + " points of damage (" + _map1.actors[id].damage.ToString() + " attack strength - " + _map1[target.x, target.y].firstActor.armour + " defense)");
+                            AddMessage(((_map1.actors[_map1.firstActorID(target.x, target.y)] is Player) ? "<red>" : "") + "The attack caused " + (_map1[target.x, target.y].firstActor.armor - _map1.actors[id].damage).ToString() + " points of damage (" + _map1.actors[id].damage.ToString() + " attack strength - " + _map1[target.x, target.y].firstActor.armor + " defense)");
                         }
                         _mainmap1.HandleEvent(null, Events.AnimateActor, id, Activity.Attack, false, dir, true);
                     }

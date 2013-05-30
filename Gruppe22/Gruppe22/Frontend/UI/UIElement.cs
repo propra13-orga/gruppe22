@@ -91,11 +91,6 @@ namespace Gruppe22
         }
 
 
-        public virtual void MouseClick(int X, int Y, int _lastCheck)
-        {
-
-        }
-
         /// <summary>
         /// Check whether a pixel is part of the window
         /// </summary>

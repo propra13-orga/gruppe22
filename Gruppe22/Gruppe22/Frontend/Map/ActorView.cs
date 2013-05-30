@@ -48,7 +48,7 @@ namespace Gruppe22
         /// <summary>
         /// Number of milliseconds to wait until displaying next frame of animation
         /// </summary>
-        private int _animationTime = 20;
+        private int _animationTime = 50;
         /// <summary>
         /// Seconds elapsed since last redraw
         /// </summary>
