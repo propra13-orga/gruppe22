@@ -62,6 +62,10 @@ namespace Gruppe22
                 {
                     _manaBar.total = _actor.maxMana;
                 }
+                if (_actor.health == 0)
+                {
+                    _actor = null;
+                }
             }
         }
         /// <summary>

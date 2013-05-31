@@ -242,7 +242,14 @@ namespace Gruppe22
             {
                 GenerateMaps();
             }
-            _map1 = new Map(Content, this, "room1.xml", null);
+            string path = "room1.xml";
+            if (File.Exists("GameData"))
+                path = File.ReadAllText("GameData");
+            if (File.Exists("saved" + (string)path))
+                _map1 = new Map(Content, this, "saved" + (string)path);
+            else
+                _map1 = new Map(Content, this, (string)path);
+
             _interfaceElements = new List<UIElement>();
             base.Initialize();
         }
@@ -292,6 +299,8 @@ namespace Gruppe22
             _enemyStats = new SimpleStats(this, _spriteBatch, Content, new Rectangle(_graphics.GraphicsDevice.Viewport.Width - 215, 340, 210, 100), null);
             _interfaceElements.Add(_playerStats);
             _interfaceElements.Add(_enemyStats);
+            _inventory.Update();
+            _playerStats.Update(null);
             // _backMusic = Content.Load<Song>("Video Dungeon Crawl.wav"); // Todo: *.mp3
             // _font = Content.Load<SpriteFont>("Font");
             // MediaPlayer.Volume = (float)0.3;
@@ -387,6 +396,7 @@ namespace Gruppe22
         /// </summary>
         public void DeleteSavedRooms()
         {
+            if (File.Exists("GameData")) File.Delete("GameData");
             while (Directory.GetFiles(".", "savedroom*.xml").Length > 0)
             {
                 File.Delete(Directory.GetFiles(".", "savedroom*.xml")[0]);
@@ -495,7 +505,7 @@ namespace Gruppe22
                     break;
 
                 case Events.EndGame:
-                    DeleteSavedRooms();
+                    _map1.Save("savedroom" + _map1.currRoomNbr + ".xml");//+Nummer
                     Exit();
                     break;
 
@@ -511,6 +521,7 @@ namespace Gruppe22
 
                     AddMessage("You entered room number " + data[0].ToString().Substring(4, 1) + ".");
                     _status = GameStatus.Running;
+                    File.WriteAllText("GameData", data[0].ToString());
                     break;
 
                 case Events.NewMap:

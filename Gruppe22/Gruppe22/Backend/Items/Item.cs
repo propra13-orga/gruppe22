@@ -291,7 +291,6 @@ namespace Gruppe22
 
         public void Load(XmlReader reader)
         {
-            reader.Read();
             _name = reader.GetAttribute("name");
             _icon = new VisibleObject(_content, reader.GetAttribute("iconfile"), new Rectangle(Convert.ToInt32(reader.GetAttribute("clipRectX")),
                 Convert.ToInt32(reader.GetAttribute("clipRectY")),
@@ -311,7 +310,6 @@ namespace Gruppe22
             if (reader.IsEmptyElement)
             {
                 reader.Read(); // End Effects
-                reader.Read(); // End Item
                 return;
             }
             reader.Read(); // First effect
@@ -323,8 +321,7 @@ namespace Gruppe22
                 Convert.ToInt32(reader.GetAttribute("duration"))));
                 reader.Read();
             }
-            reader.Read(); // End Effects
-            reader.Read(); // End Item
+            reader.ReadEndElement(); // End Effects
         }
 
         public void Save(XmlWriter xmlw)

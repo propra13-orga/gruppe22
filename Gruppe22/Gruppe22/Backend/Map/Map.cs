@@ -313,7 +313,7 @@ namespace Gruppe22
                         //                    ||((includeNPC&&this[coords.x-distance,y].hasNPC))
                     || ((includeEnemy && this[coords.x + distance, y].hasEnemy)))
                     {
-                      //  System.Diagnostics.Debug.WriteLine(coords.x + "/" + coords.y + "->" + (coords.x + distance) + "/" + y.ToString() + " = " + (this[coords.x + distance, y].hasPlayer ? "Player" : "Enemy"));
+                        //  System.Diagnostics.Debug.WriteLine(coords.x + "/" + coords.y + "->" + (coords.x + distance) + "/" + y.ToString() + " = " + (this[coords.x + distance, y].hasPlayer ? "Player" : "Enemy"));
 
                         return new Coords(coords.x + distance, y);
                     }
@@ -518,13 +518,17 @@ namespace Gruppe22
                                     case "WallTile":
                                         tile.Add(TileType.Wall);
                                         break;
+
                                     case "ItemTile":
                                         Item item = new Item(_content);
+                                        xmlr.Read();
                                         item.Load(xmlr);
                                         ItemTile itemTile = new ItemTile(tile, item);
                                         item.tile = itemTile;
                                         tile.Add(itemTile);
+                                        xmlr.Read(); // End Item
                                         break;
+
                                     case "TargetTile":
                                         tile.Add(new TargetTile(tile));
                                         break;
@@ -572,14 +576,13 @@ namespace Gruppe22
                                                 player.y = tile.coords.y;
                                             }
                                         }
-                                        xmlr.Read();
 
                                         break;
                                 }
                                 xmlr.Read();
                             }
                         }
-                        xmlr.Read();
+                        xmlr.ReadEndElement();
                         break;
                 }
             }
@@ -630,7 +633,6 @@ namespace Gruppe22
             xmlw.WriteStartElement("GameMap");
             xmlw.WriteAttributeString("width", _width.ToString());
             xmlw.WriteAttributeString("height", _height.ToString());
-            //_tiles[0][0].overlay.Add(new TeleportTile("map2.xml", new Microsoft.Xna.Framework.Vector2(0,0)));//test
             foreach (List<FloorTile> ltiles in _tiles)
             {
                 foreach (FloorTile tile in ltiles)

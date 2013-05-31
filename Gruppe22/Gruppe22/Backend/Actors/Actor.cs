@@ -633,17 +633,21 @@ namespace Gruppe22
             if (reader.IsEmptyElement)
             {
                 reader.Read();
+                reader.Read();
+
                 return;
             }
-
+            reader.Read();
             while (reader.NodeType != XmlNodeType.EndElement)
             {
                 Item item = new Item(_content);
                 item.Load(reader);
                 _inventory.Add(item);
+                reader.Read();
             }
             reader.ReadEndElement();
-            reader.Read(); // End Effects
+            reader.ReadEndElement(); // End Effects
+
 
         }
 
