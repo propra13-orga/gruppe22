@@ -166,6 +166,25 @@ namespace Gruppe22
             }
         }
 
+
+        /// <summary>
+        /// Get the tile at coordinates x and y
+        /// </summary>
+        /// <param name="x">The x-coordinate</param>
+        /// <param name="y">The y-coordinate</param>
+        /// <returns>The tile at the specified coordinates</returns>
+        public FloorTile this[Coords coords]
+        {
+            get
+            {
+                return this[coords.x, coords.y];
+            }
+            set
+            {
+                this[coords.x, coords.y] = value;
+            }
+        }
+
         /// <summary>
         /// Get the tile at coordinates x and y
         /// </summary>
@@ -290,7 +309,7 @@ namespace Gruppe22
                         //System.Diagnostics.Debug.WriteLine(coords.x + "/" + coords.y + "->" + x + "/" + (coords.y - distance).ToString() + " = " + (this[x, coords.y - distance].hasPlayer ? "Player" : "Enemy"));
                         return new Coords(x, coords.y - distance);
                     }
-                    if (((includePlayer && this[x, coords.y - distance].hasPlayer))
+                    if (((includePlayer && this[x, coords.y + distance].hasPlayer))
                         //                    ||((includeNPC&&this[coords.x-distance,y].hasNPC))
                     || ((includeEnemy && this[x, coords.y + distance].hasEnemy)))
                     {
@@ -299,7 +318,7 @@ namespace Gruppe22
                         return new Coords(x, coords.y + distance);
                     }
                 }
-                for (int y = coords.y - distance; y < coords.y + distance; ++y)
+                for (int y = coords.y - distance; y <= coords.y + distance; ++y)
                 {
                     if (((includePlayer && this[coords.x - distance, y].hasPlayer))
                         //                    ||((includeNPC&&this[coords.x-distance,y].hasNPC))
@@ -322,40 +341,80 @@ namespace Gruppe22
             return new Coords(-1, -1);
         }
 
-        public List<Coords> PathTo(Coords from, Coords to, int maxlength = 20)
+        public void PathTo(Coords from, Coords to, out List<Coords> result, ref SortedSet<Coords> visited, int maxlength = 20, string indent = "")
         {
-            List<Coords> result;
+            result = null;
+            if (visited == null)
+            {
+                visited = new SortedSet<Coords>();
+            }
+            visited.Add(from);
+
             if (maxlength > 0)
             {
-                if ((from.x == to.x) && (from.y == to.y))
+                if (from.Equals(to))
                 {
                     result = new List<Coords>();
-                    System.Diagnostics.Debug.Write("###" + from.x + "/" + from.y);
                     result.Add(to);
-                    return result;
+                    visited.Remove(from);
+                    return;
                 }
 
-                Direction dir = WhichWayIs(from, to, true); // start by direct route
+
+                Direction dir = WhichWayIs(to, from, true); // start by direct route
                 int count = 0;
                 while (count < 4)
                 {
                     Coords tmp = Map.DirectionTile(from, dir);
-                    if (this[tmp.x, tmp.y].canEnter)
+
+
+                    if ((this[tmp.x, tmp.y].canEnter) && (!visited.Contains(tmp)))
                     {
-                        result = PathTo(tmp, to, maxlength - 1);
+                        // System.Diagnostics.Debug.WriteLine(indent + "Looking " + dir + " of " + from + " to " + tmp);
+
+                        PathTo(tmp, to, out result, ref visited, maxlength - 1, indent + " ");
                         if (result != null)
                         {
-                            System.Diagnostics.Debug.WriteLine(" - " + from.x + "/" + from.y);
-                            result.Insert(0, from);
-                            return result;
+                            //   System.Diagnostics.Debug.WriteLine(indent + " - " + from.x + "/" + from.y);
+                            if (result.Count > 1)
+                            {
+                                if ((Math.Abs(result[1].x - from.x) < 2) && (Math.Abs(result[1].y - from.y) < 2) && (CanMove(result[1], WhichWayIs(result[1], from))))
+                                    result[0] = from; // Diagonals preferred
+
+                                else result.Insert(0, from);
+                            }
+                            else
+                            {
+
+                                result.Insert(0, from); // Only starting point in list                                 
+                            }
+                            visited.Remove(from);
+
+                            // System.Diagnostics.Debug.WriteLine(indent + "*" + from.x + "/" + from.y + " leads over " + dir.ToString() + " to " + to.x + " / " + to.y);
+                            return;
+
                         }
+                        /*    else
+                            {
+                                System.Diagnostics.Debug.WriteLine(indent + from.x + "/" + from.y + " no exit " + dir.ToString() + " to " + to.x + " / " + to.y);
+                            } */
                     }
+                    /*    else
+                        {
+                            if (!visited.Contains(tmp))
+                            {
+                                System.Diagnostics.Debug.WriteLine(indent + dir.ToString() + " of " + from.x + "/" + from.y + " is blocked");
+                            }
+                        } */
                     dir = NextDirection(dir, true);
                     count += 1;
                 }
+
             }
             //PathTo(from, to, maxlength - 1);
-            return null;
+            visited.Remove(from);
+
+            return;
         }
 
         public FloorTile TileByCoords(Coords coords)
@@ -616,7 +675,7 @@ namespace Gruppe22
                         output += " ";
                     }
                 }
-                System.Diagnostics.Debug.WriteLine(output);
+                // System.Diagnostics.Debug.WriteLine(output);
                 output = "";
 
             }

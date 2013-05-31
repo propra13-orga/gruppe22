@@ -12,7 +12,7 @@ namespace Gruppe22
     public class FloatNumber
     {
         Vector2 _pos;
-        private int _counter = 10;
+        private float _counter = 10;
         private Color _color = Color.White;
         private string _text;
         private SpriteBatch _spritebatch;
@@ -25,18 +25,18 @@ namespace Gruppe22
         public void Draw()
         {
             _spritebatch.Begin(SpriteSortMode.Texture, BlendState.AlphaBlend, null, null, null, null, _camera.matrix);
-            _spritebatch.DrawString(_font, _text, _pos, new Color(_color, (float)_counter / 10), 0f, new Vector2(_width / 2, _height / 2), (10 - _counter) / 3, SpriteEffects.None, 0);
+            _spritebatch.DrawString(_font, _text, new Vector2(_pos.X, _pos.Y - (20 * (10 - _counter))), new Color(_color, (float)_counter / 10), 0f, new Vector2(_width / 2, _height / 2), (10 - _counter) / 3, SpriteEffects.None, 0);
             _spritebatch.End();
         }
 
         public bool Update(GameTime gametime)
         {
             _timer += gametime.ElapsedGameTime.Milliseconds;
-            if (_timer > 100)
+            if (_timer > 10)
             {
-                _timer -= 100;
-                _counter -= 1;
-                if (_counter < 1) return true;
+                _timer -= 10;
+                _counter -= 0.1f;
+                if (_counter < 0.1f) return true;
             }
             return false;
         }
@@ -891,6 +891,7 @@ namespace Gruppe22
 
         public void resetActors()
         {
+            if (_floatnumbers != null) _floatnumbers.Clear();
             _actors.Clear();
             for (int count = 0; count < _map.actorPositions.Count; ++count)
             {

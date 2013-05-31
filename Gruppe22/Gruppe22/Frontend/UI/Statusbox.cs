@@ -126,7 +126,7 @@ namespace Gruppe22
         }
 
 
-        public virtual void OnMouseDown(int button)
+        public override  void OnMouseDown(int button)
         {
             if ((new Rectangle(_displayRect.Right - 35, _displayRect.Top + 5, 28, 28).Contains(Mouse.GetState().X, Mouse.GetState().Y)) && (_startPos > 0))
             {

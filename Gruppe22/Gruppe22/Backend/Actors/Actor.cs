@@ -536,7 +536,7 @@ namespace Gruppe22
                     writer.WriteStartElement("Actor");
                     break;
             }
-            
+
             writer.WriteAttributeString("name", _name);
             writer.WriteAttributeString("maxhp", Convert.ToString(_maxhealth));
             writer.WriteAttributeString("hp", Convert.ToString(_health));
@@ -649,6 +649,11 @@ namespace Gruppe22
             reader.ReadEndElement(); // End Effects
 
 
+        }
+
+        public override string ToString()
+        {
+            return base.ToString() + " (" + _name + ")";
         }
 
         /// <summary>

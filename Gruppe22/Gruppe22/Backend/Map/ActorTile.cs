@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Xml;
 
 namespace Gruppe22
@@ -70,87 +71,112 @@ namespace Gruppe22
             }
         }
 
+        public async Task WorkoutMoves()
+        {
+
+            _elapsed -= _timeToThink;
+            Map map = (Map)((FloorTile)_parent).parent;
+
+
+            Direction dir = Direction.None;
+            Coords closestEnemy = map.ClosestEnemy(coords, 6);
+
+            if (closestEnemy.x > -1) // There is an enemy close by
+            {
+
+                if ((Math.Abs(closestEnemy.x - coords.x) < 2) &&
+                    (Math.Abs(closestEnemy.y - coords.y) < 2) &&
+                    (map.CanMove(coords, Map.WhichWayIs(closestEnemy, coords))))
+                {
+                    dir = Map.WhichWayIs(closestEnemy, coords);
+                    //System.Diagnostics.Debug.WriteLine("Attack -> " + coords.x + "/" + coords.y + "->" + closestEnemy.x + "/" + closestEnemy.y + "=>" + dir);
+
+                }
+                else
+                {
+                    //System.Diagnostics.Debug.WriteLine("==============================");
+                    //System.Diagnostics.Debug.WriteLine(actor.ToString() + " (" + coords.ToString() + ") tries to catch " + map[closestEnemy].firstActor.ToString() + " (" + closestEnemy.ToString() + ")");
+                    //System.Diagnostics.Debug.WriteLine("------------------------------");
+
+                    List<Coords> path = null;
+                    SortedSet<Coords> temp = null;
+
+                    map.PathTo(coords, closestEnemy, out path, ref temp, 10);
+                    if ((path != null) && (path.Count > 0))
+                    {
+                        dir = Map.WhichWayIs(path[1], coords);
+                        // System.Diagnostics.Debug.WriteLine("=> Path found:" + path[1] + " (" + dir + ")");
+                    }
+                }
+
+                if (actor.health < actor.maxHealth / 4)
+                {
+                    // Low health => try to flee
+                    //System.Diagnostics.Debug.WriteLine("=> Flee!");
+
+                    dir = Map.OppositeDirection(dir);
+                }
+                int count = 1;
+
+                while ((!map.TileByCoords(Map.DirectionTile(coords, dir)).canEnter) && (count < 9))
+                {
+                    //System.Diagnostics.Debug.WriteLine("Rotate");
+                    dir = Map.NextDirection(dir);
+                    count += 1;
+                }
+                if (!map.TileByCoords(Map.DirectionTile(coords, dir)).canEnter) dir = Direction.None;
+            }
+
+            else
+            {
+                // Nobody close by, just wander aimlessly
+                // TODO: Try to grab nearby items
+
+                dir = (Direction)_random.Next(4);
+                int count = 1;
+                while (((dir == Map.OppositeDirection(_lastDir)) || (!map.TileByCoords(Map.DirectionTile(coords, dir)).canEnter)) && (count < 9))
+                {
+                    dir = Map.NextDirection(dir);
+                    count += 1;
+                }
+                if ((dir == Map.OppositeDirection(_lastDir)) || (!map.TileByCoords(Map.DirectionTile(coords, dir)).canEnter)) dir = Direction.None;
+
+            }
+
+            if (dir == Direction.None)
+            {
+                dir = (Direction)_random.Next(4);
+            }
+
+
+            if (dir != Direction.None)
+            {
+                ((IHandleEvent)parent).HandleEvent(null, Events.MoveActor, actor.id, dir);
+                //System.Diagnostics.Debug.WriteLine("#####" + dir + "######");
+            }
+
+        }
+
+        public async Task ConsiderMoves()
+        {
+            _working = true;
+            await WorkoutMoves();
+            _working = false;
+        }
+
         public override void Update(Microsoft.Xna.Framework.GameTime gameTime)
         {
             if (enabled && !(actor is Player) && (!_working))
             {
-                _working = true;
-                _elapsed += gameTime.ElapsedGameTime.Milliseconds;
-                if (_elapsed > _timeToThink)
+                if (actor.isDead)
                 {
-                    _elapsed -= _timeToThink;
-                    Map map = (Map)((FloorTile)_parent).parent;
-                    if (!actor.isDead)
-                    {
-
-                        Direction dir = Direction.None;
-                        Coords closestEnemy = map.ClosestEnemy(coords, 6);
-
-                        if (closestEnemy.x > -1) // There is an enemy close by
-                        {
-                            if ((Math.Abs(closestEnemy.x - coords.x) < 2) &&
-                                (Math.Abs(closestEnemy.y - coords.y) < 2))
-                            {
-                                dir = Map.WhichWayIs(closestEnemy, coords);
-                                System.Diagnostics.Debug.WriteLine("-------");
-                                System.Diagnostics.Debug.WriteLine(coords.x + "/" + coords.y + "->" + closestEnemy.x + "/" + closestEnemy.y + "=>" + dir);
-                                System.Diagnostics.Debug.WriteLine("-------");
-
-                            }
-                            else
-                            {
-                                List<Coords> path = map.PathTo(coords, closestEnemy, 4);
-                                if ((path != null) && (path.Count > 0))
-                                {
-                                    dir = Map.WhichWayIs(path[1], coords);
-                                }
-                            }
-
-                            if (actor.health < actor.maxHealth / 4)
-                            {
-                                // Low health => try to flee
-
-                                dir = Map.OppositeDirection(dir);
-                            }
-                            int count = 1;
-
-                            while ((!map.TileByCoords(Map.DirectionTile(coords, dir)).canEnter) && (count < 9))
-                            {
-                                dir = Map.NextDirection(dir);
-                                count += 1;
-                            }
-
-                            if (!map.TileByCoords(Map.DirectionTile(coords, dir)).canEnter) dir = Direction.None;
-                        }
-
-                        else
-                        {
-                            // Nobody close by, just wander aimlessly
-                            // TODO: Try to grab nearby items
-                            dir = (Direction)_random.Next(4);
-                            int count = 1;
-                            while (((dir == Map.OppositeDirection(_lastDir)) || (!map.TileByCoords(Map.DirectionTile(coords, dir)).canEnter)) && (count < 9))
-                            {
-                                dir = Map.NextDirection(dir);
-                                count += 1;
-                            }
-                            if ((dir == Map.OppositeDirection(_lastDir)) || (!map.TileByCoords(Map.DirectionTile(coords, dir)).canEnter)) dir = Direction.None;
-                        }
-                        if (dir == Direction.None)
-                        {
-                            dir = (Direction)_random.Next(4);
-                        }
-                        if (dir != Direction.None)
-                            ((IHandleEvent)parent).HandleEvent(null, Events.MoveActor, actor.id, dir);
-                        _working = false;
-                    }
-                    else
-                    {
-                        enabled = false;
-                    }
+                    enabled = false;
                 }
+                else
+                {
+                    ConsiderMoves();
 
-
+                }
             }
         }
 

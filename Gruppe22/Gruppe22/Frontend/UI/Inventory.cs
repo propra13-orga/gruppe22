@@ -10,7 +10,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Gruppe22
 {
-    class Inventory : Grid
+    public class Inventory : Grid
     {
         #region Private Fields
         Actor _actor = null;
