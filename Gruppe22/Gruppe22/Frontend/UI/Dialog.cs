@@ -9,18 +9,17 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Gruppe22
 {
-    class NumberEntry:TextInput
+    class Dialog : Window
     {
+        private Actor _actor = null;
+
         /// <summary>
-        /// 
+        /// Constructor
         /// </summary>
-        /// <param name="spriteBatch"></param>
-        /// <param name="content"></param>
-        /// <param name="displayRect"></param>
-        public NumberEntry(IHandleEvent parent, SpriteBatch spriteBatch, ContentManager content, Rectangle displayRect)
+        public Dialog(IHandleEvent parent, SpriteBatch spriteBatch, ContentManager content, Rectangle displayRect, Actor actor)
             : base(parent, spriteBatch, content, displayRect)
         {
+            _actor = actor;
         }
-
     }
 }

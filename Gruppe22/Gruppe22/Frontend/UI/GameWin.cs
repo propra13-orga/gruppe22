@@ -147,6 +147,11 @@ namespace Gruppe22
         /// Whether we are playing by network (i.e. communicating with a server)
         /// </summary>
         private bool _lan = false;
+
+        /// <summary>
+        /// Random number generator
+        /// </summary>
+        protected Random r = null;
         #endregion
 
 
@@ -445,7 +450,6 @@ namespace Gruppe22
         public void GenerateMaps()
         {
             List<Exit> exits = new List<Exit>();
-            Random r = new Random();
             Generator tempMap = null;
 
             for (int i = 1; i < 4; i++) //3 Level a 3 Räume
@@ -711,7 +715,7 @@ namespace Gruppe22
             {
                 await wc.DownloadFileTaskAsync("http://casim.hhu.de/Crawler/" + _filename, _filename);
             }
-            catch 
+            catch
             {
                 finished(null, null);
             }
@@ -762,6 +766,7 @@ namespace Gruppe22
             _backgroundcolor = Color.Black;
             _events = new StateToEvent(this);
             _files2fetch = new Queue<String>();
+            r = new Random();
 
         }
     }

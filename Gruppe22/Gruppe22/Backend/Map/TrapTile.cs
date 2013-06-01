@@ -77,6 +77,16 @@ namespace Gruppe22
         private uint _elapsed = 0;
 
         /// <summary>
+        /// Cut through block
+        /// </summary>
+        private int _penetrate = 0;
+
+        /// <summary>
+        /// Overrule player evade
+        /// </summary>
+        private int _evade = 0;
+
+        /// <summary>
         /// Repeat timer (for changing traps)
         /// </summary>
         private uint _repeatTime = 1600;
@@ -101,6 +111,29 @@ namespace Gruppe22
             }
         }
 
+        public int evade
+        {
+            get
+            {
+                return _evade;
+            }
+            set
+            {
+                _evade = value;
+            }
+        }
+
+        public int penetrate
+        {
+            get
+            {
+                return _penetrate;
+            }
+            set
+            {
+                _penetrate = value;
+            }
+        }
         public TrapType type
         {
             get
@@ -150,7 +183,10 @@ namespace Gruppe22
                 {
                     _elapsed -= _repeatTime;
                     if (_state == TrapState.Off)
+                    {
                         _state = TrapState.On;
+                        ((FloorTile)_parent).HandleEvent(null, Events.TrapActivate, coords);
+                    }
                     else _state = TrapState.Off;
                 }
             }
@@ -193,6 +229,9 @@ namespace Gruppe22
         {
             xmlw.WriteStartElement("TrapTile");
             xmlw.WriteAttributeString("damage", Convert.ToString(_damage));
+            xmlw.WriteAttributeString("evade", Convert.ToString(_evade));
+            xmlw.WriteAttributeString("penetrate", Convert.ToString(_penetrate));
+
             switch (_state)
             {
                 case TrapState.Disabled:
@@ -202,6 +241,7 @@ namespace Gruppe22
                     xmlw.WriteAttributeString("broken", "true");
                     break;
             }
+
             if ((_type & TrapType.Hidden) == TrapType.Hidden)
             {
                 xmlw.WriteAttributeString("hidden", "true");

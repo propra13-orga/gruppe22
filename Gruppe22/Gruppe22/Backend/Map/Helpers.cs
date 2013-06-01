@@ -41,7 +41,8 @@ namespace Gruppe22
         LAN,
         FetchFile,
         TileEntered,
-        Attack
+        Attack,
+        TrapActivate
     }
 
     public enum GameStatus
@@ -102,7 +103,7 @@ namespace Gruppe22
 
         public override int GetHashCode()
         {
-            return Math.Abs(_x)+Math.Abs(y);
+            return Math.Abs(_x) + Math.Abs(y);
         }
         public override bool Equals(object obj)
         {
@@ -150,7 +151,7 @@ namespace Gruppe22
         {
             if ((object)c1 == null) return ((object)c2 == null);
             if ((object)c2 == null) return false;
-            return ((c1.x==c2.x)&&(c1.y==c2.y));
+            return ((c1.x == c2.x) && (c1.y == c2.y));
         }
 
         public static Coords Zero

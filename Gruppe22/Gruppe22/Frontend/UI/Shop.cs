@@ -7,20 +7,19 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Gruppe22
+namespace Gruppe22.Frontend.UI
 {
-    class NumberEntry:TextInput
+    public class Shop : Window
     {
+        private Actor _actor = null;
+
         /// <summary>
-        /// 
+        /// Constructor
         /// </summary>
-        /// <param name="spriteBatch"></param>
-        /// <param name="content"></param>
-        /// <param name="displayRect"></param>
-        public NumberEntry(IHandleEvent parent, SpriteBatch spriteBatch, ContentManager content, Rectangle displayRect)
+        public Shop(IHandleEvent parent, SpriteBatch spriteBatch, ContentManager content, Rectangle displayRect, Actor actor)
             : base(parent, spriteBatch, content, displayRect)
         {
+            _actor = actor;
         }
-
     }
 }

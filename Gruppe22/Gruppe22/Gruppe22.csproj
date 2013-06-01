@@ -124,7 +124,9 @@
     <Compile Include="Frontend\Map\WallTiles.cs" />
     <Compile Include="Frontend\UI\AboutWindow.cs" />
     <Compile Include="Frontend\UI\Button.cs" />
+    <Compile Include="Frontend\UI\CharacterWindow.cs" />
     <Compile Include="Frontend\UI\CheckBox.cs" />
+    <Compile Include="Frontend\UI\Dialog.cs" />
     <Compile Include="Frontend\UI\FileDialog.cs" />
     <Compile Include="Frontend\UI\GameLogic.cs" />
     <Compile Include="Frontend\UI\GameWin.cs" />
@@ -137,6 +139,7 @@
     <Compile Include="Frontend\UI\Progressbar.cs" />
     <Compile Include="Frontend\UI\ScrollArea.cs" />
     <Compile Include="Frontend\UI\SettingsWindow.cs" />
+    <Compile Include="Frontend\UI\Shop.cs" />
     <Compile Include="Frontend\UI\SimpleStats.cs" />
     <Compile Include="Frontend\UI\Statusbox.cs" />
     <Compile Include="Frontend\UI\TextInput.cs" />
