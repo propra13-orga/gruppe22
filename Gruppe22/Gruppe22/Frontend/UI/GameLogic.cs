@@ -38,14 +38,16 @@ namespace Gruppe22
         {
             if (_map1.actors[attacker].evade + r.Next(10) < _map1.actors[defender].evade + r.Next(10))
             {
-                _mainmap1.floatNumber(_map1.actors[attacker].tile.coords, "Evade", Color.Green);
+                if ((_map1.actors[attacker] is Player) || (_map1.actors[defender] is Player))
+                    _mainmap1.floatNumber(_map1.actors[attacker].tile.coords, "Evade", Color.Green);
             }
             else
 
 
                 if (_map1.actors[attacker].penetrate + r.Next(10) < _map1.actors[defender].block + r.Next(10))
                 {
-                    _mainmap1.floatNumber(_map1.actors[attacker].tile.coords, "Blocked", Color.Green);
+                    if ((_map1.actors[attacker] is Player) || (_map1.actors[defender] is Player))
+                        _mainmap1.floatNumber(_map1.actors[attacker].tile.coords, "Blocked", Color.Green);
                 }
                 else
                 {
@@ -60,7 +62,8 @@ namespace Gruppe22
                         }
                         else
                         {
-                            _mainmap1.floatNumber(_map1.actors[defender].tile.coords, damage.ToString(), Color.White);
+                            if (_map1.actors[attacker] is Player)
+                                _mainmap1.floatNumber(_map1.actors[defender].tile.coords, damage.ToString(), Color.White);
                         }
                         if (_map1.actors[defender].isDead)
                         {
@@ -77,7 +80,8 @@ namespace Gruppe22
                     }
                     else
                     {
-                        _mainmap1.floatNumber(_map1.actors[defender].tile.coords, "No damage", _map1.actors[defender] is Player ? Color.Green : Color.White);
+                        if ((_map1.actors[attacker] is Player) || (_map1.actors[defender] is Player))
+                            _mainmap1.floatNumber(_map1.actors[defender].tile.coords, "No damage", _map1.actors[defender] is Player ? Color.Green : Color.White);
                     }
                 }
         }
@@ -111,7 +115,7 @@ namespace Gruppe22
                         }
                         else
                         {
-                            _mainmap1.floatNumber(target, damage.ToString(), Color.White);
+                            //  _mainmap1.floatNumber(target, damage.ToString(), Color.White);
                         };
                         if (_map1[target].firstActor.isDead)
                         {
@@ -128,7 +132,8 @@ namespace Gruppe22
                     }
                     else
                     {
-                        _mainmap1.floatNumber(target, "No damage", Color.Green);
+                        if (_map1[target].firstActor is Player)
+                            _mainmap1.floatNumber(target, "No damage", Color.Green);
                     }
                 }
         }
@@ -243,7 +248,7 @@ namespace Gruppe22
 
                         if (_map1.CanMove(_map1.actors[id].tile.coords, dir))
                         {
-                        
+
                             // Display enemy statistics
                             if (_map1[target.x, target.y].firstActor is Player)
                             {
@@ -261,20 +266,20 @@ namespace Gruppe22
                             _CombatDamage(id, _map1[target.x, target.y].firstActor.id);
                         }
 
-                    
-                    /*
-                     *                                 _mainmap1.HandleEvent(null, Events.AnimateActor, _map1.firstActorID(target.x, target.y), Activity.Die, false, Map.WhichWayIs(_map1.actors[id].tile.coords, target));
-                                AddMessage((_map1.actors[id] is Player ? "<green>You" : _map1.actors[id].name) + " killed " + (_map1.actors[_map1.firstActorID(target.x, target.y)] is Player ? "you" : _map1.actors[_map1.firstActorID(target.x, target.y)].name) + " doing " + _map1.actors[id].damage.ToString() + " points of damage.");
 
-                            }
-                            else
-                            {
-                                _mainmap1.HandleEvent(null, Events.AnimateActor, _map1.firstActorID(target.x, target.y), Activity.Hit, false, Map.WhichWayIs(_map1.actors[id].tile.coords, target));
-                                AddMessage(((_map1.actors[_map1.firstActorID(target.x, target.y)] is Player) ? "<red>" : "") + (_map1.actors[id] is Player ? "<green>You" : _map1.actors[id].name) + " attacked " + (_map1.actors[_map1.firstActorID(target.x, target.y)] is Player ? "you" : _map1.actors[_map1.firstActorID(target.x, target.y)].name));
-                                AddMessage(((_map1.actors[_map1.firstActorID(target.x, target.y)] is Player) ? "<red>" : "") + "The attack caused " + (_map1[target.x, target.y].firstActor.armor - _map1.actors[id].damage).ToString() + " points of damage (" + _map1.actors[id].damage.ToString() + " attack strength - " + _map1[target.x, target.y].firstActor.armor + " defense)");
-                            }
-*/
-  
+                        /*
+                         *                                 _mainmap1.HandleEvent(null, Events.AnimateActor, _map1.firstActorID(target.x, target.y), Activity.Die, false, Map.WhichWayIs(_map1.actors[id].tile.coords, target));
+                                    AddMessage((_map1.actors[id] is Player ? "<green>You" : _map1.actors[id].name) + " killed " + (_map1.actors[_map1.firstActorID(target.x, target.y)] is Player ? "you" : _map1.actors[_map1.firstActorID(target.x, target.y)].name) + " doing " + _map1.actors[id].damage.ToString() + " points of damage.");
+
+                                }
+                                else
+                                {
+                                    _mainmap1.HandleEvent(null, Events.AnimateActor, _map1.firstActorID(target.x, target.y), Activity.Hit, false, Map.WhichWayIs(_map1.actors[id].tile.coords, target));
+                                    AddMessage(((_map1.actors[_map1.firstActorID(target.x, target.y)] is Player) ? "<red>" : "") + (_map1.actors[id] is Player ? "<green>You" : _map1.actors[id].name) + " attacked " + (_map1.actors[_map1.firstActorID(target.x, target.y)] is Player ? "you" : _map1.actors[_map1.firstActorID(target.x, target.y)].name));
+                                    AddMessage(((_map1.actors[_map1.firstActorID(target.x, target.y)] is Player) ? "<red>" : "") + "The attack caused " + (_map1[target.x, target.y].firstActor.armor - _map1.actors[id].damage).ToString() + " points of damage (" + _map1.actors[id].damage.ToString() + " attack strength - " + _map1[target.x, target.y].firstActor.armor + " defense)");
+                                }
+    */
+
                     }
                     break;
 
