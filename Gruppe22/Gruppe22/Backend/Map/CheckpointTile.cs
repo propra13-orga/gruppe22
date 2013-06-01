@@ -12,5 +12,11 @@ namespace Gruppe22
             base(parent)
         { 
         }
+
+        public override void Save(System.Xml.XmlWriter xmlw)
+        {
+            xmlw.WriteStartElement("CheckpointTile");
+            xmlw.WriteEndElement();
+        }
     }
 }
