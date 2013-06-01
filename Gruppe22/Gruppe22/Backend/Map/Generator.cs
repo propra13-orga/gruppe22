@@ -403,6 +403,13 @@ namespace Gruppe22
                 if ((pos.x >= 0) && (pos.x < _width) && (pos.y < _height) && (pos.y >= 0))
                 {
                     TrapTile trapTile = new TrapTile(_tiles[pos.y][pos.x], r.Next(10) + 5);
+                    if (r.Next(10) > 3)
+                        trapTile.type = trapTile.type | TrapType.OnlyOnce;
+                    if (r.Next(10) > 7)
+                        trapTile.type = trapTile.type | TrapType.Hidden;
+                    if (r.Next(10) > 4)
+                        trapTile.type = trapTile.type | TrapType.Changing;
+
                     _tiles[pos.y][pos.x].Add(trapTile);
                 }
             }

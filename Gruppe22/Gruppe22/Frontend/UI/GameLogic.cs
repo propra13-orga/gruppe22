@@ -107,15 +107,16 @@ namespace Gruppe22
                         // Apply trap damage
                         if (_map1[target.x, target.y].hasTrap)
                         {
-                            _map1.actors[id].SetDamage(_map1[target.x, target.y].trapDamage);
+                            int trapDamage = _map1[target.x, target.y].trap.Trigger();
+                            _map1.actors[id].SetDamage(trapDamage);
                             if (id == 0)
-                                _mainmap1.floatNumber(target, _map1[target.x, target.y].trapDamage.ToString(), Color.DarkRed);
+                                _mainmap1.floatNumber(target, trapDamage.ToString(), Color.DarkRed);
                             if (_map1.actors[id].isDead)
                             {
                                 _mainmap1.HandleEvent(null, Events.AnimateActor, id, Activity.Die);
                                 _mainmap2.HandleEvent(null, Events.AnimateActor, id, Activity.Die);
 
-                                AddMessage((_map1.actors[id] is Player ? "You were" : _map1.actors[id].name + " was") + " killed by a trap  doing " + (_map1[target.x, target.y].trapDamage - _map1.actors[id].armor).ToString() + " points of damage (" + _map1[target.x, target.y].trapDamage.ToString() + " - " + _map1.actors[id].armor + " protection)");
+                                AddMessage((_map1.actors[id] is Player ? "<red>You were" : _map1.actors[id].name + " was") + " killed by a trap  doing " + (trapDamage - _map1.actors[id].armor).ToString() + " points of damage (" + trapDamage.ToString() + " - " + _map1.actors[id].armor + " protection)");
 
                             }
                             else
@@ -123,7 +124,7 @@ namespace Gruppe22
                                 _mainmap1.HandleEvent(null, Events.AnimateActor, id, Activity.Hit);
                                 _mainmap2.HandleEvent(null, Events.AnimateActor, id, Activity.Hit);
 
-                                AddMessage((_map1.actors[id] is Player ? "You were" : _map1.actors[id].name + "  was") + " hit for " + (_map1[target.x, target.y].trapDamage - _map1.actors[id].armor).ToString() + " points of damage (" + _map1[target.x, target.y].trapDamage.ToString() + " - " + _map1.actors[id].armor + " protection)");
+                                AddMessage((_map1.actors[id] is Player ? "<red>You were" : _map1.actors[id].name + "  was") + " hit for " + (trapDamage - _map1.actors[id].armor).ToString() + " points of damage (" + trapDamage + " - " + _map1.actors[id].armor + " protection)");
                             }
                             if (_map1.actors[id] is Player) RemoveHealth();
 

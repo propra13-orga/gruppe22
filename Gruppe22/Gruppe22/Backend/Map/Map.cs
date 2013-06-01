@@ -621,7 +621,28 @@ namespace Gruppe22
                                         tile.Add(new TargetTile(tile));
                                         break;
                                     case "TrapTile":
-                                        tile.Add(new TrapTile(this, Int32.Parse(xmlr.GetAttribute("damage"))));
+                                        TrapTile trap = new TrapTile(this, Int32.Parse(xmlr.GetAttribute("damage")));
+                                        if (xmlr.GetAttribute("changing") != null)
+                                        {
+                                            trap.type = trap.type | TrapType.Changing;
+                                        }
+                                        if (xmlr.GetAttribute("hidden") != null)
+                                        {
+                                            trap.type = trap.type | TrapType.Hidden;
+                                        }
+                                        if (xmlr.GetAttribute("onlyonce") != null)
+                                        {
+                                            trap.type = trap.type | TrapType.OnlyOnce;
+                                        }
+                                        if (xmlr.GetAttribute("broken") != null)
+                                        {
+                                            trap.status = TrapState.Destroyed;
+                                        }
+                                        if (xmlr.GetAttribute("disabled") != null)
+                                        {
+                                            trap.status = TrapState.Disabled;
+                                        }
+                                        tile.Add(trap);
                                         _updateTiles.Add(tile.coords);
                                         break;
                                     case "TeleportTile":

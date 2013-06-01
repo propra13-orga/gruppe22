@@ -12,7 +12,7 @@ namespace Gruppe22
     public class FloorTile : Tile, IDisposable
     {
         #region Private Fields
-        
+
         /// <summary>
         /// Fields displayed (and checked) on top of the current field
         /// </summary>
@@ -68,23 +68,16 @@ namespace Gruppe22
             }
         }
 
-        public int trapDamage
+        public TrapTile trap
         {
             get
             {
-                if (hasTrap)
+
+                foreach (Tile tile in _overlay)
                 {
-                    int result = 0;
-                    foreach (Tile tile in _overlay)
-                    {
-                        if (tile is TrapTile) result += ((TrapTile)tile).damage;
-                    }
-                    return result;
+                    if (tile is TrapTile) return (TrapTile)tile;
                 }
-                else
-                {
-                    return 0;
-                }
+                return null;
             }
         }
 
@@ -151,7 +144,7 @@ namespace Gruppe22
             {
                 for (int i = 0; i < _overlay.Count; ++i)
                 {
-                    if ((_overlay[i] is WallTile)||(_overlay[i] is DoorTile)) return true;
+                    if ((_overlay[i] is WallTile) || (_overlay[i] is DoorTile)) return true;
                 }
 
                 return false;
@@ -421,7 +414,7 @@ namespace Gruppe22
             tile.parent = this;
         }
 
-       
+
 
         /// <summary>
         /// Remove specified tile from overlay
