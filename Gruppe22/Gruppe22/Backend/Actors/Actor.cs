@@ -669,16 +669,7 @@ namespace Gruppe22
                 case ActorType.Player:
                     if (File.Exists("playernames.txt"))
                     {
-                        using (TextReader reader = new StreamReader("playernames.txt"))
-                        {
-                            index = r.Next(File.ReadAllLines("playernames.txt").Length);
-                            int i = 0;
-                            while (i < index && reader.ReadLine() != null)
-                            {
-                                i++;
-                            }
-                            _name = reader.ReadLine();
-                        }
+                        _name = GenerateName("playernames.txt");
                     }
                     else
                     {
@@ -708,16 +699,7 @@ namespace Gruppe22
                 case ActorType.Enemy:
                     if (File.Exists("enemynames.txt"))
                     {
-                        using (TextReader reader = new StreamReader("enemynames.txt"))
-                        {
-                            index = r.Next(File.ReadAllLines("enemynames.txt").Length);
-                            int i = 0;
-                            while (i < index && reader.ReadLine() != null)
-                            {
-                                i++;
-                            }
-                            _name = reader.ReadLine();
-                        }
+                        _name = GenerateName("enemynames.txt");
                     }
                     else
                     {
@@ -769,18 +751,24 @@ namespace Gruppe22
                 case ActorType.NPC:
                     if (File.Exists("npcnames.txt"))
                     {
-                        using (TextReader reader = new StreamReader("npcnames.txt"))
-                        {
-                            index = r.Next(File.ReadAllLines("npcnames.txt").Length);
-                            int i = 0;
-                            while (i < index && reader.ReadLine() != null)
-                            {
-                                i++;
-                            }
-                            _name = reader.ReadLine();
-                        }
+                        _name = GenerateName("npcnames.txt");
                     }
                     break;
+            }
+        }
+
+        public string GenerateName(string filename)
+        {
+            using (TextReader reader = new StreamReader(filename))
+            {
+                Random r = new Random();
+                int index = r.Next(File.ReadAllLines(filename).Length);
+                int i = 0;
+                while (i < index && reader.ReadLine() != null)
+                {
+                    i++;
+                }
+                return reader.ReadLine();
             }
         }
 
