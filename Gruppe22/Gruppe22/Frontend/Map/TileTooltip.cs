@@ -54,7 +54,7 @@ namespace Gruppe22
                     if (_height > 10)
                     {
                         _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend);
-                        _spriteBatch.Draw(_background, new Rectangle((int)result.X, (int)result.Y, _width, _height), new Rectangle(39, 6, 1, 1), new Color(0.3f, 0f, 0f, 0.3f));
+                        _spriteBatch.Draw(_background, new Rectangle((int)result.X, (int)result.Y, _width, _height), new Rectangle(39, 6, 1, 1), new Color(0f, 0f, 0f, 0.3f));
                         int i = 0;
                         foreach (string s in _toolTipLines)
                         {
@@ -79,7 +79,7 @@ namespace Gruppe22
                 _updating = true;
                 _toolTipLines.Clear();
                 _height = 10;
-                _width = 160;
+                _width = 0;
                 foreach (ActorTile enemy in tile.overlay.OfType<ActorTile>())
                 {
                     _toolTipLines.Add(_EnemyToolTip(enemy));
@@ -108,6 +108,11 @@ namespace Gruppe22
                 {
                     _toolTipLines.Add(_WallToolTip(wall));
                     _height += _lineHeight;
+                }
+
+                foreach (string s in _toolTipLines)
+                {
+                    if (_font.MeasureString(s).X > _width) _width = (int)_font.MeasureString(s).X + 11;
                 }
                 _currentTile.x = tile.coords.x;
                 _currentTile.y = tile.coords.y;
@@ -183,6 +188,7 @@ namespace Gruppe22
             _lineHeight = (int)(_font.MeasureString("WgjITt").Y) + 1;
             _toolTipLines = new List<String>();
             _currentTile = new Coords(-1, -1);
+            _width = 0;
             _parent = parent;
         }
     }

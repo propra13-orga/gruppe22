@@ -43,7 +43,9 @@ namespace Gruppe22
         /// <summary>
         /// Trap is disabled and can only be re-enabled manually
         /// </summary>
-        Disabled = 3
+        Disabled = 3,
+        NoDisplay = 5
+
     }
     /// <summary>
     /// A tile containing a trap
@@ -176,7 +178,7 @@ namespace Gruppe22
         public override void Update(Microsoft.Xna.Framework.GameTime gameTime)
         {
 
-            if (((_type & TrapType.Changing) == TrapType.Changing) && (_state != TrapState.Destroyed) && (_state != TrapState.Disabled) && ((_type & TrapType.Hidden) != TrapType.Hidden))
+            if (((_type & TrapType.Changing) == TrapType.Changing) && (_state != TrapState.Destroyed) && (_state != TrapState.NoDisplay) && (_state != TrapState.Disabled) && ((_type & TrapType.Hidden) != TrapType.Hidden))
             {
                 _elapsed += (uint)gameTime.ElapsedGameTime.Milliseconds;
                 if (_elapsed > _repeatTime)
@@ -239,6 +241,9 @@ namespace Gruppe22
                     break;
                 case TrapState.Destroyed:
                     xmlw.WriteAttributeString("broken", "true");
+                    break;
+                case TrapState.NoDisplay:
+                    xmlw.WriteAttributeString("invisible", "true");
                     break;
             }
 

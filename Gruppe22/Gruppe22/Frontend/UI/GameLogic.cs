@@ -39,7 +39,7 @@ namespace Gruppe22
             if (_map1.actors[attacker].evade + r.Next(10) < _map1.actors[defender].evade + r.Next(10))
             {
                 if ((_map1.actors[attacker] is Player) || (_map1.actors[defender] is Player))
-                    _mainmap1.floatNumber(_map1.actors[attacker].tile.coords, "Evade", Color.Green);
+                    _mainmap1.floatNumber(_map1.actors[attacker].tile.coords, "Evade", (_map1.actors[defender] is Player)?Color.Green:Color.White);
             }
             else
 
@@ -47,7 +47,7 @@ namespace Gruppe22
                 if (_map1.actors[attacker].penetrate + r.Next(10) < _map1.actors[defender].block + r.Next(10))
                 {
                     if ((_map1.actors[attacker] is Player) || (_map1.actors[defender] is Player))
-                        _mainmap1.floatNumber(_map1.actors[attacker].tile.coords, "Blocked", Color.Green);
+                        _mainmap1.floatNumber(_map1.actors[attacker].tile.coords, "Blocked", (_map1.actors[defender] is Player) ? Color.Green : Color.White);
                 }
                 else
                 {
@@ -301,6 +301,11 @@ namespace Gruppe22
 
                         if (!_mainmap1.IsMoving(id)||(data.Length>2))
                         {
+                            if (((FloorTile)_map1.actors[id].tile.parent).hasTrap)
+                            {
+                                if (((FloorTile)_map1.actors[id].tile.parent).trap.status == TrapState.Disabled)
+                                    ((FloorTile)_map1.actors[id].tile.parent).trap.status = TrapState.NoDisplay;
+                            }
                             Coords target = Map.DirectionTile(_map1.actors[id].tile.coords, dir);
 
                             _mainmap1.ChangeDir(id, dir); // Look into different direction

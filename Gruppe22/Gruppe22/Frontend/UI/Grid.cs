@@ -192,6 +192,67 @@ namespace Gruppe22
             }
             return result;
         }
+
+
+
+
+        /// <summary>
+        /// Append a new line of text to the status box; word wrap if necessary
+        /// </summary>
+        /// <param name="text"></param>
+        public void DisplayToolTip(int icon, int x, int y)
+        {
+            string text = _icons[icon].tooltip;
+            int textwidth = (int)_font.MeasureString(text.Replace("<red>", "").Replace("<green>", "")).X + 1;
+            int textheight = (int)_font.MeasureString(text.Replace("<red>", "").Replace("<green>", "")).Y + 1;
+            int lineHeight = (int)_font.MeasureString("Wgj").Y + 1;
+            Color color = Color.White;
+            _spriteBatch.Draw(_background, new Rectangle(_displayRect.Left + x * (_width + 3)
+    - textwidth - 2
+
+    , _displayRect.Top + y * (_height + 3)
+
+    - textheight - 2
+    , textwidth + 5, textheight + 5), new Rectangle(39, 6, 1, 1), new Color(Color.Black, 0.9f));
+            int line = 0;
+            while (text.IndexOf("\n") > -1)
+            {
+                color = Color.White;
+                text = text.TrimStart();
+                if (text.StartsWith("<red>")) { color = Color.Red; text = text.Substring(5); }
+                if (text.StartsWith("<green>")) { color = Color.Green; text = text.Substring(7); }
+                text = text.TrimStart();
+                string next = text.Substring(text.IndexOf("\n") + 1);
+                text = text.Substring(0, text.IndexOf("\n"));
+                text.TrimEnd();
+                _spriteBatch.DrawString(_font, text, new Vector2(_displayRect.Left + x * (_width + 3)
+                      - textwidth
+
+                      , _displayRect.Top + y * (_height + 3)
+
+                      - textheight + line), Color.Black);
+                _spriteBatch.DrawString(_font, text, new Vector2(_displayRect.Left + x * (_width + 3)
+                    - textwidth + 1
+
+                    , _displayRect.Top + y * (_height + 3)
+
+                    - textheight + 1 + line), color);
+                text = next;
+
+                line += lineHeight;
+            }
+            if (text.StartsWith("<red>")) { color = Color.Red; text = text.Substring(5); }
+            if (text.StartsWith("<green>")) { color = Color.Green; text = text.Substring(7); }
+
+            _spriteBatch.DrawString(_font, text, new Vector2(_displayRect.Left + x * (_width + 3)
+                - textwidth + 1
+
+                , _displayRect.Top + y * (_height + 3)
+
+                - textheight + 1 + line), color);
+
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -222,25 +283,7 @@ namespace Gruppe22
                             int textwidth = (int)_font.MeasureString(_icons[icon].tooltip).X + 1;
                             int textheight = (int)_font.MeasureString(_icons[icon].tooltip).Y + 1;
 
-                            _spriteBatch.Draw(_background, new Rectangle(_displayRect.Left + x * (_width + 3)
-                                - textwidth - 2
-
-                                , _displayRect.Top + y * (_height + 3)
-
-                                - textheight - 2
-                                , textwidth + 5, textheight + 5), new Rectangle(39, 6, 1, 1), new Color(Color.DarkRed, 0.8f));
-                            _spriteBatch.DrawString(_font, _icons[icon].tooltip, new Vector2(_displayRect.Left + x * (_width + 3)
-                       - textwidth
-
-                       , _displayRect.Top + y * (_height + 3)
-
-                       - textheight), Color.Black);
-                            _spriteBatch.DrawString(_font, _icons[icon].tooltip, new Vector2(_displayRect.Left + x * (_width + 3)
-                                - textwidth +1
-
-                                , _displayRect.Top + y * (_height + 3)
-
-                                - textheight +1), Color.White);
+                            DisplayToolTip(icon, x, y);
                         }
                     }
                     ++icon;

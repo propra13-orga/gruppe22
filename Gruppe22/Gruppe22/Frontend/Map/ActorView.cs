@@ -138,7 +138,7 @@ namespace Gruppe22
                         else
                         {
                             _ypertick = (speed * Math.Abs(_position.y - _target.y)) / Math.Abs(_position.x - _target.x);
-                            System.Diagnostics.Debug.WriteLine("y:" + _ypertick);
+                            //System.Diagnostics.Debug.WriteLine("y:" + _ypertick);
 
                         }
                     }

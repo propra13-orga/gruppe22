@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Gruppe22
 {
-    class NumberEntry:TextInput
+    class NumberEntry : TextInput
     {
         /// <summary>
         /// 
@@ -17,8 +17,8 @@ namespace Gruppe22
         /// <param name="spriteBatch"></param>
         /// <param name="content"></param>
         /// <param name="displayRect"></param>
-        public NumberEntry(IHandleEvent parent, SpriteBatch spriteBatch, ContentManager content, Rectangle displayRect)
-            : base(parent, spriteBatch, content, displayRect)
+        public NumberEntry(IHandleEvent parent, SpriteBatch spriteBatch, ContentManager content, Rectangle displayRect, string label, int value, string toolTip)
+            : base(parent, spriteBatch, content, displayRect, label, value.ToString(), toolTip)
         {
         }
 

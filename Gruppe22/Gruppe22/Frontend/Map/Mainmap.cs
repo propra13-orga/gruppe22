@@ -839,13 +839,16 @@ namespace Gruppe22
 
                     if (_map[x, y].hasTrap)
                     {
-                        if (_map[x, y].trap.visible)
+                        if (_map[x, y].trap.status != TrapState.NoDisplay)
                         {
-                            _spriteBatch.Draw(_environment[2][1].animationTexture, new Rectangle(_map2screen(x, y).x + 32, _map2screen(x, y).y + 16, 64, 64), _environment[2][1].animationRect, ((y == (int)_highlightedTile.y) && (x == (int)_highlightedTile.x)) ? Color.Red : Color.White);
-                        }
-                        else
-                        {
-                            _spriteBatch.Draw(_environment[2][0].animationTexture, new Rectangle(_map2screen(x, y).x + 32, _map2screen(x, y).y + 16, 64, 64), _environment[2][0].animationRect, ((y == (int)_highlightedTile.y) && (x == (int)_highlightedTile.x)) ? Color.Red : Color.White);
+                            if (_map[x, y].trap.visible)
+                            {
+                                _spriteBatch.Draw(_environment[2][1].animationTexture, new Rectangle(_map2screen(x, y).x + 32, _map2screen(x, y).y + 16, 64, 64), _environment[2][1].animationRect, ((y == (int)_highlightedTile.y) && (x == (int)_highlightedTile.x)) ? Color.Red : Color.White);
+                            }
+                            else
+                            {
+                                _spriteBatch.Draw(_environment[2][0].animationTexture, new Rectangle(_map2screen(x, y).x + 32, _map2screen(x, y).y + 16, 64, 64), _environment[2][0].animationRect, ((y == (int)_highlightedTile.y) && (x == (int)_highlightedTile.x)) ? Color.Red : Color.White);
+                            }
                         }
                     }
                     if (_map[x, y].hasTarget)

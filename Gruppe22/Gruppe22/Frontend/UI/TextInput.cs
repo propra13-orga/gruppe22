@@ -13,6 +13,7 @@ namespace Gruppe22
     {
         private string _label = "";
         private string _text = "";
+        private string _toolTip = "";
 
         public string text
         {
@@ -28,9 +29,12 @@ namespace Gruppe22
         /// <param name="spriteBatch"></param>
         /// <param name="content"></param>
         /// <param name="displayRect"></param>
-        public TextInput(IHandleEvent parent, SpriteBatch spriteBatch, ContentManager content, Rectangle displayRect)
+        public TextInput(IHandleEvent parent, SpriteBatch spriteBatch, ContentManager content, Rectangle displayRect, string label, string text, string toolTip)
             : base(parent, spriteBatch, content, displayRect)
         {
+            _label = label;
+            _text = text;
+            _toolTip = toolTip;
         }
     }
 }

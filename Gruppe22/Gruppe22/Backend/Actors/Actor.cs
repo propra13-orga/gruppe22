@@ -86,7 +86,7 @@ namespace Gruppe22
         {
             get
             {
-                return _mana;
+                return Math.Max(_mana, 0);
             }
             set
             {
@@ -109,7 +109,7 @@ namespace Gruppe22
         {
             get
             {
-                return _maxMana;
+                return Math.Max(_maxMana, 0);
             }
             set
             {
@@ -153,7 +153,7 @@ namespace Gruppe22
         {
             get
             {
-                return _health;
+                return Math.Max(_health, 0);
             }
             set
             {
@@ -456,23 +456,6 @@ namespace Gruppe22
             _skills += 1;
             _expNeeded = 3 * _level ^ 2 + 83 * _level + 41;
             _health = _maxhealth;
-        }
-
-        public void SetDamage(Actor actor)
-        {
-            SetDamage(actor.damage);
-        }
-
-        /// <summary>
-        /// Schaden nach einem Angriff für diesen Actor setzen.
-        /// Erst Rüstung, dann Lebenspunkte;
-        /// </summary>
-        /// <param name="damage"></param>
-        public void SetDamage(int damage)
-        {
-            int tmp = _armor - damage;
-            if (tmp < 0)
-                _health = (_health + tmp > 0) ? (_health + tmp) : 0;
         }
 
         public void AddProtection(int amount)

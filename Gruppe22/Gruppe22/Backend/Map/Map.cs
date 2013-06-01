@@ -623,6 +623,10 @@ namespace Gruppe22
                                         break;
                                     case "TrapTile":
                                         TrapTile trap = new TrapTile(this, Int32.Parse(xmlr.GetAttribute("damage")));
+                                        if (xmlr.GetAttribute("penetrate") != null) trap.penetrate = Int32.Parse(xmlr.GetAttribute("penetrate"));
+
+                                        if (xmlr.GetAttribute("evade") != null) trap.evade = Int32.Parse(xmlr.GetAttribute("evade"));
+
                                         if (xmlr.GetAttribute("changing") != null)
                                         {
                                             trap.type = trap.type | TrapType.Changing;
@@ -643,6 +647,11 @@ namespace Gruppe22
                                         {
                                             trap.status = TrapState.Disabled;
                                         }
+                                        if (xmlr.GetAttribute("invisible") != null)
+                                        {
+                                            trap.status = TrapState.NoDisplay;
+                                        }
+
                                         tile.Add(trap);
                                         _updateTiles.Add(tile.coords);
                                         break;

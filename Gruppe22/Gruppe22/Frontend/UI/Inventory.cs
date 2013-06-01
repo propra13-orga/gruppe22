@@ -34,7 +34,7 @@ namespace Gruppe22
             for (int i = 0; i < _actor.inventory.Count; ++i)
             {
                 if (!_actor.inventory[i].destroyed)
-                    _icons.Add(new GridElement(i, _actor.inventory[i].name + (_actor.inventory[i].equipped ? " (equipped)" : ""), _actor.inventory[i].icon, _actor.inventory[i].equipped));
+                    _icons.Add(new GridElement(i, _actor.inventory[i].name + (_actor.inventory[i].equipped ? " (equipped)" : "") + _actor.inventory[i].abilityList, _actor.inventory[i].icon, _actor.inventory[i].equipped));
             }
         }
 

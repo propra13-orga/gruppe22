@@ -405,6 +405,105 @@ namespace Gruppe22
             }
         }
 
+        public string abilityList
+        {
+            get
+            {
+                string result = "";
+                for (int i = 0; i < _effects.Count; ++i)
+                {
+                    if (_effects[i].effect != 0)
+                    {
+
+                        if (_effects[i].effect < 0)
+                        {
+                            result += "\n<red>";
+                        }
+                        else
+                        {
+                            result += "\n<green>";
+                        }
+                        switch (_effects[i].property)
+                        {
+                            case ItemProperty.Evade:
+                                result += "Evade ";
+                                break;
+                            case ItemProperty.Block:
+                                result += "Block ";
+                                break;
+                            case ItemProperty.Penetrate:
+                                result += "Penetration ";
+                                break;
+                            case ItemProperty.ReduceDamage:
+                                result += "Reduce Damage ";
+                                break;
+                            case ItemProperty.StealMana:
+                                result += "Steal Mana ";
+                                break;
+                            case ItemProperty.IceDamage:
+                                result += "Ice Damage ";
+                                break;
+                            case ItemProperty.FireProtect:
+                                result += "Fire Protection ";
+                                break;
+                            case ItemProperty.IceProtect:
+                                result += "Ice Protection ";
+                                break;
+                            case ItemProperty.DestroyWeapon:
+                                result += "Destroy Weapon ";
+                                break;
+                            case ItemProperty.DestroyArmor:
+                                result += "Destroy Armor ";
+                                break;
+                            case ItemProperty.Resist:
+                                result += "Resist Effect ";
+                                break;
+                            case ItemProperty.Damage:
+                                result += "Physical Damage ";
+                                break;
+                            case ItemProperty.FireDamage:
+                                result += "Fire Damage ";
+                                break;
+
+                            case ItemProperty.StealHealth:
+                                result += "Steal Health ";
+                                break;
+
+                            case ItemProperty.MaxHealth:
+                                result += "Max. Health ";
+                                break;
+                            case ItemProperty.Mana:
+                                result += "Mana ";
+                                break;
+                            case ItemProperty.MaxMana:
+                                result += "Max. Mana ";
+                                break;
+                            case ItemProperty.Health:
+                                result += "Health ";
+                                break;
+
+                            case ItemProperty.ManaRegen:
+                                result += "Mana Regeneration ";
+                                break;
+
+                            case ItemProperty.HealthRegen:
+                                result += "Health Regeneration ";
+                                break;
+                        }
+                        if (_effects[i].effect > 0)
+                        {
+                            result += "+" + _effects[i].effect.ToString();
+                        }
+                        else
+                        {
+                            result += "-" + (-_effects[i].effect).ToString();
+                        }
+                    }
+                }
+                return result;
+            }
+        }
+
         public void GenerateName()
         {
             switch (_itemType)
@@ -425,6 +524,13 @@ namespace Gruppe22
             }
             for (int i = 0; i < _effects.Count; ++i)
             {
+                if (_effects[i].effect < 0)
+                {
+                    if (_name.IndexOf("Cursed") < 0)
+                        _name = "Cursed " + _name;
+
+                }
+
                 switch (_effects[i].property)
                 {
                     case ItemProperty.Block:
@@ -446,7 +552,6 @@ namespace Gruppe22
                     case ItemProperty.MaxHealth:
                         {
                             if (_name.IndexOf("Heal") < 0)
-
                                 _name = _name + " of Healing";
 
                         }
@@ -455,7 +560,7 @@ namespace Gruppe22
                     case ItemProperty.DestroyWeapon:
                         {
                             if (_name.IndexOf("Destructive") < 0)
-                                _name = "Destructive " + _name; ;
+                                _name = "Destructive " + _name;
                         }
                         break;
                     case ItemProperty.Evade:
