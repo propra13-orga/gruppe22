@@ -214,7 +214,6 @@ namespace Gruppe22
                     break;
             }
 
-            HandleMovementKeys(k);
             foreach (UIElement element in _interfaceElements)
             {
                 element.OnKeyDown(k);
@@ -282,7 +281,6 @@ namespace Gruppe22
 
         public void OnKeyHeld(Keys k)
         {
-            HandleMovementKeys(k);
             foreach (UIElement element in _interfaceElements)
             {
                 element.OnKeyHeld(k);
@@ -581,6 +579,8 @@ namespace Gruppe22
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
+            foreach (Keys k in _events.keys) { HandleMovementKeys(k); }
+
             if ((!_updating) && (_status != GameStatus.FetchingData))
             {
                 {

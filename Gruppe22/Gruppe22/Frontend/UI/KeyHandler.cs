@@ -79,6 +79,15 @@ namespace Gruppe22
         private int _lastCheck = 0;
         #endregion
 
+        #region Public Fields
+        public Keys[] keys
+        {
+            get
+            {
+                return _pressed;
+            }
+        }
+        #endregion
         #region Public Methods
         /// <summary>
         /// Change states and pass events if needed

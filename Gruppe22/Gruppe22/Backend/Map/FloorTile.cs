@@ -12,14 +12,21 @@ namespace Gruppe22
     public class FloorTile : Tile, IDisposable
     {
         #region Private Fields
+        
         /// <summary>
         /// Fields displayed (and checked) on top of the current field
         /// </summary>
         protected List<Tile> _overlay;
+
         /// <summary>
         /// The Position of the tile
         /// </summary>
         private Coords _coords = null;
+
+        /// <summary>
+        /// Whether field is visible on the minimap
+        /// </summary>
+        private bool _visited = false;
         #endregion
 
         #region Public Fields
@@ -257,6 +264,18 @@ namespace Gruppe22
             }
         }
 
+        public bool visible
+        {
+            get
+            {
+                return _visited;
+            }
+            set
+            {
+                _visited = value;
+            }
+        }
+
         /// <summary>
         /// Determine whether the current tile is the 'end' of the game
         /// </summary>
@@ -402,6 +421,8 @@ namespace Gruppe22
             tile.parent = this;
         }
 
+       
+
         /// <summary>
         /// Remove specified tile from overlay
         /// </summary>
@@ -453,6 +474,8 @@ namespace Gruppe22
                 xmlw.WriteAttributeString("CoordX", Convert.ToString(_coords.x));
                 xmlw.WriteAttributeString("CoordY", Convert.ToString(_coords.y));
             }
+            xmlw.WriteAttributeString("visited", Convert.ToString(_visited));
+
             foreach (Tile tile in _overlay)
             {
                 tile.Save(xmlw);

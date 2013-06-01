@@ -13,6 +13,7 @@ namespace Gruppe22
         #region Private Fields
         private Texture2D _mapIcon;
         private Map _map;
+        private int _renderscope = 4;
         #endregion
 
         #region Public Methods
@@ -45,55 +46,58 @@ namespace Gruppe22
                 {
                     for (int x = 0; x < _map.width; ++x)
                     {
-                        if (!_map[x, y].canEnter)
+                        if (_map[x, y].visible)
                         {
-                            _spriteBatch.Draw(_mapIcon, new Rectangle(_displayRect.Left + 2 + x * 16, _displayRect.Top + 2 + y * 16, 15, 15), new Rectangle(32, 0, 16, 16), Color.White);
-                        }
-                        else
-                        {
-                            if (_map[x, y].hasPlayer)
+                            if (!_map[x, y].canEnter)
                             {
-                                _spriteBatch.Draw(_mapIcon, new Rectangle(_displayRect.Left + 2 + x * 16, _displayRect.Top + 2 + y * 16, 16, 16), new Rectangle(48, 16, 16, 16), Color.White);
-
+                                _spriteBatch.Draw(_mapIcon, new Rectangle(_displayRect.Left + 2 + x * 16, _displayRect.Top + 2 + y * 16, 15, 15), new Rectangle(32, 0, 16, 16), Color.White);
                             }
                             else
                             {
-                                if (_map[x, y].hasEnemy)
+                                if (_map[x, y].hasPlayer)
                                 {
-                                    _spriteBatch.Draw(_mapIcon, new Rectangle(_displayRect.Left + x * 16, _displayRect.Top + y * 16, 16, 16), new Rectangle(64, 16, 16, 16), Color.White);
+                                    _spriteBatch.Draw(_mapIcon, new Rectangle(_displayRect.Left + 2 + x * 16, _displayRect.Top + 2 + y * 16, 16, 16), new Rectangle(48, 16, 16, 16), Color.White);
+
                                 }
                                 else
                                 {
-                                    if (_map[x, y].hasTreasure)
+                                    if ((_map[x, y].hasEnemy)&&(_map.actors[0].tile.coords.DistanceFrom(x,y)<_renderscope))
                                     {
-                                        _spriteBatch.Draw(_mapIcon, new Rectangle(_displayRect.Left + x * 16, _displayRect.Top + y * 16, 16, 16), new Rectangle(64, 0, 16, 16), Color.White);
+                                        _spriteBatch.Draw(_mapIcon, new Rectangle(_displayRect.Left + x * 16, _displayRect.Top + y * 16, 16, 16), new Rectangle(64, 16, 16, 16), Color.White);
                                     }
                                     else
                                     {
-                                        if (_map[x, y].hasTeleport)
+                                        if (_map[x, y].hasTreasure)
                                         {
-                                            if (x == 0)
-                                            {
-                                                _spriteBatch.Draw(_mapIcon, new Rectangle(_displayRect.Left + x * 16, _displayRect.Top + y * 16, 16, 16), new Rectangle(0, 0, 16, 16), Color.White);
-                                            }
-                                            if (y == 0)
-                                            {
-                                                _spriteBatch.Draw(_mapIcon, new Rectangle(_displayRect.Left + x * 16, _displayRect.Top + y * 16, 16, 16), new Rectangle(16, 0, 16, 16), Color.White);
-                                            }
-                                            if (x == _map.width - 1)
-                                            {
-                                                _spriteBatch.Draw(_mapIcon, new Rectangle(_displayRect.Left + x * 16, _displayRect.Top + y * 16, 16, 16), new Rectangle(16, 16, 16, 16), Color.White);
-                                            }
-                                            if (y == _map.height - 1)
-                                            {
-                                                _spriteBatch.Draw(_mapIcon, new Rectangle(_displayRect.Left + x * 16, _displayRect.Top + y * 16, 16, 16), new Rectangle(0, 16, 16, 16), Color.White);
-                                            }
+                                            _spriteBatch.Draw(_mapIcon, new Rectangle(_displayRect.Left + x * 16, _displayRect.Top + y * 16, 16, 16), new Rectangle(64, 0, 16, 16), Color.White);
                                         }
                                         else
                                         {
-                                            if (_map[x, y].hasTarget)
+                                            if (_map[x, y].hasTeleport)
                                             {
-                                                _spriteBatch.Draw(_mapIcon, new Rectangle(_displayRect.Left + x * 16, _displayRect.Top + y * 16, 16, 16), new Rectangle(48, 0, 16, 16), Color.White);
+                                                if (x == 0)
+                                                {
+                                                    _spriteBatch.Draw(_mapIcon, new Rectangle(_displayRect.Left + x * 16, _displayRect.Top + y * 16, 16, 16), new Rectangle(0, 0, 16, 16), Color.White);
+                                                }
+                                                if (y == 0)
+                                                {
+                                                    _spriteBatch.Draw(_mapIcon, new Rectangle(_displayRect.Left + x * 16, _displayRect.Top + y * 16, 16, 16), new Rectangle(16, 0, 16, 16), Color.White);
+                                                }
+                                                if (x == _map.width - 1)
+                                                {
+                                                    _spriteBatch.Draw(_mapIcon, new Rectangle(_displayRect.Left + x * 16, _displayRect.Top + y * 16, 16, 16), new Rectangle(16, 16, 16, 16), Color.White);
+                                                }
+                                                if (y == _map.height - 1)
+                                                {
+                                                    _spriteBatch.Draw(_mapIcon, new Rectangle(_displayRect.Left + x * 16, _displayRect.Top + y * 16, 16, 16), new Rectangle(0, 16, 16, 16), Color.White);
+                                                }
+                                            }
+                                            else
+                                            {
+                                                if (_map[x, y].hasTarget)
+                                                {
+                                                    _spriteBatch.Draw(_mapIcon, new Rectangle(_displayRect.Left + x * 16, _displayRect.Top + y * 16, 16, 16), new Rectangle(48, 0, 16, 16), Color.White);
+                                                }
                                             }
                                         }
                                     }
@@ -125,6 +129,7 @@ namespace Gruppe22
 
         public void MoveCamera(Coords coords)
         {
+            _map.Uncover(_map.actors[0].tile.coords, _renderscope);
             _camera.position = new Vector2(-(_displayRect.Left + coords.x * 16) - 8, -(_displayRect.Top + coords.y * 16) - 8);
         }
 
@@ -163,6 +168,7 @@ namespace Gruppe22
             _mapIcon = _content.Load<Texture2D>("Minimap");
             _camera.rotate = -45.0f;
             Zoom = 0.9f;
+            _map.Uncover(_map.actors[0].tile.coords, _renderscope);
 
         }
     }

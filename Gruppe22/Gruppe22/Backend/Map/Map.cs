@@ -35,6 +35,7 @@ namespace Gruppe22
             _to = to;
         }
     }
+
     public class Map : IHandleEvent, IDisposable
     {
         #region Private Fields
@@ -237,6 +238,26 @@ namespace Gruppe22
 
         }
 
+        public void Uncover(Coords coords, int radius = 4)
+        {
+            for (int i = 0; i < radius; ++i)
+            {
+                for (int x = Math.Max(0, coords.x - radius); x <= Math.Min(coords.x + radius, _width); ++x)
+                {
+                    this[x, coords.y - i].visible = true;
+                    this[x, coords.y + i].visible = true;
+                    // System.Diagnostics.Debug.WriteLine(new Coords(x, coords.y - radius).ToString() + " - " + new Coords(x, coords.y + radius).ToString());
+                }
+                for (int y = Math.Max(0, coords.y - radius); y <= Math.Min(coords.y + radius, _height); ++y)
+                {
+                    this[coords.x - i, y].visible = true;
+                    this[coords.x + i, y].visible = true;
+                    //   System.Diagnostics.Debug.WriteLine(new Coords(coords.x - radius, y).ToString() + " - " + new Coords(coords.x + radius, y).ToString());
+                }
+            }
+
+        }
+
         /// <summary>
         /// Move an actor on the map in a specified direction (does not check for walls - use CanMove)
         /// </summary>
@@ -298,39 +319,43 @@ namespace Gruppe22
         /// <returns></returns>
         public Coords ClosestEnemy(Coords coords, int radius = 4, bool includePlayer = true, bool includeNPC = true, bool includeEnemy = true)
         {
-            for (int distance = 1; distance <= radius; ++distance)
+            for (int distance = 0; distance <= radius; ++distance)
             {
-                for (int x = coords.x - distance; x <= coords.x + distance; ++x)
+                for (int x = Math.Max(coords.x - distance, 0); x <= Math.Min(coords.x + distance, _width); ++x)
                 {
-                    if (((includePlayer && this[x, coords.y - distance].hasPlayer))
+                    if ((((includePlayer && this[x, coords.y - distance].hasPlayer))
                         //                    ||((includeNPC&&this[coords.x-distance,y].hasNPC))
                     || ((includeEnemy && this[x, coords.y - distance].hasEnemy)))
+                        && ((x != coords.x) || (distance != 0)))
                     {
                         //System.Diagnostics.Debug.WriteLine(coords.x + "/" + coords.y + "->" + x + "/" + (coords.y - distance).ToString() + " = " + (this[x, coords.y - distance].hasPlayer ? "Player" : "Enemy"));
                         return new Coords(x, coords.y - distance);
                     }
-                    if (((includePlayer && this[x, coords.y + distance].hasPlayer))
+                    if ((((includePlayer && this[x, coords.y + distance].hasPlayer))
                         //                    ||((includeNPC&&this[coords.x-distance,y].hasNPC))
                     || ((includeEnemy && this[x, coords.y + distance].hasEnemy)))
+                                            && ((x != coords.x) || (distance != 0)))
                     {
                         // System.Diagnostics.Debug.WriteLine(coords.x + "/" + coords.y + "->" + x + "/" + (coords.y + distance).ToString() + " = " + (this[x, coords.y + distance].hasPlayer ? "Player" : "Enemy"));
 
                         return new Coords(x, coords.y + distance);
                     }
                 }
-                for (int y = coords.y - distance; y <= coords.y + distance; ++y)
+                for (int y = Math.Max(coords.y - distance, 0); y <= Math.Min(coords.y + distance, _height); ++y)
                 {
-                    if (((includePlayer && this[coords.x - distance, y].hasPlayer))
+                    if ((((includePlayer && this[coords.x - distance, y].hasPlayer))
                         //                    ||((includeNPC&&this[coords.x-distance,y].hasNPC))
                     || ((includeEnemy && this[coords.x - distance, y].hasEnemy)))
+                        && ((y != coords.y) || (distance != 0)))
                     {
                         //   System.Diagnostics.Debug.WriteLine(coords.x + "/" + coords.y + "->" + (coords.x - distance) + "/" + y.ToString() + " = " + (this[coords.x - distance, y].hasPlayer ? "Player" : "Enemy"));
 
                         return new Coords(coords.x - distance, y);
                     }
-                    if (((includePlayer && this[coords.x + distance, y].hasPlayer))
+                    if ((((includePlayer && this[coords.x + distance, y].hasPlayer))
                         //                    ||((includeNPC&&this[coords.x-distance,y].hasNPC))
                     || ((includeEnemy && this[coords.x + distance, y].hasEnemy)))
+                        && ((y != coords.y) || (distance != 0)))
                     {
                         //  System.Diagnostics.Debug.WriteLine(coords.x + "/" + coords.y + "->" + (coords.x + distance) + "/" + y.ToString() + " = " + (this[coords.x + distance, y].hasPlayer ? "Player" : "Enemy"));
 
@@ -566,6 +591,10 @@ namespace Gruppe22
                 {
                     case "Tile":
                         FloorTile tile = _tiles[Int32.Parse(xmlr.GetAttribute("CoordY"))][Int32.Parse(xmlr.GetAttribute("CoordX"))];
+                        if (xmlr.GetAttribute("visited") != null)
+                        {
+                            tile.visible = Boolean.Parse(xmlr.GetAttribute("visited"));
+                        }
                         if (!xmlr.IsEmptyElement)
                         {
                             xmlr.Read();

@@ -89,6 +89,17 @@ namespace Gruppe22
                 _y = value;
             }
         }
+
+        public int DistanceFrom(Coords coords)
+        {
+            return DistanceFrom(coords.x, coords.y);
+        }
+
+        public int DistanceFrom(int x, int y)
+        {
+            return (Math.Abs(x - _x) + Math.Abs(y - _y));
+        }
+
         public override int GetHashCode()
         {
             return Math.Abs(_x)+Math.Abs(y);
