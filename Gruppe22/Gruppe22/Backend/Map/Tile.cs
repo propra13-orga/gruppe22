@@ -18,7 +18,8 @@ namespace Gruppe22
         Start,
         Target,
         Teleporter,
-        Item
+        Item,
+        Checkpoint
     }
 
     /// <summary>

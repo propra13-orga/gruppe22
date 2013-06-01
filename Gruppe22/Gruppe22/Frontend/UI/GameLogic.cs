@@ -227,6 +227,12 @@ namespace Gruppe22
                             _TrapDamage(target);
                         }
 
+                        //Checkpoint - save by Enter
+                        if (_map1[target.x, target.y].hasCheckpoint)
+                        {
+                            //TODO: Save here
+                        }
+
                         // Trigger floor switches
                         if ((_map1[_map1.actors[id].tile.coords.x, _map1.actors[id].tile.coords.y].hasTarget) && (id == 0))
                         {
