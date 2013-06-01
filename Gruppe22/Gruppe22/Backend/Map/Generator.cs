@@ -652,7 +652,7 @@ namespace Gruppe22
                     _tiles[y].Add(new GeneratorTile(this, new Coords(x, y)));
                 }
             }
-            if (generate)
+            if (generate) //TODO: here add Checkpoint for each room
             {
                 ClearMaze(); // set up grid
                 GenerateMaze();
