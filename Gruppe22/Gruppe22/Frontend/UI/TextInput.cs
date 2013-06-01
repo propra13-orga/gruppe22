@@ -11,6 +11,16 @@ namespace Gruppe22
 {
     class TextInput : UIElement
     {
+        private string _label = "";
+        private string _text = "";
+
+        public string text
+        {
+            get
+            {
+                return _text;
+            }
+        }
         /// <summary>
         /// 
         /// </summary>

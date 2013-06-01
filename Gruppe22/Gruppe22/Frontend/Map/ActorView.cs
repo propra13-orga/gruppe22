@@ -40,7 +40,7 @@ namespace Gruppe22
         /// <summary>
         /// Movement speed (nur relevant to animation, see _animationTime below)
         /// </summary>
-        private int _speed = 8;
+        private int _speed = 12;
         /// <summary>
         /// The unique ID of the actor
         /// </summary>

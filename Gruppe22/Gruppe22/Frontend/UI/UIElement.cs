@@ -38,6 +38,8 @@ namespace Gruppe22
         /// </summary>
         protected ContentManager _content;
 
+        protected bool _focus = false;
+
         #endregion
 
         #region Implementation of IKeyHandler-Interface
