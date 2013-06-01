@@ -151,7 +151,7 @@ namespace Gruppe22
 
             if (dir != Direction.None)
             {
-                ((IHandleEvent)parent).HandleEvent(null, Events.MoveActor, actor.id, dir);
+                ((IHandleEvent)parent).HandleEvent(false, Events.MoveActor, actor.id, dir);
                 //System.Diagnostics.Debug.WriteLine("#####" + dir + "######");
             }
 

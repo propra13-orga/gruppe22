@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Xna.Framework;
 
 namespace Gruppe22
 {
@@ -117,6 +118,18 @@ namespace Gruppe22
         {
             return _x + "/" + _y;
         }
+        public Vector2 vector
+        {
+            get
+            {
+                return new Vector2(_x, _y);
+            }
+            set
+            {
+                _x = (int)value.X;
+                _y = (int)value.Y;
+            }
+        }
 
         /// <summary>
         /// Creates a new two dimensional point
@@ -127,6 +140,12 @@ namespace Gruppe22
         {
             _x = x;
             _y = y;
+        }
+
+        public Coords(Vector2 vector)
+        {
+            _x = (int)vector.X;
+            _y = (int)vector.Y;
         }
 
         public bool Equals(Coords other)

@@ -24,11 +24,14 @@ namespace Gruppe22
         /// <summary>
         /// Current position of the actor (in pixels)
         /// </summary>
-        private Vector2 _position = Vector2.Zero;
+        private Coords _position = Coords.Zero;
         /// <summary>
         /// Target the actor is supposed to move to
         /// </summary>
         private Coords _target = null;
+
+        private Coords _cacheTarget = null;
+        private Direction _cacheDir = Direction.None;
         /// <summary>
         /// Current animation played
         /// </summary>
@@ -40,7 +43,7 @@ namespace Gruppe22
         /// <summary>
         /// Movement speed (nur relevant to animation, see _animationTime below)
         /// </summary>
-        private int _speed = 12;
+        private int _speed = 2;
         /// <summary>
         /// The unique ID of the actor
         /// </summary>
@@ -48,7 +51,8 @@ namespace Gruppe22
         /// <summary>
         /// Number of milliseconds to wait until displaying next frame of animation
         /// </summary>
-        private int _animationTime = 35;
+        private int _animationTime = 80;
+        private int _moveAccel = 4;
         /// <summary>
         /// Seconds elapsed since last redraw
         /// </summary>
@@ -70,12 +74,12 @@ namespace Gruppe22
         /// Whether the actor was killed (i.e. should neither move nor animate)
         /// </summary>
         private bool _dead = false;
-        float _xpertick = 0f;
-        float _ypertick = 0f;
+        int _xpertick = 0;
+        int _ypertick = 0;
         #endregion
 
         #region Public fields
-        public Vector2 position
+        public Coords position
         {
             get
             {
@@ -86,6 +90,7 @@ namespace Gruppe22
                 _position = value;
             }
         }
+
         public int id
         {
             get
@@ -97,7 +102,7 @@ namespace Gruppe22
         {
             set
             {
-                _speed = value;
+                _speed = value * 16;
             }
             get
             {
@@ -112,24 +117,28 @@ namespace Gruppe22
             }
             set
             {
-               // if (_id == 0)
+                // if (_id == 0)
                 //    System.Diagnostics.Debug.WriteLine("Move from " + _position.X.ToString() + "/" + _position.Y.ToString() + " to " + _target.x.ToString() + "/" + value.y.ToString());
                 _blockUpdates = true;
-                if ((value.x != (int)_position.X) || (value.y != (int)_position.Y))
+                if (value != _position)
                 {
                     _target = value;
+                    _cacheTarget = value;
                     _xpertick = speed;
                     _ypertick = speed;
-                    if ((_position.X != _target.x) && (_position.Y != _target.y))
-                    {
-                        if (Math.Abs(_position.X - _target.x) < Math.Abs(_position.Y - _target.y))
-                        {
-                            _xpertick = speed * Math.Abs(_position.X - _target.x) / Math.Abs(_position.Y - _target.y);
+                    // System.Diagnostics.Debug.WriteLine(Math.Abs(_position.x - _target.x) + " vs " + Math.Abs(_position.y - _target.y));
 
+                    if ((_position.x != _target.x) && (_position.y != _target.y))
+                    {
+                        if (Math.Abs(_position.x - _target.x) < Math.Abs(_position.y - _target.y))
+                        {
+                            _xpertick = (speed * Math.Abs(_position.x - _target.x)) / Math.Abs(_position.y - _target.y);
+                            // System.Diagnostics.Debug.WriteLine("x:" + _xpertick);
                         }
                         else
                         {
-                            _ypertick = speed * Math.Abs(_position.Y - _target.y) / Math.Abs(_position.X - _target.x);
+                            _ypertick = (speed * Math.Abs(_position.y - _target.y)) / Math.Abs(_position.x - _target.x);
+                            System.Diagnostics.Debug.WriteLine("y:" + _ypertick);
 
                         }
                     }
@@ -137,11 +146,35 @@ namespace Gruppe22
                 _blockUpdates = false;
             }
         }
+
+        public Coords cacheTarget
+        {
+            set
+            {
+                if (_target != _position)
+                    _cacheTarget = value;
+                else
+                    target = value;
+            }
+        }
+
+        public Direction cacheDir
+        {
+            set
+            {
+                _cacheDir = value;
+            }
+            get
+            {
+                return _cacheDir;
+            }
+        }
+
         public bool isMoving
         {
             get
             {
-                return ((_target.x != (int)position.X) || (target.y != (int)position.Y) || _lock);
+                return ((_target.x != (int)position.x) || (target.y != (int)position.y) || _lock);
             }
         }
 
@@ -155,9 +188,12 @@ namespace Gruppe22
             }
             set
             {
-                _elapsed = 0;
-                _activity = value;
-                _textures[(int)_activity * 8 + (int)_direction].ResetAnimation();
+                if (_activity != value)
+                {
+                    _elapsed = 0;
+                    _activity = value;
+                    _textures[(int)_activity * 8 + (int)_direction].ResetAnimation();
+                }
             }
         }
 
@@ -169,10 +205,13 @@ namespace Gruppe22
             }
             set
             {
-                _elapsed = 0;
-                if (value != Direction.None)
-                    _direction = value;
-                _textures[(int)_activity * 8 + (int)_direction].ResetAnimation();
+                if (_direction != value)
+                {
+                    _elapsed = 0;
+                    if (value != Direction.None)
+                        _direction = value;
+                    _textures[(int)_activity * 8 + (int)_direction].ResetAnimation();
+                }
             }
         }
 
@@ -251,8 +290,8 @@ namespace Gruppe22
 
         public void EndMoveAndPlay(Activity activity, bool locked = false)
         {
-            _position.X = _target.x;
-            _position.Y = _target.y;
+            _position.x = _target.x;
+            _position.y = _target.y;
             this.activity = activity;
             if (locked)
             {
@@ -366,21 +405,43 @@ namespace Gruppe22
             _textures[(int)activity * 8 + (int)direction].AddAnimation(filename, startPos, cols, rows, vertical);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="difference"></param>
-        public void Move(Coords difference)
-        {
-            if (_target.x == -1)
-            {
-                _target.x = (int)_position.X;
-                _target.y = (int)_position.Y;
-            }
-            _target.x += difference.x;
-            _target.y += difference.y;
-        }
 
+
+        public void Animate(bool hasMoved)
+        {
+
+            if ((_activity != Activity.Walk) && (_activity != Activity.Run))
+            {
+                if (_textures[(int)_activity * 8 + (int)_direction].NextAnimation())
+                {
+                    if (_activity != Activity.Die)
+                    {
+                        _parent.HandleEvent(false, Events.FinishedAnimation, _id, _activity);
+                        this.activity = _playAfterMove;
+                        if (_playAfterMove != Activity.Walk) _playAfterMove = Activity.Walk;
+                        _lock = false;
+                    }
+                    else
+                    {
+                        if (!_dead)
+                        {
+                            _dead = true;
+                            _parent.HandleEvent(false, Events.FinishedAnimation, _id, _activity);
+
+                        }
+                    }
+                }
+            }
+            else
+            {
+                if (hasMoved)
+                {
+                    _textures[(int)_activity * 8 + (int)_direction].NextAnimation();
+                    _textures[(int)_activity * 8 + (int)_direction].NextAnimation();
+
+                }
+            }
+        }
 
         /// <summary>
         /// 
@@ -391,98 +452,84 @@ namespace Gruppe22
             if (!_blockUpdates)
             {
                 _elapsed += gametime.ElapsedGameTime.Milliseconds;
-                if (_elapsed > _animationTime)
+
+                if ((_target.x != (int)_position.x) || (_target.y != (int)_position.y))
                 {
-                    _elapsed -= _animationTime;
-                    bool hasMoved = false;
-                    float f = _speed;
-                    if ((_target.x != (int)_position.X) || (_target.y != (int)_position.Y))
+                    if (_elapsed > _animationTime / _moveAccel)
                     {
+                        _elapsed -= _animationTime / _moveAccel;
                         bool EndMove = false;
 
-                        hasMoved = true;
-                        if (_target.x > _position.X)
+                        if (_target.x > _position.x)
                         {
-                         //   if (_id == 0) System.Diagnostics.Debug.Write(_xpertick.ToString());
+                            //   if (_id == 0) System.Diagnostics.Debug.Write(_xpertick.ToString());
 
-                            _position.X += _xpertick;
-                            if (_target.x < _position.X) { EndMove = true; }
+                            _position.x += _xpertick;
+                            if (_target.x < _position.x) { EndMove = true; }
 
                         }
                         else
                         {
-                            if (_target.x < _position.X)
+                            if (_target.x < _position.x)
                             {
-                           //     if (_id == 0) System.Diagnostics.Debug.Write(-_xpertick);
+                                //     if (_id == 0) System.Diagnostics.Debug.Write(-_xpertick);
 
-                                _position.X -= Math.Min(_xpertick, (float)Math.Abs(_target.x - position.X));
-                                if (_target.x > _position.X) { EndMove = true; }
+                                _position.x -= Math.Min(_xpertick, Math.Abs(_target.x - _position.x));
+                                if (_target.x > _position.x) { EndMove = true; }
 
                             }
                             //else
-                           //     if (_id == 0) System.Diagnostics.Debug.Write("0");
+                            //     if (_id == 0) System.Diagnostics.Debug.Write("0");
                         }
 
-                        if (_target.y > _position.Y)
+
+
+                        if (_target.y > _position.y)
                         {
-                         //   if (_id == 0) System.Diagnostics.Debug.WriteLine("/" + _ypertick.ToString());
-                            _position.Y += _ypertick;
-                            if (_target.y < _position.Y) { EndMove = true; }
+                            //   if (_id == 0) System.Diagnostics.Debug.WriteLine("/" + _ypertick.ToString());
+                            _position.y += _ypertick;
+                            if (_target.y < _position.y) { EndMove = true; }
                         }
                         else
-                            if (_target.y < _position.Y)
+                            if (_target.y < _position.y)
                             {
-                               // if (_id == 0) System.Diagnostics.Debug.WriteLine("/-" + _ypertick.ToString());
+                                // if (_id == 0) System.Diagnostics.Debug.WriteLine("/-" + _ypertick.ToString());
 
-                                _position.Y -= _ypertick;
-                                if (_target.y > _position.Y) { EndMove = true; }
+                                _position.y -= _ypertick;
+                                if (_target.y > _position.y) { EndMove = true; }
                             }
                             else
                             {
-                              //  if (_id == 0) System.Diagnostics.Debug.WriteLine("/0");
+                                //  if (_id == 0) System.Diagnostics.Debug.WriteLine("/0");
                             }
-                        if (EndMove || ((Math.Abs(_target.x - _position.X) < 0.1) && (Math.Abs(_target.y - _position.Y) < 0.1)))
+                        Animate(true);
+                        if (EndMove || ((Math.Abs(_target.x - _position.x) < 0.1) && (Math.Abs(_target.y - _position.y) < 0.1)))
                         {
-                            _target.x = (int)_position.X;
-                            _target.y = (int)_position.Y;
-                            _parent.HandleEvent(null, Events.TileEntered, _id, _direction);
+                            //                            _position = _target;
+                            //                          _target = _cacheTarget;
+                            _parent.HandleEvent(false, Events.TileEntered, _id, _direction);
+                            if (_cacheDir != Direction.None)
+                            {
+                                _parent.HandleEvent(false, Events.MoveActor, _id, _cacheDir, true);
+                                _cacheDir = Direction.None;
+
+                            }
+
                         }
                     }
-                    else
+                }
+                else
+                {
+
+                    if (_elapsed > _animationTime)
                     {
+                        _elapsed -= _animationTime;
                         if (_playAfterMove != Activity.Walk)
                         {
                             this.activity = _playAfterMove;
                             _playAfterMove = Activity.Walk;
                         }
-                    }
-
-                    if ((_activity != Activity.Walk) && (_activity != Activity.Run))
-                    {
-                        if (_textures[(int)_activity * 8 + (int)_direction].NextAnimation())
-                        {
-                            if (_activity != Activity.Die)
-                            {
-                                _parent.HandleEvent(null, Events.FinishedAnimation, _id, _activity);
-                                this.activity = _playAfterMove;
-                                if (_playAfterMove != Activity.Walk) _playAfterMove = Activity.Walk;
-                                _lock = false;
-                            }
-                            else
-                            {
-                                if (!_dead)
-                                {
-                                    _dead = true;
-                                    _parent.HandleEvent(null, Events.FinishedAnimation, _id, _activity);
-
-                                }
-                            }
-                        }
-                    }
-                    else
-                    {
-                        if (hasMoved)
-                            _textures[(int)_activity * 8 + (int)_direction].NextAnimation();
+                        Animate(false);
                     }
                 }
             }
@@ -496,13 +543,6 @@ namespace Gruppe22
 
         }
 
-        public ActorView(IHandleEvent parent, int id, ContentManager content, Coords position, string filename = "", int speed = 5, bool alive = true)
-            : this(parent, id, content, Vector2.Zero, filename, speed, alive)
-        {
-            _position.X = position.x;
-            _position.Y = position.y;
-            _target = position;
-        }
 
         /// <summary>
         /// 
@@ -512,12 +552,12 @@ namespace Gruppe22
         /// <param name="controllable"></param>
         /// <param name="position"></param>
         /// <param name="sprite"></param>
-        public ActorView(IHandleEvent parent, int id, ContentManager content, Vector2 position, string filename = "", int speed = 5, bool alive = true)
+        public ActorView(IHandleEvent parent, int id, ContentManager content, Coords position, string filename = "", int speed = 5, bool alive = true)
             : base(content, 96, 96, "")
         {
             _position = position;
             _id = id;
-            _target = new Coords((int)position.X, (int)position.Y);
+            _target = new Coords((int)position.x, (int)position.y);
             for (int i = 0; i < (Enum.GetValues(typeof(Activity)).Length) * 8; ++i)
             {
                 _textures.Add(new TileObject(_content, _width, _height));
@@ -527,7 +567,7 @@ namespace Gruppe22
                 Load(filename);
             }
             _parent = parent;
-            _speed = speed;
+            _speed = 4;
             if (!alive)
             {
                 Kill();

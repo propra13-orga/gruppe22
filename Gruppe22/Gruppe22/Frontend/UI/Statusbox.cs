@@ -74,7 +74,7 @@ namespace Gruppe22
             _startPos = Math.Max(_text.Count - _numLines, 0);
         }
 
-        public override void HandleEvent(UIElement sender, Events eventID, params object[] data)
+        public override void HandleEvent(bool DownStream, Events eventID, params object[] data)
         {
 
         }

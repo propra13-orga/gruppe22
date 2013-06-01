@@ -480,11 +480,11 @@ namespace Gruppe22
             if (amount > _armor)
             {
                 _armor = amount;
-                _tile.HandleEvent(null, Events.ShowMessage, ((_actorType == ActorType.Player) ? "You equip  " : (_name + " equips ")) + " new armor.");
+                _tile.HandleEvent(false, Events.ShowMessage, ((_actorType == ActorType.Player) ? "You equip  " : (_name + " equips ")) + " new armor.");
             }
             else
             {
-                _tile.HandleEvent(null, Events.ShowMessage, ((_actorType == ActorType.Player) ? "You put " : (_name + " puts ")) + " the armor away.");
+                _tile.HandleEvent(false, Events.ShowMessage, ((_actorType == ActorType.Player) ? "You put " : (_name + " puts ")) + " the armor away.");
             }
         }
 
@@ -493,11 +493,11 @@ namespace Gruppe22
             int temp = Math.Max(amount, _maxhealth - _health - amount);
             if (temp > 0)
             {
-                _tile.HandleEvent(null, Events.ShowMessage, ((_actorType == ActorType.Player) ? "You regain " : (_name + " regains ")) + temp.ToString() + " hitpoints.");
+                _tile.HandleEvent(false, Events.ShowMessage, ((_actorType == ActorType.Player) ? "You regain " : (_name + " regains ")) + temp.ToString() + " hitpoints.");
             }
             else
             {
-                _tile.HandleEvent(null, Events.ShowMessage, ((_actorType == ActorType.Player) ? "You put " : (_name + " puts ")) + " puts the potion away.");
+                _tile.HandleEvent(false, Events.ShowMessage, ((_actorType == ActorType.Player) ? "You put " : (_name + " puts ")) + " puts the potion away.");
             }
             _health = Math.Min(_health + amount, _maxhealth);
         }
@@ -507,11 +507,11 @@ namespace Gruppe22
             if (amount > _damage)
             {
                 _damage = amount;
-                _tile.HandleEvent(null, Events.ShowMessage, ((_actorType == ActorType.Player) ? "You equip " : (_name + " equips ")) + " a new weapon.");
+                _tile.HandleEvent(false, Events.ShowMessage, ((_actorType == ActorType.Player) ? "You equip " : (_name + " equips ")) + " a new weapon.");
             }
             else
             {
-                _tile.HandleEvent(null, Events.ShowMessage, ((_actorType == ActorType.Player) ? "You put " : (_name + " puts ")) + " the weapon away.");
+                _tile.HandleEvent(false, Events.ShowMessage, ((_actorType == ActorType.Player) ? "You put " : (_name + " puts ")) + " the weapon away.");
 
             }
         }

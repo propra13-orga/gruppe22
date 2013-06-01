@@ -93,9 +93,10 @@ namespace Gruppe22
         }
         #endregion
 
-        public virtual void HandleEvent(UIElement sender, Events eventID, params object[] data)
+        public virtual void HandleEvent(bool DownStream, Events eventID, params object[] data)
         {
-            ((IHandleEvent)_parent).HandleEvent(sender, eventID, data);
+            if (!DownStream)
+                ((IHandleEvent)_parent).HandleEvent(DownStream, eventID, data);
         }
     }
 }

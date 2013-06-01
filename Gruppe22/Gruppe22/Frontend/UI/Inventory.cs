@@ -47,15 +47,15 @@ namespace Gruppe22
                 if (_actor.inventory[i].itemType == ItemType.Potion)
                 {
                     _actor.inventory[i].UseItem();
-                    _parent.HandleEvent(this, Events.ShowMessage, "You used " + _actor.inventory[i].name);
+                    _parent.HandleEvent(false, Events.ShowMessage, "You used " + _actor.inventory[i].name);
                 }
                 else
                 {
                     _actor.inventory[i].EquipItem();
                     if (_actor.inventory[i].equipped)
-                        _parent.HandleEvent(this, Events.ShowMessage, "You equipped " + _actor.inventory[i].name);
+                        _parent.HandleEvent(false, Events.ShowMessage, "You equipped " + _actor.inventory[i].name);
                     else
-                        _parent.HandleEvent(this, Events.ShowMessage, "You removed " + _actor.inventory[i].name);
+                        _parent.HandleEvent(false, Events.ShowMessage, "You removed " + _actor.inventory[i].name);
                 }
                 Update();
             }

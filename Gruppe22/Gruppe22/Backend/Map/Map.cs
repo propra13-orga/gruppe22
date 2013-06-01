@@ -522,9 +522,10 @@ namespace Gruppe22
             return false;
         }
 
-        public virtual void HandleEvent(UIElement sender, Events eventID, params object[] data)
+        public virtual void HandleEvent(bool DownStream, Events eventID, params object[] data)
         {
-            ((IHandleEvent)_parent).HandleEvent(sender, eventID, data);
+            if (!DownStream)
+                ((IHandleEvent)_parent).HandleEvent(false, eventID, data);
         }
 
         /// <summary>

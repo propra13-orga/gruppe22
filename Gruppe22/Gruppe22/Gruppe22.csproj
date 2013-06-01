@@ -92,7 +92,7 @@
     <Compile Include="Backend\Actors\Actor.cs" />
     <Compile Include="Backend\Actors\Enemy.cs" />
     <Compile Include="Backend\Actors\NPC.cs" />
-    <Compile Include="Backend\Items\Player.cs" />
+    <Compile Include="Backend\Actors\Player.cs" />
     <Compile Include="Backend\Items\Item.cs" />
     <Compile Include="Backend\Items\ItemEffect.cs" />
     <Compile Include="Backend\Map\BombTile.cs" />

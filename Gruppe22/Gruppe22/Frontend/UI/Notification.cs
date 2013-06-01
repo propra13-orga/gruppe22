@@ -39,9 +39,10 @@ namespace Gruppe22
             base.Draw(gameTime);
         }
 
-        public override void HandleEvent(UIElement sender, Events eventID, params object[] data)
+        public override void HandleEvent(bool DownStream, Events eventID, params object[] data)
         {
-            base.HandleEvent(sender, eventID, data);
+
+            base.HandleEvent(DownStream, eventID, data);
         }
 
 
@@ -111,7 +112,7 @@ namespace Gruppe22
             }
             if (_visibility == 1.0f)
             {
-                _parent.HandleEvent(this, Events.HideNotification, 0);
+                _parent.HandleEvent(false, Events.HideNotification, 0);
             }
             else
             {

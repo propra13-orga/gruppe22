@@ -67,14 +67,14 @@ namespace Gruppe22
                         }
                         if (_map1.actors[defender].isDead)
                         {
-                            _mainmap1.HandleEvent(null, Events.AnimateActor, defender, Activity.Die);
-                            _mainmap2.HandleEvent(null, Events.AnimateActor, defender, Activity.Die);
+                            _mainmap1.HandleEvent(true, Events.AnimateActor, defender, Activity.Die);
+                            _mainmap2.HandleEvent(true, Events.AnimateActor, defender, Activity.Die);
                             AddMessage((_map1.actors[defender] is Player ? "<red>" : "") + _map1.actors[defender].name + " was killed by " + _map1.actors[attacker].name + "  doing " + damage.ToString() + " points of damage.");
                         }
                         else
                         {
-                            _mainmap1.HandleEvent(null, Events.AnimateActor, attacker, Activity.Hit);
-                            _mainmap2.HandleEvent(null, Events.AnimateActor, attacker, Activity.Hit);
+                            _mainmap1.HandleEvent(true, Events.AnimateActor, attacker, Activity.Hit);
+                            _mainmap2.HandleEvent(true, Events.AnimateActor, attacker, Activity.Hit);
                             AddMessage((_map1.actors[defender] is Player ? "<red>" : "") + _map1.actors[defender].name + " was hit by " + _map1.actors[attacker].name + " for " + damage.ToString() + " points of damage.");
                         }
                     }
@@ -88,27 +88,31 @@ namespace Gruppe22
 
         protected void _TrapDamage(Coords target)
         {
+            Actor actor = _map1[target].firstActor;
+            if (actor == null) return;
             int trapDamage = _map1[target].trap.Trigger();
 
 
-            if (_map1[target.x, target.y].trap.evade + r.Next(10) < _map1[target].firstActor.evade + r.Next(10))
+            if (_map1[target.x, target.y].trap.evade + r.Next(10) < actor.evade + r.Next(10))
             {
-                _mainmap1.floatNumber(target, "Trap evaded", Color.Green);
+                if (actor is Player)
+                    _mainmap1.floatNumber(target, "Trap evaded", Color.Green);
             }
             else
 
 
-                if (_map1[target.x, target.y].trap.penetrate + r.Next(10) < _map1[target].firstActor.block + r.Next(10))
+                if (_map1[target.x, target.y].trap.penetrate + r.Next(10) < actor.block + r.Next(10))
                 {
-                    _mainmap1.floatNumber(target, "Trap blocked", Color.Green);
+                    if (actor is Player)
+                        _mainmap1.floatNumber(target, "Trap blocked", Color.Green);
                 }
                 else
                 {
-                    int damage = trapDamage - _map1[target].firstActor.armor + (5 - r.Next(10));
+                    int damage = trapDamage - actor.armor + (5 - r.Next(10));
                     if (damage > 0)
                     {
-                        _map1[target].firstActor.health -= damage;
-                        if (_map1[target].firstActor is Player)
+                        actor.health -= damage;
+                        if (actor is Player)
                         {
                             _mainmap1.floatNumber(target, damage.ToString(), Color.DarkRed);
                             RemoveHealth();
@@ -117,22 +121,22 @@ namespace Gruppe22
                         {
                             //  _mainmap1.floatNumber(target, damage.ToString(), Color.White);
                         };
-                        if (_map1[target].firstActor.isDead)
+                        if (actor.isDead)
                         {
-                            _mainmap1.HandleEvent(null, Events.AnimateActor, _map1[target].firstActor.id, Activity.Die);
-                            _mainmap2.HandleEvent(null, Events.AnimateActor, _map1[target].firstActor.id, Activity.Die);
-                            AddMessage((_map1[target].firstActor is Player ? "<red>" : "") + _map1[target].firstActor.name + " was killed by a trap  doing " + damage.ToString() + " points of damage.");
+                            _mainmap1.HandleEvent(true, Events.AnimateActor, actor.id, Activity.Die);
+                            _mainmap2.HandleEvent(true, Events.AnimateActor, actor.id, Activity.Die);
+                            AddMessage((actor is Player ? "<red>" : "") + actor.name + " was killed by a trap  doing " + damage.ToString() + " points of damage.");
                         }
                         else
                         {
-                            _mainmap1.HandleEvent(null, Events.AnimateActor, _map1[target].firstActor.id, Activity.Hit);
-                            _mainmap2.HandleEvent(null, Events.AnimateActor, _map1[target].firstActor.id, Activity.Hit);
-                            AddMessage((_map1[target].firstActor is Player ? "<red>" : "") + _map1[target].firstActor.name + " was hit for " + damage.ToString() + " points of damage by a trap.");
+                            _mainmap1.HandleEvent(true, Events.AnimateActor, actor.id, Activity.Hit);
+                            _mainmap2.HandleEvent(true, Events.AnimateActor, actor.id, Activity.Hit);
+                            AddMessage((actor is Player ? "<red>" : "") + actor.name + " was hit for " + damage.ToString() + " points of damage by a trap.");
                         }
                     }
                     else
                     {
-                        if (_map1[target].firstActor is Player)
+                        if (actor is Player)
                             _mainmap1.floatNumber(target, "No damage", Color.Green);
                     }
                 }
@@ -144,7 +148,7 @@ namespace Gruppe22
         /// <param name="sender"></param>
         /// <param name="eventID"></param>
         /// <param name="data"></param>
-        public override void HandleEvent(UIElement sender, Events eventID, params object[] data)
+        public override void HandleEvent(bool DownStream, Events eventID, params object[] data)
         {
 
             switch (eventID)
@@ -213,7 +217,7 @@ namespace Gruppe22
                         // Apply teleporter (move to next room)
                         if ((id == 0) && (_map1[target.x, target.y].hasTeleport))
                         {
-                            HandleEvent(null, Events.ChangeMap, ((TeleportTile)_map1[target.x, target.y].overlay[0]).nextRoom, ((TeleportTile)_map1[target.x, target.y].overlay[0]).nextPlayerPos);
+                            HandleEvent(true, Events.ChangeMap, ((TeleportTile)_map1[target.x, target.y].overlay[0]).nextRoom, ((TeleportTile)_map1[target.x, target.y].overlay[0]).nextPlayerPos);
 
                         }
 
@@ -226,8 +230,8 @@ namespace Gruppe22
                         // Trigger floor switches
                         if ((_map1[_map1.actors[id].tile.coords.x, _map1.actors[id].tile.coords.y].hasTarget) && (id == 0))
                         {
-                            _mainmap1.HandleEvent(null, Events.AnimateActor, id, Activity.Talk);
-                            _mainmap2.HandleEvent(null, Events.AnimateActor, id, Activity.Talk);
+                            _mainmap1.HandleEvent(true, Events.AnimateActor, id, Activity.Talk);
+                            _mainmap2.HandleEvent(true, Events.AnimateActor, id, Activity.Talk);
 
                             ShowEndGame("You have successfully found the hidden treasure. Can you do it again?", "Congratulations!");
                         }
@@ -262,7 +266,7 @@ namespace Gruppe22
                                 }
 
                             }
-                            _mainmap1.HandleEvent(null, Events.AnimateActor, id, Activity.Attack, false, dir, true);
+                            _mainmap1.HandleEvent(true, Events.AnimateActor, id, Activity.Attack, false, dir, true);
                             _CombatDamage(id, _map1[target.x, target.y].firstActor.id);
                         }
 
@@ -287,9 +291,10 @@ namespace Gruppe22
                 case Events.MoveActor:
                     {
                         int id = (int)data[0];
-                        if (!_mainmap1.IsMoving(id))
+                        Direction dir = (Direction)data[1];
+
+                        if (!_mainmap1.IsMoving(id)||(data.Length>2))
                         {
-                            Direction dir = (Direction)data[1];
                             Coords target = Map.DirectionTile(_map1.actors[id].tile.coords, dir);
 
                             _mainmap1.ChangeDir(id, dir); // Look into different direction
@@ -299,7 +304,7 @@ namespace Gruppe22
                             {
                                 if ((_map1.firstActorID(target.x, target.y) != id) && (!_map1[target.x, target.y].firstActor.isDead))
                                 {
-                                    HandleEvent(null, Events.Attack, id, dir);
+                                    HandleEvent(true, Events.Attack, id, dir);
                                     _map1.actors[id].locked = true;
                                 }
                             }
@@ -312,17 +317,24 @@ namespace Gruppe22
                                         _minimap1.MoveCamera(_map1.actors[id].tile.coords);
                                     _map1.actors[id].locked = true;
 
-                                    _mainmap1.HandleEvent(null, Events.MoveActor, id, _map1.actors[id].tile.coords);
-                                    _mainmap2.HandleEvent(null, Events.MoveActor, id, _map1.actors[id].tile.coords);
+                                    _mainmap1.HandleEvent(true, Events.MoveActor, id, _map1.actors[id].tile.coords);
+                                    _mainmap2.HandleEvent(true, Events.MoveActor, id, _map1.actors[id].tile.coords);
 
 
                                 }
                             }
                         }
+                        else
+                        {
+                            if (data.Length < 3)
+                            {
+                              //  _mainmap1.actors[0].cacheDir = dir;
+                            }
+                        }
                     }
                     break;
             }
-            base.HandleEvent(sender, eventID, data);
+            base.HandleEvent(DownStream, eventID, data);
         }
 
 

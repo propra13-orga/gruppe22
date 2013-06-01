@@ -123,6 +123,7 @@ namespace Gruppe22
         /// </summary>
         protected Inventory _inventory = null;
 
+
         /// <summary>
         /// A reference to the object displaying current player statistics
         /// </summary>
@@ -219,7 +220,7 @@ namespace Gruppe22
             {
                 case Keys.Escape:
                     if (_status == GameStatus.Running) ShowMenu();
-                    else HandleEvent(null, Events.ContinueGame, 0);
+                    else HandleEvent(true, Events.ContinueGame, 0);
                     break;
             }
 
@@ -304,18 +305,17 @@ namespace Gruppe22
         /// <param name="sender"></param>
         /// <param name="eventID"></param>
         /// <param name="data"></param>
-        public virtual void HandleEvent(UIElement sender, Events eventID, params object[] data)
+        public virtual void HandleEvent(bool DownStream, Events eventID, params object[] data)
         {
-
             switch (eventID)
             {
                 case Events.Player1:
                     foreach (UIElement element in _interfaceElements)
                     {
-                        element.HandleEvent(null, Events.ToggleButton, Events.Player2, false);
-                        element.HandleEvent(null, Events.ToggleButton, Events.Player1, true);
-                        element.HandleEvent(null, Events.ToggleButton, Events.Local, true);
-                        element.HandleEvent(null, Events.ToggleButton, Events.LAN, false);
+                        element.HandleEvent(true, Events.ToggleButton, Events.Player2, false);
+                        element.HandleEvent(true, Events.ToggleButton, Events.Player1, true);
+                        element.HandleEvent(true, Events.ToggleButton, Events.Local, true);
+                        element.HandleEvent(true, Events.ToggleButton, Events.LAN, false);
                     }
                     _secondPlayer = false;
                     _mainmap2.enabled = false;
@@ -340,8 +340,8 @@ namespace Gruppe22
                 case Events.Player2:
                     foreach (UIElement element in _interfaceElements)
                     {
-                        element.HandleEvent(null, Events.ToggleButton, Events.Player2, true);
-                        element.HandleEvent(null, Events.ToggleButton, Events.Player1, false);
+                        element.HandleEvent(true, Events.ToggleButton, Events.Player2, true);
+                        element.HandleEvent(true, Events.ToggleButton, Events.Player1, false);
                     }
                     _secondPlayer = true;
                     if (!_lan)
@@ -362,10 +362,10 @@ namespace Gruppe22
                     _lan = true;
                     foreach (UIElement element in _interfaceElements)
                     {
-                        element.HandleEvent(null, Events.ToggleButton, Events.Player2, true);
-                        element.HandleEvent(null, Events.ToggleButton, Events.Player1, false);
-                        element.HandleEvent(null, Events.ToggleButton, Events.Local, false);
-                        element.HandleEvent(null, Events.ToggleButton, Events.LAN, true);
+                        element.HandleEvent(true, Events.ToggleButton, Events.Player2, true);
+                        element.HandleEvent(true, Events.ToggleButton, Events.Player1, false);
+                        element.HandleEvent(true, Events.ToggleButton, Events.Local, false);
+                        element.HandleEvent(true, Events.ToggleButton, Events.LAN, true);
                     }
                     _mainmap2.enabled = false;
                     _mainmap1.Resize(new Rectangle(5, 5, _graphics.GraphicsDevice.Viewport.Width - 230, ((_graphics.GraphicsDevice.Viewport.Height - 20)) - 115));
@@ -374,8 +374,8 @@ namespace Gruppe22
                 case Events.Local:
                     foreach (UIElement element in _interfaceElements)
                     {
-                        element.HandleEvent(null, Events.ToggleButton, Events.Local, true);
-                        element.HandleEvent(null, Events.ToggleButton, Events.LAN, false);
+                        element.HandleEvent(true, Events.ToggleButton, Events.Local, true);
+                        element.HandleEvent(true, Events.ToggleButton, Events.LAN, false);
                     }
                     _lan = false;
                     _mainmap2.enabled = true;
@@ -410,7 +410,7 @@ namespace Gruppe22
                 case Events.NewMap:
                     _status = GameStatus.NoRedraw;
                     GenerateMaps();
-                    HandleEvent(null, Events.ResetGame);
+                    HandleEvent(true, Events.ResetGame);
                     break;
 
                 case Events.ResetGame:
@@ -425,7 +425,7 @@ namespace Gruppe22
                     _enemyStats.actor = null;
                     _inventory.Update();
                     _status = GameStatus.Paused;
-                    HandleEvent(null, Events.ContinueGame);
+                    HandleEvent(true, Events.ContinueGame);
                     break;
 
                 case Events.ShowMessage:

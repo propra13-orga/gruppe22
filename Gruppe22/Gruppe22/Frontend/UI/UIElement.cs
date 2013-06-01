@@ -12,7 +12,7 @@ namespace Gruppe22
 
     public interface IHandleEvent
     {
-        void HandleEvent(UIElement sender, Events eventID, params object[] data);
+        void HandleEvent(bool DownStream, Events eventID, params object[] data);
     }
     /// <summary>
     /// 
@@ -87,9 +87,12 @@ namespace Gruppe22
 
         #region Public Methods
 
-        public virtual void HandleEvent(UIElement sender, Events eventID, params object[] data)
+        public virtual void HandleEvent(bool DownStream, Events eventID, params object[] data)
         {
-            _parent.HandleEvent(sender, eventID, data);
+            if (!DownStream)
+            {
+                _parent.HandleEvent(false, eventID, data);
+            }
         }
 
 
@@ -134,7 +137,7 @@ namespace Gruppe22
         /// 
         /// </summary>
         /// <param name="difference"></param>
-        public virtual void MoveContent(Vector2 difference, int _lastCheck=0)
+        public virtual void MoveContent(Vector2 difference, int _lastCheck = 0)
         {
 
         }
@@ -147,7 +150,7 @@ namespace Gruppe22
         {
 
         }
-        
+
 
         public virtual void Dispose()
         {

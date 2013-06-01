@@ -185,7 +185,7 @@ namespace Gruppe22
                     if (_state == TrapState.Off)
                     {
                         _state = TrapState.On;
-                        ((FloorTile)_parent).HandleEvent(null, Events.TrapActivate, coords);
+                        ((FloorTile)_parent).HandleEvent(false, Events.TrapActivate, coords);
                     }
                     else _state = TrapState.Off;
                 }

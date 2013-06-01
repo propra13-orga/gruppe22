@@ -128,6 +128,14 @@ namespace Gruppe22
         #endregion
 
         #region Public Fields
+
+        public List<ActorView> actors
+        {
+            get
+            {
+                return _actors;
+            }
+        }
         public Matrix transformMatrix
         {
             get
@@ -149,47 +157,45 @@ namespace Gruppe22
         }
         #endregion
         #region Public Methods
-        public override void HandleEvent(UIElement sender, Events eventID, params object[] data)
+        public override void HandleEvent(bool DownStream, Events eventID, params object[] data)
         {
-            switch (eventID)
+            if (DownStream)
             {
-                case Events.TileEntered:
-                    _parent.HandleEvent(this, eventID, data);
-                    break;
-                case Events.MoveActor:
-                    {
-                        int id = (int)data[0];
-                        Coords coords = (Coords)data[1];
-                        _actors[id].target = _map2screen(coords);
-                    };
-                    break;
-
-                case Events.AnimateActor:
-                    {
-                        int id = (int)data[0];
-                        Activity activity = (Activity)data[1];
-                        bool delay = false;
-                        bool isLock = true;
-                        if (data.Length > 2) delay = (bool)data[2];
-                        if (data.Length > 3) _actors[id].direction = (Direction)data[3];
-                        if (delay)
+                switch (eventID)
+                {
+                    case Events.MoveActor:
                         {
-                            _actors[id].PlayNowOrAfterMove(activity, isLock);
-                        }
-                        else
-                        {
-                            _actors[id].EndMoveAndPlay(activity, isLock);
-                        }
-                        ;
-                        /*bool waitForAnim = (bool)data[2];*/
-                    }
-                    break;
+                            int id = (int)data[0];
+                            Coords coords = (Coords)data[1];
+                            _actors[id].target = _map2screen(coords);
+                        };
+                        break;
 
-                case Events.FinishedAnimation:
-                    {
-                        _parent.HandleEvent(this, eventID, data);
-                    }
-                    break;
+                    case Events.AnimateActor:
+                        {
+                            int id = (int)data[0];
+                            Activity activity = (Activity)data[1];
+                            bool delay = false;
+                            bool isLock = true;
+                            if (data.Length > 2) delay = (bool)data[2];
+                            if (data.Length > 3) _actors[id].direction = (Direction)data[3];
+                            if (delay)
+                            {
+                                _actors[id].PlayNowOrAfterMove(activity, isLock);
+                            }
+                            else
+                            {
+                                _actors[id].EndMoveAndPlay(activity, isLock);
+                            }
+                            ;
+                            /*bool waitForAnim = (bool)data[2];*/
+                        }
+                        break;
+                }
+            }
+            else
+            {
+                _parent.HandleEvent(false, eventID, data);
             }
 
         }
@@ -243,8 +249,8 @@ namespace Gruppe22
                             null,
                             _camera.matrix);
                 _spriteBatch.Draw(_circle, new Rectangle(
-                    (int)(_actors[_playerID].position.X + 1) - 250 * _renderScope,
-                    (int)(_actors[_playerID].position.Y + 1) - 250 * _renderScope, 520 * _renderScope, 520 * _renderScope), Color.White);
+                    (int)(_actors[_playerID].position.x + 1) - 250 * _renderScope,
+                    (int)(_actors[_playerID].position.y + 1) - 250 * _renderScope, 520 * _renderScope, 520 * _renderScope), Color.White);
                 _spriteBatch.End();
 
 
@@ -782,10 +788,10 @@ namespace Gruppe22
 
                     foreach (ActorView actor in _actors)
                     {
-                        Coords apos = _screen2map((int)actor.position.X, (int)actor.position.Y);
+                        Coords apos = _screen2map((int)actor.position.x, (int)actor.position.y);
                         if (((int)apos.x == x) && ((int)apos.y == y))
                         {
-                            _spriteBatch.Draw(actor.animationTexture, new Vector2((float)(actor.position.X + actor.offsetX + 25), (float)(actor.position.Y + actor.offsetY - 25)), actor.animationRect, ((_map.actors[actor.id].tile.coords.y == (int)_highlightedTile.y) && (_map.actors[actor.id].tile.coords.x == (int)_highlightedTile.x)) ? Color.Red : Color.White);
+                            _spriteBatch.Draw(actor.animationTexture, new Vector2((float)(actor.position.x + actor.offsetX + 25), (float)(actor.position.y + actor.offsetY - 25)), actor.animationRect, ((_map.actors[actor.id].tile.coords.y == (int)_highlightedTile.y) && (_map.actors[actor.id].tile.coords.x == (int)_highlightedTile.x)) ? Color.Red : Color.White);
                         }
                     }
                 }
@@ -841,7 +847,7 @@ namespace Gruppe22
                         {
                             _spriteBatch.Draw(_environment[2][0].animationTexture, new Rectangle(_map2screen(x, y).x + 32, _map2screen(x, y).y + 16, 64, 64), _environment[2][0].animationRect, ((y == (int)_highlightedTile.y) && (x == (int)_highlightedTile.x)) ? Color.Red : Color.White);
                         }
-                        }
+                    }
                     if (_map[x, y].hasTarget)
                     {
                         _spriteBatch.Draw(_environment[3][0].animationTexture, new Rectangle(_map2screen(x, y).x + 32, _map2screen(x, y).y + 16, 64, 48), _environment[3][0].animationRect, ((y == (int)_highlightedTile.y) && (x == (int)_highlightedTile.x)) ? Color.Red : Color.White);
@@ -906,7 +912,7 @@ namespace Gruppe22
                 if (_actors.Count != _playerID) _actors.Add(new ActorView(this, count, _content, _map2screen(_map.actorPositions[count]), "Content\\skeleton.xml", 2, _map.actors[count].health > 0));
                 else _actors.Add(new ActorView(this, count, _content, _map2screen(_map.actorPositions[count]), "Content\\player.xml", 5));
             }
-            _camera.position = new Vector2(-38 - _actors[_playerID].position.X, -30 - _actors[_playerID].position.Y);
+            _camera.position = new Vector2(-38 - _actors[_playerID].position.x, -30 - _actors[_playerID].position.y);
         }
 
         public void floatNumber(Coords tile, string text, Color color)
@@ -943,7 +949,7 @@ namespace Gruppe22
                     }
                 }
                 if (_actors[_playerID].isMoving)
-                    _camera.position = new Vector2(-38 - _actors[_playerID].position.X, -30 - _actors[_playerID].position.Y);
+                    _camera.position = new Vector2(-38 - _actors[_playerID].position.x, -30 - _actors[_playerID].position.y);
                 /*   if (Math.Abs(gameTime.TotalGameTime.Milliseconds / 10 - _lastCheck) > 1)
                    {
                        _lastCheck = gameTime.TotalGameTime.Milliseconds / 10;*/
@@ -972,7 +978,7 @@ namespace Gruppe22
         /// <param name="dir">Direction to move to</param>
         public void MovePlayer(Direction dir)
         {
-            _parent.HandleEvent(this, Events.MoveActor, 0, dir);
+            _parent.HandleEvent(false, Events.MoveActor, 0, dir);
         }
 
 
@@ -984,7 +990,7 @@ namespace Gruppe22
         public void CreateTextureList()
         {
 
-            ActorView player = new ActorView(this, 0, _content, Vector2.Zero);
+            ActorView player = new ActorView(this, 0, _content, Coords.Zero);
 
             player.Add(Activity.Walk, Direction.DownRight, "Walk", new Coords(0, 0), 8, 1);
             player.Add(Activity.Walk, Direction.UpRight, "Walk", new Coords(0, 96), 8, 1); // Ok
@@ -1042,7 +1048,7 @@ namespace Gruppe22
             player.Add(Activity.Attack, Direction.UpLeft, "Attack", new Coords(0, 672), 13, 1);
             player.Save("content\\player.xml");
 
-            ActorView skel = new ActorView(this, 0, _content, Vector2.Zero, "");
+            ActorView skel = new ActorView(this, 0, _content, Coords.Zero, "");
             skel.Add(Activity.Walk, Direction.DownRight, "sWalk", new Coords(0, 0), 8, 1);
             skel.Add(Activity.Walk, Direction.UpRight, "sWalk", new Coords(0, 96), 8, 1);
             skel.Add(Activity.Walk, Direction.Right, "sWalk", new Coords(0, 192), 8, 1);

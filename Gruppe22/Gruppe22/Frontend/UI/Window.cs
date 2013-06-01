@@ -60,7 +60,7 @@ namespace Gruppe22
 
         public override void OnMouseDown(int button)
         {
-            for (int i = 0; i < _children.Count;++i )
+            for (int i = 0; i < _children.Count; ++i)
             {
                 _children[i].OnMouseDown(button);
             }
@@ -98,13 +98,19 @@ namespace Gruppe22
             base.Dispose();
         }
 
-        public override void HandleEvent(UIElement sender, Events eventID, params object[] data)
+        public override void HandleEvent(bool DownStream, Events eventID, params object[] data)
         {
-            foreach (UIElement child in _children)
+            if (DownStream)
             {
-                child.HandleEvent(sender, eventID, data);
+                foreach (UIElement child in _children)
+                {
+                    child.HandleEvent(true, eventID, data);
+                }
             }
-            _parent.HandleEvent(sender, eventID, data);
+            else
+            {
+                _parent.HandleEvent(false, eventID, data);
+            }
         }
         #endregion
 

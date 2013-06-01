@@ -90,11 +90,11 @@ namespace Gruppe22
         {
             if (IsHit(Mouse.GetState().X, Mouse.GetState().Y))
             {
-                _parent.HandleEvent(this, _id, 0);
+                _parent.HandleEvent(false, _id, 0);
             }
         }
 
-        public override void HandleEvent(UIElement sender, Events eventID, params object[] data)
+        public override void HandleEvent(bool downstream, Events eventID, params object[] data)
         {
             if ((eventID == Events.ToggleButton) && ((Events)data[0] == _id)) {
                 stayDown = (bool)data[1];
