@@ -120,6 +120,22 @@ namespace Gruppe22
         }
 
         /// <summary>
+        /// Determine whether tile has a checkpoint on it
+        /// </summary>
+        public bool hasCheckpoint
+        {
+            get
+            {
+                for (int i = 0; i < _overlay.Count; ++i)
+                {
+                    if (_overlay[i] is CheckpointTile) return true;
+                }
+
+                return false;
+            }
+        }
+
+        /// <summary>
         /// Determine whether tile can be entered
         /// </summary>
         public bool canEnter
@@ -320,6 +336,9 @@ namespace Gruppe22
                 case TileType.Enemy:
                     _overlay.Add(new ActorTile(this));
                     break;
+                case TileType.Checkpoint:
+                    _overlay.Add(new CheckpointTile(this));
+                    break;
             }
             return _overlay[_overlay.Count - 1];
         }
@@ -335,7 +354,7 @@ namespace Gruppe22
                 _overlay[i].Update(gameTime);
             }
         }
-
+        
         /// <summary>
         /// Remove all tiles of a specified type from overlay
         /// </summary>
@@ -345,6 +364,14 @@ namespace Gruppe22
             for (int i = 0; i < _overlay.Count; ++i)
                 switch (type)
                 {
+                    case TileType.Checkpoint:
+                        if (_overlay[i] is CheckpointTile)
+                        {
+                            _overlay[i].parent = null;
+                            _overlay.RemoveAt(i);
+                            i -= 1;
+                        }
+                        break;
                     case TileType.Wall:
                         if (_overlay[i] is WallTile)
                         {
