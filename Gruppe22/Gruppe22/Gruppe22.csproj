@@ -92,7 +92,7 @@
     <Compile Include="Backend\Actors\Actor.cs" />
     <Compile Include="Backend\Actors\Enemy.cs" />
     <Compile Include="Backend\Actors\NPC.cs" />
-    <Compile Include="Backend\Actors\Player.cs" />
+    <Compile Include="Backend\Items\Player.cs" />
     <Compile Include="Backend\Items\Item.cs" />
     <Compile Include="Backend\Items\ItemEffect.cs" />
     <Compile Include="Backend\Map\BombTile.cs" />
@@ -168,6 +168,9 @@
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="enemynames.txt" />
+    <Content Include="npcnames.txt" />
+    <Content Include="playernames.txt" />
     <Content Include="\Program Files\MonoGame\v3.0\Assemblies\WindowsGL\SDL.dll">
       <Link>SDL.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
