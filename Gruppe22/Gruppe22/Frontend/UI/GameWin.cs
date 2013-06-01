@@ -192,6 +192,10 @@ namespace Gruppe22
             _interfaceElements.Add(_enemyStats);
             _inventory.Update();
             _playerStats.Update(null);
+            if (_map1.actors[0].health < 1)
+            {
+                ShowEndGame();
+            }
             // _backMusic = Content.Load<Song>("Video Dungeon Crawl.wav"); // Todo: *.mp3
             // _font = Content.Load<SpriteFont>("Font");
             // MediaPlayer.Volume = (float)0.3;

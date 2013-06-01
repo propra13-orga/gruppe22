@@ -237,12 +237,13 @@ namespace Gruppe22
 
                 case Events.Attack:
                     {
-
                         int id = (int)data[0];
                         Direction dir = (Direction)data[1];
+                        Coords target = Map.DirectionTile(_map1.actors[id].tile.coords, dir);
+
                         if (_map1.CanMove(_map1.actors[id].tile.coords, dir))
                         {
-                            Coords target = Map.DirectionTile(_map1.actors[id].tile.coords, dir);
+                        
                             // Display enemy statistics
                             if (_map1[target.x, target.y].firstActor is Player)
                             {
@@ -254,22 +255,15 @@ namespace Gruppe22
                                 {
                                     _enemyStats.actor = _map1[target.x, target.y].firstActor; // Player attacked enemy
                                 }
+
                             }
-                            // Aktuelle Figur attackiert
-                            // Spieler verletzt
-                            // oder tot
-                            _map1[target.x, target.y].firstActor.SetDamage(_map1.actors[id]);
+                            _mainmap1.HandleEvent(null, Events.AnimateActor, id, Activity.Attack, false, dir, true);
+                            _CombatDamage(id, _map1[target.x, target.y].firstActor.id);
+                        }
 
-                            if (id == 0)
-                                _mainmap1.floatNumber(target, _map1.actors[id].damage.ToString(), Color.White);
-
-                            if (_map1[target.x, target.y].firstActor is Player)
-                                _mainmap1.floatNumber(target, _map1.actors[id].damage.ToString(), Color.DarkRed);
-
-                            if (_map1[target.x, target.y].firstActor is Player) RemoveHealth();
-                            if (_map1[target.x, target.y].firstActor.isDead)
-                            {
-                                _mainmap1.HandleEvent(null, Events.AnimateActor, _map1.firstActorID(target.x, target.y), Activity.Die, false, Map.WhichWayIs(_map1.actors[id].tile.coords, target));
+                    
+                    /*
+                     *                                 _mainmap1.HandleEvent(null, Events.AnimateActor, _map1.firstActorID(target.x, target.y), Activity.Die, false, Map.WhichWayIs(_map1.actors[id].tile.coords, target));
                                 AddMessage((_map1.actors[id] is Player ? "<green>You" : _map1.actors[id].name) + " killed " + (_map1.actors[_map1.firstActorID(target.x, target.y)] is Player ? "you" : _map1.actors[_map1.firstActorID(target.x, target.y)].name) + " doing " + _map1.actors[id].damage.ToString() + " points of damage.");
 
                             }
@@ -279,8 +273,8 @@ namespace Gruppe22
                                 AddMessage(((_map1.actors[_map1.firstActorID(target.x, target.y)] is Player) ? "<red>" : "") + (_map1.actors[id] is Player ? "<green>You" : _map1.actors[id].name) + " attacked " + (_map1.actors[_map1.firstActorID(target.x, target.y)] is Player ? "you" : _map1.actors[_map1.firstActorID(target.x, target.y)].name));
                                 AddMessage(((_map1.actors[_map1.firstActorID(target.x, target.y)] is Player) ? "<red>" : "") + "The attack caused " + (_map1[target.x, target.y].firstActor.armor - _map1.actors[id].damage).ToString() + " points of damage (" + _map1.actors[id].damage.ToString() + " attack strength - " + _map1[target.x, target.y].firstActor.armor + " defense)");
                             }
-                            _mainmap1.HandleEvent(null, Events.AnimateActor, id, Activity.Attack, false, dir, true);
-                        }
+*/
+  
                     }
                     break;
 
