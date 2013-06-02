@@ -55,7 +55,7 @@ namespace Gruppe22
 
         public virtual bool OnMouseDown(int button)
         {
-            if (canFocus && !_focus) _parent.HandleEvent(false, Events.RequestFocus, this);
+            if ((_displayRect.Contains(Mouse.GetState().X, Mouse.GetState().Y)) && (canFocus && !_focus)) _parent.HandleEvent(false, Events.RequestFocus, this);
             return false;
         }
 

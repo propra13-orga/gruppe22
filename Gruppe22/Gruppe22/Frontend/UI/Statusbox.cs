@@ -131,12 +131,14 @@ namespace Gruppe22
             if ((new Rectangle(_displayRect.Right - 35, _displayRect.Top + 5, 28, 28).Contains(Mouse.GetState().X, Mouse.GetState().Y)) && (_startPos > 0))
             {
                 _startPos -= 1;
+                return true;
             }
             if ((new Rectangle(_displayRect.Right - 35, _displayRect.Bottom - 35, 28, 28).Contains(Mouse.GetState().X, Mouse.GetState().Y)) && (_startPos < _text.Count - 1))
             {
                 _startPos += 1;
+                return true;
             }
-            return true;
+            return false;
         }
 
 

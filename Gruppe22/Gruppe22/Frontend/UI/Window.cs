@@ -93,6 +93,7 @@ namespace Gruppe22
             }
             return true;
         }
+
         public void AddChild(UIElement child)
         {
             _children.Add(child);

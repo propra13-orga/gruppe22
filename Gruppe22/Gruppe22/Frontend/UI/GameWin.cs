@@ -270,6 +270,7 @@ namespace Gruppe22
 
         public bool OnMouseDown(int button)
         {
+
             for (int i = 0; i < _interfaceElements.Count; ++i)
             {
                 if (_interfaceElements[i].OnMouseDown(button)) return true;
