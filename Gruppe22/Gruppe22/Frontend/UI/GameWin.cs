@@ -524,6 +524,7 @@ namespace Gruppe22
         /// <param name="title"></param>
         public void ShowEndGame(string message = "You have failed in your mission. Better luck next time.", string title = "Game over!")
         {
+            //TODO: load checkpoint if exist
             _status = GameStatus.Paused;
             Window _gameOver = new Window(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width) / 2.0f) - 300, (int)(GraphicsDevice.Viewport.Height / 2.0f) - 100, 600, 200));
             Statusbox stat = new Statusbox(_gameOver, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width) / 2.0f) - 300 + 10, (int)(GraphicsDevice.Viewport.Height / 2.0f) - 70, 590, 110), false, true);

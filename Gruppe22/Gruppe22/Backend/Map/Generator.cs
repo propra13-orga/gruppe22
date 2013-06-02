@@ -94,6 +94,41 @@ namespace Gruppe22
 
         }
 
+        public void AddCheckpoint()
+        {
+            int count = 0;
+            Path pos = new Path(2 + r.Next(_width / 2 - 2) * 2, 2 + r.Next(_height / 2 - 2) * 2);
+            while ((pos.x > 0) &&
+                (_tiles[pos.y][pos.x].overlay.Count != 0))
+            {
+                count += 1;
+                pos.x += 1;
+                if (pos.x > _width - 2)
+                {
+                    pos.x = 1;
+                    pos.y += 1;
+                };
+                if (pos.y > _height - 2)
+                {
+                    pos.y = 1;
+                    pos.x = 1;
+                }
+
+                if (count >= _width * _height)
+                {
+                    pos.x = -1;
+                    pos.y = -1;
+                }
+            }
+
+            if ((pos.x >= 0) && (pos.x < _width) && (pos.y < _height) && (pos.y >= 0))
+            {
+
+                CheckpointTile checkpoint = new CheckpointTile(_tiles[pos.y][pos.x]);
+                _tiles[pos.y][pos.x].Add(checkpoint);
+            }
+        }
+
         public void AddTarget()
         {
 
