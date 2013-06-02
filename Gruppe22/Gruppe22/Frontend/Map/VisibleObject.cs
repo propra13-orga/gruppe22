@@ -472,6 +472,11 @@ namespace Gruppe22
             return null;
         }
 
+        public int animationID
+        {
+            get { return _currentPhase; }
+        }
+
         /// <summary>
         /// Get XML-data from a file
         /// </summary>

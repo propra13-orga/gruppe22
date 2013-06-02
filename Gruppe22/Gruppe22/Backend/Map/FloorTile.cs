@@ -81,6 +81,20 @@ namespace Gruppe22
             }
         }
 
+        public CheckpointTile checkpoint
+        {
+            get
+            {
+
+                foreach (Tile tile in _overlay)
+                {
+                    if (tile is CheckpointTile) return (CheckpointTile)tile;
+                }
+                return null;
+            }
+        }
+
+
         public Actor firstActor
         {
             get
@@ -307,41 +321,6 @@ namespace Gruppe22
 
         #region Public Methods
 
-        /// <summary>
-        /// Add a (generic) tile of a specified type to overlay and return a pointer to that tile
-        /// </summary>
-        /// <param name="type"></param>
-        public Tile Add(TileType type)
-        {
-            switch (type)
-            {
-                case TileType.Wall:
-                    _overlay.Add(new WallTile(this));
-                    break;
-                case TileType.Trap:
-                    _overlay.Add(new TrapTile(this, 1));
-                    break;
-                case TileType.Teleporter:
-                    _overlay.Add(new TeleportTile(this, "ddd", new Coords(0, 0)));
-                    break;
-                case TileType.Target:
-                    _overlay.Add(new TargetTile(this));
-                    break;
-                case TileType.Start:
-                    _overlay.Add(new ActorTile(this));
-                    break;
-                case TileType.Item:
-                    _overlay.Add(new ItemTile(this));
-                    break;
-                case TileType.Enemy:
-                    _overlay.Add(new ActorTile(this));
-                    break;
-                case TileType.Checkpoint:
-                    _overlay.Add(new CheckpointTile(this));
-                    break;
-            }
-            return _overlay[_overlay.Count - 1];
-        }
 
         /// <summary>
         /// Refresh tiles which do something (traps, enemies, NPCs)
@@ -354,7 +333,7 @@ namespace Gruppe22
                 _overlay[i].Update(gameTime);
             }
         }
-        
+
         /// <summary>
         /// Remove all tiles of a specified type from overlay
         /// </summary>
@@ -435,10 +414,15 @@ namespace Gruppe22
         /// Add specified tile to overlay
         /// </summary>
         /// <param name="tile"></param>
-        public void Add(Tile tile)
+        public void Add(Tile tile, bool update = false)
         {
             _overlay.Add(tile);
             tile.parent = this;
+            if (update)
+            {
+                if (!((Map)_parent).updateTiles.Contains(_coords))
+                    ((Map)_parent).updateTiles.Add(_coords);
+            }
         }
 
 
@@ -478,7 +462,7 @@ namespace Gruppe22
             }
             if (!canEnter)
             {
-                Add(TileType.Wall);
+                Add(new WallTile(this));
             }
         }
         #endregion

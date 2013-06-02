@@ -124,7 +124,7 @@ namespace Gruppe22
             if ((pos.x >= 0) && (pos.x < _width) && (pos.y < _height) && (pos.y >= 0))
             {
 
-                CheckpointTile checkpoint = new CheckpointTile(_tiles[pos.y][pos.x]);
+                CheckpointTile checkpoint = new CheckpointTile(_tiles[pos.y][pos.x], false, 0);
                 _tiles[pos.y][pos.x].Add(checkpoint);
             }
         }
@@ -587,7 +587,7 @@ namespace Gruppe22
                 {
                     case '#':
                         _tiles[row].Add(new GeneratorTile(this, new Coords(col, row)));
-                        _tiles[row][col].Add(TileType.Wall);
+                        _tiles[row][col].Add(new WallTile(_tiles[row][col]));
                         col += 1;
                         break;
                     case '\n':

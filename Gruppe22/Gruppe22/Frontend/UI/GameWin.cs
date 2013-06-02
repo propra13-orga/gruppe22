@@ -31,7 +31,7 @@ namespace Gruppe22
         /// <summary>
         /// Count deads of player to load checkpoint or show gameover
         /// </summary>
-        protected int _deadcounter = 3;
+        protected int _deadcounter = -1;
 
         /// <summary>
         /// Current mousewheel position (used to calculate changes)
@@ -198,11 +198,12 @@ namespace Gruppe22
             _interfaceElements.Add(_enemyStats);
             _inventory.Update();
             _playerStats.Update(null);
-            ShowCharacterWindow(_map1.actors[0]);
-            if (_map1.actors[0].health < 1)
+                        if (_map1.actors[0].health < 1)
             {
                 ShowEndGame();
             }
+            // ShowCharacterWindow(_map1.actors[0]);
+
             // _backMusic = Content.Load<Song>("Video Dungeon Crawl.wav"); // Todo: *.mp3
             // _font = Content.Load<SpriteFont>("Font");
             // MediaPlayer.Volume = (float)0.3;
@@ -265,6 +266,10 @@ namespace Gruppe22
                 case Keys.C:
                     _mainmap1.MovePlayer(Direction.DownRight);
                     break;
+                case Keys.Space:
+                    _mainmap1.FireProjectile();
+                    break;
+
             }
         }
 
@@ -287,7 +292,7 @@ namespace Gruppe22
         {
             foreach (UIElement element in _interfaceElements)
             {
-                if(element.OnMouseUp(button)) return true;
+                if (element.OnMouseUp(button)) return true;
             }
             return true;
         }
@@ -296,7 +301,7 @@ namespace Gruppe22
         {
             foreach (UIElement element in _interfaceElements)
             {
-                if(element.OnMouseHeld(button)) return true;
+                if (element.OnMouseHeld(button)) return true;
             }
             return true;
         }
@@ -305,7 +310,7 @@ namespace Gruppe22
         {
             foreach (UIElement element in _interfaceElements)
             {
-                if (element.OnKeyHeld(k)) return true ;
+                if (element.OnKeyHeld(k)) return true;
             }
             return true;
         }
@@ -416,18 +421,20 @@ namespace Gruppe22
                     break;
 
                 case Events.EndGame:
-                    _map1.Save("savedroom" + _map1.currRoomNbr + ".xml");//+Nummer
+                    _map1.Save("savedroom" + _map1.currRoomNbr + ".xml");
                     Exit();
                     break;
 
                 case Events.NewMap:
                     _status = GameStatus.NoRedraw;
+                    _deadcounter = -1;
                     GenerateMaps();
                     HandleEvent(true, Events.ResetGame);
                     break;
 
                 case Events.ResetGame:
                     _status = GameStatus.NoRedraw;
+                    _deadcounter = -1;
                     DeleteSavedRooms();
                     _map1.Dispose();
                     _map1.Load("room1.xml", null);
@@ -529,30 +536,24 @@ namespace Gruppe22
         /// <param name="title"></param>
         public void ShowEndGame(string message = "You have failed in your mission. Better luck next time.", string title = "Game over!")
         {
-            bool sew = false;
+            _status = GameStatus.Paused;
+            _map1.Save("savedroom" + _map1.currRoomNbr + ".xml");
+            Window _gameOver = new Window(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width) / 2.0f) - 300, (int)(GraphicsDevice.Viewport.Height / 2.0f) - 100, 600, 200));
+            Statusbox stat = new Statusbox(_gameOver, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width) / 2.0f) - 300 + 10, (int)(GraphicsDevice.Viewport.Height / 2.0f) - 70, 590, 110), false, true);
+            stat.AddLine(title + "\n \n" + message);
+            _gameOver.AddChild(stat);
+            _gameOver.AddChild(new Button(_gameOver, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width) / 2.0f) - 300 + 10, (int)(GraphicsDevice.Viewport.Height / 2.0f) + 30, 130, 40), "New Maps", Events.ResetGame));
+
             if (_deadcounter > 0)
             {
-                _deadcounter--;
-                string checkpointloadfile = "checkpoint" + _map1.currRoomNbr + ".xml";
-                if (File.Exists(checkpointloadfile))
-                    HandleEvent(true, Events.LoadFromCheckPoint, checkpointloadfile, _map1.GetCheckpointCoords());
-                else sew = true;
+                _gameOver.AddChild(new Button(_gameOver, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width) / 2.0f) - 300 + 170, (int)(GraphicsDevice.Viewport.Height / 2.0f) + 30, 160, 40), "Restore (" + _deadcounter.ToString() + " left)", Events.LoadFromCheckPoint));
             }
-            if(sew)
-            {
-                _status = GameStatus.Paused;
-                Window _gameOver = new Window(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width) / 2.0f) - 300, (int)(GraphicsDevice.Viewport.Height / 2.0f) - 100, 600, 200));
-                Statusbox stat = new Statusbox(_gameOver, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width) / 2.0f) - 300 + 10, (int)(GraphicsDevice.Viewport.Height / 2.0f) - 70, 590, 110), false, true);
-                stat.AddLine(title + "\n \n" + message);
-                _gameOver.AddChild(stat);
-                _gameOver.AddChild(new Button(_gameOver, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width) / 2.0f) - 300 + 10, (int)(GraphicsDevice.Viewport.Height / 2.0f) + 30, 160, 40), "New Maps", Events.NewMap));
-                _gameOver.AddChild(new Button(_gameOver, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width) / 2.0f) - 300 + 180, (int)(GraphicsDevice.Viewport.Height / 2.0f) + 30, 160, 40), "Restart", Events.ResetGame));
-                _gameOver.AddChild(new Button(_gameOver, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width) / 2.0f) - 300 + 600 - 170, (int)(GraphicsDevice.Viewport.Height / 2.0f) + 30, 160, 40), "Quit", Events.EndGame));
-                //  _mainMenu.AddChild(new ProgressBar(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) + 80, 300, 30), ProgressStyle.Block,100,2));
+            _gameOver.AddChild(new Button(_gameOver, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width) / 2.0f) - 300 + 600-190, (int)(GraphicsDevice.Viewport.Height / 2.0f) + 30, 100, 40), "Restart", Events.ResetGame));
+            _gameOver.AddChild(new Button(_gameOver, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width) / 2.0f) - 300 + 600 - 80, (int)(GraphicsDevice.Viewport.Height / 2.0f) + 30, 70, 40), "Quit", Events.EndGame));
+            //  _mainMenu.AddChild(new ProgressBar(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) + 80, 300, 30), ProgressStyle.Block,100,2));
 
-                _interfaceElements.Add(_gameOver);
-                _focus = _interfaceElements[_interfaceElements.Count - 1];
-            }
+            _interfaceElements.Add(_gameOver);
+            _focus = _interfaceElements[_interfaceElements.Count - 1];
         }
 
         /// <summary>

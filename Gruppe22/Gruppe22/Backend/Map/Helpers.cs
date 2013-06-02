@@ -45,7 +45,10 @@ namespace Gruppe22
         Attack,
         TrapActivate,
         RequestFocus,
-        LoadFromCheckPoint
+        LoadFromCheckPoint,
+        ExplodeProjectile,
+        MoveProjectile,
+        FinishedProjectileMove
     }
 
     public enum GameStatus

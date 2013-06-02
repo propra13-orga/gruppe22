@@ -29,7 +29,7 @@ namespace Gruppe22
         /// Target the actor is supposed to move to
         /// </summary>
         private Coords _target = null;
-
+        private bool _nomove = true;
         private Coords _cacheTarget = null;
         private Direction _cacheDir = Direction.None;
         /// <summary>
@@ -43,7 +43,7 @@ namespace Gruppe22
         /// <summary>
         /// Movement speed (nur relevant to animation, see _animationTime below)
         /// </summary>
-        private int _speed = 2;
+        private int _speed = 3;
         /// <summary>
         /// The unique ID of the actor
         /// </summary>
@@ -120,29 +120,33 @@ namespace Gruppe22
                 // if (_id == 0)
                 //    System.Diagnostics.Debug.WriteLine("Move from " + _position.X.ToString() + "/" + _position.Y.ToString() + " to " + _target.x.ToString() + "/" + value.y.ToString());
                 _blockUpdates = true;
+               // _nomove = true;
                 if (value != _position)
                 {
                     _target = value;
                     _cacheTarget = value;
-                    _xpertick = speed;
-                    _ypertick = speed;
+                    _xpertick = 4;
+                    _ypertick = 3;
                     // System.Diagnostics.Debug.WriteLine(Math.Abs(_position.x - _target.x) + " vs " + Math.Abs(_position.y - _target.y));
 
-                    if ((_position.x != _target.x) && (_position.y != _target.y))
-                    {
-                        if (Math.Abs(_position.x - _target.x) < Math.Abs(_position.y - _target.y))
+                    /*    if ((_position.x != _target.x) && (_position.y != _target.y))
                         {
-                            _xpertick = (speed * Math.Abs(_position.x - _target.x)) / Math.Abs(_position.y - _target.y);
-                            // System.Diagnostics.Debug.WriteLine("x:" + _xpertick);
-                        }
-                        else
-                        {
-                            _ypertick = (speed * Math.Abs(_position.y - _target.y)) / Math.Abs(_position.x - _target.x);
-                            //System.Diagnostics.Debug.WriteLine("y:" + _ypertick);
+                            if (Math.Abs(_position.x - _target.x) < Math.Abs(_position.y - _target.y))
+                            {
+                                _xpertick = (speed * Math.Abs(_position.x - _target.x)) / Math.Abs(_position.y - _target.y);
+                                // System.Diagnostics.Debug.WriteLine("x:" + _xpertick);
+                            }
+                            else
+                            {
+                                _ypertick = (speed * Math.Abs(_position.y - _target.y)) / Math.Abs(_position.x - _target.x);
+                                //System.Diagnostics.Debug.WriteLine("y:" + _ypertick);
 
-                        }
-                    }
+                            }
+                 
+                        }*/
+                    //_textures[(int)_activity * 8 + (int)_direction].ResetAnimation();
                 }
+
                 _blockUpdates = false;
             }
         }
@@ -437,8 +441,6 @@ namespace Gruppe22
                 if (hasMoved)
                 {
                     _textures[(int)_activity * 8 + (int)_direction].NextAnimation();
-                    _textures[(int)_activity * 8 + (int)_direction].NextAnimation();
-
                 }
             }
         }
@@ -453,19 +455,31 @@ namespace Gruppe22
             {
                 _elapsed += gametime.ElapsedGameTime.Milliseconds;
 
-                if ((_target.x != (int)_position.x) || (_target.y != (int)_position.y))
+                if (_target != _position)
                 {
                     if (_elapsed > _animationTime / _moveAccel)
                     {
+
+                        if (!_nomove)
+                        {
+                            _nomove = true;
+                            Animate(true);
+                        }
+                        else
+                        {
+                            _nomove = false;
+                        }
+                                                  //  System.Diagnostics.Debug.WriteLine("ENDED AT " + _textures[(int)_activity * 8 + (int)_direction].animationID);
+
+                        // System.Diagnostics.Debug.WriteLine(_textures[(int)_activity * 8 + (int)_direction].animationID);
+
                         _elapsed -= _animationTime / _moveAccel;
-                        bool EndMove = false;
 
                         if (_target.x > _position.x)
                         {
                             //   if (_id == 0) System.Diagnostics.Debug.Write(_xpertick.ToString());
 
                             _position.x += _xpertick;
-                            if (_target.x < _position.x) { EndMove = true; }
 
                         }
                         else
@@ -475,7 +489,6 @@ namespace Gruppe22
                                 //     if (_id == 0) System.Diagnostics.Debug.Write(-_xpertick);
 
                                 _position.x -= Math.Min(_xpertick, Math.Abs(_target.x - _position.x));
-                                if (_target.x > _position.x) { EndMove = true; }
 
                             }
                             //else
@@ -488,7 +501,6 @@ namespace Gruppe22
                         {
                             //   if (_id == 0) System.Diagnostics.Debug.WriteLine("/" + _ypertick.ToString());
                             _position.y += _ypertick;
-                            if (_target.y < _position.y) { EndMove = true; }
                         }
                         else
                             if (_target.y < _position.y)
@@ -496,14 +508,13 @@ namespace Gruppe22
                                 // if (_id == 0) System.Diagnostics.Debug.WriteLine("/-" + _ypertick.ToString());
 
                                 _position.y -= _ypertick;
-                                if (_target.y > _position.y) { EndMove = true; }
                             }
                             else
                             {
                                 //  if (_id == 0) System.Diagnostics.Debug.WriteLine("/0");
                             }
-                        Animate(true);
-                        if (EndMove || ((Math.Abs(_target.x - _position.x) < 0.1) && (Math.Abs(_target.y - _position.y) < 0.1)))
+
+                        if (_target == _position)
                         {
                             //                            _position = _target;
                             //                          _target = _cacheTarget;
@@ -514,6 +525,7 @@ namespace Gruppe22
                                 _cacheDir = Direction.None;
 
                             }
+
 
                         }
                     }
@@ -567,7 +579,6 @@ namespace Gruppe22
                 Load(filename);
             }
             _parent = parent;
-            _speed = 4;
             if (!alive)
             {
                 Kill();

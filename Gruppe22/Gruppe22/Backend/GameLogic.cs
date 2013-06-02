@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 
@@ -26,6 +27,11 @@ namespace Gruppe22
             string path = "room1.xml";
             if (File.Exists("GameData"))
                 path = File.ReadAllText("GameData");
+            if (path.IndexOf(Environment.NewLine) > 0)
+            {
+                _deadcounter = Int32.Parse(path.Substring(path.IndexOf(Environment.NewLine) + Environment.NewLine.Length));
+                path = path.Substring(0, path.IndexOf(Environment.NewLine));
+            }
             if (File.Exists("saved" + (string)path))
                 _map1 = new Map(Content, this, "saved" + (string)path);
             else
@@ -39,7 +45,7 @@ namespace Gruppe22
             if (_map1.actors[attacker].evade + r.Next(10) < _map1.actors[defender].evade + r.Next(10))
             {
                 if ((_map1.actors[attacker] is Player) || (_map1.actors[defender] is Player))
-                    _mainmap1.floatNumber(_map1.actors[attacker].tile.coords, "Evade", (_map1.actors[defender] is Player)?Color.Green:Color.White);
+                    _mainmap1.floatNumber(_map1.actors[attacker].tile.coords, "Evade", (_map1.actors[defender] is Player) ? Color.Green : Color.White);
             }
             else
 
@@ -155,11 +161,31 @@ namespace Gruppe22
             {
                 case Events.LoadFromCheckPoint:
                     _status = GameStatus.NoRedraw;
-                    _map1.Load((string)data[0], (Coords)data[1]);
+                    _deadcounter--;
+                    string lastCheck = File.ReadAllText("CheckPoint");
+                    while (Directory.GetFiles(".", "savedroom*.xml").Length > 0)
+                    {
+                        File.Delete(Directory.GetFiles(".", "savedroom*.xml")[0]);
+                    }
+                    Regex re = new Regex(@"\d+");
+                    foreach (string file in Directory.GetFiles(".", "checkpoint*.xml"))
+                    {
+                        Match m = re.Match(file);
+                        File.Copy(file, "savedroom" + m.Value + ".xml");
+                    }
+                    _map1.actors.Clear();
+                    _map1.Load("savedroom" + lastCheck + ".xml", null);
+                    File.WriteAllText("GameData", "room" + _map1.currRoomNbr.ToString() + ".xml" + Environment.NewLine + _deadcounter.ToString());
                     _mainmap1.resetActors();
                     _mainmap2.resetActors();
-                    _status = GameStatus.Running;
+                    _inventory.actor = _map1.actors[0];
+                    _playerStats.actor = _map1.actors[0];
+                    _enemyStats.actor = null;
+                    _inventory.Update();
+                    _status = GameStatus.Paused;
+                    HandleEvent(true, Events.ContinueGame);
                     break;
+
                 case Events.ChangeMap: // Load another map
                     _status = GameStatus.NoRedraw; // prevent redraw (which would crash the game!)
                     _map1.Save("savedroom" + _map1.currRoomNbr + ".xml");
@@ -169,9 +195,9 @@ namespace Gruppe22
                         _map1.Load((string)data[0], (Coords)data[1]);
                     _mainmap1.resetActors();
                     _mainmap2.resetActors();
-                    
+
                     AddMessage("You entered room number " + data[0].ToString().Substring(4, 1) + ".");
-                    File.WriteAllText("GameData", data[0].ToString());
+                    File.WriteAllText("GameData", data[0].ToString() + Environment.NewLine + _deadcounter.ToString());
                     _status = GameStatus.Running;
                     break;
 
@@ -234,14 +260,31 @@ namespace Gruppe22
                             _TrapDamage(target);
                         }
 
-                        //Checkpoint - save by Enter
-                        if (_map1[target.x, target.y].hasCheckpoint)
+                        //Checkpoint - save by entering
+                        if ((_map1[target.x, target.y].hasCheckpoint) && (!_map1[target.x, target.y].checkpoint.visited) && (id == 0))
                         {
-                            if (!File.Exists("checkpoint" + _map1.currRoomNbr + ".xml"))
+                            _map1[target.x, target.y].checkpoint.visited = true;
+                            if (_deadcounter == -1)
                                 _deadcounter = 3;
-                            _map1.Save("checkpoint" + _map1.currRoomNbr + ".xml");
+                            if (_map1[target.x, target.y].checkpoint.bonuslife > 0)
+                                _deadcounter += _map1[target.x, target.y].checkpoint.bonuslife;
+                            _map1.Save("savedroom" + _map1.currRoomNbr + ".xml");
                             _mainmap1.floatNumber(target, "Checkpoint", Color.DarkOliveGreen);
-                            AddMessage("Checkpoint");
+                            File.WriteAllText("GameData", "room" + _map1.currRoomNbr.ToString() + ".xml" + Environment.NewLine + _deadcounter.ToString());
+                            File.WriteAllText("CheckPoint", _map1.currRoomNbr.ToString());
+                            Regex regex = new Regex(@"\d+");
+                            foreach (string file in Directory.GetFiles(".", "checkpoint*.xml"))
+                            {
+                                File.Delete(file);
+                            }
+
+                            foreach (string file in Directory.GetFiles(".", "savedroom*.xml"))
+                            {
+                                Match m = regex.Match(file);
+                                File.Copy(file, "checkpoint" + m.Value + ".xml");
+                            }
+
+                            AddMessage("Checkpoint reached (" + _deadcounter.ToString() + " lives remaining)");
                         }
 
                         // Trigger floor switches
@@ -303,14 +346,34 @@ namespace Gruppe22
 
                     }
                     break;
-
-
+                case Events.ExplodeProjectile:
+                    {
+                        _map1[((ProjectileTile)data[0]).coords].Remove((ProjectileTile)data[0]);
+                        _mainmap1.RemoveProjectile(((ProjectileTile)data[0]).id);
+                    }
+                    break;
+                case Events.MoveProjectile:
+                    if (data[0] == null)
+                    {
+                        uint id = _mainmap1.AddProjectile(((FloorTile)data[1]).coords, (Direction)data[2], new ProjectileTile((FloorTile)data[1], (Direction)data[2]));
+                        _map1[((FloorTile)data[1]).coords].Add(_mainmap1.GetProjectile(id).tile, false);
+                        _mainmap1.GetProjectile(id).tile.id = id;
+                        _mainmap1.GetProjectile(id).tile.NextTile(false);
+                    }
+                    else
+                    {
+                        _mainmap1.GetProjectile(((ProjectileTile)data[0]).id).moveTo((Coords)data[1]);
+                    }
+                    break;
+                case Events.FinishedProjectileMove:
+                    ((ProjectileTile)data[0]).NextTile(true);
+                    break;
                 case Events.MoveActor:
                     {
                         int id = (int)data[0];
                         Direction dir = (Direction)data[1];
 
-                        if (!_mainmap1.IsMoving(id)||(data.Length>2))
+                        if (!_mainmap1.IsMoving(id) || (data.Length > 2))
                         {
                             if (((FloorTile)_map1.actors[id].tile.parent).hasTrap)
                             {
@@ -350,7 +413,7 @@ namespace Gruppe22
                         {
                             if (data.Length < 3)
                             {
-                              //  _mainmap1.actors[0].cacheDir = dir;
+                                //  _mainmap1.actors[0].cacheDir = dir;
                             }
                         }
                     }
@@ -358,7 +421,6 @@ namespace Gruppe22
             }
             base.HandleEvent(DownStream, eventID, data);
         }
-
 
     }
 }

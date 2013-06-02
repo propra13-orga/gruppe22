@@ -8,7 +8,137 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Gruppe22
 {
+    public class Projectile
+    {
+        private uint _id = 0;
+        private Coords _current;
+        private Coords _target;
+        private ProjectileTile _tile;
+        private Direction _dir;
+        public uint _elapsed = 0;
+        public bool _nomove = false;
+        public IHandleEvent _parent;
 
+        public uint id
+        {
+            get
+            {
+                return _id;
+            }
+            set
+            {
+                _id = value;
+            }
+        }
+        public ProjectileTile tile
+        {
+            get
+            {
+                return _tile;
+            }
+            set
+            {
+                _tile = tile;
+            }
+        }
+
+        public void moveTo(Coords coord)
+        {
+            _target = Mainmap._map2screen(coord);
+        }
+
+        public void Draw()
+        {
+
+        }
+        public void Update(GameTime gametime)
+        {
+            _elapsed += (uint)gametime.ElapsedGameTime.Milliseconds;
+
+            if (_target != _current)
+            {
+                if (_elapsed > 10)
+                {
+
+                    if (!_nomove)
+                    {
+                        _nomove = true;
+                    }
+                    else
+                    {
+                        _nomove = false;
+                    }
+
+                    _elapsed -= 10;
+                    System.Diagnostics.Debug.WriteLine(_current + " " + _target);
+                    if (_target.x > _current.x)
+                    {
+                        //   if (_id == 0) System.Diagnostics.Debug.Write(_xpertick.ToString());
+
+                        _current.x += 4;
+
+                    }
+                    else
+                    {
+                        if (_target.x < _current.x)
+                        {
+                            //     if (_id == 0) System.Diagnostics.Debug.Write(-_xpertick);
+
+                            _current.x -= 4;
+
+                        }
+                        //else
+                        //     if (_id == 0) System.Diagnostics.Debug.Write("0");
+                    }
+
+
+
+                    if (_target.y > _current.y)
+                    {
+                        //   if (_id == 0) System.Diagnostics.Debug.WriteLine("/" + _ypertick.ToString());
+                        _current.y += 3;
+                    }
+                    else
+                        if (_target.y < _current.y)
+                        {
+                            // if (_id == 0) System.Diagnostics.Debug.WriteLine("/-" + _ypertick.ToString());
+
+                            _current.y -= 3;
+                        }
+                        else
+                        {
+                            //  if (_id == 0) System.Diagnostics.Debug.WriteLine("/0");
+                        }
+
+                    if (_target == _current)
+                    {
+                        //                            _position = _target;
+                        //                          _target = _cacheTarget;
+                        _parent.HandleEvent(false, Events.FinishedProjectileMove, _tile, Mainmap._pos2Tile(_current.vector));
+
+
+
+                    }
+                }
+            }
+        }
+
+        public void Draw(SpriteBatch _spriteBatch, TileObject animation)
+        {
+            _spriteBatch.Draw(animation.animationTexture, new Rectangle(_current.x + 16, _current.y + 16, 64, 48), animation.animationRect, Color.White);
+        }
+
+        public Projectile(uint id, IHandleEvent parent, Coords current, Direction dir, ProjectileTile tile)
+        {
+            _dir = dir;
+            _id = id;
+            _tile = tile;
+            _current = Mainmap._map2screen(current);
+            _target = Mainmap._map2screen(current);
+            System.Diagnostics.Debug.WriteLine("Start at" + _current);
+            _parent = parent;
+        }
+    }
     public class FloatNumber
     {
         Vector2 _pos;
@@ -91,6 +221,10 @@ namespace Gruppe22
         /// Textures used under and on the map
         /// </summary>
         private List<TileSet> _environment;
+        private List<Projectile> _projectiles;
+        private uint _maxProjectile;
+        private Object _mylock = new Object();
+        private uint _fireCount = 0;
         /// <summary>
         /// List of actors on the map
         /// </summary>
@@ -237,6 +371,10 @@ namespace Gruppe22
                 _spriteBatch.GraphicsDevice.ScissorRectangle = new Rectangle(_displayRect.Left + 5, _displayRect.Top + 5, _displayRect.Width - 10, _displayRect.Height - 10);
 
                 _drawFloor(); // Draw the floow
+                for (int i = 0; i < _projectiles.Count; ++i)
+                {
+                    _projectiles[i].Draw(_spriteBatch, _environment[1][7]);
+                }
                 _drawWalls(gametime); // Draw walls, other objects, player and enemies
 
                 _spriteBatch.End();
@@ -731,7 +869,7 @@ namespace Gruppe22
         /// <param name="coords"></param>
         /// <param name="tall"></param>
         /// <returns></returns>
-        private static Coords _screen2map(Coords screenC, bool tall = false)
+        public static Coords _screen2map(Coords screenC, bool tall = false)
         {
             // TODO: This does not work perfectly yet. Check the formula!
             screenC.x -= 32;
@@ -791,7 +929,7 @@ namespace Gruppe22
                         Coords apos = _screen2map((int)actor.position.x, (int)actor.position.y);
                         if (((int)apos.x == x) && ((int)apos.y == y))
                         {
-                            _spriteBatch.Draw(actor.animationTexture, new Vector2((float)(actor.position.x + actor.offsetX + 25), (float)(actor.position.y + actor.offsetY - 25)), actor.animationRect, ((_map.actors[actor.id].tile.coords.y == (int)_highlightedTile.y) && (_map.actors[actor.id].tile.coords.x == (int)_highlightedTile.x)) ? Color.Red : Color.White);
+                            _spriteBatch.Draw(actor.animationTexture, new Vector2((float)(actor.position.x + actor.offsetX + 25), (float)(actor.position.y + actor.offsetY - 25)), actor.animationRect, ((_map.actors[actor.id].tile.coords.y == (int)_highlightedTile.y) && (_map.actors[actor.id].tile.coords.x == (int)_highlightedTile.x) && !(_map.actors[actor.id] is Player)) ? Color.Red : Color.White);
                         }
                     }
                 }
@@ -851,7 +989,7 @@ namespace Gruppe22
                             }
                         }
                     }
-                    if (_map[x, y].hasCheckpoint) // TODO: Checkpoint textur laden, michael ich kann das nicht, kannst du das kurz machen, das ist ja eine kleinigkeit ;)
+                    if ((_map[x, y].hasCheckpoint) && (!_map[x, y].checkpoint.visited))
                     {
                         _spriteBatch.Draw(_environment[3][0].animationTexture, new Rectangle(_map2screen(x, y).x + 32, _map2screen(x, y).y + 16, 64, 48), _environment[3][0].animationRect, ((y == (int)_highlightedTile.y) && (x == (int)_highlightedTile.x)) ? Color.Red : Color.White);
                     }
@@ -911,7 +1049,11 @@ namespace Gruppe22
 
         public void resetActors()
         {
+
             if (_floatnumbers != null) _floatnumbers.Clear();
+            if (_projectiles != null) _projectiles.Clear();
+            _maxProjectile = 0;
+
             _actors.Clear();
             for (int count = 0; count < _map.actorPositions.Count; ++count)
             {
@@ -932,8 +1074,14 @@ namespace Gruppe22
         /// <param name="gameTime"></param>
         public override void Update(GameTime gameTime)
         {
+
             if (_enabled)
             {
+                if (_fireCount > 0) _fireCount -= Math.Min((uint)gameTime.ElapsedGameTime.Milliseconds, _fireCount);
+                for (int i = 0; i < _projectiles.Count; ++i)
+                {
+                    _projectiles[i].Update(gameTime);
+                }
                 for (int i = 0; i < _floatnumbers.Count; ++i)
                 {
                     if (_floatnumbers[i].Update(gameTime))
@@ -950,8 +1098,15 @@ namespace Gruppe22
                     {
                         if (!_actors[_playerID].isMoving)
                         {
-
                             MovePlayer(Map.WhichWayIs(_highlightedTile, _map.actors[_playerID].tile.coords));
+                        }
+                    }
+
+                    if (Mouse.GetState().RightButton == ButtonState.Pressed)
+                    {
+                        if (!_actors[_playerID].isMoving)
+                        {
+                            FireProjectile();
                         }
                     }
                 }
@@ -967,6 +1122,50 @@ namespace Gruppe22
                 }
                 // }
             }
+        }
+
+        public uint AddProjectile(Coords coords, Direction dir, ProjectileTile tile)
+        {
+            uint id = 0;
+            lock (_mylock)
+            {
+                id = _maxProjectile;
+                _maxProjectile += 1;
+            }
+            System.Diagnostics.Debug.WriteLine("Added at " + coords);
+            _projectiles.Add(new Projectile(id, this, coords, dir, tile));
+            return id;
+        }
+        public void RemoveProjectile(uint id)
+        {
+            _projectiles.Remove(GetProjectile(id));
+        }
+
+        public Projectile GetProjectile(uint id)
+        {
+            lock (_mylock)
+            {
+                for (int i = 0; i < _projectiles.Count; ++i)
+                {
+                    if (_projectiles[i].id == id)
+                    {
+                        return _projectiles[i];
+                    }
+                }
+            }
+            return null;
+        }
+
+        public void FireProjectile()
+        {
+            if ((!_actors[_playerID].isMoving) && (_fireCount == 0))
+            {
+                System.Diagnostics.Debug.WriteLine("Add to " + _map.actors[_playerID].tile.coords);
+
+                _parent.HandleEvent(false, Events.MoveProjectile, null, _map.actors[_playerID].tile.parent, _actors[_playerID].direction);
+                _fireCount = 800;
+            }
+
         }
 
         /// <summary>
@@ -985,7 +1184,8 @@ namespace Gruppe22
         /// <param name="dir">Direction to move to</param>
         public void MovePlayer(Direction dir)
         {
-            _parent.HandleEvent(false, Events.MoveActor, 0, dir);
+            if (!_actors[_playerID].isMoving)
+                _parent.HandleEvent(false, Events.MoveActor, 0, dir);
         }
 
 
@@ -1238,6 +1438,7 @@ namespace Gruppe22
 
             resetActors();
             _floatnumbers = new List<FloatNumber>();
+            _projectiles = new List<Projectile>();
             _enabled = enabled;
         }
         #endregion

@@ -76,7 +76,13 @@ namespace Gruppe22
         #endregion
 
         #region Public Fields
-
+        public List<Coords> updateTiles
+        {
+            get
+            {
+                return _updateTiles;
+            }
+        }
         public int currRoomNbr
         {
             get
@@ -444,8 +450,8 @@ namespace Gruppe22
 
         public Coords GetCheckpointCoords()
         {
-            foreach(List<FloorTile> ltiles in _tiles)
-                foreach(FloorTile tile in ltiles)
+            foreach (List<FloorTile> ltiles in _tiles)
+                foreach (FloorTile tile in ltiles)
                 {
                     if (tile.hasCheckpoint)
                         return tile.coords;
@@ -536,7 +542,14 @@ namespace Gruppe22
         public virtual void HandleEvent(bool DownStream, Events eventID, params object[] data)
         {
             if (!DownStream)
-                ((IHandleEvent)_parent).HandleEvent(false, eventID, data);
+            {
+                switch (eventID)
+                {
+                    default:
+                        ((IHandleEvent)_parent).HandleEvent(false, eventID, data);
+                        break;
+                }
+            }
         }
 
         /// <summary>
@@ -544,7 +557,7 @@ namespace Gruppe22
         /// </summary>
         /// <param name="filename">The filename to read from</param>
         /// <param name="player">The starting position on the loaded map</param>
-        public void Load(string filename, Coords player)
+        public void Load(string filename, Coords player = null)
         {
             Regex re = new Regex(@"\d+");
             Match m = re.Match(filename);
@@ -616,9 +629,10 @@ namespace Gruppe22
                                 switch (xmlr.Name)
                                 {
                                     case "WallTile":
-                                        tile.Add(TileType.Wall);
+                                        tile.Add(new WallTile(this));
                                         break;
-
+                                    case "ProjectileTile":
+                                        break;
                                     case "ItemTile":
                                         Item item = new Item(_content);
                                         xmlr.Read();
@@ -670,8 +684,16 @@ namespace Gruppe22
                                         tile.Add(new TeleportTile(tile, xmlr.GetAttribute("nextRoom"), new Coords(Int32.Parse(xmlr.GetAttribute("nextX")), Int32.Parse(xmlr.GetAttribute("nextY")))));
                                         break;
                                     case "CheckpointTile":
-                                        tile.Add(new CheckpointTile(tile));
+                                        int bonusLifes = 0;
+                                        bool visited = false;
+
+                                        if (xmlr.GetAttribute("bonuslife") != null)
+                                            bonusLifes = Convert.ToInt32(xmlr.GetAttribute("bonuslife"));
+                                        if (xmlr.GetAttribute("visited") != null)
+                                            visited = Convert.ToBoolean(xmlr.GetAttribute("visited"));
+                                        tile.Add(new CheckpointTile(tile, visited, bonusLifes));
                                         break;
+
                                     case "ActorTile":
                                         Actor actor;
                                         xmlr.Read();

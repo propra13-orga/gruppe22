@@ -128,7 +128,7 @@
     <Compile Include="Frontend\UI\CheckBox.cs" />
     <Compile Include="Frontend\UI\Dialog.cs" />
     <Compile Include="Frontend\UI\FileDialog.cs" />
-    <Compile Include="Frontend\UI\GameLogic.cs" />
+    <Compile Include="Backend\GameLogic.cs" />
     <Compile Include="Frontend\UI\GameWin.cs" />
     <Compile Include="Frontend\UI\Grid.cs" />
     <Compile Include="Frontend\UI\Inventory.cs" />
