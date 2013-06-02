@@ -851,6 +851,10 @@ namespace Gruppe22
                             }
                         }
                     }
+                    if (_map[x, y].hasCheckpoint) // TODO: Checkpoint textur laden, michael ich kann das nicht, kannst du das kurz machen, das ist ja eine kleinigkeit ;)
+                    {
+                        _spriteBatch.Draw(_environment[3][0].animationTexture, new Rectangle(_map2screen(x, y).x + 32, _map2screen(x, y).y + 16, 64, 48), _environment[3][0].animationRect, ((y == (int)_highlightedTile.y) && (x == (int)_highlightedTile.x)) ? Color.Red : Color.White);
+                    }
                     if (_map[x, y].hasTarget)
                     {
                         _spriteBatch.Draw(_environment[3][0].animationTexture, new Rectangle(_map2screen(x, y).x + 32, _map2screen(x, y).y + 16, 64, 48), _environment[3][0].animationRect, ((y == (int)_highlightedTile.y) && (x == (int)_highlightedTile.x)) ? Color.Red : Color.White);
