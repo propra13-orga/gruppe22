@@ -230,7 +230,8 @@ namespace Gruppe22
                         //Checkpoint - save by Enter
                         if (_map1[target.x, target.y].hasCheckpoint)
                         {
-                            //TODO: Save here
+                            _map1.Save("checkpoint" + _map1.currRoomNbr + ".xml");
+                            AddMessage("Checkpoint");
                         }
 
                         // Trigger floor switches
