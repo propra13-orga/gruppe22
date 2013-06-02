@@ -24,7 +24,7 @@ namespace Gruppe22
         private string _name = "";
         private string _animationFile = "";
         private List<Item> _inventory = null;
-        private int _deadcounter = 0;
+        //private int _deadcounter = 0;
         private int _mana = 0;
         private int _evade = 0;
         private int _block = 0;
@@ -57,11 +57,11 @@ namespace Gruppe22
         #endregion
 
         #region Public Fields
-        public int deadcounter
+/*        public int deadcounter
         {
             get { return _deadcounter; }
             set { _deadcounter = value; }
-        }
+        }*/
 
         public bool locked
         {

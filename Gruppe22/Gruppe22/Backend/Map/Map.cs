@@ -442,6 +442,17 @@ namespace Gruppe22
             return;
         }
 
+        public Coords GetCheckpointCoords()
+        {
+            foreach(List<FloorTile> ltiles in _tiles)
+                foreach(FloorTile tile in ltiles)
+                {
+                    if (tile.hasCheckpoint)
+                        return tile.coords;
+                }
+            return null;
+        }
+
         public FloorTile TileByCoords(Coords coords)
         {
             return this[coords.x, coords.y];

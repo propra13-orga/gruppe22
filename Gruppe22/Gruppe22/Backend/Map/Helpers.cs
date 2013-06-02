@@ -44,7 +44,8 @@ namespace Gruppe22
         TileEntered,
         Attack,
         TrapActivate,
-        RequestFocus
+        RequestFocus,
+        LoadFromCheckPoint
     }
 
     public enum GameStatus

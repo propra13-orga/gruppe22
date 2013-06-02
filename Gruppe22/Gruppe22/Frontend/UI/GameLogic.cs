@@ -153,6 +153,13 @@ namespace Gruppe22
 
             switch (eventID)
             {
+                case Events.LoadFromCheckPoint:
+                    _status = GameStatus.NoRedraw;
+                    _map1.Load((string)data[0], (Coords)data[1]);
+                    _mainmap1.resetActors();
+                    _mainmap2.resetActors();
+                    _status = GameStatus.Running;
+                    break;
                 case Events.ChangeMap: // Load another map
                     _status = GameStatus.NoRedraw; // prevent redraw (which would crash the game!)
                     _map1.Save("savedroom" + _map1.currRoomNbr + ".xml");
@@ -162,7 +169,7 @@ namespace Gruppe22
                         _map1.Load((string)data[0], (Coords)data[1]);
                     _mainmap1.resetActors();
                     _mainmap2.resetActors();
-
+                    
                     AddMessage("You entered room number " + data[0].ToString().Substring(4, 1) + ".");
                     File.WriteAllText("GameData", data[0].ToString());
                     _status = GameStatus.Running;
@@ -230,9 +237,10 @@ namespace Gruppe22
                         //Checkpoint - save by Enter
                         if (_map1[target.x, target.y].hasCheckpoint)
                         {
-                            if(!File.Exists("checkpoint" + _map1.currRoomNbr + ".xml"))
-                                _playerStats.actor.deadcounter = 3;
+                            if (!File.Exists("checkpoint" + _map1.currRoomNbr + ".xml"))
+                                _deadcounter = 3;
                             _map1.Save("checkpoint" + _map1.currRoomNbr + ".xml");
+                            _mainmap1.floatNumber(target, "Checkpoint", Color.DarkOliveGreen);
                             AddMessage("Checkpoint");
                         }
 

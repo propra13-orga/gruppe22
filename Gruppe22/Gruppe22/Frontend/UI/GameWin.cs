@@ -29,6 +29,11 @@ namespace Gruppe22
         protected SpriteBatch _spriteBatch = null;
 
         /// <summary>
+        /// Count deads of player to load checkpoint or show gameover
+        /// </summary>
+        protected int _deadcounter = 3;
+
+        /// <summary>
         /// Current mousewheel position (used to calculate changes)
         /// </summary>
         protected int _mouseWheel = 0;
@@ -524,21 +529,30 @@ namespace Gruppe22
         /// <param name="title"></param>
         public void ShowEndGame(string message = "You have failed in your mission. Better luck next time.", string title = "Game over!")
         {
-            //TODO: load checkpoint if exist
-            _status = GameStatus.Paused;
-            Window _gameOver = new Window(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width) / 2.0f) - 300, (int)(GraphicsDevice.Viewport.Height / 2.0f) - 100, 600, 200));
-            Statusbox stat = new Statusbox(_gameOver, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width) / 2.0f) - 300 + 10, (int)(GraphicsDevice.Viewport.Height / 2.0f) - 70, 590, 110), false, true);
-            stat.AddLine(title + "\n \n" + message);
-            _gameOver.AddChild(stat);
-            _gameOver.AddChild(new Button(_gameOver, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width) / 2.0f) - 300 + 10, (int)(GraphicsDevice.Viewport.Height / 2.0f) + 30, 160, 40), "New Maps", Events.NewMap));
-            _gameOver.AddChild(new Button(_gameOver, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width) / 2.0f) - 300 + 180, (int)(GraphicsDevice.Viewport.Height / 2.0f) + 30, 160, 40), "Restart", Events.ResetGame));
-            _gameOver.AddChild(new Button(_gameOver, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width) / 2.0f) - 300 + 600 - 170, (int)(GraphicsDevice.Viewport.Height / 2.0f) + 30, 160, 40), "Quit", Events.EndGame));
+            bool sew = false;
+            if (_deadcounter > 0)
+            {
+                _deadcounter--;
+                string checkpointloadfile = "checkpoint" + _map1.currRoomNbr + ".xml";
+                if (File.Exists(checkpointloadfile))
+                    HandleEvent(true, Events.LoadFromCheckPoint, checkpointloadfile, _map1.GetCheckpointCoords());
+                else sew = true;
+            }
+            if(sew)
+            {
+                _status = GameStatus.Paused;
+                Window _gameOver = new Window(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width) / 2.0f) - 300, (int)(GraphicsDevice.Viewport.Height / 2.0f) - 100, 600, 200));
+                Statusbox stat = new Statusbox(_gameOver, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width) / 2.0f) - 300 + 10, (int)(GraphicsDevice.Viewport.Height / 2.0f) - 70, 590, 110), false, true);
+                stat.AddLine(title + "\n \n" + message);
+                _gameOver.AddChild(stat);
+                _gameOver.AddChild(new Button(_gameOver, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width) / 2.0f) - 300 + 10, (int)(GraphicsDevice.Viewport.Height / 2.0f) + 30, 160, 40), "New Maps", Events.NewMap));
+                _gameOver.AddChild(new Button(_gameOver, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width) / 2.0f) - 300 + 180, (int)(GraphicsDevice.Viewport.Height / 2.0f) + 30, 160, 40), "Restart", Events.ResetGame));
+                _gameOver.AddChild(new Button(_gameOver, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width) / 2.0f) - 300 + 600 - 170, (int)(GraphicsDevice.Viewport.Height / 2.0f) + 30, 160, 40), "Quit", Events.EndGame));
+                //  _mainMenu.AddChild(new ProgressBar(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) + 80, 300, 30), ProgressStyle.Block,100,2));
 
-            //  _mainMenu.AddChild(new ProgressBar(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) + 80, 300, 30), ProgressStyle.Block,100,2));
-
-            _interfaceElements.Add(_gameOver);
-            _focus = _interfaceElements[_interfaceElements.Count - 1];
-
+                _interfaceElements.Add(_gameOver);
+                _focus = _interfaceElements[_interfaceElements.Count - 1];
+            }
         }
 
         /// <summary>
