@@ -687,7 +687,7 @@ namespace Gruppe22
                     _tiles[y].Add(new GeneratorTile(this, new Coords(x, y)));
                 }
             }
-            if (generate) //TODO: here add Checkpoint for each room
+            if (generate)
             {
                 ClearMaze(); // set up grid
                 GenerateMaze();
@@ -699,6 +699,7 @@ namespace Gruppe22
                 AddDoors(roomNr, maxRoom, exits);
                 AddEnemies();
                 AddItems();
+                AddCheckpoint();
                 if (roomNr == maxRoom) //maxRoom
                 {
                     AddTarget();
