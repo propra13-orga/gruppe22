@@ -658,6 +658,9 @@ namespace Gruppe22
                                     case "TeleportTile":
                                         tile.Add(new TeleportTile(tile, xmlr.GetAttribute("nextRoom"), new Coords(Int32.Parse(xmlr.GetAttribute("nextX")), Int32.Parse(xmlr.GetAttribute("nextY")))));
                                         break;
+                                    case "CheckpointTile":
+                                        tile.Add(new CheckpointTile(tile));
+                                        break;
                                     case "ActorTile":
                                         Actor actor;
                                         xmlr.Read();
