@@ -43,7 +43,8 @@ namespace Gruppe22
         FetchFile,
         TileEntered,
         Attack,
-        TrapActivate
+        TrapActivate,
+        RequestFocus
     }
 
     public enum GameStatus

@@ -17,30 +17,30 @@ namespace Gruppe22
         /// Called whenever a key was up and is now down
         /// </summary>
         /// <param name="k">The key which was pressed</param>
-        void OnKeyDown(Keys k);
+        bool OnKeyDown(Keys k);
 
         /// <summary>
         /// Called whenever a key was down and is now up 
         /// </summary>
         /// <param name="k">The key which was pressed</param>
-        void OnKeyUp(Keys k);
+        bool OnKeyUp(Keys k);
 
 
         /// <summary>
         /// Called when a mouse button changes from up to down
         /// </summary>
         /// <param name="button">Left Button=1, Middle Button=2, Right Button=3</param>
-        void OnMouseDown(int button);
+        bool OnMouseDown(int button);
 
         /// <summary>
         /// Called when a mouse button changes from down to up
         /// </summary>
         /// <param name="button">Left Button=1, Middle Button=2, Right Button=3</param>
-        void OnMouseUp(int button);
+        bool OnMouseUp(int button);
 
-        void OnMouseHeld(int button);
+        bool OnMouseHeld(int button);
 
-        void OnKeyHeld(Keys k);
+        bool OnKeyHeld(Keys k);
     }
 
     /// <summary>

@@ -193,6 +193,7 @@ namespace Gruppe22
             _interfaceElements.Add(_enemyStats);
             _inventory.Update();
             _playerStats.Update(null);
+            ShowCharacterWindow(_map1.actors[0]);
             if (_map1.actors[0].health < 1)
             {
                 ShowEndGame();
@@ -214,7 +215,7 @@ namespace Gruppe22
         #endregion
 
         #region Implementation of IKeyHandler-Interface
-        public void OnKeyDown(Keys k)
+        public bool OnKeyDown(Keys k)
         {
             switch (k)
             {
@@ -228,6 +229,7 @@ namespace Gruppe22
             {
                 element.OnKeyDown(k);
             }
+            return true;
         }
 
         private void HandleMovementKeys(Keys k)
@@ -261,40 +263,45 @@ namespace Gruppe22
             }
         }
 
-        public void OnKeyUp(Keys k)
+        public bool OnKeyUp(Keys k)
         {
+            return true;
         }
 
-        public void OnMouseDown(int button)
+        public bool OnMouseDown(int button)
         {
             for (int i = 0; i < _interfaceElements.Count; ++i)
             {
-                _interfaceElements[i].OnMouseDown(button);
+                if (_interfaceElements[i].OnMouseDown(button)) return true;
             }
+            return true;
         }
 
-        public void OnMouseUp(int button)
+        public bool OnMouseUp(int button)
         {
             foreach (UIElement element in _interfaceElements)
             {
-                element.OnMouseUp(button);
+                if(element.OnMouseUp(button)) return true;
             }
+            return true;
         }
 
-        public void OnMouseHeld(int button)
+        public bool OnMouseHeld(int button)
         {
             foreach (UIElement element in _interfaceElements)
             {
-                element.OnMouseHeld(button);
+                if(element.OnMouseHeld(button)) return true;
             }
+            return true;
         }
 
-        public void OnKeyHeld(Keys k)
+        public bool OnKeyHeld(Keys k)
         {
             foreach (UIElement element in _interfaceElements)
             {
-                element.OnKeyHeld(k);
+                if (element.OnKeyHeld(k)) return true ;
             }
+            return true;
         }
         #endregion
 
@@ -498,6 +505,14 @@ namespace Gruppe22
             //  _mainMenu.AddChild(new ProgressBar(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) + 80, 300, 30), ProgressStyle.Block,100,2));
 
             _interfaceElements.Add(_mainMenu);
+            _focus = _interfaceElements[_interfaceElements.Count - 1];
+        }
+
+        public void ShowCharacterWindow(Actor actor)
+        {
+            _status = GameStatus.Paused;
+            CharacterWindow c = new CharacterWindow(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 250) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) - 240, 500, 480), actor);
+            _interfaceElements.Add(c);
             _focus = _interfaceElements[_interfaceElements.Count - 1];
         }
 

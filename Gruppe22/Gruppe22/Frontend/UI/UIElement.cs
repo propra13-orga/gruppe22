@@ -43,28 +43,35 @@ namespace Gruppe22
         #endregion
 
         #region Implementation of IKeyHandler-Interface
-        public virtual void OnKeyDown(Keys k)
+        public virtual bool OnKeyDown(Keys k)
         {
+            return false;
         }
 
-        public virtual void OnKeyUp(Keys k)
+        public virtual bool OnKeyUp(Keys k)
         {
+            return false;
         }
 
-        public virtual void OnMouseDown(int button)
+        public virtual bool OnMouseDown(int button)
         {
+            if (canFocus && !_focus) _parent.HandleEvent(false, Events.RequestFocus, this);
+            return false;
         }
 
-        public virtual void OnMouseUp(int button)
+        public virtual bool OnMouseUp(int button)
         {
+            return false;
         }
 
-        public virtual void OnMouseHeld(int button)
+        public virtual bool OnMouseHeld(int button)
         {
+            return false;
         }
 
-        public virtual void OnKeyHeld(Keys k)
+        public virtual bool OnKeyHeld(Keys k)
         {
+            return false;
         }
         #endregion
         #region Public Fields
@@ -82,6 +89,26 @@ namespace Gruppe22
         public virtual bool holdFocus
         {
             get { return false; }
+        }
+
+        public bool focus
+        {
+            get
+            {
+                return _focus;
+            }
+            set
+            {
+                _focus = value;
+            }
+        }
+
+        public bool canFocus
+        {
+            get
+            {
+                return true;
+            }
         }
         #endregion
 

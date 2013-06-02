@@ -66,38 +66,45 @@ namespace Gruppe22
             base.ScrollWheel(Difference);
         }
 
-        public override void OnKeyDown(Keys k)
+        public override bool OnKeyDown(Keys k)
         {
-            DoZoom(k);
+            return DoZoom(k);
         }
 
-        public override void OnKeyHeld(Keys k)
+        public override bool OnKeyHeld(Keys k)
         {
-            DoZoom(k);
+            return DoZoom(k);
         }
-        public void DoZoom(Keys k)
+        public bool DoZoom(Keys k)
         {
             switch(k){
                 case Keys.PageUp:
                 Zoom += (float)0.1;
+                return true;
                 break;
 
             case Keys.PageDown:
                 Zoom -= (float)0.1;
+                return true;
                 break;
             case Keys.Right:
                 Move(new Vector2(-1, 0));
+                return true;
                 break;
             case Keys.Left:
                 Move(new Vector2(1, 0));
+                return true;
                 break;
             case Keys.Down:
                 Move(new Vector2(0, -1));
+                return true;
                 break;
             case Keys.Up:
                 Move(new Vector2(0, 1));
+                return true;
                 break;
             }
+            return false;
         }
         /// <summary>
         /// Move the camera by a specified number of pixels (pass through to camera)

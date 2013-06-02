@@ -20,7 +20,8 @@ namespace Gruppe22
         /// <summary>
         /// UI-Children
         /// </summary>
-        private List<UIElement> _children;
+        protected List<UIElement> _children;
+        protected int _focusID = 0;
         #endregion
 
         #region Public Fields
@@ -58,12 +59,39 @@ namespace Gruppe22
             }
         }
 
-        public override void OnMouseDown(int button)
+        public override bool OnKeyDown(Keys k)
+        {
+            switch (k)
+            {
+                case Keys.Tab:
+                    if ((Keyboard.GetState().IsKeyDown(Keys.LeftShift)) || (Keyboard.GetState().IsKeyDown(Keys.RightShift)))
+                    {
+                        ChangeFocus(false);
+                    }
+                    else
+                    {
+                        ChangeFocus(true);
+                    }
+                    break;
+                case Keys.Left:
+                case Keys.Up:
+                    ChangeFocus(false);
+                    break;
+                case Keys.Down:
+                case Keys.Right:
+                    ChangeFocus(true);
+                    break;
+            }
+            return true;
+        }
+
+        public override bool OnMouseDown(int button)
         {
             for (int i = 0; i < _children.Count; ++i)
             {
-                _children[i].OnMouseDown(button);
+                if (_children[i].OnMouseDown(button)) return true;
             }
+            return true;
         }
         public void AddChild(UIElement child)
         {
@@ -90,6 +118,37 @@ namespace Gruppe22
             }
         }
 
+        public void ChangeFocus(bool forward = true)
+        {
+            if (_children.Count > _focusID)
+            {
+                _children[_focusID].focus = false;
+                int current = _focusID;
+                for (int count = 0; count < _children.Count; ++count)
+                {
+                    if (forward)
+                    {
+                        current += 1;
+                    }
+                    else
+                    {
+                        current -= 1;
+                    }
+                    if (current == _children.Count)
+                        current = 0;
+                    if (current < 0)
+                    {
+                        current = _children.Count - 1;
+                    }
+                    if (_children[current].canFocus)
+                    {
+                        _children[current].focus = true;
+                        _focusID = current;
+                        return;
+                    }
+                }
+            }
+        }
 
         public override void Dispose()
         {
@@ -109,6 +168,15 @@ namespace Gruppe22
             }
             else
             {
+                if (eventID == Events.RequestFocus)
+                {
+                    _children[_focusID].focus = false;
+                    ((UIElement)data[0]).focus = true;
+                    for (int i = 0; i < _children.Count; ++i)
+                    {
+                        if (_children[i] == data[0]) { _focusID = i; break; }
+                    }
+                }
                 _parent.HandleEvent(false, eventID, data);
             }
         }

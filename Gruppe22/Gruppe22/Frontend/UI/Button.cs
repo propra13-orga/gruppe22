@@ -86,17 +86,30 @@ namespace Gruppe22
         /// 
         /// </summary>
         /// <param name="gameTime"></param>
-        public override void OnMouseDown(int button)
+        public override bool OnMouseDown(int button)
         {
             if (IsHit(Mouse.GetState().X, Mouse.GetState().Y))
             {
                 _parent.HandleEvent(false, _id, 0);
+                return true;
             }
+            return false;
         }
+        public override bool OnKeyDown(Keys k)
+        {
+            if (_focus && ((k == Keys.Space) || (k == Keys.Enter)))
+            {
+                _parent.HandleEvent(false, _id, 0);
+                return true;
+            }
+            return false;
+        }
+
 
         public override void HandleEvent(bool downstream, Events eventID, params object[] data)
         {
-            if ((eventID == Events.ToggleButton) && ((Events)data[0] == _id)) {
+            if ((eventID == Events.ToggleButton) && ((Events)data[0] == _id))
+            {
                 stayDown = (bool)data[1];
             }
         }
@@ -142,12 +155,12 @@ namespace Gruppe22
                     case ButtonStatus.mouseon:
                     case ButtonStatus.downon:
                         _spriteBatch.Draw(_background, _displayRect, new Rectangle(39, 6, 1, 1), Color.Black);
-                        _spriteBatch.Draw(_background, new Rectangle(_displayRect.X + 1, _displayRect.Y + 1, _displayRect.Width - 2, _displayRect.Height - 2), new Rectangle(39, 6, 1, 1), Color.White);
-                        _spriteBatch.DrawString(_font, _label, new Vector2(_displayRect.Left + (_displayRect.Width - _textPos.X) / 2, _displayRect.Top + (_displayRect.Height - _textPos.Y) / 2), Color.Black);
+                        _spriteBatch.Draw(_background, new Rectangle(_displayRect.X + 1, _displayRect.Y + 1, _displayRect.Width - 2, _displayRect.Height - 2), new Rectangle(39, 6, 1, 1), _focus ? Color.Blue : Color.White);
+                        _spriteBatch.DrawString(_font, _label, new Vector2(_displayRect.Left + (_displayRect.Width - _textPos.X) / 2, _displayRect.Top + (_displayRect.Height - _textPos.Y) / 2),  Color.Black);
                         break;
                     default:
-                        _spriteBatch.Draw(_background, _displayRect, new Rectangle(39, 6, 1, 1), Color.White);
-                        _spriteBatch.Draw(_background, new Rectangle(_displayRect.X + 1, _displayRect.Y + 1, _displayRect.Width - 2, _displayRect.Height - 2), new Rectangle(39, 6, 1, 1), Color.Black);
+                        _spriteBatch.Draw(_background, _displayRect, new Rectangle(39, 6, 1, 1), _focus ? Color.Blue : Color.White);
+                        _spriteBatch.Draw(_background, new Rectangle(_displayRect.X + 1, _displayRect.Y + 1, _displayRect.Width - 2, _displayRect.Height - 2), new Rectangle(39, 6, 1, 1), _focus ? Color.DarkBlue : Color.Black);
                         _spriteBatch.DrawString(_font, _label, new Vector2(_displayRect.Left + (_displayRect.Width - _textPos.X) / 2, _displayRect.Top + (_displayRect.Height - _textPos.Y) / 2), Color.White);
                         break;
                 }

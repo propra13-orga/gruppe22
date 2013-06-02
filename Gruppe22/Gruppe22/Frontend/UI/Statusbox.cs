@@ -126,7 +126,7 @@ namespace Gruppe22
         }
 
 
-        public override  void OnMouseDown(int button)
+        public override  bool OnMouseDown(int button)
         {
             if ((new Rectangle(_displayRect.Right - 35, _displayRect.Top + 5, 28, 28).Contains(Mouse.GetState().X, Mouse.GetState().Y)) && (_startPos > 0))
             {
@@ -136,6 +136,7 @@ namespace Gruppe22
             {
                 _startPos += 1;
             }
+            return true;
         }
 
 
@@ -168,7 +169,7 @@ namespace Gruppe22
         /// <summary>
         /// 
         /// </summary>
-        public override void OnKeyDown(Keys k)
+        public override bool OnKeyDown(Keys k)
         {
             int temp = _startPos;
 
@@ -229,6 +230,7 @@ namespace Gruppe22
             if (temp < 0) temp = 0;
             if (temp > _text.Count - 1) temp = _text.Count - 1;
             _startPos = temp;
+            return true;
         }
         #endregion
 

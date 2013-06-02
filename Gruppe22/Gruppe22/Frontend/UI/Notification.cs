@@ -87,10 +87,11 @@ namespace Gruppe22
         /// <param name="X"></param>
         /// <param name="Y"></param>
         /// <param name="_lastCheck"></param>
-        public override void OnMouseDown(int button)
+        public override bool OnMouseDown(int button)
         {
             if (_displayRect.Contains(Mouse.GetState().X, Mouse.GetState().Y))
                 _vTarget = 1.0f;
+            return true;
         }
 
         /// <summary>

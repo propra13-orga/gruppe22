@@ -38,7 +38,7 @@ namespace Gruppe22
             }
         }
 
-        public override void OnMouseDown(int button)
+        public override bool OnMouseDown(int button)
         {
             int i = Pos2Tile(Mouse.GetState().X, Mouse.GetState().Y);
             if ((i > -1) && (i < _actor.inventory.Count))
@@ -58,7 +58,9 @@ namespace Gruppe22
                         _parent.HandleEvent(false, Events.ShowMessage, "You removed " + _actor.inventory[i].name);
                 }
                 Update();
+                return true;
             }
+            return false;
         }
         #endregion
 

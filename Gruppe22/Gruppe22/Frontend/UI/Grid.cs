@@ -299,9 +299,9 @@ namespace Gruppe22
             base.Draw(gameTime);
         }
 
-        public override void OnMouseDown(int button)
+        public override bool OnMouseDown(int button)
         {
-
+            return false;
         }
 
 
