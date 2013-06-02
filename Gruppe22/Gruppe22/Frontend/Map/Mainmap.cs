@@ -30,6 +30,14 @@ namespace Gruppe22
                 _id = value;
             }
         }
+
+        public int direction
+        {
+            get
+            {
+                return (int)_dir;
+            }
+        }
         public ProjectileTile tile
         {
             get
@@ -373,7 +381,7 @@ namespace Gruppe22
                 _drawFloor(); // Draw the floow
                 for (int i = 0; i < _projectiles.Count; ++i)
                 {
-                    _projectiles[i].Draw(_spriteBatch, _environment[1][7]);
+                    _projectiles[i].Draw(_spriteBatch, _environment[5][(int)_projectiles[i].direction]);
                 }
                 _drawWalls(gametime); // Draw walls, other objects, player and enemies
 
@@ -1432,7 +1440,24 @@ namespace Gruppe22
 
             _environment[4].Save("Content\\chest.xml");
             _environment[4].Load("Content\\chest.xml");
+            _environment.Add(new TileSet(_content, 32, 64));
+            _environment[5].Add("Arrow", (int)Direction.Up, new Rectangle(0, 0, 32, 64));
+            _environment[5].Add("Arrow", (int)Direction.Left, new Rectangle(32, 0, 32, 64));
+            _environment[5].Add("Arrow", (int)Direction.Right, new Rectangle(64, 0, 32, 64));
+            _environment[5].Add("Arrow", (int)Direction.Down, new Rectangle(96, 0, 32, 64));
+            _environment[5].Add("Arrow", (int)Direction.UpLeft, new Rectangle(0, 64, 32, 64));
+            _environment[5].Add("Arrow", (int)Direction.DownRight, new Rectangle(32, 64, 32, 64));
+            _environment[5].Add("Arrow", (int)Direction.DownLeft, new Rectangle(64, 64, 32, 64));
+            _environment[5].Add("Arrow", (int)Direction.UpRight, new Rectangle(96, 64, 32, 64));
 
+            _environment[5].Save("Content\\Arrow.xml");
+            _environment[5].Load("Content\\Arrow.xml");
+            _environment.Add(new TileSet(_content, 64, 64));
+
+            _environment[6].Add("sparks", (int)Direction.Up, new Rectangle(0, 192, 64, 64), 1, 4);
+            _environment[6].Save("Content\\explosion.xml");
+            _environment[6].Load("Content\\explosion.xml");
+            _environment.Add(new TileSet(_content, 55, 55));
             // 3. Moving entities (player, NPCs, enemies)
             _actors = new List<ActorView>();
 
