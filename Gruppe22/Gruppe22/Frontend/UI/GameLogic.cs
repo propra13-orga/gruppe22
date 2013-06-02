@@ -230,6 +230,8 @@ namespace Gruppe22
                         //Checkpoint - save by Enter
                         if (_map1[target.x, target.y].hasCheckpoint)
                         {
+                            if(!File.Exists("checkpoint" + _map1.currRoomNbr + ".xml")
+                                _playerStats.actor.deadcounter = 3;
                             _map1.Save("checkpoint" + _map1.currRoomNbr + ".xml");
                             AddMessage("Checkpoint");
                         }
