@@ -173,6 +173,7 @@
     <Content Include="Content\blood.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\blood.png" />
     <Content Include="Content\floor1.xml">
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -183,6 +184,7 @@
     <Content Include="Content\zombie.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Content\zombie.png" />
     <Content Include="enemynames.txt" />
     <Content Include="npcnames.txt" />
     <Content Include="playernames.txt" />

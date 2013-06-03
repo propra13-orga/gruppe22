@@ -41,7 +41,7 @@ namespace Gruppe22
             _graphics = new GraphicsDeviceManager(this);
             _graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height - 200;
             _graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
-
+            _graphics.SynchronizeWithVerticalRetrace = true;
             // Move window to top left corner of the screen
             Type type = typeof(OpenTKGameWindow);
             System.Reflection.FieldInfo field = type.GetField("window", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
