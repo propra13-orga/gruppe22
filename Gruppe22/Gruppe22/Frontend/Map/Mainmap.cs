@@ -1302,6 +1302,29 @@ namespace Gruppe22
 
 
             skel.Save("Content\\skeleton.xml");
+
+
+            ActorView luigi = new ActorView(_camera, this, 0, _content, Coords.Zero, "");
+            luigi.Add(Activity.Walk, Direction.DownRight, "luigi-walk", new Coords(0, 0), 8, 1);
+            luigi.Add(Activity.Walk, Direction.UpRight, "luigi-walk", new Coords(0, 96), 8, 1);
+            luigi.Add(Activity.Walk, Direction.Right, "luigi-walk", new Coords(0, 192), 8, 1);
+            luigi.Add(Activity.Walk, Direction.Up, "luigi-walk", new Coords(0, 288), 8, 1);
+            luigi.Add(Activity.Walk, Direction.DownLeft, "luigi-walk", new Coords(0, 384), 8, 1);
+            luigi.Add(Activity.Walk, Direction.Down, "luigi-walk", new Coords(0, 480), 8, 1);
+            luigi.Add(Activity.Walk, Direction.Left, "luigi-walk", new Coords(0, 576), 8, 1);
+            luigi.Add(Activity.Walk, Direction.UpLeft, "luigi-walk", new Coords(0, 672), 8, 1);
+
+            luigi.Add(Activity.Talk, Direction.DownRight, "luigi-talk", new Coords(0, 0), 8, 1);
+            luigi.Add(Activity.Talk, Direction.UpRight, "luigi-talk", new Coords(0, 96), 8, 1);
+            luigi.Add(Activity.Talk, Direction.Right, "luigi-talk", new Coords(0, 192), 8, 1);
+            luigi.Add(Activity.Talk, Direction.Up, "luigi-talk", new Coords(0, 288), 8, 1);
+            luigi.Add(Activity.Talk, Direction.DownLeft, "luigi-talk", new Coords(0, 384), 8, 1);
+            luigi.Add(Activity.Talk, Direction.Down, "luigi-talk", new Coords(0, 480), 8, 1);
+            luigi.Add(Activity.Talk, Direction.Left, "luigi-talk", new Coords(0, 576), 8, 1);
+            luigi.Add(Activity.Talk, Direction.UpLeft, "luigi-talk", new Coords(0, 672), 8, 1);
+
+
+            luigi.Save("Content\\luigi.xml");
             /*
             _tiles.Add("Wall1", WallDir.UpRight, new Rectangle(0, 768, 128, 192));
             _tiles.Add("Wall1", WallDir.UpLeft, new Rectangle(128, 768, 128, 192));

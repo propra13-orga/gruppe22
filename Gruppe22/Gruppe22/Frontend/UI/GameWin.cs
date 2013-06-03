@@ -203,7 +203,7 @@ namespace Gruppe22
                 ShowEndGame();
             }
             // ShowCharacterWindow(_map1.actors[0]);
-
+            // ShowShopWindow(_map1.actors[0], _map1.actors[1]);
             // _backMusic = Content.Load<Song>("Video Dungeon Crawl.wav"); // Todo: *.mp3
             // _font = Content.Load<SpriteFont>("Font");
             // MediaPlayer.Volume = (float)0.3;
@@ -527,6 +527,18 @@ namespace Gruppe22
             {
                 _status = GameStatus.Paused;
                 CharacterWindow c = new CharacterWindow(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 250) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) - 240, 500, 480), actor);
+                _interfaceElements.Add(c);
+                _focus = _interfaceElements[_interfaceElements.Count - 1];
+            }
+        }
+
+
+        public void ShowShopWindow(Actor actor1, Actor actor2)
+        {
+            if (!(_focus is CharacterWindow))
+            {
+                _status = GameStatus.Paused;
+                Shop c = new Shop(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 250) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) - 240, 500, 480), actor1, actor2) ;
                 _interfaceElements.Add(c);
                 _focus = _interfaceElements[_interfaceElements.Count - 1];
             }

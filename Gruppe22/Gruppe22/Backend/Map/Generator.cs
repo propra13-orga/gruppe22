@@ -667,20 +667,241 @@ namespace Gruppe22
             FromString(pattern, roomNr, maxRoom);
         }
 
-        public void GenerateRoomName()
+        public void GenerateDungeon()
         {
             switch (r.Next(10))
             {
                 case 0:
+                    _dungeonname += "Temple ";
+                    break;
                 case 1:
+                    _dungeonname += "Stronghold ";
+                    break;
                 case 2:
+                    _dungeonname += "Castle ";
+                    break;
                 case 3:
+                    _dungeonname += "Tunnel ";
+                    break;
                 case 4:
+                    _dungeonname += "Tower ";
+                    break;
                 case 5:
+                    _dungeonname += "Lair ";
+                    break;
                 case 6:
+                    _dungeonname += "Caverns ";
+                    break;
                 case 7:
+                    _dungeonname += "Home ";
+                    break;
                 case 8:
+                    _dungeonname += "Asylum ";
+                    break;
                 case 9:
+                    _dungeonname += "Prison ";
+                    break;
+            }
+            switch (r.Next(11))
+            {
+                case 0:
+                    _dungeonname += "of evil ";
+                    break;
+                case 1:
+                    _dungeonname += "of deadly ";
+                    break;
+                case 2:
+                    _dungeonname += "of elemental ";
+                    break;
+                case 3:
+                    _dungeonname += "of strange ";
+                    break;
+                case 4:
+                    _dungeonname += "of mysterious ";
+                    break;
+                case 5:
+                    _dungeonname += "of unknown ";
+                    break;
+                case 6:
+                    _dungeonname += "of incredible ";
+                    break;
+                case 7:
+                    _dungeonname += "of legendary ";
+                    break;
+                case 8:
+                    _dungeonname += "of growing ";
+                    break;
+                case 9:
+                    _dungeonname += "of scary ";
+                    break;
+            }
+            switch (r.Next(11))
+            {
+                case 0:
+                    _dungeonname += "Power";
+                    break;
+                case 1:
+                    _dungeonname += "Energy";
+                    break;
+                case 2:
+                    _dungeonname += "Wealth";
+                    break;
+                case 3:
+                    _dungeonname += "Strength";
+                    break;
+                case 4:
+                    _dungeonname += "Spirit";
+                    break;
+                case 5:
+                    _dungeonname += "Magic";
+                    break;
+                case 6:
+                    _dungeonname += "Beasts";
+                    break;
+                case 7:
+                    _dungeonname += "Monsters";
+                    break;
+                case 8:
+                    _dungeonname += "Wizards";
+                    break;
+                case 9:
+                    _dungeonname += "Enemies";
+                    break;
+            }
+        }
+
+        public void GenerateRoomName()
+        {
+            switch (r.Next(11))
+            {
+                case 0:
+                    _name += "Dark ";
+                    break;
+                case 1:
+                    _name += "Smelly ";
+                    break;
+                case 2:
+                    _name += "Eery ";
+                    break;
+                case 3:
+                    _name += "Frightening ";
+                    break;
+                case 4:
+                    _name += "Scary ";
+                    break;
+                case 5:
+                    _name += "Evil ";
+                    break;
+                case 6:
+                    _name += "Haunting ";
+                    break;
+                case 7:
+                    _name += "Mysterious ";
+                    break;
+                case 8:
+                    _name += "Dangerous ";
+                    break;
+                case 9:
+                    _name += "Musty ";
+                    break;
+            }
+            switch (r.Next(10))
+            {
+                case 0:
+                    _name += "Cave";
+                    break;
+                case 1:
+                    _name += "Chamber";
+                    break;
+                case 2:
+                    _name += "Hallway";
+                    break;
+                case 3:
+                    _name += "Cavern";
+                    break;
+                case 4:
+                    _name += "Room";
+                    break;
+                case 5:
+                    _name += "Dungeon";
+                    break;
+                case 6:
+                    _name += "Sewer";
+                    break;
+                case 7:
+                    _name += "Hole";
+                    break;
+                case 8:
+                    _name += "Antechamber";
+                    break;
+                case 9:
+                    _name += "Barracks";
+                    break;
+            }
+            switch (r.Next(10))
+            {
+                case 0:
+                    _name += " of evil ";
+                    break;
+                case 1:
+                    _name += " of mad ";
+                    break;
+                case 2:
+                    _name += " of dangerous ";
+                    break;
+                case 3:
+                    _name += " of forgotten ";
+                    break;
+                case 4:
+                    _name += " of predatory ";
+                    break;
+                case 5:
+                    _name += " of unknown ";
+                    break;
+                case 6:
+                    _name += " of timeless ";
+                    break;
+                case 7:
+                    _name += " of hidden ";
+                    break;
+                case 8:
+                    _name += " of treacherous ";
+                    break;
+                case 9:
+                    _name += " of lost ";
+                    break;
+            }
+            switch (r.Next(10))
+            {
+                case 0:
+                    _name += " Spirits";
+                    break;
+                case 1:
+                    _name += " Shadows";
+                    break;
+                case 2:
+                    _name += " Mysteries";
+                    break;
+                case 3:
+                    _name += " Ghosts";
+                    break;
+                case 4:
+                    _name += " Gods";
+                    break;
+                case 5:
+                    _name += " Preachers";
+                    break;
+                case 6:
+                    _name += " Rumors";
+                    break;
+                case 7:
+                    _name += " Legends";
+                    break;
+                case 8:
+                    _name += " History";
+                    break;
+                case 9:
+                    _name += " Destruction";
                     break;
             }
         }

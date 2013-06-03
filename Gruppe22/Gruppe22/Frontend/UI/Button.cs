@@ -33,7 +33,7 @@ namespace Gruppe22
         /// 
         /// </summary>
         private ButtonStatus _bstat = ButtonStatus.normal;
-
+        private bool _hidden = false;
         private string _label = "";
         private Events _id = 0;
 
@@ -42,6 +42,14 @@ namespace Gruppe22
 
         #region Public Fields
 
+
+        public bool canFocus
+        {
+            get
+            {
+                return !_hidden;
+            }
+        }
         /// <summary>
         /// True if the button should stay down
         /// </summary>
@@ -88,19 +96,23 @@ namespace Gruppe22
         /// <param name="gameTime"></param>
         public override bool OnMouseDown(int button)
         {
+            if (!_hidden) { 
             if (IsHit(Mouse.GetState().X, Mouse.GetState().Y))
             {
                 _parent.HandleEvent(false, _id, 0);
                 return true;
             }
+            }
             return false;
         }
         public override bool OnKeyDown(Keys k)
         {
+            if (!_hidden) { 
             if (_focus && ((k == Keys.Space) || (k == Keys.Enter)))
             {
                 _parent.HandleEvent(false, _id, 0);
                 return true;
+            }
             }
             return false;
         }
@@ -114,6 +126,26 @@ namespace Gruppe22
             }
         }
 
+        public bool hidden
+        {
+            get
+            {
+                return _hidden;
+            }
+            set
+            {
+                _hidden = value;
+            }
+        }
+
+        public void Show()
+        {
+            _hidden = false;
+        }
+        public void Hide()
+        {
+            _hidden = true;
+        }
 
         /// <summary>
         /// 
@@ -121,66 +153,69 @@ namespace Gruppe22
         /// <param name="spriteBatch"></param>
         public override void Draw(GameTime gameTime)
         {
-            _spriteBatch.Begin();
-            if (IsHit(Mouse.GetState().X, Mouse.GetState().Y))
+            if (!_hidden)
             {
-                if (_bstat == ButtonStatus.down)
+                _spriteBatch.Begin();
+                if (IsHit(Mouse.GetState().X, Mouse.GetState().Y))
                 {
-                    _bstat = ButtonStatus.downon;
+                    if (_bstat == ButtonStatus.down)
+                    {
+                        _bstat = ButtonStatus.downon;
+                    }
+                    else
+                        if (_bstat == ButtonStatus.normal)
+                        {
+                            _bstat = ButtonStatus.mouseon;
+                        }
                 }
                 else
-                    if (_bstat == ButtonStatus.normal)
+                {
+                    if (_bstat == ButtonStatus.downon)
                     {
-                        _bstat = ButtonStatus.mouseon;
+                        _bstat = ButtonStatus.down;
                     }
-            }
-            else
-            {
-                if (_bstat == ButtonStatus.downon)
-                {
-                    _bstat = ButtonStatus.down;
+                    else if (_bstat == ButtonStatus.mouseon)
+                    {
+                        _bstat = ButtonStatus.normal;
+                    }
                 }
-                else if (_bstat == ButtonStatus.mouseon)
-                {
-                    _bstat = ButtonStatus.normal;
-                }
-            }
 
-            if (_label != "")
-            {
-                Vector2 _textPos = _font.MeasureString(_label);
-                switch (_bstat)
+                if (_label != "")
                 {
-                    case ButtonStatus.down:
-                    case ButtonStatus.mouseon:
-                    case ButtonStatus.downon:
-                        _spriteBatch.Draw(_background, _displayRect, new Rectangle(39, 6, 1, 1), Color.Black);
-                        _spriteBatch.Draw(_background, new Rectangle(_displayRect.X + 1, _displayRect.Y + 1, _displayRect.Width - 2, _displayRect.Height - 2), new Rectangle(39, 6, 1, 1), _focus ? Color.Blue : Color.White);
-                        _spriteBatch.DrawString(_font, _label, new Vector2(_displayRect.Left + (_displayRect.Width - _textPos.X) / 2, _displayRect.Top + (_displayRect.Height - _textPos.Y) / 2),  Color.Black);
-                        break;
-                    default:
-                        _spriteBatch.Draw(_background, _displayRect, new Rectangle(39, 6, 1, 1), _focus ? Color.Blue : Color.White);
-                        _spriteBatch.Draw(_background, new Rectangle(_displayRect.X + 1, _displayRect.Y + 1, _displayRect.Width - 2, _displayRect.Height - 2), new Rectangle(39, 6, 1, 1), _focus ? Color.DarkBlue : Color.Black);
-                        _spriteBatch.DrawString(_font, _label, new Vector2(_displayRect.Left + (_displayRect.Width - _textPos.X) / 2, _displayRect.Top + (_displayRect.Height - _textPos.Y) / 2), Color.White);
-                        break;
+                    Vector2 _textPos = _font.MeasureString(_label);
+                    switch (_bstat)
+                    {
+                        case ButtonStatus.down:
+                        case ButtonStatus.mouseon:
+                        case ButtonStatus.downon:
+                            _spriteBatch.Draw(_background, _displayRect, new Rectangle(39, 6, 1, 1), Color.Black);
+                            _spriteBatch.Draw(_background, new Rectangle(_displayRect.X + 1, _displayRect.Y + 1, _displayRect.Width - 2, _displayRect.Height - 2), new Rectangle(39, 6, 1, 1), _focus ? Color.Blue : Color.White);
+                            _spriteBatch.DrawString(_font, _label, new Vector2(_displayRect.Left + (_displayRect.Width - _textPos.X) / 2, _displayRect.Top + (_displayRect.Height - _textPos.Y) / 2), Color.Black);
+                            break;
+                        default:
+                            _spriteBatch.Draw(_background, _displayRect, new Rectangle(39, 6, 1, 1), _focus ? Color.Blue : Color.White);
+                            _spriteBatch.Draw(_background, new Rectangle(_displayRect.X + 1, _displayRect.Y + 1, _displayRect.Width - 2, _displayRect.Height - 2), new Rectangle(39, 6, 1, 1), _focus ? Color.DarkBlue : Color.Black);
+                            _spriteBatch.DrawString(_font, _label, new Vector2(_displayRect.Left + (_displayRect.Width - _textPos.X) / 2, _displayRect.Top + (_displayRect.Height - _textPos.Y) / 2), Color.White);
+                            break;
+                    }
                 }
-            }
-            else
-            {
-                switch (_bstat)
+                else
                 {
-                    case ButtonStatus.mouseon:
-                    case ButtonStatus.down:
-                        _spriteBatch.Draw(_buttonStates[1], new Rectangle(_displayRect.X, _displayRect.Y, Math.Min(_displayRect.Width, _buttonStates[1].Width), Math.Min(_displayRect.Height, _buttonStates[1].Height)), new Rectangle(0, 0, _buttonStates[1].Width, _buttonStates[1].Height), Color.White);
-                        break;
-                    case ButtonStatus.downon:
-                    default:
-                        _spriteBatch.Draw(_buttonStates[0], new Rectangle(_displayRect.X, _displayRect.Y, Math.Min(_displayRect.Width, _buttonStates[0].Width), Math.Min(_displayRect.Height, _buttonStates[0].Height)), new Rectangle(0, 0, _buttonStates[0].Width, _buttonStates[0].Height), Color.White);
-                        break;
+                    switch (_bstat)
+                    {
+                        case ButtonStatus.mouseon:
+                        case ButtonStatus.down:
+                            _spriteBatch.Draw(_buttonStates[1], new Rectangle(_displayRect.X, _displayRect.Y, Math.Min(_displayRect.Width, _buttonStates[1].Width), Math.Min(_displayRect.Height, _buttonStates[1].Height)), new Rectangle(0, 0, _buttonStates[1].Width, _buttonStates[1].Height), Color.White);
+                            break;
+                        case ButtonStatus.downon:
+                        default:
+                            _spriteBatch.Draw(_buttonStates[0], new Rectangle(_displayRect.X, _displayRect.Y, Math.Min(_displayRect.Width, _buttonStates[0].Width), Math.Min(_displayRect.Height, _buttonStates[0].Height)), new Rectangle(0, 0, _buttonStates[0].Width, _buttonStates[0].Height), Color.White);
+                            break;
+                    }
                 }
-            }
 
-            _spriteBatch.End();
+                _spriteBatch.End();
+            }
         }
 
         public override void Dispose()
