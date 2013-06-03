@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Xna.Framework.Input;
 
 namespace Gruppe22
 {
@@ -18,7 +19,7 @@ namespace Gruppe22
         private Actor _actor;
         private int _lineheight;
         private Texture2D _background;
-
+        private bool _button = false;
         #endregion
 
         #region Public Fields
@@ -36,12 +37,31 @@ namespace Gruppe22
         #endregion
 
         #region Public Methods
+
+        public override bool OnMouseDown(int button)
+        {
+            if (_button) { 
+                ((GameLogic)_parent).ShowCharacterWindow(_actor);
+                _button = false;
+
+                return true;
+            }
+            return false;
+        }
         /// <summary>
         /// React to changes in character stats
         /// </summary>
         /// <param name="gameTime"></param>
         public override void Update(GameTime gameTime)
         {
+            if (_displayRect.Contains(Mouse.GetState().X, Mouse.GetState().Y))
+            {
+                _button = true;
+            }
+            else
+            {
+                _button = false;
+            }
             // Update Health bar
             if (_actor != null)
             {
@@ -54,7 +74,7 @@ namespace Gruppe22
                     _healthBar.total = _actor.maxHealth;
                 }
 
-                if (_actor.mana!= _manaBar.value)
+                if (_actor.mana != _manaBar.value)
                 {
                     _manaBar.value = _actor.mana;
                 }
@@ -96,7 +116,21 @@ namespace Gruppe22
                 // Additional Data for player: Experience
                 if (_actor is Player)
                 {
-                    _spriteBatch.DrawString(_font, "LVL: " + _actor.level.ToString() + " - EXP to next LVL:" + _actor.exp.ToString(), new Vector2(_displayRect.Left + 10, _displayRect.Top + _lineheight * 4 + 8), color);
+                    if ((_actor.skills > 0) || (_actor.abilityPoints > 0))
+                    {
+                        _spriteBatch.Draw(_background, new Rectangle(_displayRect.Left + 5, _displayRect.Top + _lineheight*4 +8, _displayRect.Width - 10, _lineheight+12), new Rectangle(39, 6, 1, 1), Color.White);
+
+                        _spriteBatch.Draw(_background, new Rectangle(_displayRect.Left + 6, _displayRect.Top + _lineheight *4+9, _displayRect.Width - 12, _lineheight + 10), new Rectangle(39, 6, 1, 1), _button?Color.DarkBlue:Color.DarkGoldenrod);
+                        _spriteBatch.DrawString(_font, "Level up", new Vector2(_displayRect.Left + (_displayRect.Width - 60) / 2, _displayRect.Top + _lineheight * 4 + 15), _button ? Color.Black : Color.White);
+
+                        _spriteBatch.DrawString(_font, "Level up", new Vector2(_displayRect.Left + (_displayRect.Width - 60) / 2 - 1, _displayRect.Top + _lineheight * 4 + 14), _button ? Color.White : Color.Black);
+                        
+
+                    }
+                    else
+                        _spriteBatch.DrawString(_font, "LVL: " + _actor.level.ToString() + " - EXP to next LVL:" + _actor.exp.ToString(), new Vector2(_displayRect.Left + 10, _displayRect.Top + _lineheight * 4 + 8), color);
+
+
                 }
                 _spriteBatch.End();
                 // Health bar and Mana bar

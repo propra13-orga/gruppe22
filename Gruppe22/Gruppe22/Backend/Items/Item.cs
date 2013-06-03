@@ -12,7 +12,8 @@ namespace Gruppe22
     {
         Armor = 0,
         Potion = 1,
-        Weapon = 2
+        Weapon = 2,
+        Gold = 3
     }
     public class Item
     {
@@ -23,9 +24,16 @@ namespace Gruppe22
         private bool _equipped = false;
         private string _name = "";
         private string _description = "";
+        private int _value = 0;
         private bool _destroyed = false;
         private ContentManager _content = null;
         List<ItemEffect> _effects = null;
+
+        public int value
+        {
+            get { return _value; }
+            set { _value = value; }
+        }
 
         public virtual void EquipItem()
         {
@@ -303,7 +311,7 @@ namespace Gruppe22
             _equipped = Convert.ToBoolean(reader.GetAttribute("equipped"));
             _destroyed = Convert.ToBoolean(reader.GetAttribute("destroyed"));
             _itemType = (ItemType)Enum.Parse(typeof(ItemType), reader.GetAttribute("type"));
-
+            if (reader.GetAttribute("destroyed") != null) _value = Convert.ToInt32(reader.GetAttribute("value"));
             _name = reader.GetAttribute("name");
             _description = reader.GetAttribute("description");
             reader.Read(); // Begin Effect
@@ -341,6 +349,7 @@ namespace Gruppe22
             }
             xmlw.WriteAttributeString("equipped", Convert.ToString(_equipped));
             xmlw.WriteAttributeString("type", Convert.ToString(_itemType));
+            xmlw.WriteAttributeString("value", Convert.ToString(_value));
 
             xmlw.WriteAttributeString("destroyed", Convert.ToString(_destroyed));
             xmlw.WriteAttributeString("name", Convert.ToString(name));
@@ -517,6 +526,10 @@ namespace Gruppe22
                 case ItemType.Potion:
                     _name = "Potion";
                     break;
+                case ItemType.Gold:
+                    _name = _value.ToString() + " gold pieces";
+                    return;
+                    break;
             }
             if (_effects.Count == 0)
             {
@@ -604,6 +617,41 @@ namespace Gruppe22
                 }
 
             }
+            EstimateValue();
+        }
+
+        public void EstimateValue()
+        {
+            if (value == 0)
+            {
+                switch (_itemType)
+                {
+                    case ItemType.Armor:
+                        value = 30;
+                        break;
+                    case ItemType.Gold:
+                        value = 100;
+                        break;
+                    case ItemType.Potion:
+                        value = 10;
+                        break;
+                    case ItemType.Weapon:
+                        value = 20;
+                        break;
+                }
+                foreach (ItemEffect effect in _effects)
+                {
+                    if (effect.effect < 0)
+                    {
+                        value -= 2;
+                    }
+                    else
+                    {
+                        value += effect.effect * 2;
+                    }
+                    if (effect.duration > 0) value += effect.duration;
+                }
+            }
         }
 
         public void GenerateProperties(Random r = null)
@@ -667,19 +715,21 @@ namespace Gruppe22
             }
         }
 
-        public Item(ContentManager content, Random r = null)
+        public Item(ContentManager content, Random r = null, int value = 0)
             : this(content)
         {
             if (r == null) r = new Random();
+            _value = value;
             _itemType = (ItemType)r.Next(3);
             GenerateProperties(r);
             GenerateName();
             GenerateIcon();
         }
 
-        public Item(ContentManager content, ItemType itemtype, string name = "", Random r = null, VisibleObject icon = null)
+        public Item(ContentManager content, ItemType itemtype, string name = "", Random r = null, VisibleObject icon = null, int value = 0)
             : this(content)
         {
+            _value = value;
             _itemType = itemtype;
             if (name != "")
             {
@@ -691,21 +741,24 @@ namespace Gruppe22
             }
             GenerateProperties(r);
             GenerateIcon();
+
         }
 
-        public Item(ContentManager content, ItemTile parent, ItemType itemtype, string name = "", VisibleObject icon = null)
+        public Item(ContentManager content, ItemTile parent, ItemType itemtype, string name = "", VisibleObject icon = null, int value = 0)
             : this(content)
         {
             _tile = parent;
+            _value = value;
             _name = name;
             _itemType = itemtype;
             if (icon == null) GenerateIcon();
         }
 
-        public Item(ContentManager content, Actor owner, ItemType itemtype, string name = "", VisibleObject icon = null)
+        public Item(ContentManager content, Actor owner, ItemType itemtype, string name = "", VisibleObject icon = null, int value = 0)
             : this(content)
         {
             _owner = owner;
+            _value = value;
 
         }
 

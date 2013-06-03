@@ -192,13 +192,13 @@ namespace Gruppe22
             _inventory = new Inventory(this, _spriteBatch, Content, new Rectangle(_graphics.GraphicsDevice.Viewport.Width - 220, _graphics.GraphicsDevice.Viewport.Height - 125, 215, 120), _map1.actors[0]);
             _interfaceElements.Add(_inventory);
             _statusbox.AddLine("Welcome to this highly innovative Dungeon Crawler!\nYou can scroll in this status window.\nUse A-S-D-W to move your character.\n Use Arrow keys (or drag mouse) to scroll map or minimap\n Press ESC to display Game Menu.");
-            _playerStats = new SimpleStats(this, _spriteBatch, Content, new Rectangle(_graphics.GraphicsDevice.Viewport.Width - 215, 230, 210, 100), _map1.actors[0]);
-            _enemyStats = new SimpleStats(this, _spriteBatch, Content, new Rectangle(_graphics.GraphicsDevice.Viewport.Width - 215, 340, 210, 100), null);
+            _playerStats = new SimpleStats(this, _spriteBatch, Content, new Rectangle(_graphics.GraphicsDevice.Viewport.Width - 215, 230, 210, 125), _map1.actors[0]);
+            _enemyStats = new SimpleStats(this, _spriteBatch, Content, new Rectangle(_graphics.GraphicsDevice.Viewport.Width - 215, 355, 210, 100), null);
             _interfaceElements.Add(_playerStats);
             _interfaceElements.Add(_enemyStats);
             _inventory.Update();
             _playerStats.Update(null);
-                        if (_map1.actors[0].health < 1)
+            if (_map1.actors[0].health < 1)
             {
                 ShowEndGame();
             }
@@ -523,10 +523,13 @@ namespace Gruppe22
 
         public void ShowCharacterWindow(Actor actor)
         {
-            _status = GameStatus.Paused;
-            CharacterWindow c = new CharacterWindow(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 250) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) - 240, 500, 480), actor);
-            _interfaceElements.Add(c);
-            _focus = _interfaceElements[_interfaceElements.Count - 1];
+            if (!(_focus is CharacterWindow))
+            {
+                _status = GameStatus.Paused;
+                CharacterWindow c = new CharacterWindow(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 250) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) - 240, 500, 480), actor);
+                _interfaceElements.Add(c);
+                _focus = _interfaceElements[_interfaceElements.Count - 1];
+            }
         }
 
         /// <summary>
@@ -548,7 +551,7 @@ namespace Gruppe22
             {
                 _gameOver.AddChild(new Button(_gameOver, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width) / 2.0f) - 300 + 170, (int)(GraphicsDevice.Viewport.Height / 2.0f) + 30, 160, 40), "Restore (" + _deadcounter.ToString() + " left)", Events.LoadFromCheckPoint));
             }
-            _gameOver.AddChild(new Button(_gameOver, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width) / 2.0f) - 300 + 600-190, (int)(GraphicsDevice.Viewport.Height / 2.0f) + 30, 100, 40), "Restart", Events.ResetGame));
+            _gameOver.AddChild(new Button(_gameOver, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width) / 2.0f) - 300 + 600 - 190, (int)(GraphicsDevice.Viewport.Height / 2.0f) + 30, 100, 40), "Restart", Events.ResetGame));
             _gameOver.AddChild(new Button(_gameOver, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width) / 2.0f) - 300 + 600 - 80, (int)(GraphicsDevice.Viewport.Height / 2.0f) + 30, 70, 40), "Quit", Events.EndGame));
             //  _mainMenu.AddChild(new ProgressBar(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) + 80, 300, 30), ProgressStyle.Block,100,2));
 
