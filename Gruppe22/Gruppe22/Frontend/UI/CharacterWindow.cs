@@ -199,7 +199,7 @@ namespace Gruppe22
             _abilityPoints = new NumberEntry(this, _spriteBatch, _content, new Rectangle(_displayRect.Left
                 + (_displayRect.Width - 10) / 2 + 10, _displayRect.Top + 365, (_displayRect.Width - 10) / 2 - 10, 25), "Abilitypoints:", _actor.abilityPoints, "Abilitypoints are used to learn new abilities or spells.", 2, false);
 
-            _skills = new NumberEntry(this, _spriteBatch, _content, new Rectangle(_displayRect.Left + 5, _displayRect.Top + 395, (_displayRect.Width - 10) / 2 - 10, 25), "Skillpoints:", _actor.block, "Skillpoints are used used to improve your statistics.", 2, false);
+            _skills = new NumberEntry(this, _spriteBatch, _content, new Rectangle(_displayRect.Left + 5, _displayRect.Top + 395, (_displayRect.Width - 10) / 2 - 10, 25), "Skillpoints:", _actor.skills, "Skillpoints are used to improve your statistics.", 2, false);
             _level = new NumberEntry(this, _spriteBatch, _content, new Rectangle(_displayRect.Left
                 + (_displayRect.Width - 10) / 2 + 10, _displayRect.Top + 395, (_displayRect.Width - 10) / 2 - 10, 25), "Level:", _actor.level, "Your level determines your general character state.", 2, false);
 

@@ -75,6 +75,20 @@ namespace Gruppe22
                         {
                             _mainmap1.HandleEvent(true, Events.AnimateActor, defender, Activity.Die);
                             _mainmap2.HandleEvent(true, Events.AnimateActor, defender, Activity.Die);
+                            _map1.actors[attacker].exp += _map1.actors[defender].exp;
+                            if (_map1.actors[attacker].exp > _map1.actors[attacker].expNeeded)
+                            {
+                                _map1.actors[attacker].LevelUp();
+
+                                if (_map1.actors[attacker] is Player)
+                                    _mainmap1.floatNumber(_map1.actors[attacker].tile.coords, "Level " + _map1.actors[attacker].level.ToString(), Color.Gold);
+                                else
+                                {
+                                    ((Enemy)_map1.actors[attacker]).AssignSkillsAndAbilities();
+                                }
+                            }
+                            if (_map1.actors[attacker] is Player)
+                                _mainmap1.floatNumber(_map1.actors[attacker].tile.coords, "+" + _map1.actors[defender].exp + " Exp", Color.Gold);
                             AddMessage((_map1.actors[defender] is Player ? "<red>" : "") + _map1.actors[defender].name + " was killed by " + _map1.actors[attacker].name + "  doing " + damage.ToString() + " points of damage.");
                         }
                         else

@@ -667,6 +667,24 @@ namespace Gruppe22
             FromString(pattern, roomNr, maxRoom);
         }
 
+        public void GenerateRoomName()
+        {
+            switch (r.Next(10))
+            {
+                case 0:
+                case 1:
+                case 2:
+                case 3:
+                case 4:
+                case 5:
+                case 6:
+                case 7:
+                case 8:
+                case 9:
+                    break;
+            }
+        }
+
         /// <summary>
         /// Create an empty map
         /// </summary>

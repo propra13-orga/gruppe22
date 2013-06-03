@@ -17,47 +17,48 @@ namespace Gruppe22
 
     public class Actor
     {
-        #region Private Fields
-        private ActorTile _tile;
+        #region protected Fields
+        protected Random _random;
+        protected ActorTile _tile;
         protected ActorType _actorType;
-        private int _id = 0;
-        private string _name = "";
-        private string _animationFile = "";
-        private List<Item> _inventory = null;
-        //private int _deadcounter = 0;
-        private int _mana = 0;
-        private int _evade = 0;
-        private int _block = 0;
-        private int _penetrate = 0;
-        private int _healthReg = 0;
-        private int _stealHealth = 0;
-        private int _stealMana = 0;
-        private int _fireDamage = 0;
-        private int _iceDamage = 0;
-        private int _fireDefense = 0;
-        private int _iceDefense = 0;
-        private int _destroyWeapon = 0;
-        private int _destroyArmor = 0;
-        private int _maxMana = 0;
-        private int _manaReg = 0;
-        private int _gold = 0;
-        private bool _locked = false;
-        //private List<Spell> _spellbook = null;
-        private int _level = 0;
-        private int _damage = 0;
-        private int _resist = 0;
-        private int _exp = 0;
-        private int _expNeeded = 0;
-        private int _maxhealth = 100;
-        private int _health = 50;
-        private int _armor = 40;
-        private int _abilityPoints = 0;
-        private int _skills = 0;
-        private ContentManager _content;
+        protected int _id = 0;
+        protected string _name = "";
+        protected string _animationFile = "";
+        protected List<Item> _inventory = null;
+        //protected int _deadcounter = 0;
+        protected int _mana = 0;
+        protected int _evade = 0;
+        protected int _block = 0;
+        protected int _penetrate = 0;
+        protected int _healthReg = 0;
+        protected int _stealHealth = 0;
+        protected int _stealMana = 0;
+        protected int _fireDamage = 0;
+        protected int _iceDamage = 0;
+        protected int _fireDefense = 0;
+        protected int _iceDefense = 0;
+        protected int _destroyWeapon = 0;
+        protected int _destroyArmor = 0;
+        protected int _maxMana = 0;
+        protected int _manaReg = 0;
+        protected int _gold = 0;
+        protected bool _locked = false;
+        //protected List<Spell> _spellbook = null;
+        protected int _level = 0;
+        protected int _damage = 0;
+        protected int _resist = 0;
+        protected int _exp = 0;
+        protected int _expNeeded = 0;
+        protected int _maxhealth = 100;
+        protected int _health = 50;
+        protected int _armor = 40;
+        protected int _abilityPoints = 0;
+        protected int _skills = 0;
+        protected ContentManager _content;
         #endregion
 
         #region Public Fields
-/*        public int deadcounter
+        /*        public int deadcounter
         {
             get { return _deadcounter; }
             set { _deadcounter = value; }
@@ -461,7 +462,7 @@ namespace Gruppe22
             _level++;
             _abilityPoints += 40;
             _skills += 1;
-            _expNeeded = 3 * _level ^ 2 + 83 * _level + 41;
+            _expNeeded = 3 * (_level + 1) ^ 2 + 83 * (_level + 1) + 41;
             _health = _maxhealth;
         }
 
@@ -650,10 +651,9 @@ namespace Gruppe22
         /// Methode to generate random names for actors
         /// </summary>
         /// <param name="r"></param>
-        public void GenerateName(Random r = null)
+        public void GenerateName()
         {
-            if (r == null) r = new Random();
-            int index = r.Next(6);
+            int index = _random.Next(6);
             switch (_actorType)
             {
                 case ActorType.Player:
@@ -715,7 +715,7 @@ namespace Gruppe22
                                 break;
                         }
                     }
-                    index = r.Next(6);
+                    index = _random.Next(6);
                     switch (index)
                     {
                         case 0:
@@ -751,8 +751,7 @@ namespace Gruppe22
         {
             using (TextReader reader = new StreamReader(filename))
             {
-                Random r = new Random();
-                int index = r.Next(File.ReadAllLines(filename).Length);
+                int index = _random.Next(File.ReadAllLines(filename).Length);
                 int i = 0;
                 while (i < index && reader.ReadLine() != null)
                 {
@@ -769,20 +768,35 @@ namespace Gruppe22
         /// <param name="health"></param>
         /// <param name="armor"></param>
         /// <param name="damage"></param>
-        public Actor(ContentManager content, ActorType actorType, int health, int armor, int damage, int maxHealth = -1, string name = "", Random r = null, string animationFile = "")
+        public Actor(ContentManager content, ActorType actorType, int health, int armor, int damage, int maxHealth = -1, string name = "", Random rnd = null, string animationFile = "", int level = -1)
         {
             _content = content;
-            this._actorType = actorType;
-            if (r == null) r = new Random();
+            _actorType = actorType;
+            if (rnd == null) _random = new Random(); else _random = rnd;
+
+            if (level < 0)
+            {
+                _level = 0;
+                for (int counter = level; counter < 0; counter += 1)
+                {
+                    LevelUp();
+                }
+            }
+            else
+            {
+                _level = level;
+                _expNeeded = 3 * (_level + 1) ^ 2 + 83 * (_level + 1) + 41;
+
+            }
             if (health < 0)
             {
                 if (maxHealth > 0)
                 {
-                    health = 5 + r.Next(maxHealth - 5);
+                    health = 5 + _random.Next(maxHealth - 5);
                 }
                 else
                 {
-                    health = 15 + r.Next(30);
+                    health = 15 + _random.Next(30);
                 }
             }
             this._health = health;
@@ -792,15 +806,15 @@ namespace Gruppe22
             }
             if (armor < 0)
             {
-                armor = r.Next(10);
+                armor = _random.Next(10);
             }
             this._armor = armor;
             if (damage < 0)
             {
-                damage = 12 + r.Next(10);
+                damage = 12 + _random.Next(10);
             }
             this._damage = damage;
-            if (name.Trim() == "") GenerateName(r);
+            if (name.Trim() == "") GenerateName();
             else _name = name;
             this._inventory = new List<Item>();
             _animationFile = animationFile;

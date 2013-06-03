@@ -61,6 +61,10 @@ namespace Gruppe22
 
         public override bool OnKeyDown(Keys k)
         {
+            for (int i = 0; i < _children.Count; ++i)
+            {
+                if (_children[i].OnKeyDown(k)) return true;
+            };
             switch (k)
             {
                 case Keys.Tab:

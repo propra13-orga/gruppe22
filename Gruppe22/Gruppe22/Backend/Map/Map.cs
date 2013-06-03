@@ -40,6 +40,9 @@ namespace Gruppe22
     {
         #region Private Fields
         protected ContentManager _content;
+        protected int _level;
+        protected string _name;
+        protected string _dungeonname;
 
         protected int _id;
 
@@ -76,6 +79,42 @@ namespace Gruppe22
         #endregion
 
         #region Public Fields
+
+        public int level
+        {
+            get
+            {
+                return _level;
+            }
+            set
+            {
+                _level = value;
+            }
+        }
+
+        public string name
+        {
+            get
+            {
+                return _name;
+            }
+            set
+            {
+                _name = value;
+            }
+        }
+
+        public string dungeonname
+        {
+            get
+            {
+                return _dungeonname;
+            }
+            set
+            {
+                _dungeonname = value;
+            }
+        }
         public List<Coords> updateTiles
         {
             get
@@ -599,6 +638,10 @@ namespace Gruppe22
             xmlr.MoveToContent();//xml
             _width = int.Parse(xmlr.GetAttribute("width"));
             _height = int.Parse(xmlr.GetAttribute("height"));
+            if (xmlr.GetAttribute("name") != null) _name = xmlr.GetAttribute("name");
+            if (xmlr.GetAttribute("level") != null) _level = int.Parse(xmlr.GetAttribute("level"));
+            if (xmlr.GetAttribute("dungeon") != null) _dungeonname = xmlr.GetAttribute("dungeon");
+
             xmlr.ReadStartElement("GameMap");//GameMap
 
             for (int row = 0; row < _height; ++row)
@@ -788,6 +831,10 @@ namespace Gruppe22
             xmlw.WriteStartElement("GameMap");
             xmlw.WriteAttributeString("width", _width.ToString());
             xmlw.WriteAttributeString("height", _height.ToString());
+            xmlw.WriteAttributeString("name", _name);
+            xmlw.WriteAttributeString("level", _level.ToString());
+            xmlw.WriteAttributeString("dungeon", _dungeonname);
+
             foreach (List<FloorTile> ltiles in _tiles)
             {
                 foreach (FloorTile tile in ltiles)
