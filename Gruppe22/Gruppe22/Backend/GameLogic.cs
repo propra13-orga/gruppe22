@@ -40,6 +40,7 @@ namespace Gruppe22
         }
         #endregion
 
+        //f:[0,100]->|R, t |-> log(1+t*exp(log(exp(90)-1)))
         protected void _CombatDamage(int attacker, int defender)
         {
             if (_map1.actors[attacker].evade + r.Next(10) < _map1.actors[defender].evade + r.Next(10))
@@ -106,6 +107,7 @@ namespace Gruppe22
                 }
         }
 
+        //f:[0,100]->|R, t |-> log(1+t*exp(log(exp(90)-1)))
         protected void _TrapDamage(Coords target)
         {
             Actor actor = _map1[target].firstActor;
