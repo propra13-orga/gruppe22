@@ -168,7 +168,9 @@ namespace Gruppe22
         public override void Update(Microsoft.Xna.Framework.GameTime gameTime)
         {
             _elapsed += gameTime.ElapsedGameTime.Milliseconds;
-            if (enabled && !(actor is Player) && (!_working))
+            if (enabled 
+                //&& !(actor is Player) 
+                && (!_working))
             {
                 if (actor.isDead)
                 {

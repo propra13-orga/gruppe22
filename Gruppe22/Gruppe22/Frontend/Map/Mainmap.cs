@@ -1441,14 +1441,14 @@ namespace Gruppe22
             _environment[4].Save("Content\\chest.xml");
             _environment[4].Load("Content\\chest.xml");
             _environment.Add(new TileSet(_content, 32, 64));
-            _environment[5].Add("Arrow", (int)Direction.Up, new Rectangle(0, 0, 32, 64));
-            _environment[5].Add("Arrow", (int)Direction.Left, new Rectangle(32, 0, 32, 64));
-            _environment[5].Add("Arrow", (int)Direction.Right, new Rectangle(64, 0, 32, 64));
+            _environment[5].Add("Arrow", (int)Direction.UpRight, new Rectangle(0, 0, 32, 64));
+            _environment[5].Add("Arrow", (int)Direction.Right, new Rectangle(32, 0, 32, 64));
+            _environment[5].Add("Arrow", (int)Direction.DownRight, new Rectangle(64, 0, 32, 64));
             _environment[5].Add("Arrow", (int)Direction.Down, new Rectangle(96, 0, 32, 64));
-            _environment[5].Add("Arrow", (int)Direction.UpLeft, new Rectangle(0, 64, 32, 64));
-            _environment[5].Add("Arrow", (int)Direction.DownRight, new Rectangle(32, 64, 32, 64));
+            _environment[5].Add("Arrow", (int)Direction.Up, new Rectangle(0, 64, 32, 64));
+            _environment[5].Add("Arrow", (int)Direction.Left, new Rectangle(32, 64, 32, 64));
             _environment[5].Add("Arrow", (int)Direction.DownLeft, new Rectangle(64, 64, 32, 64));
-            _environment[5].Add("Arrow", (int)Direction.UpRight, new Rectangle(96, 64, 32, 64));
+            _environment[5].Add("Arrow", (int)Direction.UpLeft, new Rectangle(96, 64, 32, 64));
 
             _environment[5].Save("Content\\Arrow.xml");
             _environment[5].Load("Content\\Arrow.xml");
