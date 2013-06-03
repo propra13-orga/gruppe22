@@ -32,6 +32,7 @@ namespace Gruppe22
         private bool _nomove = true;
         private Coords _cacheTarget = null;
         private Direction _cacheDir = Direction.None;
+        private Camera _camera = null;
         /// <summary>
         /// Current animation played
         /// </summary>
@@ -120,7 +121,7 @@ namespace Gruppe22
                 // if (_id == 0)
                 //    System.Diagnostics.Debug.WriteLine("Move from " + _position.X.ToString() + "/" + _position.Y.ToString() + " to " + _target.x.ToString() + "/" + value.y.ToString());
                 _blockUpdates = true;
-               // _nomove = true;
+                // _nomove = true;
                 if (value != _position)
                 {
                     _target = value;
@@ -469,7 +470,7 @@ namespace Gruppe22
                         {
                             _nomove = false;
                         }
-                                                  //  System.Diagnostics.Debug.WriteLine("ENDED AT " + _textures[(int)_activity * 8 + (int)_direction].animationID);
+                        //  System.Diagnostics.Debug.WriteLine("ENDED AT " + _textures[(int)_activity * 8 + (int)_direction].animationID);
 
                         // System.Diagnostics.Debug.WriteLine(_textures[(int)_activity * 8 + (int)_direction].animationID);
 
@@ -513,6 +514,8 @@ namespace Gruppe22
                             {
                                 //  if (_id == 0) System.Diagnostics.Debug.WriteLine("/0");
                             }
+                        if (_id == 0)
+                            _camera.position = new Vector2(-38 - position.x, -30 - position.y);
 
                         if (_target == _position)
                         {
@@ -564,9 +567,10 @@ namespace Gruppe22
         /// <param name="controllable"></param>
         /// <param name="position"></param>
         /// <param name="sprite"></param>
-        public ActorView(IHandleEvent parent, int id, ContentManager content, Coords position, string filename = "", int speed = 5, bool alive = true)
+        public ActorView(Camera camera, IHandleEvent parent, int id, ContentManager content, Coords position, string filename = "", int speed = 5, bool alive = true)
             : base(content, 96, 96, "")
         {
+            _camera = camera;
             _position = position;
             _id = id;
             _target = new Coords((int)position.x, (int)position.y);

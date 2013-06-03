@@ -169,7 +169,7 @@ namespace Gruppe22
         {
             _elapsed += gameTime.ElapsedGameTime.Milliseconds;
             if (enabled 
-                //&& !(actor is Player) 
+                && !(actor is Player) 
                 && (!_working))
             {
                 if (actor.isDead)

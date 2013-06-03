@@ -1066,8 +1066,8 @@ namespace Gruppe22
             for (int count = 0; count < _map.actorPositions.Count; ++count)
             {
 
-                if (_actors.Count != _playerID) _actors.Add(new ActorView(this, count, _content, _map2screen(_map.actorPositions[count]), "Content\\skeleton.xml", 2, _map.actors[count].health > 0));
-                else _actors.Add(new ActorView(this, count, _content, _map2screen(_map.actorPositions[count]), "Content\\player.xml", 5));
+                if (_actors.Count != _playerID) _actors.Add(new ActorView(_camera,this, count, _content, _map2screen(_map.actorPositions[count]), "Content\\skeleton.xml", 2, _map.actors[count].health > 0));
+                else _actors.Add(new ActorView(_camera, this, count, _content, _map2screen(_map.actorPositions[count]), "Content\\player.xml", 5));
             }
             _camera.position = new Vector2(-38 - _actors[_playerID].position.x, -30 - _actors[_playerID].position.y);
         }
@@ -1118,8 +1118,6 @@ namespace Gruppe22
                         }
                     }
                 }
-                if (_actors[_playerID].isMoving)
-                    _camera.position = new Vector2(-38 - _actors[_playerID].position.x, -30 - _actors[_playerID].position.y);
                 /*   if (Math.Abs(gameTime.TotalGameTime.Milliseconds / 10 - _lastCheck) > 1)
                    {
                        _lastCheck = gameTime.TotalGameTime.Milliseconds / 10;*/
@@ -1205,7 +1203,7 @@ namespace Gruppe22
         public void CreateTextureList()
         {
 
-            ActorView player = new ActorView(this, 0, _content, Coords.Zero);
+            ActorView player = new ActorView(_camera, this, 0, _content, Coords.Zero);
 
             player.Add(Activity.Walk, Direction.DownRight, "Walk", new Coords(0, 0), 8, 1);
             player.Add(Activity.Walk, Direction.UpRight, "Walk", new Coords(0, 96), 8, 1); // Ok
@@ -1263,7 +1261,7 @@ namespace Gruppe22
             player.Add(Activity.Attack, Direction.UpLeft, "Attack", new Coords(0, 672), 13, 1);
             player.Save("content\\player.xml");
 
-            ActorView skel = new ActorView(this, 0, _content, Coords.Zero, "");
+            ActorView skel = new ActorView(_camera, this, 0, _content, Coords.Zero, "");
             skel.Add(Activity.Walk, Direction.DownRight, "sWalk", new Coords(0, 0), 8, 1);
             skel.Add(Activity.Walk, Direction.UpRight, "sWalk", new Coords(0, 96), 8, 1);
             skel.Add(Activity.Walk, Direction.Right, "sWalk", new Coords(0, 192), 8, 1);
