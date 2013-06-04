@@ -196,8 +196,11 @@ namespace Gruppe22
                 if (_activity != value)
                 {
                     _elapsed = 0;
-                    _activity = value;
-                    _textures[(int)_activity * 8 + (int)_direction].ResetAnimation();
+                    if (_textures[(int)value * 8 + (int)_direction].animationTexture != null)
+                    {
+                        _activity = value;
+                        _textures[(int)_activity * 8 + (int)_direction].ResetAnimation();
+                    }
                 }
             }
         }
@@ -567,12 +570,13 @@ namespace Gruppe22
         /// <param name="controllable"></param>
         /// <param name="position"></param>
         /// <param name="sprite"></param>
-        public ActorView(Camera camera, IHandleEvent parent, int id, ContentManager content, Coords position, string filename = "", int speed = 5, bool alive = true)
-            : base(content, 96, 96, "")
+        public ActorView(Camera camera, IHandleEvent parent, int id, ContentManager content, Coords position, string filename = "", int speed = 5, bool alive = true, int width=96, int height=96)
+            : base(content, width, height, "")
         {
             _camera = camera;
             _position = position;
             _id = id;
+            _speed = speed;
             _target = new Coords((int)position.x, (int)position.y);
             for (int i = 0; i < (Enum.GetValues(typeof(Activity)).Length) * 8; ++i)
             {

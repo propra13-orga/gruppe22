@@ -558,7 +558,16 @@ namespace Gruppe22
             writer.WriteAttributeString("destroyArmor", Convert.ToString(_destroyArmor));
             writer.WriteAttributeString("animation", Convert.ToString(_animationFile));
 
+            if (actorType == ActorType.NPC)
+            {
+                NPC n = this as NPC;
+                if (n != null)
+                {
+                    writer.WriteAttributeString("love", Convert.ToString(n.love));
+                    writer.WriteAttributeString("hasShop", Convert.ToString(n.hasShop));
 
+                }
+            }
 
             writer.WriteStartElement("Inventory");
             foreach (Item item in _inventory)
@@ -620,6 +629,17 @@ namespace Gruppe22
             _destroyWeapon = Convert.ToInt32(reader.GetAttribute("destroyWeapon"));
             _destroyArmor = Convert.ToInt32(reader.GetAttribute("destroyArmor"));
             _animationFile = reader.GetAttribute("animation");
+
+            if (actorType == ActorType.NPC)
+            {
+                NPC n = this as NPC;
+                if (n != null)
+                {
+                    n.love = Convert.ToInt32(reader.GetAttribute("love"));
+                    n.hasShop = Convert.ToBoolean(reader.GetAttribute("hasShop"));
+
+                }
+            }
             reader.Read();
             if (reader.IsEmptyElement)
             {
@@ -656,6 +676,7 @@ namespace Gruppe22
             int index = _random.Next(6);
             switch (_actorType)
             {
+                case ActorType.NPC:
                 case ActorType.Player:
                     if (File.Exists("playernames.txt"))
                     {
@@ -738,12 +759,7 @@ namespace Gruppe22
                             break;
                     }
                     break;
-                case ActorType.NPC:
-                    if (File.Exists("npcnames.txt"))
-                    {
-                        _name = GenerateName("npcnames.txt");
-                    }
-                    break;
+
             }
         }
 

@@ -23,6 +23,7 @@ namespace Gruppe22
     public enum Events
     {
         ContinueGame = 0,
+        Shop,
         EndGame,
         ToggleButton,
         HideNotification,
@@ -48,9 +49,25 @@ namespace Gruppe22
         LoadFromCheckPoint,
         ExplodeProjectile,
         MoveProjectile,
-        FinishedProjectileMove
-    }
+        FinishedProjectileMove,
+        ButtonPressed
 
+    }
+    public enum Buttons
+    {
+        Close,
+        TwoPlayers,
+        SinglePlayer,
+        Settings,
+        Restart,
+        Reset,
+        NewMap,
+        Local,
+        Load,
+        LAN,
+        Credits,
+        Quit
+    }
     public enum GameStatus
     {
         Running,

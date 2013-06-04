@@ -134,6 +134,7 @@
     <Compile Include="Frontend\UI\Inventory.cs" />
     <Compile Include="Frontend\UI\KeyHandler.cs" />
     <Compile Include="Frontend\UI\Menu.cs" />
+    <Compile Include="Frontend\UI\ModifyWindow.cs" />
     <Compile Include="Frontend\UI\Notification.cs" />
     <Compile Include="Frontend\UI\NumberEntry.cs" />
     <Compile Include="Frontend\UI\Progressbar.cs" />

@@ -35,6 +35,15 @@ namespace Gruppe22
             set { _value = value; }
         }
 
+
+        public List<ItemEffect> effects
+        {
+            get
+            {
+                return _effects;
+            }
+        }
+
         public virtual void EquipItem()
         {
             if (_owner != null)
@@ -414,6 +423,78 @@ namespace Gruppe22
             }
         }
 
+        public static string PropertyToString(ItemProperty property)
+        {
+            switch (property)
+            {
+                case ItemProperty.Evade:
+                    return "Evade ";
+                    break;
+                case ItemProperty.Block:
+                    return "Block ";
+                    break;
+                case ItemProperty.Penetrate:
+                    return "Penetration ";
+                    break;
+                case ItemProperty.ReduceDamage:
+                    return "Reduce Damage ";
+                    break;
+                case ItemProperty.StealMana:
+                    return "Steal Mana ";
+                    break;
+                case ItemProperty.IceDamage:
+                    return "Ice Damage ";
+                    break;
+                case ItemProperty.FireProtect:
+                    return "Fire Protection ";
+                    break;
+                case ItemProperty.IceProtect:
+                    return "Ice Protection ";
+                    break;
+                case ItemProperty.DestroyWeapon:
+                    return "Destroy Weapon ";
+                    break;
+                case ItemProperty.DestroyArmor:
+                    return "Destroy Armor ";
+                    break;
+                case ItemProperty.Resist:
+                    return "Resist Effect ";
+                    break;
+                case ItemProperty.Damage:
+                    return "Physical Damage ";
+                    break;
+                case ItemProperty.FireDamage:
+                    return "Fire Damage ";
+                    break;
+
+                case ItemProperty.StealHealth:
+                    return "Steal Health ";
+                    break;
+
+                case ItemProperty.MaxHealth:
+                    return "Max. Health ";
+                    break;
+                case ItemProperty.Mana:
+                    return "Mana ";
+                    break;
+                case ItemProperty.MaxMana:
+                    return "Max. Mana ";
+                    break;
+                case ItemProperty.Health:
+                    return "Health ";
+                    break;
+
+                case ItemProperty.ManaRegen:
+                    return "Mana Regeneration ";
+                    break;
+
+                case ItemProperty.HealthRegen:
+                    return "Health Regeneration ";
+                    break;
+            }
+            return "";
+        }
+
         public string abilityList
         {
             get
@@ -432,73 +513,7 @@ namespace Gruppe22
                         {
                             result += "\n<green>";
                         }
-                        switch (_effects[i].property)
-                        {
-                            case ItemProperty.Evade:
-                                result += "Evade ";
-                                break;
-                            case ItemProperty.Block:
-                                result += "Block ";
-                                break;
-                            case ItemProperty.Penetrate:
-                                result += "Penetration ";
-                                break;
-                            case ItemProperty.ReduceDamage:
-                                result += "Reduce Damage ";
-                                break;
-                            case ItemProperty.StealMana:
-                                result += "Steal Mana ";
-                                break;
-                            case ItemProperty.IceDamage:
-                                result += "Ice Damage ";
-                                break;
-                            case ItemProperty.FireProtect:
-                                result += "Fire Protection ";
-                                break;
-                            case ItemProperty.IceProtect:
-                                result += "Ice Protection ";
-                                break;
-                            case ItemProperty.DestroyWeapon:
-                                result += "Destroy Weapon ";
-                                break;
-                            case ItemProperty.DestroyArmor:
-                                result += "Destroy Armor ";
-                                break;
-                            case ItemProperty.Resist:
-                                result += "Resist Effect ";
-                                break;
-                            case ItemProperty.Damage:
-                                result += "Physical Damage ";
-                                break;
-                            case ItemProperty.FireDamage:
-                                result += "Fire Damage ";
-                                break;
-
-                            case ItemProperty.StealHealth:
-                                result += "Steal Health ";
-                                break;
-
-                            case ItemProperty.MaxHealth:
-                                result += "Max. Health ";
-                                break;
-                            case ItemProperty.Mana:
-                                result += "Mana ";
-                                break;
-                            case ItemProperty.MaxMana:
-                                result += "Max. Mana ";
-                                break;
-                            case ItemProperty.Health:
-                                result += "Health ";
-                                break;
-
-                            case ItemProperty.ManaRegen:
-                                result += "Mana Regeneration ";
-                                break;
-
-                            case ItemProperty.HealthRegen:
-                                result += "Health Regeneration ";
-                                break;
-                        }
+                        result += PropertyToString(_effects[i].property);
                         if (_effects[i].effect > 0)
                         {
                             result += "+" + _effects[i].effect.ToString();

@@ -94,6 +94,57 @@ namespace Gruppe22
 
         }
 
+
+        public void AddNPC(int amount = -1)
+        {
+            if (amount < 0) amount = 1;
+            for (int i = 0; i < amount; ++i)
+            {
+                int count = 0;
+                Path pos = new Path(1 + r.Next(_width - 2), 1 + r.Next(_height - 2));
+                while ((count < _width * height) && (pos.x > 0)
+         && (_tiles[pos.y][pos.x].overlay.Count != 0)
+         )
+                {
+                    count += 1;
+                    pos.x += 1;
+                    if (pos.x > _width - 2)
+                    {
+                        pos.x = 1;
+                        pos.y += 1;
+                    };
+                    if (pos.y > _height - 2)
+                    {
+                        pos.y = 1;
+                        pos.x = 1;
+                    }
+                    if (count >= _width * _height)
+                    {
+                        pos.x = -1;
+                        pos.y = -1;
+                    }
+                }
+
+
+                if ((pos.x >= 0) && (pos.x < _width) && (pos.y < _height) && (pos.y >= 0))
+                {
+                    NPC npc = new NPC(_content, -1, -1, -1, -1, "", r);
+                    npc.gold = 50000;
+                    npc.hasShop = true;
+                    for (count = 0; count < 20; ++count)
+                    {
+                        npc.inventory.Add(new Item(_content, r));
+                    }
+                    ActorTile NPCTile = new ActorTile(_tiles[pos.y][pos.x], npc);
+                    npc.tile = NPCTile;
+                    _tiles[pos.y][pos.x].Add(NPCTile);
+                    _actors.Add(npc);
+                }
+            }
+
+        }
+
+
         public void AddCheckpoint()
         {
             int count = 0;
@@ -938,6 +989,7 @@ namespace Gruppe22
                 AddDoors(roomNr, maxRoom, exits);
                 AddEnemies();
                 AddItems();
+                AddNPC();
                 AddCheckpoint();
                 if (roomNr == maxRoom) //maxRoom
                 {

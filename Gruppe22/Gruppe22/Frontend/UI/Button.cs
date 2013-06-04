@@ -35,7 +35,7 @@ namespace Gruppe22
         private ButtonStatus _bstat = ButtonStatus.normal;
         private bool _hidden = false;
         private string _label = "";
-        private Events _id = 0;
+        private int _id = 0;
 
         private List<Texture2D> _buttonStates = null;
         #endregion
@@ -99,7 +99,7 @@ namespace Gruppe22
             if (!_hidden) { 
             if (IsHit(Mouse.GetState().X, Mouse.GetState().Y))
             {
-                _parent.HandleEvent(false, _id, 0);
+                _parent.HandleEvent(false, Events.ButtonPressed, _id);
                 return true;
             }
             }
@@ -110,7 +110,7 @@ namespace Gruppe22
             if (!_hidden) { 
             if (_focus && ((k == Keys.Space) || (k == Keys.Enter)))
             {
-                _parent.HandleEvent(false, _id, 0);
+                _parent.HandleEvent(false, Events.ButtonPressed, _id);
                 return true;
             }
             }
@@ -120,7 +120,7 @@ namespace Gruppe22
 
         public override void HandleEvent(bool downstream, Events eventID, params object[] data)
         {
-            if ((eventID == Events.ToggleButton) && ((Events)data[0] == _id))
+            if ((eventID == Events.ToggleButton) && ((int)data[0] == _id))
             {
                 stayDown = (bool)data[1];
             }
@@ -237,7 +237,7 @@ namespace Gruppe22
         /// <param name="button"></param>
         /// <param name="bpressed"></param>
         /// <param name="bmouseon"></param>
-        public Button(IHandleEvent parent, SpriteBatch spriteBatch, ContentManager content, Rectangle displayRect, string normal, string active, string pressed, Events id)
+        public Button(IHandleEvent parent, SpriteBatch spriteBatch, ContentManager content, Rectangle displayRect, string normal, string active, string pressed, int id)
             : base(parent, spriteBatch, content, displayRect)
         {
             _buttonStates = new List<Texture2D>();
@@ -257,7 +257,7 @@ namespace Gruppe22
         /// <param name="button"></param>
         /// <param name="bpressed"></param>
         /// <param name="bmouseon"></param>
-        public Button(IHandleEvent parent, SpriteBatch spriteBatch, ContentManager content, Rectangle displayRect, string label, Events id, bool staydown = false)
+        public Button(IHandleEvent parent, SpriteBatch spriteBatch, ContentManager content, Rectangle displayRect, string label, int id, bool staydown = false)
             : base(parent, spriteBatch, content, displayRect)
         {
             _background = _content.Load<Texture2D>("Minimap");

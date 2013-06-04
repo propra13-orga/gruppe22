@@ -218,6 +218,23 @@ namespace Gruppe22
         /// <summary>
         /// Determine whether an enemy is standing on the current tile
         /// </summary>
+        public bool hasNPC
+        {
+            get
+            {
+                bool result = false;
+                int count = 0;
+                while ((!result) && (count < _overlay.Count))
+                {
+                    result = ((_overlay[count] is ActorTile) && (((ActorTile)_overlay[count]).enabled) && (((ActorTile)_overlay[count]).actor is NPC));
+                    ++count;
+                }
+                return result;
+            }
+        }
+        /// <summary>
+        /// Determine whether an enemy is standing on the current tile
+        /// </summary>
         public bool hasEnemy
         {
             get

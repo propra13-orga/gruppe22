@@ -80,7 +80,7 @@ namespace Gruppe22
 
 
                 Direction dir = Direction.None;
-                Coords closestEnemy = map.ClosestEnemy(coords, 6);
+                Coords closestEnemy = map.ClosestEnemy(coords, 6, !(actor is NPC), !(actor is NPC));
 
                 if (closestEnemy.x > -1) // There is an enemy close by
                 {
@@ -110,7 +110,7 @@ namespace Gruppe22
                         }
                     }
 
-                    if (actor.health < actor.maxHealth / 4)
+                    if ((actor.health < actor.maxHealth / 4) || (actor is NPC))
                     {
                         // Low health => try to flee
                         //System.Diagnostics.Debug.WriteLine("=> Flee!");
@@ -132,29 +132,31 @@ namespace Gruppe22
                 {
                     // Nobody close by, just wander aimlessly
                     // TODO: Try to grab nearby items
-
-                    dir = (Direction)_random.Next(4);
-                    int count = 1;
-                    while (((dir == Map.OppositeDirection(_lastDir)) || (!map.TileByCoords(Map.DirectionTile(coords, dir)).canEnter)) && (count < 9))
+                    if (!(actor is NPC))
                     {
-                        dir = Map.NextDirection(dir);
-                        count += 1;
+                        dir = (Direction)_random.Next(4);
+                        int count = 1;
+                        while (((dir == Map.OppositeDirection(_lastDir)) || (!map.TileByCoords(Map.DirectionTile(coords, dir)).canEnter)) && (count < 9))
+                        {
+                            dir = Map.NextDirection(dir);
+                            count += 1;
+                        }
+                        if ((dir == Map.OppositeDirection(_lastDir)) || (!map.TileByCoords(Map.DirectionTile(coords, dir)).canEnter)) dir = Direction.None;
+
+
+                        if (dir == Direction.None)
+                        {
+                            dir = (Direction)_random.Next(4);
+                        }
+
                     }
-                    if ((dir == Map.OppositeDirection(_lastDir)) || (!map.TileByCoords(Map.DirectionTile(coords, dir)).canEnter)) dir = Direction.None;
-
                 }
-
-                if (dir == Direction.None)
-                {
-                    dir = (Direction)_random.Next(4);
-                }
-
-
                 if (dir != Direction.None)
                 {
                     ((IHandleEvent)parent).HandleEvent(false, Events.MoveActor, actor.id, dir);
                     //System.Diagnostics.Debug.WriteLine("#####" + dir + "######");
                 }
+
             }
         }
 
@@ -168,8 +170,8 @@ namespace Gruppe22
         public override void Update(Microsoft.Xna.Framework.GameTime gameTime)
         {
             _elapsed += gameTime.ElapsedGameTime.Milliseconds;
-            if (enabled 
-                && !(actor is Player) 
+            if (enabled
+                && !(actor is Player)
                 && (!_working))
             {
                 if (actor.isDead)
@@ -179,7 +181,6 @@ namespace Gruppe22
                 else
                 {
                     ConsiderMoves();
-
                 }
             }
         }

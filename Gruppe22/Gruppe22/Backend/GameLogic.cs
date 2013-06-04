@@ -271,7 +271,7 @@ namespace Gruppe22
                         }
 
                         // Apply trap damage
-                        if ((_map1[target.x, target.y].hasTrap) && _map1[target.x, target.y].trap.status == TrapState.On)
+                        if (((_map1[target.x, target.y].hasTrap) && _map1[target.x, target.y].trap.status == TrapState.On) && !(_map1.actors[id] is NPC))
                         {
                             _TrapDamage(target);
                         }
@@ -384,6 +384,9 @@ namespace Gruppe22
                 case Events.FinishedProjectileMove:
                     ((ProjectileTile)data[0]).NextTile(true);
                     break;
+                case Events.Shop:
+                    ShowShopWindow(_map1.actors[0], (Actor)data[0]);
+                    break;
                 case Events.MoveActor:
                     {
                         int id = (int)data[0];
@@ -400,10 +403,14 @@ namespace Gruppe22
 
                             _mainmap1.ChangeDir(id, dir); // Look into different direction
 
-
-                            if ((_map1[target.x, target.y].hasEnemy) || (_map1[target.x, target.y].hasPlayer))
+                            Actor a = _map1[target.x, target.y].firstActor;
+                            if ((a is NPC) && (_map1.actors[id] is Player))
                             {
-                                if ((_map1.firstActorID(target.x, target.y) != id) && (!_map1[target.x, target.y].firstActor.isDead))
+                                (a as NPC).Interact();
+                            }
+                            if ((a is Enemy || a is Player) && !(_map1.actors[id] is NPC))
+                            {
+                                if ((a.id != id) && (!a.isDead))
                                 {
                                     HandleEvent(true, Events.Attack, id, dir);
                                     _map1.actors[id].locked = true;

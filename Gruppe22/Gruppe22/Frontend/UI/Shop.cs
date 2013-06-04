@@ -10,6 +10,14 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Gruppe22
 {
+    public enum ShopButtons
+    {
+        Buy = 1,
+        Sell = 2,
+        Modify = 3,
+        Leave = 4,
+        Steal = 5
+    }
     public class Shop : Window
     {
         #region Private Fields
@@ -307,13 +315,13 @@ namespace Gruppe22
                     if ((_selected1 != _top1 - clicked + 1) && (_top1 - clicked - 1 < _seller.inventory.Count))
                     {
                         _steal.Show();
+                        _selected1 = _top1 - clicked - 1;
 
                         if (_buyer.gold > _seller.inventory[_selected1].value)
                             _buy.Show();
                         else
                             _buy.Hide();
 
-                        _selected1 = _top1 - clicked - 1;
                     }
                     else
                     {
@@ -357,81 +365,122 @@ namespace Gruppe22
         {
             switch (eventID)
             {
-                case Events.Player2:
-                    if (_selected2 > -1)
+                case Events.ButtonPressed:
+                    switch ((ShopButtons)(int)data[0])
                     {
-                        Item tmp = _buyer.inventory[_selected2];
-                        _buyer.gold += tmp.value;
-                        _seller.gold -= tmp.value;
-                        _buyergold.value = _buyer.gold;
-                        _sellergold.value = _seller.gold;
-                        if (tmp.equipped) tmp.EquipItem();
-                        _buyer.inventory.Remove(tmp);
-                        _seller.inventory.Add(tmp);
-                        if (_selected2 + 1 > _buyer.inventory.Count)
-                        {
-                            if (_buyer.inventory.Count > 0)
+                        case ShopButtons.Sell:
+                            if (_selected2 > -1)
                             {
-                                _selected2 -= 1;
-                            }
-                            else
-                            {
-                                _selected2 = -1;
+                                Item tmp = _buyer.inventory[_selected2];
+                                _buyer.gold += tmp.value;
+                                _seller.gold -= tmp.value;
+                                _buyergold.value = _buyer.gold;
+                                _sellergold.value = _seller.gold;
+                                if (tmp.equipped) tmp.EquipItem();
+                                _buyer.inventory.Remove(tmp);
+                                _seller.inventory.Add(tmp);
+                                if (_selected2 + 1 > _buyer.inventory.Count)
+                                {
+                                    if (_buyer.inventory.Count > 0)
+                                    {
+                                        _selected2 -= 1;
 
-                                _sell.Hide();
-                                _modify.Hide();
+                                        if (_seller.gold > _buyer.inventory[_selected2].value)
+                                            _sell.Show();
+                                        else
+                                            _sell.Hide();
+
+
+                                    }
+                                    else
+                                    {
+                                        _selected2 = -1;
+
+                                        _sell.Hide();
+                                        _modify.Hide();
+                                    }
+                                    if (_selected1 > -1)
+                                        if (_buyer.gold > _seller.inventory[_selected1].value)
+                                            _buy.Show();
+                                        else
+                                            _buy.Hide();
+                                }
+
                             }
-                        }
-                    }
-                    break;
-                case Events.Player1:
-                    if (_selected1 > -1)
-                    {
-                        Item tmp = _seller.inventory[_selected1];
-                        _buyer.gold -= tmp.value;
-                        _seller.gold += tmp.value;
-                        _buyergold.value = _buyer.gold;
-                        _sellergold.value = _seller.gold;
-                        if (tmp.equipped) tmp.EquipItem();
-                        _seller.inventory.Remove(tmp);
-                        _buyer.inventory.Add(tmp);
-                        if (_selected1 + 1 > _seller.inventory.Count)
-                        {
-                            if (_seller.inventory.Count > 0)
+                            break;
+                        case ShopButtons.Buy:
+                            if (_selected1 > -1)
                             {
-                                _selected1 -= 1;
+                                Item tmp = _seller.inventory[_selected1];
+                                _buyer.gold -= tmp.value;
+                                _seller.gold += tmp.value;
+                                _buyergold.value = _buyer.gold;
+                                _sellergold.value = _seller.gold;
+                                if (tmp.equipped) tmp.EquipItem();
+                                _seller.inventory.Remove(tmp);
+                                _buyer.inventory.Add(tmp);
+                                if (_selected1 + 1 > _seller.inventory.Count)
+                                {
+                                    if (_seller.inventory.Count > 0)
+                                    {
+                                        _selected1 -= 1;
+                                        if (_buyer.gold > _seller.inventory[_selected1].value)
+                                            _buy.Show();
+                                        else
+                                            _buy.Hide();
+                                    }
+                                    else
+                                    {
+                                        _selected1 = -1;
+                                        _buy.Hide();
+                                        _steal.Hide();
+                                    }
+                                }
+                                if (_selected2 > -1)
+                                    if (_seller.gold > _buyer.inventory[_selected2].value)
+                                        _sell.Show();
+                                    else
+                                        _sell.Hide();
                             }
-                            else
+                            break;
+                        case ShopButtons.Leave: // Cancel
+                            _parent.HandleEvent(false, Events.ContinueGame, null);
+                            break;
+                        case ShopButtons.Modify:
+                            if (_selected2 > -1)
                             {
-                                _selected1 = -1;
-                                _buy.Hide();
-                                _steal.Hide();
+                                _children.Add(new ModifyWindow(this, _spriteBatch, _content, new Rectangle(0, 0, 200, 100), _buyer.inventory[_selected2]));
                             }
-                        }
-                    }
-                    break;
-                case Events.Settings:
-                    break;
-                case Events.Attack:
-                    if (_selected1 > -1)
-                    {
-                        Item tmp = _seller.inventory[_selected1];
-                        if (tmp.equipped) tmp.EquipItem();
-                        _seller.inventory.Remove(tmp);
-                        _buyer.inventory.Add(tmp);
-                        if (_selected1 + 1 > _seller.inventory.Count)
-                        {
-                            if (_seller.inventory.Count > 0)
+                            break;
+
+                        case ShopButtons.Steal:
+                            if (_selected1 > -1)
                             {
-                                _selected1 -= 1;
+                                Item tmp = _seller.inventory[_selected1];
+                                if (tmp.equipped) tmp.EquipItem();
+                                _seller.inventory.Remove(tmp);
+                                _buyer.inventory.Add(tmp);
+                                if (_selected1 + 1 > _seller.inventory.Count)
+                                {
+                                    if (_seller.inventory.Count > 0)
+                                    {
+                                        _selected1 -= 1;
+
+                                        if (_buyer.gold > _seller.inventory[_selected1].value)
+                                            _buy.Show();
+                                        else
+                                            _buy.Hide();
+
+                                    }
+                                    else
+                                    {
+                                        _selected1 = -1;
+                                        _buy.Hide();
+                                        _steal.Hide();
+                                    }
+                                }
                             }
-                            else
-                            {
-                                _selected1 = -1;
-                                _buy.Hide();
-                                _steal.Hide();
-                            }
-                        }
+                            break;
                     }
                     break;
                 default:
@@ -456,13 +505,13 @@ namespace Gruppe22
             _arrows = _content.Load<Texture2D>("Arrows");
             _rows = (int)((_displayRect.Height - 65) / (_height + 3));
             _font = _content.Load<SpriteFont>("SmallFont");
-            _steal = new Button(this, _spriteBatch, _content, new Rectangle(_displayRect.Left + 5, _displayRect.Bottom - 35, 80, 30), "Steal", Events.Attack, false);
-            _buy = new Button(this, _spriteBatch, _content, new Rectangle(_displayRect.Left + 90, _displayRect.Bottom - 35, 80, 30), "Buy", Events.Player1, false);
-            _sell = new Button(this, _spriteBatch, _content, new Rectangle(_displayRect.Right - 170, _displayRect.Bottom - 35, 80, 30), "Sell", Events.Player2, false);
-            _modify = new Button(this, _spriteBatch, _content, new Rectangle(_displayRect.Right - 85, _displayRect.Bottom - 35, 80, 30), "Modify", Events.Settings, false);
+            _steal = new Button(this, _spriteBatch, _content, new Rectangle(_displayRect.Left + 5, _displayRect.Bottom - 35, 80, 30), "Steal", (int)ShopButtons.Steal, false);
+            _buy = new Button(this, _spriteBatch, _content, new Rectangle(_displayRect.Left + 90, _displayRect.Bottom - 35, 80, 30), "Buy", (int)ShopButtons.Buy, false);
+            _sell = new Button(this, _spriteBatch, _content, new Rectangle(_displayRect.Right - 170, _displayRect.Bottom - 35, 80, 30), "Sell", (int)ShopButtons.Sell, false);
+            _modify = new Button(this, _spriteBatch, _content, new Rectangle(_displayRect.Right - 85, _displayRect.Bottom - 35, 80, 30), "Modify", (int)ShopButtons.Modify, false);
             _sellergold = new NumberEntry(this, _spriteBatch, _content, new Rectangle(_displayRect.Left + (_displayRect.Width - 80) / 2 - 70, _displayRect.Top + 12, 102, 20), "Gold", _seller.gold, "Seller's gold", 3, false);
             _buyergold = new NumberEntry(this, _spriteBatch, _content, new Rectangle(_displayRect.Left + (_displayRect.Width - 107), _displayRect.Top + 12, 102, 20), "Gold", _buyer.gold, "Buyer's gold", 3, false);
-            _leave = new Button(this, _spriteBatch, _content, new Rectangle(_displayRect.Left + (_displayRect.Width - 80) / 2, _displayRect.Bottom - 35, 80, 30), "Leave", Events.ContinueGame, false);
+            _leave = new Button(this, _spriteBatch, _content, new Rectangle(_displayRect.Left + (_displayRect.Width - 80) / 2, _displayRect.Bottom - 35, 80, 30), "Leave", (int)ShopButtons.Leave, false);
 
             _children.Add(_steal);
             _children.Add(_buy);

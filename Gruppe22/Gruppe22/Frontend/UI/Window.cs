@@ -168,21 +168,74 @@ namespace Gruppe22
             {
                 foreach (UIElement child in _children)
                 {
-                    child.HandleEvent(true, eventID, data);
+                    switch (eventID)
+                    {
+                        default:
+                            child.HandleEvent(true, eventID, data);
+                            break;
+                    }
                 }
             }
             else
             {
-                if (eventID == Events.RequestFocus)
+                switch (eventID)
                 {
-                    _children[_focusID].focus = false;
-                    ((UIElement)data[0]).focus = true;
-                    for (int i = 0; i < _children.Count; ++i)
-                    {
-                        if (_children[i] == data[0]) { _focusID = i; break; }
-                    }
+                    case Events.ButtonPressed:
+                            switch ((Buttons)data[0])
+                            {
+                                case Buttons.Close:
+                                    _parent.HandleEvent(false, Events.ContinueGame, null);
+                                    break;
+                                case Buttons.Credits:
+                                    _parent.HandleEvent(false, Events.About, null);
+                                    break;
+                                case Buttons.LAN:
+                                    _parent.HandleEvent(false, Events.LAN, null);
+                                    break;
+                                case Buttons.Load:
+                                    _parent.HandleEvent(false, Events.LoadFromCheckPoint, null);
+                                    break;
+                                case Buttons.Local:
+                                    _parent.HandleEvent(false, Events.Local, null);
+                                    break;
+                                case Buttons.NewMap:
+                                    _parent.HandleEvent(false, Events.NewMap, null);
+                                    break;
+                                case Buttons.Quit:
+                                    _parent.HandleEvent(false, Events.EndGame, null);
+                                    break;
+                                case Buttons.Reset:
+                                    _parent.HandleEvent(false, Events.ResetGame, null);
+                                    break;
+                                case Buttons.Restart:
+                                    _parent.HandleEvent(false, Events.ResetGame, null);
+                                    break;
+                                case Buttons.Settings:
+                                    _parent.HandleEvent(false, Events.Settings, null);
+                                    break;
+                                case Buttons.SinglePlayer:
+                                    _parent.HandleEvent(false, Events.Player1, null);
+                                    break;
+                                case Buttons.TwoPlayers:
+                                    _parent.HandleEvent(false, Events.Player2, null);
+                                    break;
+                                default:
+                                    _parent.HandleEvent(false, eventID, data);
+                                    break;
+                            }
+                        break;
+                    case Events.RequestFocus:
+                        _children[_focusID].focus = false;
+                        ((UIElement)data[0]).focus = true;
+                        for (int i = 0; i < _children.Count; ++i)
+                        {
+                            if (_children[i] == data[0]) { _focusID = i; break; }
+                        }
+                        break;
+                    default:
+                        _parent.HandleEvent(false, eventID, data);
+                        break;
                 }
-                _parent.HandleEvent(false, eventID, data);
             }
         }
         #endregion

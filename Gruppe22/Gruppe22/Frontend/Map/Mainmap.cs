@@ -1065,9 +1065,19 @@ namespace Gruppe22
             _actors.Clear();
             for (int count = 0; count < _map.actorPositions.Count; ++count)
             {
+                switch (_map.actors[count].actorType)
+                {
+                    case ActorType.Player:
+                        _actors.Add(new ActorView(_camera, this, count, _content, _map2screen(_map.actorPositions[count]), "Content\\player.xml", 3, _map.actors[count].health > 0));
+                        break;
+                    case ActorType.Enemy:
+                        _actors.Add(new ActorView(_camera, this, count, _content, _map2screen(_map.actorPositions[count]), "Content\\skeleton.xml", 3, _map.actors[count].health > 0));
+                        break;
+                    case ActorType.NPC:
+                        _actors.Add(new ActorView(_camera, this, count, _content, _map2screen(_map.actorPositions[count]), "Content\\luigi.xml", 12, _map.actors[count].health > 0));
+                        break;
 
-                if (_actors.Count != _playerID) _actors.Add(new ActorView(_camera,this, count, _content, _map2screen(_map.actorPositions[count]), "Content\\skeleton.xml", 2, _map.actors[count].health > 0));
-                else _actors.Add(new ActorView(_camera, this, count, _content, _map2screen(_map.actorPositions[count]), "Content\\player.xml", 5));
+                }
             }
             _camera.position = new Vector2(-38 - _actors[_playerID].position.x, -30 - _actors[_playerID].position.y);
         }
@@ -1304,24 +1314,24 @@ namespace Gruppe22
             skel.Save("Content\\skeleton.xml");
 
 
-            ActorView luigi = new ActorView(_camera, this, 0, _content, Coords.Zero, "");
+            ActorView luigi = new ActorView(_camera, this, 0, _content, Coords.Zero, "", 2, true, 128, 128);
             luigi.Add(Activity.Walk, Direction.DownRight, "luigi-walk", new Coords(0, 0), 8, 1);
-            luigi.Add(Activity.Walk, Direction.UpRight, "luigi-walk", new Coords(0, 96), 8, 1);
-            luigi.Add(Activity.Walk, Direction.Right, "luigi-walk", new Coords(0, 192), 8, 1);
-            luigi.Add(Activity.Walk, Direction.Up, "luigi-walk", new Coords(0, 288), 8, 1);
-            luigi.Add(Activity.Walk, Direction.DownLeft, "luigi-walk", new Coords(0, 384), 8, 1);
-            luigi.Add(Activity.Walk, Direction.Down, "luigi-walk", new Coords(0, 480), 8, 1);
-            luigi.Add(Activity.Walk, Direction.Left, "luigi-walk", new Coords(0, 576), 8, 1);
-            luigi.Add(Activity.Walk, Direction.UpLeft, "luigi-walk", new Coords(0, 672), 8, 1);
+            luigi.Add(Activity.Walk, Direction.UpRight, "luigi-walk", new Coords(0, 128), 8, 1);
+            luigi.Add(Activity.Walk, Direction.Right, "luigi-walk", new Coords(0, 256), 8, 1);
+            luigi.Add(Activity.Walk, Direction.Up, "luigi-walk", new Coords(0, 384), 8, 1);
+            luigi.Add(Activity.Walk, Direction.DownLeft, "luigi-walk", new Coords(0, 512), 8, 1);
+            luigi.Add(Activity.Walk, Direction.Down, "luigi-walk", new Coords(0, 640), 8, 1);
+            luigi.Add(Activity.Walk, Direction.Left, "luigi-walk", new Coords(0, 768), 8, 1);
+            luigi.Add(Activity.Walk, Direction.UpLeft, "luigi-walk", new Coords(0, 896), 8, 1);
 
             luigi.Add(Activity.Talk, Direction.DownRight, "luigi-talk", new Coords(0, 0), 8, 1);
-            luigi.Add(Activity.Talk, Direction.UpRight, "luigi-talk", new Coords(0, 96), 8, 1);
-            luigi.Add(Activity.Talk, Direction.Right, "luigi-talk", new Coords(0, 192), 8, 1);
-            luigi.Add(Activity.Talk, Direction.Up, "luigi-talk", new Coords(0, 288), 8, 1);
-            luigi.Add(Activity.Talk, Direction.DownLeft, "luigi-talk", new Coords(0, 384), 8, 1);
-            luigi.Add(Activity.Talk, Direction.Down, "luigi-talk", new Coords(0, 480), 8, 1);
-            luigi.Add(Activity.Talk, Direction.Left, "luigi-talk", new Coords(0, 576), 8, 1);
-            luigi.Add(Activity.Talk, Direction.UpLeft, "luigi-talk", new Coords(0, 672), 8, 1);
+            luigi.Add(Activity.Talk, Direction.UpRight, "luigi-talk", new Coords(0, 128), 8, 1);
+            luigi.Add(Activity.Talk, Direction.Right, "luigi-talk", new Coords(0, 256), 8, 1);
+            luigi.Add(Activity.Talk, Direction.Up, "luigi-talk", new Coords(0, 384), 8, 1);
+            luigi.Add(Activity.Talk, Direction.DownLeft, "luigi-talk", new Coords(0, 512), 8, 1);
+            luigi.Add(Activity.Talk, Direction.Down, "luigi-talk", new Coords(0, 640), 8, 1);
+            luigi.Add(Activity.Talk, Direction.Left, "luigi-talk", new Coords(0, 768), 8, 1);
+            luigi.Add(Activity.Talk, Direction.UpLeft, "luigi-talk", new Coords(0, 896), 8, 1);
 
 
             luigi.Save("Content\\luigi.xml");

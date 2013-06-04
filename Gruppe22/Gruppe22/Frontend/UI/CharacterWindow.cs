@@ -230,7 +230,7 @@ namespace Gruppe22
             _children.Add(_abilityPoints);
             _children.Add(_skills);
             _children.Add(_level);
-            _children.Add(new Button(this, _spriteBatch, _content, new Rectangle(_displayRect.Left + (_displayRect.Width - 100) / 2, _displayRect.Top + _displayRect.Height - 45, 100, 30), "Ok", Events.ContinueGame, false));
+            _children.Add(new Button(this, _spriteBatch, _content, new Rectangle(_displayRect.Left + (_displayRect.Width - 100) / 2, _displayRect.Top + _displayRect.Height - 45, 100, 30), "Ok", (int)Buttons.Close, false));
             _focusID = _children.Count-1;
             ChangeFocus();
         }
