@@ -15,6 +15,8 @@ namespace Gruppe22
         public Player(ContentManager content, int health = 100, int armour = 30, int damage = 20, int maxHealth = -1, string name = "")
             : base(content, ActorType.Player, health, armour, damage, maxHealth, name)
         {
+            _actorType = ActorType.Player;
+            _animationFile = "player";
         }
     }
 }

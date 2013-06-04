@@ -80,7 +80,7 @@ namespace Gruppe22
 
 
                 Direction dir = Direction.None;
-                Coords closestEnemy = map.ClosestEnemy(coords, 6, !(actor is NPC), !(actor is NPC));
+                Coords closestEnemy = map.ClosestEnemy(coords, actor.viewRange, !(actor is NPC), !(actor is NPC));
 
                 if (closestEnemy.x > -1) // There is an enemy close by
                 {

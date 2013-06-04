@@ -13,7 +13,6 @@ namespace Gruppe22
         #region Private Fields
         private Texture2D _mapIcon;
         private Map _map;
-        private int _renderscope = 4;
         #endregion
 
         #region Public Methods
@@ -61,7 +60,7 @@ namespace Gruppe22
                                 }
                                 else
                                 {
-                                    if ((_map[x, y].hasEnemy)&&(_map.actors[0].tile.coords.DistanceFrom(x,y)<_renderscope))
+                                    if ((_map[x, y].hasEnemy) && (_map.actors[0].tile.coords.DistanceFrom(x, y) < _map.actors[0].viewRange))
                                     {
                                         _spriteBatch.Draw(_mapIcon, new Rectangle(_displayRect.Left + x * 16, _displayRect.Top + y * 16, 16, 16), new Rectangle(64, 16, 16, 16), Color.White);
                                     }
@@ -129,7 +128,7 @@ namespace Gruppe22
 
         public void MoveCamera(Coords coords)
         {
-            _map.Uncover(_map.actors[0].tile.coords, _renderscope);
+            _map.Uncover(_map.actors[0].tile.coords, _map.actors[0].viewRange);
             _camera.position = new Vector2(-(_displayRect.Left + coords.x * 16) - 8, -(_displayRect.Top + coords.y * 16) - 8);
         }
 
@@ -168,7 +167,6 @@ namespace Gruppe22
             _mapIcon = _content.Load<Texture2D>("Minimap");
             _camera.rotate = -45.0f;
             Zoom = 0.9f;
-            _map.Uncover(_map.actors[0].tile.coords, _renderscope);
 
         }
     }

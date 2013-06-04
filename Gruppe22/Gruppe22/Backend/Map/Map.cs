@@ -43,6 +43,8 @@ namespace Gruppe22
         protected int _level;
         protected string _name;
         protected string _dungeonname;
+        protected string _wallFile = "wall1";
+        protected string _floorFile = "floor1";
 
         protected int _id;
 
@@ -90,6 +92,22 @@ namespace Gruppe22
             {
                 _level = value;
             }
+        }
+
+
+
+        public string floorFile
+        {
+            get { return _floorFile; }
+            set { _floorFile = value; }
+        }
+
+
+
+        public string wallFile
+        {
+            get { return _wallFile; }
+            set { _wallFile = value; }
         }
 
         public string name
@@ -641,7 +659,8 @@ namespace Gruppe22
             if (xmlr.GetAttribute("name") != null) _name = xmlr.GetAttribute("name");
             if (xmlr.GetAttribute("level") != null) _level = int.Parse(xmlr.GetAttribute("level"));
             if (xmlr.GetAttribute("dungeon") != null) _dungeonname = xmlr.GetAttribute("dungeon");
-
+            if (xmlr.GetAttribute("floor") != null) _floorFile = xmlr.GetAttribute("floor");
+            if (xmlr.GetAttribute("wall") != null) _wallFile = xmlr.GetAttribute("wall");
             xmlr.ReadStartElement("GameMap");//GameMap
 
             for (int row = 0; row < _height; ++row)
@@ -796,6 +815,7 @@ namespace Gruppe22
             {
                 _actors[i].id = i;
             }
+            Uncover(actors[0].tile.coords, actors[0].viewRange);
         }
 
         public void DebugMap()
@@ -834,6 +854,8 @@ namespace Gruppe22
             xmlw.WriteAttributeString("name", _name);
             xmlw.WriteAttributeString("level", _level.ToString());
             xmlw.WriteAttributeString("dungeon", _dungeonname);
+            xmlw.WriteAttributeString("floor", _floorFile);
+            xmlw.WriteAttributeString("wall", _wallFile);
 
             foreach (List<FloorTile> ltiles in _tiles)
             {

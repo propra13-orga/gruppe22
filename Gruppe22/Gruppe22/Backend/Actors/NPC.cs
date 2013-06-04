@@ -47,6 +47,7 @@ namespace Gruppe22
             : base(content, ActorType.NPC, health, armor, damage, maxHealth, name, r)
         {
             _actorType = ActorType.NPC;
+            _animationFile = "luigi";
         }
     }
 }

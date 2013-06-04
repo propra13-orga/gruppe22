@@ -245,10 +245,7 @@ namespace Gruppe22
         private Map _map;
 
         private TileTooltip _tooltip = null;
-        /// <summary>
-        /// Number of tiles to render (Square with player in center)
-        /// </summary>
-        private int _renderScope = 4;
+
         /// <summary>
         /// Basic texture set (for drawing lines
         /// </summary>
@@ -395,8 +392,8 @@ namespace Gruppe22
                             null,
                             _camera.matrix);
                 _spriteBatch.Draw(_circle, new Rectangle(
-                    (int)(_actors[_playerID].position.x + 1) - 250 * _renderScope,
-                    (int)(_actors[_playerID].position.y + 1) - 250 * _renderScope, 520 * _renderScope, 520 * _renderScope), Color.White);
+                    (int)(_actors[_playerID].position.x + 1) - 250 * _map.actors[_playerID].viewRange,
+                    (int)(_actors[_playerID].position.y + 1) - 250 * _map.actors[_playerID].viewRange, 520 * _map.actors[_playerID].viewRange, 520 * _map.actors[_playerID].viewRange), Color.White);
                 _spriteBatch.End();
 
 
@@ -926,9 +923,9 @@ namespace Gruppe22
             //            System.Diagnostics.Debug.WriteLine((Math.Max(currentPos.y - _renderScope, 0)) + " " + (Math.Min(currentPos.y + _renderScope, _map.height)));
             //          System.Diagnostics.Debug.WriteLine((Math.Max(currentPos.x - _renderScope, 0)) + " " + (Math.Min(currentPos.x + _renderScope, _map.height)));
 
-            for (int y = (Math.Max(currentPos.y - _renderScope, 0)); y < (Math.Min(currentPos.y + _renderScope + 1, _map.height)); ++y)
+            for (int y = (Math.Max(currentPos.y - _map.actors[_playerID].viewRange, 0)); y < (Math.Min(currentPos.y + _map.actors[_playerID].viewRange + 1, _map.height)); ++y)
             {
-                for (int x = (Math.Min(currentPos.x + _renderScope + 1, _map.width)); x >= (Math.Max(currentPos.x - _renderScope, 0)); --x)
+                for (int x = (Math.Min(currentPos.x + _map.actors[_playerID].viewRange + 1, _map.width)); x >= (Math.Max(currentPos.x - _map.actors[_playerID].viewRange, 0)); --x)
                 {
                     _drawWall(GetWallStyle(x, y), _tileRect(new Vector2(x + 1, y - 1), true), false, ((y == (int)_highlightedTile.y) && (x == (int)_highlightedTile.x)));
 
@@ -952,9 +949,9 @@ namespace Gruppe22
         private void _drawFloor()
         {
             Coords currentPos = _map.actors[_playerID].tile.coords;
-            for (int y = (Math.Max(currentPos.y - _renderScope, 0)); y < (Math.Min(currentPos.y + _renderScope + 1, _map.height)); ++y)
+            for (int y = (Math.Max(currentPos.y - _map.actors[_playerID].viewRange, 0)); y < (Math.Min(currentPos.y + _map.actors[_playerID].viewRange + 1, _map.height)); ++y)
             {
-                for (int x = (Math.Max(currentPos.x - _renderScope, 0)); x < (Math.Min(currentPos.x + _renderScope + 1, _map.width)); ++x)
+                for (int x = (Math.Max(currentPos.x - _map.actors[_playerID].viewRange, 0)); x < (Math.Min(currentPos.x + _map.actors[_playerID].viewRange + 1, _map.width)); ++x)
                 {
                     WallDir dir = GetWallStyle(x, y, false, 0);
                     switch (dir)

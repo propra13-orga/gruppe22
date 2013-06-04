@@ -37,6 +37,13 @@ namespace Gruppe22
             xmlw.WriteStartElement("GameMap");
             xmlw.WriteAttributeString("width", _width.ToString());
             xmlw.WriteAttributeString("height", _height.ToString());
+            xmlw.WriteAttributeString("name", _name);
+            xmlw.WriteAttributeString("level", _level.ToString());
+            xmlw.WriteAttributeString("dungeon", _dungeonname);
+            xmlw.WriteAttributeString("floor", _floorFile);
+            xmlw.WriteAttributeString("wall", _wallFile);
+
+
             //_tiles[0][0].overlay.Add(new TeleportTile("map2.xml", new Microsoft.Xna.Framework.Vector2(0,0)));//test
             foreach (List<GeneratorTile> ltiles in _tiles)
             {
@@ -991,6 +998,8 @@ namespace Gruppe22
                 AddItems();
                 AddNPC();
                 AddCheckpoint();
+                GenerateRoomName();
+                GenerateDungeon();
                 if (roomNr == maxRoom) //maxRoom
                 {
                     AddTarget();

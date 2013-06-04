@@ -23,7 +23,6 @@ namespace Gruppe22
         protected ActorType _actorType;
         protected int _id = 0;
         protected string _name = "";
-        protected string _animationFile = "";
         protected List<Item> _inventory = null;
         //protected int _deadcounter = 0;
         protected int _mana = 0;
@@ -55,6 +54,8 @@ namespace Gruppe22
         protected int _abilityPoints = 0;
         protected int _skills = 0;
         protected ContentManager _content;
+        private int _viewRange = 4;
+        protected string _animationFile = "player";
         #endregion
 
         #region Public Fields
@@ -63,6 +64,17 @@ namespace Gruppe22
             get { return _deadcounter; }
             set { _deadcounter = value; }
         }*/
+
+        public int viewRange
+        {
+            get
+            {
+                return _viewRange;
+            }
+            set {
+                _viewRange = value;
+        }
+        }
 
         public bool locked
         {
@@ -536,6 +548,7 @@ namespace Gruppe22
             writer.WriteAttributeString("evade", Convert.ToString(_evade));
             writer.WriteAttributeString("block", Convert.ToString(_block));
             writer.WriteAttributeString("penetrate", Convert.ToString(_penetrate));
+            writer.WriteAttributeString("file", Convert.ToString(_animationFile));
             writer.WriteAttributeString("healthReg", Convert.ToString(_healthReg));
             writer.WriteAttributeString("skills", Convert.ToString(_skills));
             writer.WriteAttributeString("abilityPoints", Convert.ToString(_abilityPoints));
@@ -557,6 +570,7 @@ namespace Gruppe22
             writer.WriteAttributeString("destroyWeapon", Convert.ToString(_destroyWeapon));
             writer.WriteAttributeString("destroyArmor", Convert.ToString(_destroyArmor));
             writer.WriteAttributeString("animation", Convert.ToString(_animationFile));
+            writer.WriteAttributeString("viewRange", Convert.ToString(_viewRange));
 
             if (actorType == ActorType.NPC)
             {
@@ -590,17 +604,55 @@ namespace Gruppe22
             _health = a.health;
             _inventory = a.inventory;
             _level = a.level;
+            _animationFile = a.animationFile;
             _manaReg = a.manaReg;
             _maxhealth = a.maxHealth;
             _maxMana = a.maxMana;
             _name = a.name;
+            _evade = a.evade;
+            _block = a.block;
+            _penetrate = a.penetrate;
+            _healthReg = a.healthReg;
+            _skills = a.skills;
+            _abilityPoints = a.abilityPoints;
+            _armor = a.armor;
+            _stealHealth = a.stealHealth;
+            _stealMana = a.stealMana;
+            _fireDamage = a.fireDamage;
+            _iceDamage = a.iceDamage;
+            _fireDefense = a.fireDefense;
+            _iceDefense = a.iceDefense;
+            _expNeeded = a.expNeeded;
+            _exp = a.exp;
+            _resist = a.resist;
+            _viewRange = a.viewRange;
+            _damage = a.damage;
+            _level = a.level;
+            _locked = a.locked;
+            _manaReg = a.manaReg;
+            _maxMana = a.maxMana;
+            _destroyWeapon = a.destroyWeapon;
+            _destroyArmor = a.destroyArmor;
 
+            if ((a.actorType == ActorType.NPC) && (actorType == ActorType.NPC))
+            {
+                NPC n = a as NPC;
+                NPC t = this as NPC;
+
+                if (a != null)
+                {
+                    t.love = n.love;
+                    t.hasShop = n.hasShop;
+                }
+            }
         }
 
         public void Load(XmlReader reader)
         {
             _name = reader.GetAttribute("name");
             _maxhealth = Convert.ToInt32(reader.GetAttribute("maxhp"));
+            if (reader.GetAttribute("file") != null) _animationFile = Convert.ToString("file");
+            if (reader.GetAttribute("viewRange") != null) _viewRange = Convert.ToInt32(reader.GetAttribute("viewRange"));
             _health = Convert.ToInt32(reader.GetAttribute("hp"));
             _level = Convert.ToInt32(reader.GetAttribute("level"));
             _mana = Convert.ToInt32(reader.GetAttribute("mana"));
@@ -795,6 +847,8 @@ namespace Gruppe22
                 _level = 0;
                 for (int counter = level; counter < 0; counter += 1)
                 {
+                    _exp = 3 * (_level) ^ 2 + 83 * (_level) + 41;
+
                     LevelUp();
                 }
             }
