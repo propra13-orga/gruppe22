@@ -103,7 +103,7 @@ namespace Gruppe22
             }
         }
 
-        public bool canFocus
+        public virtual bool canFocus
         {
             get
             {

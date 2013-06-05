@@ -120,10 +120,10 @@ namespace Gruppe22
                     {
                         _spriteBatch.Draw(_background, new Rectangle(_displayRect.Left + 5, _displayRect.Top + _lineheight*4 +8, _displayRect.Width - 10, _lineheight+12), new Rectangle(39, 6, 1, 1), Color.White);
 
-                        _spriteBatch.Draw(_background, new Rectangle(_displayRect.Left + 6, _displayRect.Top + _lineheight *4+9, _displayRect.Width - 12, _lineheight + 10), new Rectangle(39, 6, 1, 1), _button?Color.DarkBlue:Color.DarkGoldenrod);
-                        _spriteBatch.DrawString(_font, "Level up", new Vector2(_displayRect.Left + (_displayRect.Width - 60) / 2, _displayRect.Top + _lineheight * 4 + 15), _button ? Color.Black : Color.White);
+                        _spriteBatch.Draw(_background, new Rectangle(_displayRect.Left + 6, _displayRect.Top + _lineheight *4+9, _displayRect.Width - 12, _lineheight + 10), new Rectangle(39, 6, 1, 1), _button?Color.Yellow:Color.Gold);
+                        _spriteBatch.DrawString(_font, "Level up", new Vector2(_displayRect.Left + (_displayRect.Width - 60) / 2, _displayRect.Top + _lineheight * 4 + 15), Color.Black);
 
-                        _spriteBatch.DrawString(_font, "Level up", new Vector2(_displayRect.Left + (_displayRect.Width - 60) / 2 - 1, _displayRect.Top + _lineheight * 4 + 14), _button ? Color.White : Color.Black);
+                        _spriteBatch.DrawString(_font, "Level up", new Vector2(_displayRect.Left + (_displayRect.Width - 60) / 2 - 1, _displayRect.Top + _lineheight * 4 + 14),  Color.White);
                         
 
                     }

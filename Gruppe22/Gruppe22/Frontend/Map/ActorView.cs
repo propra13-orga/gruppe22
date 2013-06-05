@@ -45,6 +45,8 @@ namespace Gruppe22
         /// Movement speed (nur relevant to animation, see _animationTime below)
         /// </summary>
         private int _speed = 3;
+
+        private MapEffect _effect = null;
         /// <summary>
         /// The unique ID of the actor
         /// </summary>
@@ -80,6 +82,18 @@ namespace Gruppe22
         #endregion
 
         #region Public fields
+
+        public MapEffect effect
+        {
+            get
+            {
+                return _effect;
+            }
+            set
+            {
+                _effect = value;
+            }
+        }
         public Coords position
         {
             get
@@ -428,6 +442,7 @@ namespace Gruppe22
                         this.activity = _playAfterMove;
                         if (_playAfterMove != Activity.Walk) _playAfterMove = Activity.Walk;
                         _lock = false;
+                        _dead = false;
                     }
                     else
                     {
@@ -457,6 +472,18 @@ namespace Gruppe22
         {
             if (!_blockUpdates)
             {
+                if (_effect != null)
+                {
+                    if (_effect.finished)
+                    {
+                        _effect = null;
+                    }
+                    else
+                    {
+                        _effect.Update(gametime);
+                    }
+
+                }
                 _elapsed += gametime.ElapsedGameTime.Milliseconds;
 
                 if (_target != _position)
@@ -570,7 +597,7 @@ namespace Gruppe22
         /// <param name="controllable"></param>
         /// <param name="position"></param>
         /// <param name="sprite"></param>
-        public ActorView(Camera camera, IHandleEvent parent, int id, ContentManager content, Coords position, string filename = "", int speed = 5, bool alive = true, int width=96, int height=96)
+        public ActorView(Camera camera, IHandleEvent parent, int id, ContentManager content, Coords position, string filename = "", int speed = 5, bool alive = true, int width = 96, int height = 96)
             : base(content, width, height, "")
         {
             _camera = camera;

@@ -54,7 +54,7 @@ namespace Gruppe22
         protected int _abilityPoints = 0;
         protected int _skills = 0;
         protected ContentManager _content;
-        private int _viewRange = 4;
+        protected int _viewRange = 4;
         protected string _animationFile = "player";
         #endregion
 

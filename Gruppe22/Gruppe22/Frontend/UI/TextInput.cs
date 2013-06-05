@@ -32,7 +32,7 @@ namespace Gruppe22
         }
 
 
-        public bool canFocus
+        public override bool canFocus
         {
             get
             {

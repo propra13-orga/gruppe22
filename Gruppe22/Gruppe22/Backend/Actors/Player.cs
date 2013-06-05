@@ -16,6 +16,7 @@ namespace Gruppe22
             : base(content, ActorType.Player, health, armour, damage, maxHealth, name)
         {
             _actorType = ActorType.Player;
+            _viewRange = 4;
             _animationFile = "player";
         }
     }

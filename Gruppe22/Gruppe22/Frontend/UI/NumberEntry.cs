@@ -49,7 +49,7 @@ namespace Gruppe22
             get { return _allowDecrease; }
             set { _allowDecrease = value; }
         }
-        public bool canFocus
+        public override bool canFocus
         {
             get { return _allowIncrease || _allowDecrease; }
         }

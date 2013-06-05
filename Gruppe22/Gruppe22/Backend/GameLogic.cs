@@ -75,7 +75,7 @@ namespace Gruppe22
                         if (_map1.actors[defender].isDead)
                         {
                             _mainmap1.HandleEvent(true, Events.AnimateActor, defender, Activity.Die);
-                            _mainmap2.HandleEvent(true, Events.AnimateActor, defender, Activity.Die);
+                            //_mainmap2.HandleEvent(true, Events.AnimateActor, defender, Activity.Die);
                             _map1.actors[attacker].exp += _map1.actors[defender].exp;
                             if (_map1.actors[attacker].exp > _map1.actors[attacker].expNeeded)
                             {
@@ -94,8 +94,8 @@ namespace Gruppe22
                         }
                         else
                         {
-                            _mainmap1.HandleEvent(true, Events.AnimateActor, attacker, Activity.Hit);
-                            _mainmap2.HandleEvent(true, Events.AnimateActor, attacker, Activity.Hit);
+                            _mainmap1.HandleEvent(true, Events.AnimateActor, defender, Activity.Hit);
+                            //_mainmap2.HandleEvent(true, Events.AnimateActor, defender, Activity.Hit);
                             AddMessage((_map1.actors[defender] is Player ? "<red>" : "") + _map1.actors[defender].name + " was hit by " + _map1.actors[attacker].name + " for " + damage.ToString() + " points of damage.");
                         }
                     }
@@ -146,13 +146,13 @@ namespace Gruppe22
                         if (actor.isDead)
                         {
                             _mainmap1.HandleEvent(true, Events.AnimateActor, actor.id, Activity.Die);
-                            _mainmap2.HandleEvent(true, Events.AnimateActor, actor.id, Activity.Die);
+                            //_mainmap2.HandleEvent(true, Events.AnimateActor, actor.id, Activity.Die);
                             AddMessage((actor is Player ? "<red>" : "") + actor.name + " was killed by a trap  doing " + damage.ToString() + " points of damage.");
                         }
                         else
                         {
                             _mainmap1.HandleEvent(true, Events.AnimateActor, actor.id, Activity.Hit);
-                            _mainmap2.HandleEvent(true, Events.AnimateActor, actor.id, Activity.Hit);
+                            //_mainmap2.HandleEvent(true, Events.AnimateActor, actor.id, Activity.Hit);
                             AddMessage((actor is Player ? "<red>" : "") + actor.name + " was hit for " + damage.ToString() + " points of damage by a trap.");
                         }
                     }
@@ -193,7 +193,7 @@ namespace Gruppe22
                     _map1.Load("savedroom" + lastCheck + ".xml", null);
                     File.WriteAllText("GameData", "room" + _map1.currRoomNbr.ToString() + ".xml" + Environment.NewLine + _deadcounter.ToString());
                     _mainmap1.resetActors();
-                    _mainmap2.resetActors();
+                    //_mainmap2.resetActors();
                     _inventory.actor = _map1.actors[0];
                     _playerStats.actor = _map1.actors[0];
                     _enemyStats.actor = null;
@@ -210,7 +210,7 @@ namespace Gruppe22
                     else
                         _map1.Load((string)data[0], (Coords)data[1]);
                     _mainmap1.resetActors();
-                    _mainmap2.resetActors();
+                    //_mainmap2.resetActors();
 
                     AddMessage("You entered room number " + data[0].ToString().Substring(4, 1) + ".");
                     File.WriteAllText("GameData", data[0].ToString() + Environment.NewLine + _deadcounter.ToString());
@@ -307,7 +307,7 @@ namespace Gruppe22
                         if ((_map1[_map1.actors[id].tile.coords.x, _map1.actors[id].tile.coords.y].hasTarget) && (id == 0))
                         {
                             _mainmap1.HandleEvent(true, Events.AnimateActor, id, Activity.Talk);
-                            _mainmap2.HandleEvent(true, Events.AnimateActor, id, Activity.Talk);
+                            //_mainmap2.HandleEvent(true, Events.AnimateActor, id, Activity.Talk);
 
                             ShowEndGame("You have successfully found the hidden treasure. Can you do it again?", "Congratulations!");
                         }
@@ -365,7 +365,21 @@ namespace Gruppe22
                 case Events.ExplodeProjectile:
                     {
                         _map1[((ProjectileTile)data[0]).coords].Remove((ProjectileTile)data[0]);
-                        _mainmap1.RemoveProjectile(((ProjectileTile)data[0]).id);
+                        if (data[2] != null)
+                        {
+                            Actor actor = data[2] as Actor;
+                            int damage = 20 - actor.armor + (5 - r.Next(10));
+                            if (damage > 0)
+                            {
+                                actor.health -= damage;
+                                if (actor is Player)
+                                {
+                                    _mainmap1.floatNumber(actor.tile.coords, damage.ToString(), Color.DarkRed);
+                                    RemoveHealth();
+                                }
+                            }
+                        }
+                        _mainmap1.HandleEvent(true, eventID, data);
                     }
                     break;
                 case Events.MoveProjectile:
@@ -426,7 +440,7 @@ namespace Gruppe22
                                     _map1.actors[id].locked = true;
 
                                     _mainmap1.HandleEvent(true, Events.MoveActor, id, _map1.actors[id].tile.coords);
-                                    _mainmap2.HandleEvent(true, Events.MoveActor, id, _map1.actors[id].tile.coords);
+                                    //_mainmap2.HandleEvent(true, Events.MoveActor, id, _map1.actors[id].tile.coords);
 
 
                                 }

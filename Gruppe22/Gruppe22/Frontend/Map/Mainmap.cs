@@ -8,6 +8,46 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Gruppe22
 {
+    public class MapEffect
+    {
+        private TileObject _animation;
+        private Coords _position;
+        private int _scale = 3;
+        private bool _finished = false;
+        private int _count = 0;
+
+        public bool finished
+        {
+            get
+            {
+                return _finished;
+            }
+        }
+
+        public void Update(GameTime time)
+        {
+            _count += time.ElapsedGameTime.Milliseconds;
+            if (_count > 80)
+            {
+                _count -= 80;
+                _finished = _finished || _animation.NextAnimation();
+              //  System.Diagnostics.Debug.WriteLine(_finished+ " "+_animation.animationID);
+
+            }
+        }
+
+        public void Draw(SpriteBatch _spritebatch, GameTime time)
+        {
+            _spritebatch.Draw(_animation.animationTexture, new Rectangle(_position.x, _position.y, _animation.animationRect.Width, _animation.animationRect.Height), _animation.animationRect, Color.White);
+        }
+
+        public MapEffect(TileObject animation, Coords position, int scale = 3)
+        {
+            _position = position;
+            _animation = animation;
+        }
+    }
+
     public class Projectile
     {
         private uint _id = 0;
@@ -78,7 +118,7 @@ namespace Gruppe22
                     }
 
                     _elapsed -= 10;
-                    System.Diagnostics.Debug.WriteLine(_current + " " + _target);
+                   // System.Diagnostics.Debug.WriteLine(_current + " " + _target);
                     if (_target.x > _current.x)
                     {
                         //   if (_id == 0) System.Diagnostics.Debug.Write(_xpertick.ToString());
@@ -133,7 +173,7 @@ namespace Gruppe22
 
         public void Draw(SpriteBatch _spriteBatch, TileObject animation)
         {
-            _spriteBatch.Draw(animation.animationTexture, new Rectangle(_current.x + 16, _current.y + 16, 64, 48), animation.animationRect, Color.White);
+            _spriteBatch.Draw(animation.animationTexture, new Rectangle(_current.x + 48, _current.y + 16, animation.animationRect.Width, animation.animationRect.Height), animation.animationRect, Color.White);
         }
 
         public Projectile(uint id, IHandleEvent parent, Coords current, Direction dir, ProjectileTile tile)
@@ -143,7 +183,7 @@ namespace Gruppe22
             _tile = tile;
             _current = Mainmap._map2screen(current);
             _target = Mainmap._map2screen(current);
-            System.Diagnostics.Debug.WriteLine("Start at" + _current);
+       //     System.Diagnostics.Debug.WriteLine("Start at" + _current);
             _parent = parent;
         }
     }
@@ -231,6 +271,7 @@ namespace Gruppe22
         private List<TileSet> _environment;
         private List<Projectile> _projectiles;
         private uint _maxProjectile;
+        private List<MapEffect> _effects;
         private Object _mylock = new Object();
         private uint _fireCount = 0;
         /// <summary>
@@ -296,6 +337,13 @@ namespace Gruppe22
         }
         #endregion
         #region Public Methods
+
+        public void addEffect(int animationID, Coords pos)
+        {
+            _effects.Add(new MapEffect(_environment[animationID][0], pos));
+        }
+
+
         public override void HandleEvent(bool DownStream, Events eventID, params object[] data)
         {
             if (DownStream)
@@ -309,7 +357,17 @@ namespace Gruppe22
                             _actors[id].target = _map2screen(coords);
                         };
                         break;
+                    case Events.ExplodeProjectile:
+                        if (data[2]!=null)
+                        {
+                            int id=((Actor)data[2]).id;
+                            _actors[id].effect = new MapEffect(_environment[7][0], new Coords(_actors[id].position.x + 7, _actors[id].position.y + 2));
+                        } else {
+                            addEffect(7, _map2screen((Coords)data[1]));
+                        }
+                        RemoveProjectile(((ProjectileTile)data[0]).id);
 
+                        break;
                     case Events.AnimateActor:
                         {
                             int id = (int)data[0];
@@ -318,6 +376,10 @@ namespace Gruppe22
                             bool isLock = true;
                             if (data.Length > 2) delay = (bool)data[2];
                             if (data.Length > 3) _actors[id].direction = (Direction)data[3];
+                            if ((activity == Activity.Die) || (activity == Activity.Hit))
+                            {
+                                _actors[id].effect = new MapEffect(_environment[7][0], new Coords(_actors[id].position.x + 7, _actors[id].position.y + 2));
+                            }
                             if (delay)
                             {
                                 _actors[id].PlayNowOrAfterMove(activity, isLock);
@@ -376,10 +438,17 @@ namespace Gruppe22
                 _spriteBatch.GraphicsDevice.ScissorRectangle = new Rectangle(_displayRect.Left + 5, _displayRect.Top + 5, _displayRect.Width - 10, _displayRect.Height - 10);
 
                 _drawFloor(); // Draw the floow
+
                 for (int i = 0; i < _projectiles.Count; ++i)
                 {
                     _projectiles[i].Draw(_spriteBatch, _environment[5][(int)_projectiles[i].direction]);
                 }
+
+                for (int i = 0; i < _effects.Count; ++i)
+                {
+                    _effects[i].Draw(_spriteBatch, gametime);
+                }
+
                 _drawWalls(gametime); // Draw walls, other objects, player and enemies
 
                 _spriteBatch.End();
@@ -934,7 +1003,14 @@ namespace Gruppe22
                         Coords apos = _screen2map((int)actor.position.x, (int)actor.position.y);
                         if (((int)apos.x == x) && ((int)apos.y == y))
                         {
-                            _spriteBatch.Draw(actor.animationTexture, new Vector2((float)(actor.position.x + actor.offsetX + 25), (float)(actor.position.y + actor.offsetY - 25)), actor.animationRect, ((_map.actors[actor.id].tile.coords.y == (int)_highlightedTile.y) && (_map.actors[actor.id].tile.coords.x == (int)_highlightedTile.x) && !(_map.actors[actor.id] is Player)) ? Color.Red : Color.White);
+                            _spriteBatch.Draw(actor.animationTexture, new Vector2((actor.position.x + actor.offsetX + 25), (actor.position.y + actor.offsetY - 25)), actor.animationRect, ((_map.actors[actor.id].tile.coords.y == (int)_highlightedTile.y) && (_map.actors[actor.id].tile.coords.x == (int)_highlightedTile.x) && !(_map.actors[actor.id] is Player)) ? Color.Red : Color.White);
+                            if (actor.effect != null) actor.effect.Draw(_spriteBatch, gametime);
+                            if ((actor.activity != Activity.Die) && !(_map.actors[actor.id] is NPC))
+                            {
+                                _spriteBatch.Draw(_background, new Rectangle((actor.position.x + actor.offsetX + 25), (actor.position.y + actor.offsetY - 30), actor.animationRect.Width, 5), new Rectangle(39, 6, 1, 1), Color.Black);
+                                _spriteBatch.Draw(_background, new Rectangle((actor.position.x + actor.offsetX + 26), (actor.position.y + actor.offsetY - 29), (_map.actors[actor.id].health * (actor.animationRect.Width - 2)) / _map.actors[actor.id].maxHealth, 3), new Rectangle(39, 6, 1, 1), Color.Red);
+
+                            }
                         }
                     }
                 }
@@ -1054,6 +1130,7 @@ namespace Gruppe22
 
         public void resetActors()
         {
+            if (_effects != null) _effects.Clear();
 
             if (_floatnumbers != null) _floatnumbers.Clear();
             if (_projectiles != null) _projectiles.Clear();
@@ -1092,6 +1169,19 @@ namespace Gruppe22
 
             if (_enabled)
             {
+                for (int i = 0; i < _effects.Count; ++i)
+                {
+
+                    if (_effects[i].finished)
+                    {
+                        _effects.RemoveAt(i);
+                        i -= 1;
+                    }
+                    else
+                    {
+                        _effects[i].Update(gameTime);
+                    }
+                }
                 if (_fireCount > 0) _fireCount -= Math.Min((uint)gameTime.ElapsedGameTime.Milliseconds, _fireCount);
                 for (int i = 0; i < _projectiles.Count; ++i)
                 {
@@ -1145,7 +1235,7 @@ namespace Gruppe22
                 id = _maxProjectile;
                 _maxProjectile += 1;
             }
-            System.Diagnostics.Debug.WriteLine("Added at " + coords);
+           // System.Diagnostics.Debug.WriteLine("Added at " + coords);
             _projectiles.Add(new Projectile(id, this, coords, dir, tile));
             return id;
         }
@@ -1173,7 +1263,7 @@ namespace Gruppe22
         {
             if ((!_actors[_playerID].isMoving) && (_fireCount == 0))
             {
-                System.Diagnostics.Debug.WriteLine("Add to " + _map.actors[_playerID].tile.coords);
+              //  System.Diagnostics.Debug.WriteLine("Add to " + _map.actors[_playerID].tile.coords);
 
                 _parent.HandleEvent(false, Events.MoveProjectile, null, _map.actors[_playerID].tile.parent, _actors[_playerID].direction);
                 _fireCount = 800;
@@ -1332,6 +1422,13 @@ namespace Gruppe22
 
 
             luigi.Save("Content\\luigi.xml");
+
+
+
+
+
+
+            luigi.Save("Content\\luigi.xml");
             /*
             _tiles.Add("Wall1", WallDir.UpRight, new Rectangle(0, 768, 128, 192));
             _tiles.Add("Wall1", WallDir.UpLeft, new Rectangle(128, 768, 128, 192));
@@ -1441,7 +1538,7 @@ namespace Gruppe22
             _environment.Add(new TileSet(_content, 128, 192));
             _environment[0].Add("floor", 0, new Rectangle(512, 384, 128, 96));
             _environment[0].Save("Content\\floor.xml");
-            _environment[0].Load("Content\\floor.xml");
+        //    _environment[0].Load("Content\\floor.xml");
             _environment.Add(new TileSet(_content, 64, 64));
             _environment.Add(new TileSet(_content, 64, 64));
             _environment[1].Add("Aniarrow", 1, new Rectangle(0, 0, 64, 64), 16, 1, false);
@@ -1458,37 +1555,43 @@ namespace Gruppe22
             _environment[2].Add("spikefield", 0, new Rectangle(64, 127, 64, 64));
             _environment[2].Add("spikefield", 1, new Rectangle(64, 196, 64, 64));
             _environment[2].Save("Content\\spikefield.xml");
-            _environment[2].Load("Content\\spikefield.xml");
+         //   _environment[2].Load("Content\\spikefield.xml");
             _environment.Add(new TileSet(_content, 64, 48));
             _environment[3].Add("fields", 0, new Rectangle(0, 0, 64, 48));
             _environment[3].Save("Content\\field.xml");
-            _environment[3].Load("Content\\field.xml");
+          //  _environment[3].Load("Content\\field.xml");
             _environment.Add(new TileSet(_content, 64, 64));
             _environment[4].Add("chest", 0, new Rectangle(0, 86, 64, 48));
 
             _environment[4].Save("Content\\chest.xml");
-            _environment[4].Load("Content\\chest.xml");
+          //  _environment[4].Load("Content\\chest.xml");
             _environment.Add(new TileSet(_content, 32, 64));
-            _environment[5].Add("Arrow", (int)Direction.UpRight, new Rectangle(0, 0, 32, 64));
+            _environment[5].Add("Arrow", (int)Direction.UpRight, new Rectangle(0, 0, 32, 64)); // ok
             _environment[5].Add("Arrow", (int)Direction.Right, new Rectangle(32, 0, 32, 64));
-            _environment[5].Add("Arrow", (int)Direction.DownRight, new Rectangle(64, 0, 32, 64));
+            _environment[5].Add("Arrow", (int)Direction.DownRight, new Rectangle(64, 0, 32, 64)); // ok
             _environment[5].Add("Arrow", (int)Direction.Down, new Rectangle(96, 0, 32, 64));
-            _environment[5].Add("Arrow", (int)Direction.Up, new Rectangle(0, 64, 32, 64));
+            _environment[5].Add("Arrow", (int)Direction.DownLeft, new Rectangle(0, 64, 32, 64)); // ok
             _environment[5].Add("Arrow", (int)Direction.Left, new Rectangle(32, 64, 32, 64));
-            _environment[5].Add("Arrow", (int)Direction.DownLeft, new Rectangle(64, 64, 32, 64));
-            _environment[5].Add("Arrow", (int)Direction.UpLeft, new Rectangle(96, 64, 32, 64));
+            _environment[5].Add("Arrow", (int)Direction.UpLeft, new Rectangle(64, 64, 32, 64)); // ok
+            _environment[5].Add("Arrow", (int)Direction.Up, new Rectangle(96, 64, 32, 64));
 
             _environment[5].Save("Content\\Arrow.xml");
-            _environment[5].Load("Content\\Arrow.xml");
-            _environment.Add(new TileSet(_content, 64, 64));
+         //   _environment[5].Load("Content\\Arrow.xml");
+            _environment.Add(new TileSet(_content, 55, 55));
 
             _environment[6].Add("sparks", (int)Direction.Up, new Rectangle(0, 192, 64, 64), 1, 4);
             _environment[6].Save("Content\\explosion.xml");
             _environment[6].Load("Content\\explosion.xml");
-            _environment.Add(new TileSet(_content, 55, 55));
+
+            _environment.Add(new TileSet(_content, 96, 96));
+
+            _environment[7].Add("blood", 0, new Rectangle(0, 0, 96, 96), 6, 1);
+            _environment[7].Save("Content\\blood.xml");
+           // _environment[7].Load("Content\\blood.xml");
+
             // 3. Moving entities (player, NPCs, enemies)
             _actors = new List<ActorView>();
-
+            _effects = new List<MapEffect>();
             resetActors();
             _floatnumbers = new List<FloatNumber>();
             _projectiles = new List<Projectile>();

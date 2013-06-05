@@ -37,22 +37,25 @@ namespace Gruppe22
         {
             Map map = (Map)((FloorTile)_parent).parent;
             FloorTile target = map.TileByCoords(Map.DirectionTile(coords, _direction));
-
+            if (target.coords.x == -1)
+            {
+                ((IHandleEvent)parent).HandleEvent(false, Events.ExplodeProjectile, this, coords, null);
+                return;
+            }
             if (doMove)
             {
-                ((FloorTile)_parent).Remove(this);
-                if ((target.coords.x > -1) &&
-                    (target.coords.y > -1))
-                {
-                    target.Add(this);
 
-                }
-                else
+                
+                ((FloorTile)_parent).Remove(this);
+
+                target.Add(this);
+                target = map.TileByCoords(Map.DirectionTile(coords, _direction));
+
+                if (target.coords.x == -1)
                 {
                     ((IHandleEvent)parent).HandleEvent(false, Events.ExplodeProjectile, this, coords, null);
                     return;
                 }
-                target = map.TileByCoords(Map.DirectionTile(coords, _direction));
 
             }
             if (!target.hasWall && ((!target.hasPlayer &&
@@ -65,7 +68,7 @@ namespace Gruppe22
             }
             else
             {
-                ((IHandleEvent)parent).HandleEvent(false, Events.ExplodeProjectile, this, target, map.TileByCoords(Map.DirectionTile(coords, _direction)).firstActor);
+                ((IHandleEvent)parent).HandleEvent(false, Events.ExplodeProjectile, this, target.coords, map.TileByCoords(Map.DirectionTile(coords, _direction)).firstActor);
             }
         }
 

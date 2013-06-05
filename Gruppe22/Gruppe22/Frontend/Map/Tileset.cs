@@ -170,13 +170,13 @@ namespace Gruppe22
         /// <param name="filename"></param>
         /// <param name="id"></param>
         /// <param name="cutOut"></param>
-        public virtual void Add(string filename, int id, Rectangle cutOut, int rows = 1, int cols = 1, bool dir = false)
+        public virtual void Add(string filename, int id, Rectangle cutOut, int cols = 1, int rows = 1, bool dir = false)
         {
             while ((int)id > _textures.Count - 1)
             {
                 _textures.Add(new TileObject(_content, cutOut.Width, cutOut.Height));
             }
-            _textures[id].AddAnimation(filename, new Coords(cutOut.Left, cutOut.Top), rows, cols, dir);
+            _textures[id].AddAnimation(filename, new Coords(cutOut.Left, cutOut.Top), cols, rows, dir);
         }
 
         /// <summary>

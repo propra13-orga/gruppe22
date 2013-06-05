@@ -109,11 +109,6 @@ namespace Gruppe22
         protected Mainmap _mainmap1 = null;
 
         /// <summary>
-        /// The main map used for player 2
-        /// </summary>
-        protected Mainmap _mainmap2 = null;
-
-        /// <summary>
         /// A minimap
         /// </summary>
         protected Minimap _minimap1 = null;
@@ -185,8 +180,6 @@ namespace Gruppe22
             _interfaceElements.Add(_minimap1);
             _mainmap1 = new Mainmap(this, _spriteBatch, Content, new Rectangle(5, 5, _graphics.GraphicsDevice.Viewport.Width - 230, ((_graphics.GraphicsDevice.Viewport.Height - 20)) - 115), _map1, true);
             _interfaceElements.Add(_mainmap1);
-            _mainmap2 = new Mainmap(this, _spriteBatch, Content, new Rectangle(5, ((_graphics.GraphicsDevice.Viewport.Height) / 2) - 60, _graphics.GraphicsDevice.Viewport.Width - 230, ((_graphics.GraphicsDevice.Viewport.Height - 20) / 2) - 60), _map1, _secondPlayer && !_lan);
-            _interfaceElements.Add(_mainmap2);
             _statusbox = new Statusbox(this, _spriteBatch, Content, new Rectangle(5, _graphics.GraphicsDevice.Viewport.Height - 125, _graphics.GraphicsDevice.Viewport.Width - 230, 120));
             _interfaceElements.Add(_statusbox);
             _inventory = new Inventory(this, _spriteBatch, Content, new Rectangle(_graphics.GraphicsDevice.Viewport.Width - 220, _graphics.GraphicsDevice.Viewport.Height - 125, 215, 120), _map1.actors[0]);
@@ -231,9 +224,9 @@ namespace Gruppe22
                     break;
             }
 
-            foreach (UIElement element in _interfaceElements)
+            for (int i = 0; i < _interfaceElements.Count; ++i)
             {
-                element.OnKeyDown(k);
+                _interfaceElements[i].OnKeyDown(k);
             }
             return true;
         }
@@ -336,7 +329,6 @@ namespace Gruppe22
                         element.HandleEvent(true, Events.ToggleButton, Events.LAN, false);
                     }
                     _secondPlayer = false;
-                    _mainmap2.enabled = false;
                     _mainmap1.Resize(new Rectangle(5, 5, _graphics.GraphicsDevice.Viewport.Width - 230, ((_graphics.GraphicsDevice.Viewport.Height - 20)) - 115));
                     _lan = false;
                     break;
@@ -364,12 +356,12 @@ namespace Gruppe22
                     _secondPlayer = true;
                     if (!_lan)
                     {
-                        _mainmap2.enabled = true;
+                        // _mainmap2.enabled = true;
                         _mainmap1.Resize(new Rectangle(5, 5, _graphics.GraphicsDevice.Viewport.Width - 230, ((_graphics.GraphicsDevice.Viewport.Height - 20) / 2) - 60));
                     }
                     else
                     {
-                        _mainmap2.enabled = false;
+                        //   _mainmap2.enabled = false;
                         _mainmap1.Resize(new Rectangle(5, 5, _graphics.GraphicsDevice.Viewport.Width - 230, ((_graphics.GraphicsDevice.Viewport.Height - 20)) - 115));
                     }
 
@@ -385,7 +377,7 @@ namespace Gruppe22
                         element.HandleEvent(true, Events.ToggleButton, Events.Local, false);
                         element.HandleEvent(true, Events.ToggleButton, Events.LAN, true);
                     }
-                    _mainmap2.enabled = false;
+                    // _mainmap2.enabled = false;
                     _mainmap1.Resize(new Rectangle(5, 5, _graphics.GraphicsDevice.Viewport.Width - 230, ((_graphics.GraphicsDevice.Viewport.Height - 20)) - 115));
                     break;
 
@@ -396,7 +388,7 @@ namespace Gruppe22
                         element.HandleEvent(true, Events.ToggleButton, Events.LAN, false);
                     }
                     _lan = false;
-                    _mainmap2.enabled = true;
+                    //    _mainmap2.enabled = true;
                     _mainmap1.Resize(new Rectangle(5, 5, _graphics.GraphicsDevice.Viewport.Width - 230, ((_graphics.GraphicsDevice.Viewport.Height - 20) / 2) - 60));
                     break;
 
@@ -439,7 +431,7 @@ namespace Gruppe22
                     _map1.Dispose();
                     _map1.Load("room1.xml", null);
                     _mainmap1.resetActors();
-                    _mainmap2.resetActors();
+                    //  _mainmap2.resetActors();
                     _inventory.actor = _map1.actors[0];
                     _playerStats.actor = _map1.actors[0];
                     _enemyStats.actor = null;
@@ -473,8 +465,27 @@ namespace Gruppe22
         /// </summary>
         public void GenerateMaps()
         {
-            List<Exit> exits = new List<Exit>();
             Generator tempMap = null;
+         /*   tempMap=new Generator(Content,this,"..............................\n"+
+            "..............................\n"+
+             "..............................\n"+
+
+              "..............................\n"+
+
+               "..............................\n"+
+
+                "..............................\n"+
+
+                 "..............................\n"+
+
+                  "..............................\n"+
+
+                   "..............................",null,1,1
+
+            );
+            tempMap.Save("room1.xml");
+            tempMap.Dispose(); */
+                         List<Exit> exits = new List<Exit>();
 
             for (int i = 1; i < 4; i++) //3 Level a 3 Räume
             {
@@ -486,7 +497,7 @@ namespace Gruppe22
                 tempMap.Save("room" + i.ToString() + ".xml");
                 exits = Map.ExitToEntry(i + 1, tempMap.exits);
                 tempMap.Dispose();
-            }
+            } 
         }
         #endregion
 
@@ -538,7 +549,7 @@ namespace Gruppe22
             if (!(_focus is CharacterWindow))
             {
                 _status = GameStatus.Paused;
-                Shop c = new Shop(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 250) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) - 240, 500, 480), actor1, actor2) ;
+                Shop c = new Shop(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 250) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) - 240, 500, 480), actor1, actor2);
                 _interfaceElements.Add(c);
                 _focus = _interfaceElements[_interfaceElements.Count - 1];
             }

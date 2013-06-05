@@ -145,7 +145,7 @@ namespace Gruppe22
                     {
                         current = _children.Count - 1;
                     }
-                    if (_children[current].canFocus)
+                        if (_children[current].canFocus)
                     {
                         _children[current].focus = true;
                         _focusID = current;
