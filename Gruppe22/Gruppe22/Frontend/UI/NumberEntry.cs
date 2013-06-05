@@ -44,6 +44,7 @@ namespace Gruppe22
             }
         }
 
+
         public bool allowDecrease
         {
             get { return _allowDecrease; }

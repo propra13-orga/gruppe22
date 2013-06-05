@@ -280,6 +280,8 @@ namespace Gruppe22
                         if ((_map1[target.x, target.y].hasCheckpoint) && (!_map1[target.x, target.y].checkpoint.visited) && (id == 0))
                         {
                             _map1[target.x, target.y].checkpoint.visited = true;
+                            _map1.actors[id].health = _map1.actors[id].maxhealth;
+                            _map1.actors[id].mana = _map1.actors[id].maxMana;
                             if (_deadcounter == -1)
                                 _deadcounter = 3;
                             if (_map1[target.x, target.y].checkpoint.bonuslife > 0)
@@ -301,6 +303,7 @@ namespace Gruppe22
                             }
 
                             AddMessage("Checkpoint reached (" + _deadcounter.ToString() + " lives remaining)");
+                            _mainmap1.HandleEvent(true, Events.Player1, 1);
                         }
 
                         // Trigger floor switches

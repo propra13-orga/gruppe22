@@ -23,6 +23,17 @@ namespace Gruppe22
                 return _finished;
             }
         }
+        public Coords position
+        {
+            get
+            {
+                return _position;
+            }
+            set
+            {
+                _position = value;
+            }
+        }
 
         public void Update(GameTime time)
         {
@@ -31,7 +42,7 @@ namespace Gruppe22
             {
                 _count -= 80;
                 _finished = _finished || _animation.NextAnimation();
-              //  System.Diagnostics.Debug.WriteLine(_finished+ " "+_animation.animationID);
+                //  System.Diagnostics.Debug.WriteLine(_finished+ " "+_animation.animationID);
 
             }
         }
@@ -118,7 +129,7 @@ namespace Gruppe22
                     }
 
                     _elapsed -= 10;
-                   // System.Diagnostics.Debug.WriteLine(_current + " " + _target);
+                    // System.Diagnostics.Debug.WriteLine(_current + " " + _target);
                     if (_target.x > _current.x)
                     {
                         //   if (_id == 0) System.Diagnostics.Debug.Write(_xpertick.ToString());
@@ -183,7 +194,7 @@ namespace Gruppe22
             _tile = tile;
             _current = Mainmap._map2screen(current);
             _target = Mainmap._map2screen(current);
-       //     System.Diagnostics.Debug.WriteLine("Start at" + _current);
+            //     System.Diagnostics.Debug.WriteLine("Start at" + _current);
             _parent = parent;
         }
     }
@@ -357,12 +368,17 @@ namespace Gruppe22
                             _actors[id].target = _map2screen(coords);
                         };
                         break;
+                    case Events.Player1:
+                        _actors[0].effect = new MapEffect(_environment[7][1], new Coords(_actors[0].position.x + 7, _actors[0].position.y + 2));
+                        break;
                     case Events.ExplodeProjectile:
-                        if (data[2]!=null)
+                        if (data[2] != null)
                         {
-                            int id=((Actor)data[2]).id;
+                            int id = ((Actor)data[2]).id;
                             _actors[id].effect = new MapEffect(_environment[7][0], new Coords(_actors[id].position.x + 7, _actors[id].position.y + 2));
-                        } else {
+                        }
+                        else
+                        {
                             addEffect(7, _map2screen((Coords)data[1]));
                         }
                         RemoveProjectile(((ProjectileTile)data[0]).id);
@@ -1004,7 +1020,11 @@ namespace Gruppe22
                         if (((int)apos.x == x) && ((int)apos.y == y))
                         {
                             _spriteBatch.Draw(actor.animationTexture, new Vector2((actor.position.x + actor.offsetX + 25), (actor.position.y + actor.offsetY - 25)), actor.animationRect, ((_map.actors[actor.id].tile.coords.y == (int)_highlightedTile.y) && (_map.actors[actor.id].tile.coords.x == (int)_highlightedTile.x) && !(_map.actors[actor.id] is Player)) ? Color.Red : Color.White);
-                            if (actor.effect != null) actor.effect.Draw(_spriteBatch, gametime);
+                            if (actor.effect != null)
+                            {
+                                actor.effect.position = new Coords((actor.position.x + actor.offsetX + 25), (actor.position.y + actor.offsetY - 25));
+                                actor.effect.Draw(_spriteBatch, gametime);
+                            }
                             if ((actor.activity != Activity.Die) && !(_map.actors[actor.id] is NPC))
                             {
                                 _spriteBatch.Draw(_background, new Rectangle((actor.position.x + actor.offsetX + 25), (actor.position.y + actor.offsetY - 30), actor.animationRect.Width, 5), new Rectangle(39, 6, 1, 1), Color.Black);
@@ -1052,8 +1072,13 @@ namespace Gruppe22
                             break;
 
                     }
+                }
+            }
 
-
+            for (int y = (Math.Max(currentPos.y - _map.actors[_playerID].viewRange, 0)); y < (Math.Min(currentPos.y + _map.actors[_playerID].viewRange + 1, _map.height)); ++y)
+            {
+                for (int x = (Math.Max(currentPos.x - _map.actors[_playerID].viewRange, 0)); x < (Math.Min(currentPos.x + _map.actors[_playerID].viewRange + 1, _map.width)); ++x)
+                {
 
 
                     if (_map[x, y].hasTrap)
@@ -1070,9 +1095,9 @@ namespace Gruppe22
                             }
                         }
                     }
-                    if ((_map[x, y].hasCheckpoint) && (!_map[x, y].checkpoint.visited))
+                    if (_map[x, y].hasCheckpoint)
                     {
-                        _spriteBatch.Draw(_environment[3][0].animationTexture, new Rectangle(_map2screen(x, y).x + 32, _map2screen(x, y).y + 16, 64, 48), _environment[3][0].animationRect, ((y == (int)_highlightedTile.y) && (x == (int)_highlightedTile.x)) ? Color.Red : Color.White);
+                        _spriteBatch.Draw(_environment[3][1].animationTexture, new Rectangle(_map2screen(x, y).x, _map2screen(x, y).y, 128, 96), _environment[3][1].animationRect, (_map[x, y].checkpoint.visited) ? new Color(Color.Black,0.4f) : ((y == (int)_highlightedTile.y) && (x == (int)_highlightedTile.x)) ? Color.Red : Color.White);
                     }
                     if (_map[x, y].hasTarget)
                     {
@@ -1235,7 +1260,7 @@ namespace Gruppe22
                 id = _maxProjectile;
                 _maxProjectile += 1;
             }
-           // System.Diagnostics.Debug.WriteLine("Added at " + coords);
+            // System.Diagnostics.Debug.WriteLine("Added at " + coords);
             _projectiles.Add(new Projectile(id, this, coords, dir, tile));
             return id;
         }
@@ -1263,7 +1288,7 @@ namespace Gruppe22
         {
             if ((!_actors[_playerID].isMoving) && (_fireCount == 0))
             {
-              //  System.Diagnostics.Debug.WriteLine("Add to " + _map.actors[_playerID].tile.coords);
+                //  System.Diagnostics.Debug.WriteLine("Add to " + _map.actors[_playerID].tile.coords);
 
                 _parent.HandleEvent(false, Events.MoveProjectile, null, _map.actors[_playerID].tile.parent, _actors[_playerID].direction);
                 _fireCount = 800;
@@ -1538,7 +1563,7 @@ namespace Gruppe22
             _environment.Add(new TileSet(_content, 128, 192));
             _environment[0].Add("floor", 0, new Rectangle(512, 384, 128, 96));
             _environment[0].Save("Content\\floor.xml");
-        //    _environment[0].Load("Content\\floor.xml");
+            //    _environment[0].Load("Content\\floor.xml");
             _environment.Add(new TileSet(_content, 64, 64));
             _environment.Add(new TileSet(_content, 64, 64));
             _environment[1].Add("Aniarrow", 1, new Rectangle(0, 0, 64, 64), 16, 1, false);
@@ -1555,16 +1580,18 @@ namespace Gruppe22
             _environment[2].Add("spikefield", 0, new Rectangle(64, 127, 64, 64));
             _environment[2].Add("spikefield", 1, new Rectangle(64, 196, 64, 64));
             _environment[2].Save("Content\\spikefield.xml");
-         //   _environment[2].Load("Content\\spikefield.xml");
+            //   _environment[2].Load("Content\\spikefield.xml");
             _environment.Add(new TileSet(_content, 64, 48));
             _environment[3].Add("fields", 0, new Rectangle(0, 0, 64, 48));
+            _environment[3].Add("checkpoint", 1, new Rectangle(0, 0, 128, 96));
+
             _environment[3].Save("Content\\field.xml");
-          //  _environment[3].Load("Content\\field.xml");
+            //  _environment[3].Load("Content\\field.xml");
             _environment.Add(new TileSet(_content, 64, 64));
             _environment[4].Add("chest", 0, new Rectangle(0, 86, 64, 48));
 
             _environment[4].Save("Content\\chest.xml");
-          //  _environment[4].Load("Content\\chest.xml");
+            //  _environment[4].Load("Content\\chest.xml");
             _environment.Add(new TileSet(_content, 32, 64));
             _environment[5].Add("Arrow", (int)Direction.UpRight, new Rectangle(0, 0, 32, 64)); // ok
             _environment[5].Add("Arrow", (int)Direction.Right, new Rectangle(32, 0, 32, 64));
@@ -1576,18 +1603,21 @@ namespace Gruppe22
             _environment[5].Add("Arrow", (int)Direction.Up, new Rectangle(96, 64, 32, 64));
 
             _environment[5].Save("Content\\Arrow.xml");
-         //   _environment[5].Load("Content\\Arrow.xml");
+            //   _environment[5].Load("Content\\Arrow.xml");
             _environment.Add(new TileSet(_content, 55, 55));
 
-            _environment[6].Add("sparks", (int)Direction.Up, new Rectangle(0, 192, 64, 64), 1, 4);
+            _environment[6].Add("sparks", 1, new Rectangle(0, 192, 64, 64), 1, 4);
             _environment[6].Save("Content\\explosion.xml");
-            _environment[6].Load("Content\\explosion.xml");
+
+
 
             _environment.Add(new TileSet(_content, 96, 96));
 
             _environment[7].Add("blood", 0, new Rectangle(0, 0, 96, 96), 6, 1);
+            _environment[7].Add("magic", 1, new Rectangle(0, 0, 64, 96), 17, 2,true);
+
             _environment[7].Save("Content\\blood.xml");
-           // _environment[7].Load("Content\\blood.xml");
+            // _environment[7].Load("Content\\blood.xml");
 
             // 3. Moving entities (player, NPCs, enemies)
             _actors = new List<ActorView>();
