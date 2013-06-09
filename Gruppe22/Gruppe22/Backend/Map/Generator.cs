@@ -8,10 +8,110 @@ using Microsoft.Xna.Framework.Content;
 
 namespace Gruppe22
 {
-    class Generator : Map
+  public  class Generator : Map
     {
         private new List<List<GeneratorTile>> _tiles = null;
+        private bool _connected = false;
         private Random r;
+        public bool connected
+        {
+            get
+            {
+                return _connected;
+            }
+            set
+            {
+                _connected = value;
+            }
+        }
+
+
+        public Direction exits
+        {
+            get
+            {
+                Direction dirs = Direction.None;
+                for (int x = 0; x < _width; ++x)
+                {
+                    if (_tiles[0][x].hasTeleport)
+                        dirs = dirs | Direction.Up;
+                    if (_tiles[_height - 1][x].hasTeleport)
+                        dirs = dirs | Direction.Down;
+                }
+                for (int y = 0; y < _height; ++y)
+                {
+                    if (_tiles[y][0].hasTeleport)
+                        dirs = dirs | Direction.Left;
+                    if (_tiles[y][_width - 1].hasTeleport)
+                        dirs = dirs | Direction.Right;
+                }
+                return dirs;
+            }
+        }
+
+        public bool hasStairs
+        {
+            get
+            {
+                for (int x = 1; x < _width - 1; ++x)
+                {
+                    for (int y = 1; y < _height - 1; ++y)
+                    {
+                        if ((_tiles[y][x].hasTeleport) && (!_tiles[y][x].teleport.teleport))
+                            return true;
+                    }
+                }
+                return false;
+            }
+        }
+
+
+        public Coords FindRoomForStairs
+        {
+            get
+            {
+                List<Coords> result = new List<Coords>();
+
+                for (int y = 1; y < _height - 1; ++y)
+                    for (int x = 1; x < _width - 1; ++x)
+                    {
+                        if (_tiles[y][x].overlay.Count == 0)
+                        {
+                            result.Add(new Coords(x, y));
+                        }
+                    }
+                return result[r.Next(result.Count)];
+            }
+        }
+
+        public void AddStairs(Coords srcCoords, int targetRoom, Coords targetCoords, bool up)
+        {
+            _tiles[srcCoords.y][srcCoords.x].overlay.Clear();
+            _tiles[srcCoords.y][srcCoords.x].overlay.Add(new TeleportTile(_tiles[srcCoords.y][srcCoords.x], "room" + targetRoom.ToString() + ".xml", targetCoords));
+        }
+        public Direction blocked
+        {
+            get
+            {
+                Direction dirs = Direction.Up | Direction.Left | Direction.Right | Direction.Down;
+                for (int x = 0; x < _width; ++x)
+                {
+                    if (_tiles[0][x].hasTeleport)
+                        dirs &= ~Direction.Up;
+                    if (_tiles[_height - 1][x].hasTeleport)
+                        dirs &= ~Direction.Down;
+                }
+                for (int y = 0; y < _height; ++y)
+                {
+                    if (_tiles[y][0].hasTeleport)
+                        dirs &= ~Direction.Left;
+                    if (_tiles[y][_width - 1].hasTeleport)
+                        dirs &= ~Direction.Right;
+                }
+                return dirs;
+            }
+        }
+
         public void AddPlayer(Coords pos)
         {
             if (pos == null)
@@ -289,6 +389,103 @@ namespace Gruppe22
             }
         }
 
+
+        /// <summary>
+        /// Find an appropriate place to pu an exit on the map
+        /// </summary>
+        /// <param name="dir">Wall on which exit should be placed</param>
+        /// <returns>Coordinates of the exit</returns>
+        public Coords SuggestExit(Direction dir)
+        {
+            switch (dir)
+            {
+                case Direction.UpLeft:
+                    return new Coords(0, 0);
+
+                case Direction.UpRight:
+                    return new Coords(_width - 1, 0);
+
+                case Direction.DownLeft:
+                    return new Coords(0, _height - 1);
+
+                case Direction.DownRight:
+                    return new Coords(_width - 1, _height - 1);
+
+                case Direction.Up:
+                    {
+                        Coords tmp = new Coords(1 + r.Next(_width / 2) * 2, 0);
+                        _tiles[1][tmp.x].overlay.Clear();
+                        return tmp;
+                    }
+
+                case Direction.Down:
+                    {
+                        Coords tmp = new Coords(1 + r.Next(_width / 2) * 2, _height - 1);
+                        _tiles[tmp.y - 1][tmp.x].overlay.Clear();
+                        return tmp;
+                    }
+
+                case Direction.Left:
+                    {
+                        Coords tmp = new Coords(0, 1 + r.Next(_height / 2) * 2);
+                        _tiles[tmp.y][1].overlay.Clear();
+                        return tmp;
+                    }
+                case Direction.Right:
+                    {
+                        Coords tmp = new Coords(_width - 1, 1 + r.Next(_height / 2) * 2);
+                        _tiles[tmp.y][tmp.x - 1].overlay.Clear();
+                        return tmp;
+                    }
+            }
+            return Coords.Zero;
+        }
+
+        /// <summary>
+        /// Add a doorway / stairway / teleporter to another room
+        /// </summary>
+        /// <param name="from">Coordinates in this room</param>
+        /// <param name="Room">Uinque ID of target room</param>
+        /// <param name="to">Coordinates in target room</param>
+        public void ConnectTo(Coords from, int Room, Coords to, bool isTeleport = false)
+        {
+            // TODO: Umgebung "freisprengen", insb. in Diagonalen
+            _tiles[from.y][from.x].overlay.Clear();
+            _tiles[from.y][from.x].overlay.Add(new TeleportTile(this, "room" + (Room + 1).ToString() + ".xml", to, isTeleport));
+        }
+
+        public bool HasExit(Direction dir)
+        {
+            switch (dir)
+            {
+                case Direction.Up:
+                    for (int i = 0; i < _width; ++i)
+                        if (_tiles[_height - 1][i].hasTeleport) return true;
+                    return false;
+                case Direction.Down:
+                    for (int i = 0; i < _width; ++i)
+                        if (_tiles[0][i].hasTeleport) return true;
+                    return false;
+                case Direction.Left:
+                    for (int i = 0; i < _height; ++i)
+                        if (_tiles[i][0].hasTeleport) return true;
+                    return false;
+                case Direction.Right:
+                    for (int i = 0; i < _height; ++i)
+                        if (_tiles[i][_width - 1].hasTeleport) return true;
+                    return false;
+                case Direction.UpLeft:
+                    return _tiles[0][0].hasTeleport;
+                case Direction.UpRight:
+                    return _tiles[0][_width - 1].hasTeleport;
+                case Direction.DownRight:
+                    return _tiles[_height - 1][_width - 1].hasTeleport;
+                case Direction.DownLeft:
+                    return _tiles[_height - 1][0].hasTeleport;
+
+            }
+            return false;
+        }
 
         public void AddItems(int amount = -1)
         {
@@ -717,11 +914,12 @@ namespace Gruppe22
             return true;
         }
 
-        public Generator(ContentManager content, object parent, string pattern, Coords playerPos = null, int roomNr = 1, int maxRoom = 3, List<Exit> exits = null, Random rnd = null)
+        public Generator(ContentManager content, object parent, string pattern, int roomNr = 1, int maxRoom = 3, List<Exit> exits = null, Random rnd = null)
             : base(content)
         {
             if (rnd == null) r = new Random(); else r = rnd;
             _tiles = new List<List<GeneratorTile>>();
+            _id = roomNr;
             FromString(pattern, roomNr, maxRoom);
         }
 
@@ -969,13 +1167,15 @@ namespace Gruppe22
         /// </summary>
         /// <param name="width">The width of the map</param>
         /// <param name="height">The height of the map</param>
-        public Generator(ContentManager content, object parent = null, int width = 10, int height = 10, bool generate = false, Coords playerPos = null, int roomNr = 1, int maxRoom = 3, List<Exit> exits = null, Random rnd = null)
+        public Generator(ContentManager content, object parent = null, int width = 10, int height = 10, bool generate = false, Coords playerPos = null, int roomNr = 1, int maxRoom = 3, Random rnd = null, string dungeonname = "", int level = 0)
             : base(content)
         {
             if (rnd == null) r = new Random(); else r = rnd;
             _tiles = new List<List<GeneratorTile>>();
             _width = width;
             _height = height;
+            _level = level;
+            _id = roomNr;
             for (int y = 0; y < height; ++y)
             {
                 _tiles.Add(new List<GeneratorTile>());
@@ -993,16 +1193,16 @@ namespace Gruppe22
                     AddPlayer(playerPos);
                 }
                 AddTraps();
-                AddDoors(roomNr, maxRoom, exits);
                 AddEnemies();
                 AddItems();
-                AddNPC();
-                AddCheckpoint();
                 GenerateRoomName();
-                GenerateDungeon();
-                if (roomNr == maxRoom) //maxRoom
+                if ((dungeonname != "") && (dungeonname != null))
                 {
-                    AddTarget();
+                    _dungeonname = dungeonname;
+                }
+                else
+                {
+                    GenerateDungeon();
                 }
             }
         }

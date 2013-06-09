@@ -413,14 +413,14 @@ namespace Gruppe22
                     break;
 
                 case Events.EndGame:
-                    _map1.Save("savedroom" + _map1.currRoomNbr + ".xml");
+                    _map1.Save("savedroom" + _map1.id + ".xml");
                     Exit();
                     break;
 
                 case Events.NewMap:
                     _status = GameStatus.NoRedraw;
                     _deadcounter = -1;
-                    GenerateMaps();
+                    (this as GameLogic).GenerateMaps();
                     HandleEvent(true, Events.ResetGame);
                     break;
 
@@ -460,45 +460,6 @@ namespace Gruppe22
             }
         }
 
-        /// <summary>
-        /// A method to generate three rooms and save them to xml files
-        /// </summary>
-        public void GenerateMaps()
-        {
-            Generator tempMap = null;
-         /*   tempMap=new Generator(Content,this,"..............................\n"+
-            "..............................\n"+
-             "..............................\n"+
-
-              "..............................\n"+
-
-               "..............................\n"+
-
-                "..............................\n"+
-
-                 "..............................\n"+
-
-                  "..............................\n"+
-
-                   "..............................",null,1,1
-
-            );
-            tempMap.Save("room1.xml");
-            tempMap.Dispose(); */
-                         List<Exit> exits = new List<Exit>();
-
-            for (int i = 1; i < 4; i++) //3 Level a 3 Räume
-            {
-                int minX = 7;
-                int minY = 8;
-                if (exits.Count > 0) minX += exits[0].from.x;
-                if (exits.Count > 0) minY += exits[0].from.y;
-                tempMap = new Generator(Content, this, minX + r.Next(8), minY + r.Next(8), true, null, i, 3, exits, r);
-                tempMap.Save("room" + i.ToString() + ".xml");
-                exits = Map.ExitToEntry(i + 1, tempMap.exits);
-                tempMap.Dispose();
-            } 
-        }
         #endregion
 
 
@@ -563,7 +524,7 @@ namespace Gruppe22
         public void ShowEndGame(string message = "You have failed in your mission. Better luck next time.", string title = "Game over!")
         {
             _status = GameStatus.Paused;
-            _map1.Save("savedroom" + _map1.currRoomNbr + ".xml");
+            _map1.Save("savedroom" + _map1.id + ".xml");
             Window _gameOver = new Window(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width) / 2.0f) - 300, (int)(GraphicsDevice.Viewport.Height / 2.0f) - 100, 600, 200));
             Statusbox stat = new Statusbox(_gameOver, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width) / 2.0f) - 300 + 10, (int)(GraphicsDevice.Viewport.Height / 2.0f) - 70, 590, 110), false, true);
             stat.AddLine(title + "\n \n" + message);

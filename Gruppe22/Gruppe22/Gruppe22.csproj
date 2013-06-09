@@ -102,7 +102,7 @@
     <Compile Include="Backend\Map\GapTile.cs" />
     <Compile Include="Backend\Map\Generator.cs" />
     <Compile Include="Backend\Map\GeneratorTile.cs" />
-    <Compile Include="Backend\Map\Helpers.cs" />
+    <Compile Include="Backend\Helpers.cs" />
     <Compile Include="Backend\Map\ItemTile.cs" />
     <Compile Include="Backend\Map\ActorTile.cs" />
     <Compile Include="Backend\Map\Map.cs" />
@@ -113,6 +113,7 @@
     <Compile Include="Backend\Map\TeleportTile.cs" />
     <Compile Include="Backend\Map\Tile.cs" />
     <Compile Include="Backend\Map\TrapTile.cs" />
+    <Compile Include="Backend\Map\TriggerTile.cs" />
     <Compile Include="Backend\Map\WallTile.cs" />
     <Compile Include="Frontend\Map\ActorView.cs" />
     <Compile Include="Frontend\Map\Camera.cs" />

@@ -191,7 +191,7 @@ namespace Gruppe22
                     }
                     _map1.actors.Clear();
                     _map1.Load("savedroom" + lastCheck + ".xml", null);
-                    File.WriteAllText("GameData", "room" + _map1.currRoomNbr.ToString() + ".xml" + Environment.NewLine + _deadcounter.ToString());
+                    File.WriteAllText("GameData", "room" + _map1.id.ToString() + ".xml" + Environment.NewLine + _deadcounter.ToString());
                     _mainmap1.resetActors();
                     //_mainmap2.resetActors();
                     _inventory.actor = _map1.actors[0];
@@ -204,13 +204,14 @@ namespace Gruppe22
 
                 case Events.ChangeMap: // Load another map
                     _status = GameStatus.NoRedraw; // prevent redraw (which would crash the game!)
-                    _map1.Save("savedroom" + _map1.currRoomNbr + ".xml");
+                    _map1.Save("savedroom" + _map1.id + ".xml");
                     if (File.Exists("saved" + (string)data[0]))
                         _map1.Load("saved" + (string)data[0], (Coords)data[1]);
                     else
                         _map1.Load((string)data[0], (Coords)data[1]);
                     _mainmap1.resetActors();
                     //_mainmap2.resetActors();
+                    _minimap1.MoveCamera(_map1.actors[0].tile.coords);
 
                     AddMessage("You entered room number " + data[0].ToString().Substring(4, 1) + ".");
                     File.WriteAllText("GameData", data[0].ToString() + Environment.NewLine + _deadcounter.ToString());
@@ -286,10 +287,10 @@ namespace Gruppe22
                                 _deadcounter = 3;
                             if (_map1[target.x, target.y].checkpoint.bonuslife > 0)
                                 _deadcounter += _map1[target.x, target.y].checkpoint.bonuslife;
-                            _map1.Save("savedroom" + _map1.currRoomNbr + ".xml");
+                            _map1.Save("savedroom" + _map1.id + ".xml");
                             _mainmap1.floatNumber(target, "Checkpoint", Color.DarkOliveGreen);
-                            File.WriteAllText("GameData", "room" + _map1.currRoomNbr.ToString() + ".xml" + Environment.NewLine + _deadcounter.ToString());
-                            File.WriteAllText("CheckPoint", _map1.currRoomNbr.ToString());
+                            File.WriteAllText("GameData", "room" + _map1.id.ToString() + ".xml" + Environment.NewLine + _deadcounter.ToString());
+                            File.WriteAllText("CheckPoint", _map1.id.ToString());
                             Regex regex = new Regex(@"\d+");
                             foreach (string file in Directory.GetFiles(".", "checkpoint*.xml"))
                             {
@@ -462,5 +463,212 @@ namespace Gruppe22
             base.HandleEvent(DownStream, eventID, data);
         }
 
+
+        private Direction FindAvailableExits(List<Generator> rooms = null, int id = 0, int col = 0, int totalCols = 0, int row = 0, int totalRows = 0, int totalRooms = 0, int roomsPerRow = 0)
+        {
+            Direction exitsPossible = rooms[id].blocked;
+            if (row == 0) // Highest Row: Remove all exits from top row
+            {
+                exitsPossible &= ~Direction.Up;
+                exitsPossible &= ~Direction.UpRight;
+                exitsPossible &= ~Direction.UpLeft;
+            }
+            if (row == totalRows - 1) // Lowest Row: Remove all exits from bottom row
+            {
+                exitsPossible &= ~Direction.Down;
+                exitsPossible &= ~Direction.DownLeft;
+                exitsPossible &= ~Direction.DownRight;
+            }
+
+            if (col == 0) // Lowest Column: Remove exits to left
+            {
+                exitsPossible &= ~Direction.Left;
+                exitsPossible &= ~Direction.DownLeft;
+                exitsPossible &= ~Direction.UpLeft;
+            }
+            if (col == totalCols - 1) // Highest Column: Remove exits to right
+            {
+                exitsPossible &= ~Direction.Right;
+                exitsPossible &= ~Direction.DownRight;
+                exitsPossible &= ~Direction.UpRight;
+            }
+
+            if (row == totalRows - 2)
+            { // Next to final (possibly incomplete) row
+                if (col >= totalRooms - (roomsPerRow * (totalRows - 1))) // Remove Exit downRight
+                {
+                    exitsPossible &= ~Direction.DownRight;
+                }
+
+                if (col >= totalRooms - (roomsPerRow * (totalRows - 1))) // Remove Exit Down
+                {
+                    exitsPossible &= ~Direction.Down;
+                }
+                if (col > totalRooms - (roomsPerRow * (totalRows - 1)) + 1) // Remove Exit DownLeft
+                {
+                    exitsPossible &= ~Direction.DownLeft;
+                }
+            }
+
+            return exitsPossible;
+
+        }
+
+        public void ConnectRooms(List<Generator> rooms = null, int From = 0, Direction exit = Direction.None, int roomsPerRow = 0)
+        {
+            int To = From;
+
+            if ((exit == Direction.Up) || (exit == Direction.UpLeft) || (exit == Direction.UpRight))
+            {
+                To -= roomsPerRow;
+            }
+            if ((exit == Direction.Down) || (exit == Direction.DownLeft) || (exit == Direction.DownRight))
+            {
+                To += roomsPerRow;
+            }
+            if ((exit == Direction.Left) || (exit == Direction.DownLeft) || (exit == Direction.UpLeft))
+            {
+                To -= 1;
+            }
+            if ((exit == Direction.Right) || (exit == Direction.DownRight) || (exit == Direction.UpRight))
+            {
+                To += 1;
+            }
+            Coords CoordsFrom = rooms[From].SuggestExit(exit);
+            Coords CoordsTo = rooms[To].SuggestExit(Map.OppositeDirection(exit));
+
+            if ((CoordsFrom.x != -1) && (CoordsFrom.y != -1) && (CoordsTo.x != -1) && (CoordsTo.y != -1))
+            {
+                rooms[From].ConnectTo(CoordsFrom, To, CoordsTo, false);
+                rooms[To].ConnectTo(CoordsTo, From, CoordsFrom, false);
+                if (rooms[From].connected)
+                {
+                    rooms[To].connected = true;
+                }
+                if (rooms[To].connected)
+                {
+                    rooms[From].connected = true;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Generate three levels consisting of multiple rooms each and save them to xml files
+        /// </summary>
+        public void GenerateMaps()
+        {
+
+            List<Generator> rooms = new List<Generator>();
+            int maxLevel = 3;
+            int LevelStart = 0;
+            int prevTotal = 0;
+            int prevLevelStart = 0;
+            for (int level = 1; level < maxLevel + 1; ++level)  // Generate 3 levels (for now; possibly random number of levels later)
+            {
+                LevelStart = rooms.Count();
+                // Phase 1: Generate maze like rooms
+                int totalRooms = r.Next(10) + 3;
+                string _name = null;
+                for (int i = 0; i < totalRooms; ++i)
+                {
+
+                    rooms.Add(new Generator(Content, this, 6 + r.Next(8) + ((i == totalRooms) ? 5 : 0), 6 + r.Next(8) + ((i == totalRooms) ? 5 : 0), true, null, LevelStart + i + 1, totalRooms, r, _name, level));
+                    if (_name == null) _name = rooms[i].dungeonname;
+                    if (i == 0)
+                    {
+                        rooms[i].connected = true;
+                    }
+                }
+
+                // Phase 2 Generate roads between rooms
+                int roomsPerRow = (int)Math.Floor(Math.Sqrt(totalRooms));
+                int totalRows = (int)Math.Ceiling((float)(totalRooms / roomsPerRow));
+                for (int row = 0; row < totalRows; ++row)
+                {
+
+                    int totalCols = roomsPerRow;
+                    if (row == totalRows) { totalCols = totalRooms - (roomsPerRow * (totalRows - 1)); };
+                    for (int col = 0; col < totalCols; ++col)
+                    {
+                        int From = LevelStart + roomsPerRow * row + col;
+                        Direction exitsPossible = FindAvailableExits(rooms, From, col, totalCols, row, totalRows, totalRooms, roomsPerRow);
+
+                        do
+                        {
+                            Direction exit = (Direction)Math.Pow(2, r.Next(4));
+                            do
+                            {
+                                exit = Map.NextDirection(exit, true);
+                            } while ((exitsPossible != Direction.None) && ((exit == Direction.None) || (!exitsPossible.HasFlag(exit))));
+                            if (exit != Direction.None)
+                                ConnectRooms(rooms, From, exit, roomsPerRow);
+                            exitsPossible &= ~exit;
+                        }
+                        while ((exitsPossible != Direction.None) && r.Next(100) > 80);
+                    }
+                }
+                for (int i = LevelStart; i < rooms.Count; ++i)
+                {
+
+                    Direction exits = FindAvailableExits(rooms, i, (i - LevelStart) % roomsPerRow,
+                        ((i - LevelStart) / roomsPerRow == totalRows - 1) ? roomsPerRow : (totalRooms - (roomsPerRow * (totalRows - 1))),
+                        (i - LevelStart) / roomsPerRow,
+                        totalRows,
+                        totalRooms,
+                        roomsPerRow);
+                    while ((exits != Direction.None) && (!rooms[i].connected))
+                    {
+                        Direction exit = (Direction)Math.Pow(2, r.Next(4));
+                        ConnectRooms(rooms, i, exit, roomsPerRow);
+                    }
+                }
+
+
+                // Phase 4 Add stairs (up and corresponding down)
+
+                if (level != 1)
+                {
+                    int exit = r.Next(totalRooms) + LevelStart;
+                    while (rooms[exit].hasStairs)
+                    {
+                        exit = r.Next(totalRooms) + LevelStart;
+                    };
+                    int entrance = r.Next(prevTotal) + prevLevelStart;
+                    while (rooms[entrance].hasStairs)
+                    {
+                        entrance = r.Next(totalRooms) + LevelStart;
+                    };
+                    Coords entranceCoords = rooms[entrance].FindRoomForStairs;
+                    Coords exitCoords = rooms[exit].FindRoomForStairs;
+                    rooms[exit].AddStairs(exitCoords, entrance, entranceCoords, false);
+                    rooms[entrance].AddStairs(entranceCoords, exit, exitCoords, true);
+                }
+                if (level == maxLevel)
+                {
+                    int exit = r.Next(totalRooms) + LevelStart;
+                    while (rooms[exit].hasStairs)
+                    {
+                        exit = r.Next(totalRooms) + LevelStart;
+                    };
+                    rooms[exit].AddTarget();
+                }
+
+                // Phase 5 Add Checkpoints, Shops and Boss Fights; cut out areas in maps and add appropriate "regions"
+
+                // Phase 6 Add a few challenges: Switches, Doors, Illusionary and destructible walls, keys and locks
+
+                // Phase 7 Add Other NPCs, environmental elements and Quest Items / Enemies / NPCs
+
+                prevLevelStart = LevelStart;
+                prevTotal = totalRooms;
+            }
+
+            foreach (Generator map in rooms)
+            {
+                map.Save("room" + map.id + ".xml");
+                map.Dispose();
+            }
+            rooms.Clear();
+        }
     }
 }

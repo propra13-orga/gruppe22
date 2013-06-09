@@ -63,10 +63,6 @@ namespace Gruppe22
         /// </summary>
         private TrapState _state = TrapState.On;
 
-        /// <summary>
-        /// Interval when trap state is changed
-        /// </summary>
-        private int _interval = -1;
 
         /// <summary>
         /// Type of trap

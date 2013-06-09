@@ -429,68 +429,64 @@ namespace Gruppe22
             {
                 case ItemProperty.Evade:
                     return "Evade ";
-                    break;
+
                 case ItemProperty.Block:
                     return "Block ";
-                    break;
+
                 case ItemProperty.Penetrate:
                     return "Penetration ";
-                    break;
+
                 case ItemProperty.ReduceDamage:
                     return "Reduce Damage ";
-                    break;
+
                 case ItemProperty.StealMana:
                     return "Steal Mana ";
-                    break;
+
                 case ItemProperty.IceDamage:
                     return "Ice Damage ";
-                    break;
+
                 case ItemProperty.FireProtect:
                     return "Fire Protection ";
-                    break;
+
                 case ItemProperty.IceProtect:
                     return "Ice Protection ";
-                    break;
+
                 case ItemProperty.DestroyWeapon:
                     return "Destroy Weapon ";
-                    break;
+
                 case ItemProperty.DestroyArmor:
                     return "Destroy Armor ";
-                    break;
+
                 case ItemProperty.Resist:
                     return "Resist Effect ";
-                    break;
+
                 case ItemProperty.Damage:
                     return "Physical Damage ";
-                    break;
+
                 case ItemProperty.FireDamage:
                     return "Fire Damage ";
-                    break;
 
                 case ItemProperty.StealHealth:
                     return "Steal Health ";
-                    break;
 
                 case ItemProperty.MaxHealth:
                     return "Max. Health ";
-                    break;
+
                 case ItemProperty.Mana:
                     return "Mana ";
-                    break;
+
                 case ItemProperty.MaxMana:
                     return "Max. Mana ";
-                    break;
+
                 case ItemProperty.Health:
                     return "Health ";
-                    break;
 
                 case ItemProperty.ManaRegen:
                     return "Mana Regeneration ";
-                    break;
 
                 case ItemProperty.HealthRegen:
                     return "Health Regeneration ";
-                    break;
+
             }
             return "";
         }
@@ -544,7 +540,6 @@ namespace Gruppe22
                 case ItemType.Gold:
                     _name = _value.ToString() + " gold pieces";
                     return;
-                    break;
             }
             if (_effects.Count == 0)
             {

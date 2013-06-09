@@ -20,10 +20,7 @@ namespace Gruppe22
         int _startPos = 0;
         int _numLines = 0;
         int _lineHeight = 0;
-        int _selected = 0;
         Texture2D _arrows = null;
-        int _lastTime = 0;
-        Keys _lastKey = Keys.A;
         #endregion
 
         #region Public Methods

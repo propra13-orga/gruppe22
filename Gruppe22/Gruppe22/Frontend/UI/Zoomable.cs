@@ -53,7 +53,7 @@ namespace Gruppe22
 
         #region Public Methods
 
-        public override void MoveContent(Vector2 difference, int _lastCheck=0)
+        public override void MoveContent(Vector2 difference, int _lastCheck = 0)
         {
             Move(difference);
             base.MoveContent(difference);
@@ -62,7 +62,7 @@ namespace Gruppe22
 
         public override void ScrollWheel(int Difference)
         {
-            Zoom -= Difference ;
+            Zoom -= Difference;
             base.ScrollWheel(Difference);
         }
 
@@ -77,32 +77,32 @@ namespace Gruppe22
         }
         public bool DoZoom(Keys k)
         {
-            switch(k){
+            switch (k)
+            {
                 case Keys.PageUp:
-                Zoom += (float)0.1;
-                return true;
-                break;
+                    Zoom += (float)0.1;
+                    return true;
 
-            case Keys.PageDown:
-                Zoom -= (float)0.1;
-                return true;
-                break;
-            case Keys.Right:
-                Move(new Vector2(-1, 0));
-                return true;
-                break;
-            case Keys.Left:
-                Move(new Vector2(1, 0));
-                return true;
-                break;
-            case Keys.Down:
-                Move(new Vector2(0, -1));
-                return true;
-                break;
-            case Keys.Up:
-                Move(new Vector2(0, 1));
-                return true;
-                break;
+                case Keys.PageDown:
+                    Zoom -= (float)0.1;
+                    return true;
+
+                case Keys.Right:
+                    Move(new Vector2(-1, 0));
+                    return true;
+
+                case Keys.Left:
+                    Move(new Vector2(1, 0));
+                    return true;
+
+                case Keys.Down:
+                    Move(new Vector2(0, -1));
+                    return true;
+
+                case Keys.Up:
+                    Move(new Vector2(0, 1));
+                    return true;
+
             }
             return false;
         }
@@ -126,7 +126,7 @@ namespace Gruppe22
         public Zoomable(IHandleEvent parent, SpriteBatch spriteBatch, ContentManager content, Rectangle displayRect)
             : base(parent, spriteBatch, content, displayRect)
         {
-            _camera = new Camera(new Vector2(displayRect.Width / 2+displayRect.Left, displayRect.Height / 2+displayRect.Top));
+            _camera = new Camera(new Vector2(displayRect.Width / 2 + displayRect.Left, displayRect.Height / 2 + displayRect.Top));
             _camera.position = new Vector2(-displayRect.Left, -displayRect.Top);
             //_camera.zoom = 0.4f;
         }

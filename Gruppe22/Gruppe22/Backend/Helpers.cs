@@ -9,6 +9,30 @@ using Microsoft.Xna.Framework;
 namespace Gruppe22
 {
     /// <summary>
+    /// Enumeration of eight ways of movement
+    /// </summary>
+    [Flags]
+    public enum Direction
+    {
+        Up= 1,
+        Right = 2, 
+        Down = 4,
+
+        Left = 8,
+
+        DownLeft = 16,
+        UpRight = 32,
+        DownRight = 64,
+
+        UpLeft = 128,
+
+
+
+        None = 0
+    }
+
+
+    /// <summary>
     /// A direction to which the random generator may move
     /// </summary>
     public enum Connection

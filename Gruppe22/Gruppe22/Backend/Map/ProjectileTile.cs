@@ -10,9 +10,6 @@ namespace Gruppe22
     public class ProjectileTile : Tile
     {
         private Direction _direction = Direction.None;
-        private bool _working = false;
-        private uint _timetothink = 60;
-        private uint _elapsed = 0;
         private uint _id = 0;
 
         public uint id
@@ -76,6 +73,8 @@ namespace Gruppe22
         public override void Save(XmlWriter xmlw)
         {
             xmlw.WriteStartElement("ProjectileTile");
+            xmlw.WriteAttributeString("direction", _direction.ToString());
+            xmlw.WriteAttributeString("id", _id.ToString());
             xmlw.WriteEndElement();
         }
     }

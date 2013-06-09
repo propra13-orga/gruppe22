@@ -43,7 +43,7 @@ namespace Gruppe22
         #region Public Fields
 
 
-        public bool canFocus
+        public override bool canFocus
         {
             get
             {

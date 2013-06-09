@@ -14,11 +14,15 @@ namespace Gruppe22
         /// <summary>
         /// Path to the .xml for the next Room
         /// </summary>
-        string _nextRoom;
+        private string _nextRoom;
         /// <summary>
         /// Spawn position for the next room
         /// </summary>
-        Coords _nextPlayerPos;
+        private Coords _nextPlayerPos;
+
+        private bool _hidden = false;
+        private bool _enabled = true;
+        private bool _teleport = false;
         #endregion
 
         #region Public Fields
@@ -44,11 +48,51 @@ namespace Gruppe22
         #endregion
 
         #region Constructor
-        public TeleportTile(object parent, string nextXml, Coords pos)
+
+        public bool hidden
+        {
+            get
+            {
+                return _hidden;
+            }
+            set
+            {
+                _hidden = value;
+            }
+        }
+
+        public bool enabled
+        {
+            get
+            {
+                return _enabled;
+            }
+            set
+            {
+                _enabled = value;
+            }
+        }
+
+        public bool teleport
+        {
+            get
+            {
+                return _teleport;
+            }
+            set
+            {
+                _teleport = value;
+            }
+        }
+
+        public TeleportTile(object parent, string nextXml, Coords pos, bool isTeleport=false, bool isHidden=false, bool isEnabled=true)
             : base(parent)
         {
             _nextRoom = nextXml;
             _nextPlayerPos = pos;
+            _teleport = isTeleport;
+            _hidden = isHidden;
+            _enabled = isEnabled;
         }
         #endregion
 
@@ -60,7 +104,9 @@ namespace Gruppe22
             xmlw.WriteAttributeString("nextRoom", _nextRoom);
             xmlw.WriteAttributeString("nextX", Convert.ToString(_nextPlayerPos.x));
             xmlw.WriteAttributeString("nextY", Convert.ToString(_nextPlayerPos.y));
-
+            xmlw.WriteAttributeString("hidden", Convert.ToString(_hidden));
+            xmlw.WriteAttributeString("enabled", Convert.ToString(_enabled));
+            xmlw.WriteAttributeString("teleport", Convert.ToString(_teleport));
             xmlw.WriteEndElement();
         }
         #endregion

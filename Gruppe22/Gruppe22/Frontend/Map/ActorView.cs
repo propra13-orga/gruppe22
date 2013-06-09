@@ -159,7 +159,7 @@ namespace Gruppe22
                             }
                  
                         }*/
-                    //_textures[(int)_activity * 8 + (int)_direction].ResetAnimation();
+                    //_textures[(int)_activity * 8 + (int)Math.Log((double)_direction,2)].ResetAnimation();
                 }
 
                 _blockUpdates = false;
@@ -210,10 +210,10 @@ namespace Gruppe22
                 if (_activity != value)
                 {
                     _elapsed = 0;
-                    if (_textures[(int)value * 8 + (int)_direction].animationTexture != null)
+                    if (_textures[(int)value * 8 + (int)Math.Log((double)_direction,2)].animationTexture != null)
                     {
                         _activity = value;
-                        _textures[(int)_activity * 8 + (int)_direction].ResetAnimation();
+                        _textures[(int)_activity * 8 + (int)Math.Log((double)_direction,2)].ResetAnimation();
                     }
                 }
             }
@@ -232,7 +232,7 @@ namespace Gruppe22
                     _elapsed = 0;
                     if (value != Direction.None)
                         _direction = value;
-                    _textures[(int)_activity * 8 + (int)_direction].ResetAnimation();
+                    _textures[(int)_activity * 8 + (int)Math.Log((double)_direction,2)].ResetAnimation();
                 }
             }
         }
@@ -245,7 +245,7 @@ namespace Gruppe22
                 {
                     return _textures[(int)_activity].animationTexture;
                 }
-                return _textures[(int)_activity * 8 + (int)_direction].animationTexture;
+                return _textures[(int)_activity * 8 + (int)Math.Log((double)_direction,2)].animationTexture;
             }
         }
 
@@ -253,7 +253,7 @@ namespace Gruppe22
         {
             get
             {
-                return _textures[(int)_activity * 8 + (int)_direction].animationRect;
+                return _textures[(int)_activity * 8 + (int)Math.Log((double)_direction,2)].animationRect;
             }
         }
 
@@ -261,7 +261,7 @@ namespace Gruppe22
         {
             get
             {
-                return _textures[(int)_activity * 8 + (int)_direction].offsetY;
+                return _textures[(int)_activity * 8 + (int)Math.Log((double)_direction,2)].offsetY;
             }
 
         }
@@ -270,7 +270,7 @@ namespace Gruppe22
         {
             get
             {
-                return _textures[(int)_activity * 8 + (int)_direction].offsetX;
+                return _textures[(int)_activity * 8 + (int)Math.Log((double)_direction,2)].offsetX;
             }
             set { }
 
@@ -280,7 +280,7 @@ namespace Gruppe22
         {
             get
             {
-                return _textures[(int)_activity * 8 + (int)_direction].cropX;
+                return _textures[(int)_activity * 8 + (int)Math.Log((double)_direction,2)].cropX;
             }
             set { }
 
@@ -289,7 +289,7 @@ namespace Gruppe22
         {
             get
             {
-                return _textures[(int)_activity * 8 + (int)_direction].cropY;
+                return _textures[(int)_activity * 8 + (int)Math.Log((double)_direction,2)].cropY;
             }
             set { }
 
@@ -328,7 +328,7 @@ namespace Gruppe22
         {
             _lock = true;
             this.activity = Activity.Die;
-            _textures[(int)_activity * 8 + (int)_direction].FinalAnimation();
+            _textures[(int)_activity * 8 + (int)Math.Log((double)_direction,2)].FinalAnimation();
         }
 
         /// <summary>
@@ -424,7 +424,8 @@ namespace Gruppe22
         /// <param name="vertical"></param>
         public void Add(Activity activity, Direction direction, string filename, Coords startPos, int cols = 1, int rows = 1, bool vertical = false)
         {
-            _textures[(int)activity * 8 + (int)direction].AddAnimation(filename, startPos, cols, rows, vertical);
+            int x = (int)Math.Log((double)direction, 2);
+            _textures[(int)activity * 8 + (int)Math.Log((double)direction, 2)].AddAnimation(filename, startPos, cols, rows, vertical);
         }
 
 
@@ -434,7 +435,7 @@ namespace Gruppe22
 
             if ((_activity != Activity.Walk) && (_activity != Activity.Run))
             {
-                if (_textures[(int)_activity * 8 + (int)_direction].NextAnimation())
+                if (_textures[(int)_activity * 8 + (int)Math.Log((double)_direction,2)].NextAnimation())
                 {
                     if (_activity != Activity.Die)
                     {
@@ -459,7 +460,7 @@ namespace Gruppe22
             {
                 if (hasMoved)
                 {
-                    _textures[(int)_activity * 8 + (int)_direction].NextAnimation();
+                    _textures[(int)_activity * 8 + (int)Math.Log((double)_direction,2)].NextAnimation();
                 }
             }
         }
@@ -500,9 +501,9 @@ namespace Gruppe22
                         {
                             _nomove = false;
                         }
-                        //  System.Diagnostics.Debug.WriteLine("ENDED AT " + _textures[(int)_activity * 8 + (int)_direction].animationID);
+                        //  System.Diagnostics.Debug.WriteLine("ENDED AT " + _textures[(int)_activity * 8 + (int)Math.Log((double)_direction,2)].animationID);
 
-                        // System.Diagnostics.Debug.WriteLine(_textures[(int)_activity * 8 + (int)_direction].animationID);
+                        // System.Diagnostics.Debug.WriteLine(_textures[(int)_activity * 8 + (int)Math.Log((double)_direction,2)].animationID);
 
                         _elapsed -= _animationTime / _moveAccel;
 

@@ -140,11 +140,15 @@ namespace Gruppe22
                 return _updateTiles;
             }
         }
-        public int currRoomNbr
+        public int id
         {
             get
             {
                 return _id;
+            }
+            set
+            {
+                id = value;
             }
         }
 
@@ -691,9 +695,21 @@ namespace Gruppe22
                                 switch (xmlr.Name)
                                 {
                                     case "WallTile":
-                                        tile.Add(new WallTile(this));
+                                        WallTile wall = new WallTile(this);
+                                        if (xmlr.GetAttribute("Enabled") != null) wall.enabled = Boolean.Parse(xmlr.GetAttribute("Enabled"));
+                                        if (xmlr.GetAttribute("Health") != null) wall.health = Int32.Parse(xmlr.GetAttribute("Health"));
+                                        if (xmlr.GetAttribute("Illusion") != null) wall.illusion = Boolean.Parse(xmlr.GetAttribute("Illusion"));
+                                        if (xmlr.GetAttribute("Illusionvisible") != null) wall.illusionVisible = Boolean.Parse(xmlr.GetAttribute("Illusionvisible"));
+                                        tile.Add(wall);
                                         break;
                                     case "ProjectileTile":
+                                        {
+                                            uint id = 0;
+                                            if (xmlr.GetAttribute("id", _id.ToString()) != null) id = UInt32.Parse(xmlr.GetAttribute("id"));
+                                            Direction dir = Direction.None;
+                                            if (xmlr.GetAttribute("direction", _id.ToString()) != null) dir = (Direction)Enum.Parse(typeof(Direction), xmlr.GetAttribute("direction").ToString());
+                                            ProjectileTile projectile = new ProjectileTile(tile, dir, id);
+                                        }
                                         break;
                                     case "ItemTile":
                                         Item item = new Item(_content);
@@ -708,6 +724,7 @@ namespace Gruppe22
                                     case "TargetTile":
                                         tile.Add(new TargetTile(tile));
                                         break;
+
                                     case "TrapTile":
                                         TrapTile trap = new TrapTile(this, Int32.Parse(xmlr.GetAttribute("damage")));
                                         if (xmlr.GetAttribute("penetrate") != null) trap.penetrate = Int32.Parse(xmlr.GetAttribute("penetrate"));
@@ -738,12 +755,48 @@ namespace Gruppe22
                                         {
                                             trap.status = TrapState.NoDisplay;
                                         }
-
                                         tile.Add(trap);
                                         _updateTiles.Add(tile.coords);
                                         break;
+
                                     case "TeleportTile":
-                                        tile.Add(new TeleportTile(tile, xmlr.GetAttribute("nextRoom"), new Coords(Int32.Parse(xmlr.GetAttribute("nextX")), Int32.Parse(xmlr.GetAttribute("nextY")))));
+
+
+                                        TeleportTile transporter = new TeleportTile(tile, xmlr.GetAttribute("nextRoom"), new Coords(Int32.Parse(xmlr.GetAttribute("nextX")), Int32.Parse(xmlr.GetAttribute("nextY"))));
+                                        if (xmlr.GetAttribute("hidden") != null)
+                                        { transporter.hidden = Boolean.Parse(xmlr.GetAttribute("hidden")); }
+                                        if (xmlr.GetAttribute("enabled") != null)
+                                        { transporter.enabled = Boolean.Parse(xmlr.GetAttribute("enabled")); }
+                                        if (xmlr.GetAttribute("teleport") != null)
+                                        { transporter.teleport = Boolean.Parse(xmlr.GetAttribute("teleport")); }
+                                        tile.Add(transporter);
+                                        break;
+
+                                    case "TriggerTile":
+                                        Coords target = new Coords(-1, -1);
+                                        if (xmlr.GetAttribute("affectX") != null) target.x = Int32.Parse(xmlr.GetAttribute("affectX"));
+
+                                        if (xmlr.GetAttribute("affectY") != null) target.y = Int32.Parse(xmlr.GetAttribute("affectY"));
+
+                                        TriggerTile trigger = new TriggerTile(tile, target);
+
+                                        if (xmlr.GetAttribute("explanation") != null) { trigger.explanationEnabled = xmlr.GetAttribute("explanation"); };
+                                        if (xmlr.GetAttribute("explanationdisabled") != null) { trigger.explanationDisabled = xmlr.GetAttribute("explanationdisabled"); };
+                                        if (xmlr.GetAttribute("enabled") != null) { trigger.enabled = Boolean.Parse(xmlr.GetAttribute("enabled")); };
+                                        if (xmlr.GetAttribute("repeat") != null) { trigger.repeat = Int32.Parse(xmlr.GetAttribute("repeat")); };
+
+                                        if (xmlr.GetAttribute("alwaysShowDisabled") != null) { trigger.alwaysShowDisabled = Boolean.Parse(xmlr.GetAttribute("alwaysShowDisabled")); };
+                                        if (xmlr.GetAttribute("alwaysShowEnabled") != null) { trigger.alwaysShowEnabled = Boolean.Parse(xmlr.GetAttribute("alwaysShowEnabled")); };
+
+
+                                        if (xmlr.GetAttribute("tileimage") != null) { trigger.tileimage = xmlr.GetAttribute("tileimage"); };
+                                        if (xmlr.GetAttribute("reactToEnemies") != null) { trigger.reactToEnemies = Boolean.Parse(xmlr.GetAttribute("reactToEnemies")); };
+                                        if (xmlr.GetAttribute("reactToObjects") != null) { trigger.reactToObjects = Boolean.Parse(xmlr.GetAttribute("reactToObjects")); };
+                                        if (xmlr.GetAttribute("reactToItem") != null)
+                                        {
+                                            trigger.reactToItem = Int32.Parse(xmlr.GetAttribute("reactToItem"));
+                                        }
+                                        tile.Add(trigger);
                                         break;
                                     case "CheckpointTile":
                                         int bonusLifes = 0;

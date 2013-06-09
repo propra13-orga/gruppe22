@@ -16,7 +16,6 @@ namespace Gruppe22
 
     public class Notifications : UIElement
     {
-        private List<Notification> _notifications = null;
 
         public void AddNotification(string Text = "")
         {
@@ -65,10 +64,7 @@ namespace Gruppe22
         /// Counter determining how long to display the notification (default: 1000 milliseconds)
         /// </summary>
         private int _timeOut = 1000;
-        /// <summary>
-        /// Style of the notification (i.e. with transparent background, with text shadow, etc.)
-        /// </summary>
-        private NotificationStyle _style = NotificationStyle.Default;
+
         /// <summary>
         /// Current visibility of the notification (-1.0: hidden, but fading in; 1.0: hidden (and faded out), 0.0: visible)
         /// </summary>

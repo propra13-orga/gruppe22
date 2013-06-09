@@ -94,6 +94,18 @@ namespace Gruppe22
             }
         }
 
+        public TeleportTile teleport
+        {
+            get
+            {
+                
+                foreach (Tile tile in _overlay)
+                {
+                    if (tile is TeleportTile) return tile as TeleportTile;
+                }
+                return null;
+            }
+        }
 
         public Actor firstActor
         {
