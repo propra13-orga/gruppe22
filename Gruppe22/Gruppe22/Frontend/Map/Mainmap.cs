@@ -1150,13 +1150,23 @@ namespace Gruppe22
                             {
                                 _environment[1][7].NextAnimation();
                                 _spriteBatch.Draw(_environment[1][7].animationTexture, new Rectangle(_map2screen(x, y).x + 32, _map2screen(x, y).y + 16, 64, 48), _environment[1][7].animationRect, ((y == (int)_highlightedTile.y) && (x == (int)_highlightedTile.x)) ? Color.Red : Color.White);
-
                             }
                             else if (x == _map.width - 1)
                             {
                                 _environment[1][3].NextAnimation();
                                 _spriteBatch.Draw(_environment[1][3].animationTexture, new Rectangle(_map2screen(x, y).x + 32, _map2screen(x, y).y + 16, 64, 48), _environment[1][3].animationRect, ((y == (int)_highlightedTile.y) && (x == (int)_highlightedTile.x)) ? Color.Red : Color.White);
 
+                            }
+                            else
+                            {
+                                if (_map[x, y].teleport.down)
+                                {
+                                    _spriteBatch.Draw(_environment[2][2].animationTexture, new Rectangle(_map2screen(x, y).x-16, _map2screen(x, y).y-92, _environment[2][2].animationRect.Width, _environment[2][2].animationRect.Height), _environment[2][2].animationRect, ((y == (int)_highlightedTile.y) && (x == (int)_highlightedTile.x)) ? Color.Red : Color.White);
+                                }
+                                else
+                                {
+                                    _spriteBatch.Draw(_environment[2][7].animationTexture, new Rectangle(_map2screen(x, y).x-16, _map2screen(x, y).y-32, _environment[2][7].animationRect.Width, _environment[2][7].animationRect.Height), _environment[2][7].animationRect, ((y == (int)_highlightedTile.y) && (x == (int)_highlightedTile.x)) ? Color.Red : Color.White);
+                                }
                             }
                         }
                     }
@@ -1639,12 +1649,12 @@ namespace Gruppe22
             _environment[2].Add("stairs1", 2, new Rectangle(0, 717, 160, 208));
             _environment[2].Add("stairs1", 3, new Rectangle(160, 717, 160, 208));
             _environment[2].Add("stairs1", 4, new Rectangle(398, 702, 112, 208));
-            _environment[2].Add("stairs3", 5, new Rectangle(0, 320, 192, 160));
-            _environment[2].Add("stairs3", 6, new Rectangle(0, 480, 192, 160));
-            _environment[2].Add("stairs3", 7, new Rectangle(192, 320, 192, 160));
-            _environment[2].Add("stairs3", 8, new Rectangle(192, 480, 192, 160));
-            _environment[2].Add("stairs3", 9, new Rectangle(400, 160, 112, 160));
-            _environment[2].Add("stairs3", 10, new Rectangle(400, 480, 112, 160));
+            _environment[2].Add("stairs2", 5, new Rectangle(0, 320, 192, 160));
+            _environment[2].Add("stairs2", 6, new Rectangle(0, 480, 192, 160));
+            _environment[2].Add("stairs2", 7, new Rectangle(192, 320, 192, 160));
+            _environment[2].Add("stairs2", 8, new Rectangle(192, 480, 192, 160));
+            _environment[2].Add("stairs2", 9, new Rectangle(400, 160, 112, 160));
+            _environment[2].Add("stairs2", 10, new Rectangle(400, 480, 112, 160));
 
             _environment[2].Add("chest", 11, new Rectangle(0, 0, 64, 80), 9, 1, false);
             _environment[2].Add("chest", 12, new Rectangle(0, 80, 64, 80), 9, 1, false);

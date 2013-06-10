@@ -758,7 +758,14 @@ namespace Gruppe22
                                         tile.Add(trap);
                                         _updateTiles.Add(tile.coords);
                                         break;
+                                    case "ReservedTile":
+                                        ReservedTile reserved = new ReservedTile(tile);
 
+                                        if (xmlr.GetAttribute("enabled") != null)
+                                        { reserved.enabled = Boolean.Parse(xmlr.GetAttribute("enabled")); }
+                                        tile.Add(reserved);
+
+                                        break;
                                     case "TeleportTile":
 
 
@@ -769,6 +776,9 @@ namespace Gruppe22
                                         { transporter.enabled = Boolean.Parse(xmlr.GetAttribute("enabled")); }
                                         if (xmlr.GetAttribute("teleport") != null)
                                         { transporter.teleport = Boolean.Parse(xmlr.GetAttribute("teleport")); }
+                                        if (xmlr.GetAttribute("down") != null)
+                                        { transporter.down = Boolean.Parse(xmlr.GetAttribute("down")); }
+
                                         tile.Add(transporter);
                                         break;
 

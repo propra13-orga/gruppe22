@@ -23,6 +23,7 @@ namespace Gruppe22
         private bool _hidden = false;
         private bool _enabled = true;
         private bool _teleport = false;
+        private bool _down = false;
         #endregion
 
         #region Public Fields
@@ -85,7 +86,20 @@ namespace Gruppe22
             }
         }
 
-        public TeleportTile(object parent, string nextXml, Coords pos, bool isTeleport=false, bool isHidden=false, bool isEnabled=true)
+        public bool down
+        {
+            get
+            {
+                return _down;
+            }
+            set
+            {
+                _down = value;
+            }
+        }
+
+
+        public TeleportTile(object parent, string nextXml, Coords pos, bool isTeleport = false, bool isHidden = false, bool isEnabled = true, bool isUp=false)
             : base(parent)
         {
             _nextRoom = nextXml;
@@ -93,6 +107,7 @@ namespace Gruppe22
             _teleport = isTeleport;
             _hidden = isHidden;
             _enabled = isEnabled;
+            _down = !isUp;
         }
         #endregion
 
@@ -106,6 +121,7 @@ namespace Gruppe22
             xmlw.WriteAttributeString("nextY", Convert.ToString(_nextPlayerPos.y));
             xmlw.WriteAttributeString("hidden", Convert.ToString(_hidden));
             xmlw.WriteAttributeString("enabled", Convert.ToString(_enabled));
+            xmlw.WriteAttributeString("down", Convert.ToString(_down));
             xmlw.WriteAttributeString("teleport", Convert.ToString(_teleport));
             xmlw.WriteEndElement();
         }

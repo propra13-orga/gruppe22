@@ -509,6 +509,7 @@ namespace Gruppe22
                     exitsPossible &= ~Direction.DownLeft;
                 }
             }
+            //    System.Diagnostics.Debug.WriteLine(id + ": Exits " + exitsPossible);
 
             return exitsPossible;
 
@@ -536,6 +537,7 @@ namespace Gruppe22
             }
             Coords CoordsFrom = rooms[From].SuggestExit(exit);
             Coords CoordsTo = rooms[To].SuggestExit(Map.OppositeDirection(exit));
+            //  System.Diagnostics.Debug.WriteLine(exit.ToString() + ": Level " + rooms[From].level.ToString() + ": " + From + " to " + To + " (" + roomsPerRow.ToString() + ")");
 
             if ((CoordsFrom.x != -1) && (CoordsFrom.y != -1) && (CoordsTo.x != -1) && (CoordsTo.y != -1))
             {
@@ -543,11 +545,31 @@ namespace Gruppe22
                 rooms[To].ConnectTo(CoordsTo, From, CoordsFrom, false);
                 if (rooms[From].connected)
                 {
-                    rooms[To].connected = true;
+                    ConnectRecursive(rooms, To);
                 }
                 if (rooms[To].connected)
                 {
-                    rooms[From].connected = true;
+                    ConnectRecursive(rooms, From);
+                }
+            }
+
+        }
+
+        public void ConnectRecursive(List<Generator> rooms, int id, List<int> visited = null)
+        {
+            //   System.Diagnostics.Debug.WriteLine("Connect " + id);
+
+            if (visited == null)
+            {
+                visited = new List<int>();
+            }
+            visited.Add(id);
+            rooms[id].connected = true;
+            foreach (int connection in rooms[id].connectedRooms)
+            {
+                if (!visited.Contains(connection - 1))
+                {
+                    ConnectRecursive(rooms, connection - 1, visited);
                 }
             }
         }
@@ -566,6 +588,7 @@ namespace Gruppe22
             for (int level = 1; level < maxLevel + 1; ++level)  // Generate 3 levels (for now; possibly random number of levels later)
             {
                 LevelStart = rooms.Count();
+
                 // Phase 1: Generate maze like rooms
                 int totalRooms = r.Next(10) + 3;
                 string _name = null;
@@ -579,17 +602,23 @@ namespace Gruppe22
                         rooms[i].connected = true;
                     }
                 }
-
+                System.Diagnostics.Debug.WriteLine("---------------------------------");
+                System.Diagnostics.Debug.WriteLine("Level " + level + ": " + totalRooms + " Rooms (" + LevelStart + " to " + (LevelStart + (totalRooms - 1)).ToString() + ")");
+                System.Diagnostics.Debug.WriteLine("---------------------------------");
                 // Phase 2 Generate roads between rooms
                 int roomsPerRow = (int)Math.Floor(Math.Sqrt(totalRooms));
-                int totalRows = (int)Math.Ceiling((float)(totalRooms / roomsPerRow));
+                int totalRows = (int)Math.Ceiling(((float)totalRooms / (float)roomsPerRow));
                 for (int row = 0; row < totalRows; ++row)
                 {
 
                     int totalCols = roomsPerRow;
-                    if (row == totalRows) { totalCols = totalRooms - (roomsPerRow * (totalRows - 1)); };
+                    if (row == totalRows - 1)
+                    {
+                        totalCols = totalRooms - (roomsPerRow * (totalRows - 1));
+                    };
                     for (int col = 0; col < totalCols; ++col)
                     {
+                        System.Diagnostics.Debug.WriteLine("Checking Col: " + (col + 1).ToString() + "/" + totalCols + " - Row: " + (row + 1).ToString() + "/" + totalRows.ToString());
                         int From = LevelStart + roomsPerRow * row + col;
                         Direction exitsPossible = FindAvailableExits(rooms, From, col, totalCols, row, totalRows, totalRooms, roomsPerRow);
 
@@ -598,28 +627,43 @@ namespace Gruppe22
                             Direction exit = (Direction)Math.Pow(2, r.Next(4));
                             do
                             {
-                                exit = Map.NextDirection(exit, true);
+                                exit = (Direction)Math.Pow(2, r.Next(4));
                             } while ((exitsPossible != Direction.None) && ((exit == Direction.None) || (!exitsPossible.HasFlag(exit))));
-                            if (exit != Direction.None)
+                            if ((exit != Direction.None) && (exitsPossible != Direction.None))
                                 ConnectRooms(rooms, From, exit, roomsPerRow);
                             exitsPossible &= ~exit;
                         }
                         while ((exitsPossible != Direction.None) && r.Next(100) > 80);
                     }
                 }
+                System.Diagnostics.Debug.WriteLine("-------------------------");
+                System.Diagnostics.Debug.WriteLine("Checking for completeness");
+                System.Diagnostics.Debug.WriteLine("-------------------------");
+
                 for (int i = LevelStart; i < rooms.Count; ++i)
                 {
+                    int col = (i - LevelStart) % roomsPerRow;
+                    int maxcol = ((int)Math.Floor((float)(i - LevelStart) / (float)roomsPerRow) == totalRows - 1) ? (totalRooms - (roomsPerRow * (totalRows - 1))) : roomsPerRow;
+                    int row = (int)Math.Floor((float)(i - LevelStart) / (float)roomsPerRow);
+                    System.Diagnostics.Debug.WriteLine("Checking Col: " + (col + 1).ToString() + "/" + maxcol + " - Row: " + (row + 1).ToString() + "/" + totalRows.ToString());
 
-                    Direction exits = FindAvailableExits(rooms, i, (i - LevelStart) % roomsPerRow,
-                        ((i - LevelStart) / roomsPerRow == totalRows - 1) ? roomsPerRow : (totalRooms - (roomsPerRow * (totalRows - 1))),
-                        (i - LevelStart) / roomsPerRow,
+                    Direction exits = FindAvailableExits(rooms, i, col,
+                        maxcol,
+                        row,
                         totalRows,
                         totalRooms,
                         roomsPerRow);
                     while ((exits != Direction.None) && (!rooms[i].connected))
                     {
                         Direction exit = (Direction)Math.Pow(2, r.Next(4));
-                        ConnectRooms(rooms, i, exit, roomsPerRow);
+                        if (exits.HasFlag(exit))
+                            ConnectRooms(rooms, i, exit, roomsPerRow);
+                        exits = FindAvailableExits(rooms, i, col,
+                        maxcol,
+                        row,
+                        totalRows,
+                        totalRooms,
+                        roomsPerRow);
                     }
                 }
 
@@ -628,21 +672,25 @@ namespace Gruppe22
 
                 if (level != 1)
                 {
+
                     int exit = r.Next(totalRooms) + LevelStart;
                     while (rooms[exit].hasStairs)
                     {
                         exit = r.Next(totalRooms) + LevelStart;
                     };
+
                     int entrance = r.Next(prevTotal) + prevLevelStart;
                     while (rooms[entrance].hasStairs)
                     {
-                        entrance = r.Next(totalRooms) + LevelStart;
+                        entrance = r.Next(prevTotal) + prevLevelStart;
                     };
                     Coords entranceCoords = rooms[entrance].FindRoomForStairs;
                     Coords exitCoords = rooms[exit].FindRoomForStairs;
-                    rooms[exit].AddStairs(exitCoords, entrance, entranceCoords, false);
-                    rooms[entrance].AddStairs(entranceCoords, exit, exitCoords, true);
+                    rooms[exit].AddStairs(exitCoords, entrance + 1, entranceCoords, false);
+                    rooms[entrance].AddStairs(entranceCoords, exit + 1, exitCoords, true);
                 }
+
+
                 if (level == maxLevel)
                 {
                     int exit = r.Next(totalRooms) + LevelStart;

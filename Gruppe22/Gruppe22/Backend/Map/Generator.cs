@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml;
 using Microsoft.Xna.Framework.Content;
 
 namespace Gruppe22
 {
-  public  class Generator : Map
+    public class Generator : Map
     {
         private new List<List<GeneratorTile>> _tiles = null;
         private bool _connected = false;
@@ -25,7 +26,44 @@ namespace Gruppe22
             }
         }
 
+        public List<int> connectedRooms
+        {
+            get
+            {
+                Regex re = new Regex(@"\d+");
 
+                List<int> result = new List<int>();
+                for (int x = 0; x < _width; ++x)
+                {
+                    if (_tiles[0][x].hasTeleport)
+                    {
+                        Match m = re.Match(_tiles[0][x].teleport.nextRoom);
+                        result.Add(Convert.ToInt32(m.Value));
+                    };
+                    if (_tiles[_height - 1][x].hasTeleport)
+                    {
+                        Match m = re.Match(_tiles[_height - 1][x].teleport.nextRoom);
+                        result.Add(Convert.ToInt32(m.Value));
+                    };
+                }
+                for (int y = 0; y < _height; ++y)
+                {
+                    if (_tiles[y][0].hasTeleport)
+                    {
+                        Match m = re.Match(_tiles[y][0].teleport.nextRoom);
+                        result.Add(Convert.ToInt32(m.Value));
+                    };
+
+                    if (_tiles[y][_width - 1].hasTeleport)
+                    {
+                        Match m = re.Match(_tiles[y][_width - 1].teleport.nextRoom);
+                        result.Add(Convert.ToInt32(m.Value));
+                    };
+
+                }
+                return result;
+            }
+        }
         public Direction exits
         {
             get
@@ -72,14 +110,71 @@ namespace Gruppe22
             {
                 List<Coords> result = new List<Coords>();
 
-                for (int y = 1; y < _height - 1; ++y)
-                    for (int x = 1; x < _width - 1; ++x)
+                for (int y = 1; y < _height - 2; ++y)
+                    for (int x = 1; x < _width - 2; ++x)
                     {
-                        if (_tiles[y][x].overlay.Count == 0)
+                        if ((_tiles[y][x].overlay.Count == 0)
+                            && (_tiles[y + 1][x].overlay.Count == 0)
+                            && (_tiles[y - 1][x].overlay.Count == 0)
+                            && (_tiles[y][x - 1].overlay.Count == 0)
+                            && (_tiles[y][x + 1].overlay.Count == 0)
+                            && (((_tiles[y + 1][x + 1].overlay.Count == 0)
+                            && (_tiles[y - 1][x + 1].overlay.Count == 0)) ||
+                            ((_tiles[y + 1][x - 1].overlay.Count == 0)
+                            && (_tiles[y - 1][x - 1].overlay.Count == 0)))
+                            )
                         {
                             result.Add(new Coords(x, y));
                         }
                     }
+                if (result.Count == 0)
+                {
+                    int x = r.Next(_width - 3) + 1;
+                    int y = r.Next(_height - 3) + 1;
+                    while ((_tiles[y][x].hasTeleport) ||
+                        (_tiles[y + 1][x].hasTeleport) ||
+                        (_tiles[y - 1][x].hasTeleport) ||
+                        (_tiles[y][x - 1].hasTeleport) ||
+                        (_tiles[y][x + 1].hasTeleport) ||
+                        (_tiles[y + 1][x + 1].hasTeleport) ||
+                        (_tiles[y + 1][x - 1].hasTeleport) ||
+                        (_tiles[y - 1][x - 1].hasTeleport) ||
+                        (_tiles[y - 1][x + 1].hasTeleport) ||
+
+                        (_tiles[y][x].hasPlayer) ||
+                        (_tiles[y + 1][x].hasPlayer) ||
+                        (_tiles[y - 1][x].hasPlayer) ||
+                        (_tiles[y][x - 1].hasPlayer) ||
+                        (_tiles[y][x + 1].hasPlayer) ||
+                        (_tiles[y + 1][x + 1].hasPlayer) ||
+                        (_tiles[y + 1][x - 1].hasPlayer) ||
+                        (_tiles[y - 1][x - 1].hasPlayer) ||
+                        (_tiles[y - 1][x + 1].hasPlayer) ||
+
+                        (_tiles[y][x].hasTarget) ||
+                        (_tiles[y + 1][x].hasTarget) ||
+                        (_tiles[y - 1][x].hasTarget) ||
+                        (_tiles[y][x - 1].hasTarget) ||
+                        (_tiles[y][x + 1].hasTarget) ||
+                        (_tiles[y + 1][x + 1].hasTarget) ||
+                        (_tiles[y + 1][x - 1].hasTarget) ||
+                        (_tiles[y - 1][x - 1].hasTarget) ||
+                        (_tiles[y - 1][x + 1].hasTarget))
+                    {
+                        x = r.Next(_width - 3) + 1;
+                        y = r.Next(_height - 3) + 1;
+                    };
+                    _tiles[y][x].overlay.Clear();
+                    if (y < _height - 1) _tiles[y + 1][x].overlay.Clear();
+                    if (y > 1) _tiles[y - 1][x].overlay.Clear();
+                    if (x > 1) _tiles[y][x - 1].overlay.Clear();
+                    if (x < _width - 1) _tiles[y][x + 1].overlay.Clear();
+                    if ((y < _height - 1) && (x < _width - 1)) _tiles[y + 1][x + 1].overlay.Clear();
+                    if ((y < _height - 1) && (x > 1)) _tiles[y - 1][x - 1].overlay.Clear();
+                    if ((y > 1) && (x > 1)) _tiles[y + 1][x - 1].overlay.Clear();
+                    if ((y > 1) && (x < _width - 1)) _tiles[y - 1][x + 1].overlay.Clear();
+                    result.Add(new Coords(x, y));
+                }
                 return result[r.Next(result.Count)];
             }
         }
@@ -87,8 +182,9 @@ namespace Gruppe22
         public void AddStairs(Coords srcCoords, int targetRoom, Coords targetCoords, bool up)
         {
             _tiles[srcCoords.y][srcCoords.x].overlay.Clear();
-            _tiles[srcCoords.y][srcCoords.x].overlay.Add(new TeleportTile(_tiles[srcCoords.y][srcCoords.x], "room" + targetRoom.ToString() + ".xml", targetCoords));
+            _tiles[srcCoords.y][srcCoords.x].overlay.Add(new TeleportTile(_tiles[srcCoords.y][srcCoords.x], "room" + targetRoom.ToString() + ".xml", targetCoords, false, false, true, up));
         }
+
         public Direction blocked
         {
             get
