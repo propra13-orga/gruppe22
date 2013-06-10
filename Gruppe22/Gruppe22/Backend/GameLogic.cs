@@ -40,10 +40,15 @@ namespace Gruppe22
         }
         #endregion
 
-        //f:[0,100]->|R, t |-> log(1+t*exp(log(exp(90)-1)))
+        /// <summary>
+        /// methode to evaluate the damage in a combat between to actors
+        /// </summary>
+        /// <param name="attacker">the attacking actor</param>
+        /// <param name="defender">the attacked actor</param>
         protected void _CombatDamage(int attacker, int defender)
         {
-            if (_map1.actors[attacker].evade + r.Next(10) < _map1.actors[defender].evade + r.Next(10))
+            double _evadeChance = (0.02 * (_map1.actors[defender].evade)) / (1 + 0.065 * (_map1.actors[defender].evade)); // converges to ~25% for values from 0 to 100
+            if (r.NextDouble() < _evadeChance)
             {
                 if ((_map1.actors[attacker] is Player) || (_map1.actors[defender] is Player))
                     _mainmap1.floatNumber(_map1.actors[attacker].tile.coords, "Evade", (_map1.actors[defender] is Player) ? Color.Green : Color.White);
@@ -107,15 +112,19 @@ namespace Gruppe22
                 }
         }
 
-        //f:[0,100]->|R, t |-> log(1+t*exp(log(exp(90)-1)))
+        /// <summary>
+        /// methode to evaluate the damage a trap deals to  an actor
+        /// </summary>
+        /// <param name="target">Coords of the actor which walked over the trap</param>
         protected void _TrapDamage(Coords target)
         {
             Actor actor = _map1[target].firstActor;
             if (actor == null) return;
             int trapDamage = _map1[target].trap.Trigger();
+            double _evadeChance = (0.02 * (actor.evade)) / (1 + 0.065 * (actor.evade)); // same formula as in _CombatDamage
+            Random r = new Random();
 
-
-            if (_map1[target.x, target.y].trap.evade + r.Next(10) < actor.evade + r.Next(10))
+            if (r.NextDouble() < _evadeChance)
             {
                 if (actor is Player)
                     _mainmap1.floatNumber(target, "Trap evaded", Color.Green);
