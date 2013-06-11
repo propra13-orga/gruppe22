@@ -41,7 +41,7 @@ namespace Gruppe22
         #endregion
 
         /// <summary>
-        /// methode to evaluate the damage in a combat between to actors
+        /// methode to evaluate the damage in a combat between two actors
         /// </summary>
         /// <param name="attacker">the attacking actor</param>
         /// <param name="defender">the attacked actor</param>
@@ -54,16 +54,17 @@ namespace Gruppe22
                     _mainmap1.floatNumber(_map1.actors[attacker].tile.coords, "Evade", (_map1.actors[defender] is Player) ? Color.Green : Color.White);
             }
             else
-
-
-                if (_map1.actors[attacker].penetrate + r.Next(10) < _map1.actors[defender].block + r.Next(10))
+            {
+                //if (_map1.actors[attacker].penetrate + r.Next(10) < _map1.actors[defender].block + r.Next(10))
+                if(r.Next(_map1.actors[attacker].penetrate) < r.Next(_map1.actors[defender].block))
                 {
                     if ((_map1.actors[attacker] is Player) || (_map1.actors[defender] is Player))
                         _mainmap1.floatNumber(_map1.actors[attacker].tile.coords, "Blocked", (_map1.actors[defender] is Player) ? Color.Green : Color.White);
                 }
                 else
                 {
-                    int damage = _map1.actors[attacker].damage - _map1.actors[defender].armor + (5 - r.Next(10));
+                    double dmgReduction = (0.06 * (_map1.actors[defender].armor)) / (1 + 0.06 * (_map1.actors[defender].armor)); //max ~85% at 100 armor
+                    int damage = (int)(_map1.actors[attacker].damage*(1-dmgReduction));
                     if (damage > 0)
                     {
                         _map1.actors[defender].health -= damage;
@@ -110,10 +111,11 @@ namespace Gruppe22
                             _mainmap1.floatNumber(_map1.actors[defender].tile.coords, "No damage", _map1.actors[defender] is Player ? Color.Green : Color.White);
                     }
                 }
+            }
         }
 
         /// <summary>
-        /// methode to evaluate the damage a trap deals to  an actor
+        /// methode to evaluate the damage a trap deals to an actor walking over it
         /// </summary>
         /// <param name="target">Coords of the actor which walked over the trap</param>
         protected void _TrapDamage(Coords target)
@@ -130,16 +132,16 @@ namespace Gruppe22
                     _mainmap1.floatNumber(target, "Trap evaded", Color.Green);
             }
             else
-
-
-                if (_map1[target.x, target.y].trap.penetrate + r.Next(10) < actor.block + r.Next(10))
+            {
+                if (r.Next(_map1[target.x, target.y].trap.penetrate) < r.Next(actor.block))
                 {
                     if (actor is Player)
                         _mainmap1.floatNumber(target, "Trap blocked", Color.Green);
                 }
                 else
                 {
-                    int damage = trapDamage - actor.armor + (5 - r.Next(10));
+                    double dmgReduction = (0.06 * (actor.armor)) / (1 + 0.06 * (actor.armor));
+                    int damage = (int)(trapDamage * (1 - dmgReduction));
                     if (damage > 0)
                     {
                         actor.health -= damage;
@@ -171,6 +173,7 @@ namespace Gruppe22
                             _mainmap1.floatNumber(target, "No damage", Color.Green);
                     }
                 }
+            }
         }
 
         /// <summary>
