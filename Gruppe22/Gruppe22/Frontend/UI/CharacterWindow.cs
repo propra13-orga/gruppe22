@@ -6,14 +6,19 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 namespace Gruppe22
 {
     class CharacterWindow : Window
     {
+        private uint _page = 0;
         private Actor _actor;
         private TextInput _name;
-        private Grid _abilities;
+        private Abilities _abilities;
+        private Inventory _inventory;
+        private AbilityChoice _abilitychoice;
+        private int _selected = -1;
         private NumberEntry _evade;
         private NumberEntry _block = null;
         private NumberEntry _penetrate = null;
@@ -40,13 +45,58 @@ namespace Gruppe22
         private NumberEntry _armor = null;
         private NumberEntry _abilityPoints = null;
         private NumberEntry _skills = null;
+        protected SpriteFont _font = null;
 
+        public uint page
+        {
+            get
+            {
+                return _page;
+            }
+            set
+            {
+                _page = value;
+                switch (_page)
+                {
+                    case 0:
+                        foreach (UIElement child in _children)
+                        {
+                            if ((child is NumberEntry) || (child is TextInput))
+                                child.Show();
+                            else
+                                child.Hide();
+                        }
+                        _skills.Hide();
+                        break;
+                    case 2:
+                        foreach (UIElement child in _children)
+                        {
+                            if ((child is NumberEntry) || (child is TextInput)) child.Hide();
+                        }
+                        _inventory.Hide();
+                        _abilities.Show();
+                        _abilitychoice.Show();
+                        _skills.Show();
+                        _level.Show();
+                        break;
+                    case 1:
+                        foreach (UIElement child in _children)
+                        {
+                            if ((child is NumberEntry) || (child is TextInput)) child.Hide();
+                        }
+                        _inventory.Show();
+                        _abilities.Hide();
+                        _abilitychoice.Hide();
+
+                        break;
+                }
+            }
+        }
         public override void HandleEvent(bool DownStream, Events eventID, params object[] data)
         {
             switch (eventID)
             {
                 case Events.Settings:
-
                     if ((int)data[0] > 0)
                         _skills.value -= 1;
                     else _skills.value += 1;
@@ -68,48 +118,7 @@ namespace Gruppe22
                             }
                         }
                     }
-                    if (_skills.value > 0)
-                    {
-                        _evade.allowIncrease = true;
-                        _block.allowIncrease = true;
-                        _penetrate.allowIncrease = true;
-                        _healthReg.allowIncrease = true;
-                        _stealHealth.allowIncrease = true;
-                        _stealMana.allowIncrease = true;
-                        _fireDamage.allowIncrease = true;
-                        _iceDamage.allowIncrease = true;
-                        _fireDefense.allowIncrease = true;
-                        _iceDefense.allowIncrease = true;
-                        _destroyWeapon.allowIncrease = true;
-                        _destroyArmor.allowIncrease = true;
-                        _maxMana.allowIncrease = true;
-                        _manaReg.allowIncrease = true;
-                        _damage.allowIncrease = true;
-                        _resist.allowIncrease = true;
-                        _maxhealth.allowIncrease = true;
-                        _armor.allowIncrease = true;
-                    }
-                    else
-                    {
-                        _evade.allowIncrease = false;
-                        _block.allowIncrease = false;
-                        _penetrate.allowIncrease = false;
-                        _healthReg.allowIncrease = false;
-                        _stealHealth.allowIncrease = false;
-                        _stealMana.allowIncrease = false;
-                        _fireDamage.allowIncrease = false;
-                        _iceDamage.allowIncrease = false;
-                        _fireDefense.allowIncrease = false;
-                        _iceDefense.allowIncrease = false;
-                        _destroyWeapon.allowIncrease = false;
-                        _destroyArmor.allowIncrease = false;
-                        _maxMana.allowIncrease = false;
-                        _manaReg.allowIncrease = false;
-                        _damage.allowIncrease = false;
-                        _resist.allowIncrease = false;
-                        _maxhealth.allowIncrease = false;
-                        _armor.allowIncrease = false;
-                    }
+                    _RefreshSkills();
                     break;
                 case Events.ContinueGame:
                     _actor.skills = _skills.value;
@@ -141,6 +150,112 @@ namespace Gruppe22
             };
         }
 
+
+        private void _RefreshSkills()
+        {
+
+            if (_skills.value > 0)
+            {
+                _evade.allowIncrease = true;
+                _block.allowIncrease = true;
+                _penetrate.allowIncrease = true;
+                _healthReg.allowIncrease = true;
+                _stealHealth.allowIncrease = true;
+                _stealMana.allowIncrease = true;
+                _fireDamage.allowIncrease = true;
+                _iceDamage.allowIncrease = true;
+                _fireDefense.allowIncrease = true;
+                _iceDefense.allowIncrease = true;
+                _destroyWeapon.allowIncrease = true;
+                _destroyArmor.allowIncrease = true;
+                _maxMana.allowIncrease = true;
+                _manaReg.allowIncrease = true;
+                _damage.allowIncrease = true;
+                _resist.allowIncrease = true;
+                _maxhealth.allowIncrease = true;
+                _armor.allowIncrease = true;
+            }
+            else
+            {
+                _evade.allowIncrease = false;
+                _block.allowIncrease = false;
+                _penetrate.allowIncrease = false;
+                _healthReg.allowIncrease = false;
+                _stealHealth.allowIncrease = false;
+                _stealMana.allowIncrease = false;
+                _fireDamage.allowIncrease = false;
+                _iceDamage.allowIncrease = false;
+                _fireDefense.allowIncrease = false;
+                _iceDefense.allowIncrease = false;
+                _destroyWeapon.allowIncrease = false;
+                _destroyArmor.allowIncrease = false;
+                _maxMana.allowIncrease = false;
+                _manaReg.allowIncrease = false;
+                _damage.allowIncrease = false;
+                _resist.allowIncrease = false;
+                _maxhealth.allowIncrease = false;
+                _armor.allowIncrease = false;
+            }
+        }
+
+        public override bool OnMouseDown(int button)
+        {
+            Point pos = new Point(Mouse.GetState().X, Mouse.GetState().Y);
+            if (new Rectangle(_displayRect.Left, _displayRect.Top - 37, 130, 37).Contains(pos))
+            {
+                _parent.HandleEvent(false, Events.ShowCharacter);
+                return true;
+            }
+            if (new Rectangle(_displayRect.Left + 135, _displayRect.Top - 37, 130, 37).Contains(pos))
+            {
+                _parent.HandleEvent(false, Events.ShowInventory);
+                return true;
+            }
+            if (new Rectangle(_displayRect.Left + 270, _displayRect.Top - 37, 130, 37).Contains(pos))
+            {
+                _parent.HandleEvent(false, Events.ShowAbilities);
+                return true;
+            }
+            return base.OnMouseDown(button);
+        }
+
+
+        private void _UpdateSelection()
+        {
+            Point pos = new Point(Mouse.GetState().X, Mouse.GetState().Y);
+            _selected = -1;
+            if (new Rectangle(_displayRect.Left, _displayRect.Top - 37, 130, 37).Contains(pos))
+            {
+                _selected = 0;
+            }
+            if (new Rectangle(_displayRect.Left + 135, _displayRect.Top - 37, 130, 37).Contains(pos))
+            {
+                _selected = 1;
+            }
+            if (new Rectangle(_displayRect.Left + 270, _displayRect.Top - 37, 130, 37).Contains(pos))
+            {
+                _selected = 2;
+            }
+        }
+
+        private void _drawTab(int pos, string text)
+        {
+            _spriteBatch.Draw(_background, new Rectangle(_displayRect.Left + 135 * pos, _displayRect.Top - 32 - ((_page == pos) ? 5 : 0), 130, 32 + ((_page == pos) ? 5 : 0)), new Rectangle(39, 6, 1, 1), (_page == pos) ? Color.White : Color.Gray);
+            _spriteBatch.Draw(_background, new Rectangle(_displayRect.Left + 1 + 135 * pos, _displayRect.Top - 31 - ((_page == pos) ? 5 : 0), 128, 32 + ((_page == pos) ? 6 : 0)), new Rectangle(39, 6, 1, 1), (_selected == pos) ? Color.LightBlue : Color.Black);
+            int center = (int)((128 - _font.MeasureString(text).X * 0.8f) / 2f);
+            _spriteBatch.DrawString(_font, text, new Vector2(_displayRect.Left + 135 * pos + center, _displayRect.Top - 30 - ((_page == pos) ? 5 : 0)), (_page == pos) ? Color.White : Color.Gray, 0f, Vector2.Zero, 0.8f, SpriteEffects.None, 0f);
+        }
+
+        public override void Draw(GameTime gameTime)
+        {
+            _UpdateSelection();
+            base.Draw(gameTime);
+            _spriteBatch.Begin();
+            _drawTab(0, "Character" + ((_actor.abilityPoints > 0) ? (" (" + _actor.abilityPoints.ToString() + ")") : ""));
+            _drawTab(1, "Inventory" + ((_actor.newItems > 0) ? (" (" + _actor.newItems.ToString() + ")") : ""));
+            _drawTab(2, "Skills" + ((_actor.skills > 0) ? (" (" + _actor.skills.ToString() + ")") : ""));
+            _spriteBatch.End();
+        }
 
         /// <summary>
         /// Constructor
@@ -203,6 +318,11 @@ namespace Gruppe22
             _level = new NumberEntry(this, _spriteBatch, _content, new Rectangle(_displayRect.Left
                 + (_displayRect.Width - 10) / 2 + 10, _displayRect.Top + 395, (_displayRect.Width - 10) / 2 - 10, 25), "Level:", _actor.level, "Your level determines your general character state.", 2, false);
 
+
+            _abilities = new Abilities(this, _spriteBatch, _content, new Rectangle(_displayRect.Left + 5, _displayRect.Top + 5, _displayRect.Width - 10, _displayRect.Height - 160), _actor);
+            _abilitychoice = new AbilityChoice(this, _spriteBatch, _content, new Rectangle(_displayRect.Left + 5, _displayRect.Bottom - 140, _displayRect.Width - 10, 60), _actor);
+
+            _inventory = new Inventory(this, _spriteBatch, _content, new Rectangle(_displayRect.Left + 5, _displayRect.Top + 5, _displayRect.Width - 10, _displayRect.Height - 40), _actor);
             _children.Add(_name);
             _children.Add(_block);
             _children.Add(_evade);
@@ -230,9 +350,16 @@ namespace Gruppe22
             _children.Add(_abilityPoints);
             _children.Add(_skills);
             _children.Add(_level);
+            _children.Add(_inventory);
+            _children.Add(_abilities);
+
+            _children.Add(_abilitychoice);
+            _font = _content.Load<SpriteFont>("font");
             _children.Add(new Button(this, _spriteBatch, _content, new Rectangle(_displayRect.Left + (_displayRect.Width - 100) / 2, _displayRect.Top + _displayRect.Height - 45, 100, 30), "Ok", (int)Buttons.Close, false));
-            _focusID = _children.Count-1;
+            _focusID = _children.Count - 1;
+            page = 0;
             ChangeFocus();
+            _RefreshSkills();
         }
     }
 }

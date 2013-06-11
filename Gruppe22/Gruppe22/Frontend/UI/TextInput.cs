@@ -39,52 +39,57 @@ namespace Gruppe22
 
         public override bool OnKeyDown(Microsoft.Xna.Framework.Input.Keys k)
         {
-            switch (k)
+            if (_visible)
             {
-                case Keys.Back:
-                    if ((_text.Length > _cursor) && (_cursor > 0))
-                        _text = _text.Remove(_cursor - 1, 1);
-                    break;
-                case Keys.Delete:
-                    if (_text.Length > _cursor + 1)
-                        _text = _text.Remove(_cursor, 1);
-                    break;
-                case Keys.Space:
-                    _text = _text.Insert(_cursor, " ");
-                    break;
-                case Keys.Insert:
-                    _overwrite = !_overwrite;
-                    break;
-                case Keys.Enter:
-                    base.OnKeyDown(Microsoft.Xna.Framework.Input.Keys.Tab);
-                    break;
-                case Keys.Tab:
-                    base.OnKeyDown(k);
-                    break;
-                case Keys.Left:
-                    if(_cursor>0)
-                    _cursor -= 1;
-                    break;
-                case Keys.Right:
-                    if(_cursor<_text.Length-1)
-                    _cursor += 1;
-                    break;
-                case Keys.Home:
-                   
-                    _cursor = 0;
-                    break;
-                case Keys.End:
-                    _cursor = _text.Length - 1;
-                    break;
-                default:
-                    if ((Keyboard.GetState().IsKeyDown(Keys.LeftShift)) || (Keyboard.GetState().IsKeyDown(Keys.RightShift)))
-                        _text = _text.Insert(_cursor, k.ToString().ToUpper());
-                    else
-                        _text = _text.Insert(_cursor, k.ToString().ToLower());
+                switch (k)
+                {
+                    case Keys.Back:
+                        if ((_text.Length > _cursor) && (_cursor > 0))
+                            _text = _text.Remove(_cursor - 1, 1);
+                        break;
+                    case Keys.Delete:
+                        if (_text.Length > _cursor + 1)
+                            _text = _text.Remove(_cursor, 1);
+                        break;
+                    case Keys.Space:
+                        _text = _text.Insert(_cursor, " ");
+                        break;
+                    case Keys.Insert:
+                        _overwrite = !_overwrite;
+                        break;
+                    case Keys.Enter:
+                        base.OnKeyDown(Microsoft.Xna.Framework.Input.Keys.Tab);
+                        break;
+                    case Keys.Tab:
+                        base.OnKeyDown(k);
+                        break;
+                    case Keys.Left:
+                        if (_cursor > 0)
+                            _cursor -= 1;
+                        break;
+                    case Keys.Right:
+                        if (_cursor < _text.Length - 1)
+                            _cursor += 1;
+                        break;
+                    case Keys.Home:
 
-                    return true;
+                        _cursor = 0;
+                        break;
+                    case Keys.End:
+                        _cursor = _text.Length - 1;
+                        break;
+                    default:
+                        if (k.ToString().Length == 1)
+                        {
+                            if ((Keyboard.GetState().IsKeyDown(Keys.LeftShift)) || (Keyboard.GetState().IsKeyDown(Keys.RightShift)))
+                                _text = _text.Insert(_cursor, k.ToString().ToUpper());
+                            else
+                                _text = _text.Insert(_cursor, k.ToString().ToLower());
+                        }
+
+                        return true;
+                }
             }
-
             return true;
         }
 
@@ -92,7 +97,7 @@ namespace Gruppe22
         {
             get
             {
-                return _canEdit;
+                return _visible && _canEdit;
             }
         }
 
@@ -116,28 +121,31 @@ namespace Gruppe22
 
         public override void Draw(GameTime gameTime)
         {
-            _spriteBatch.Begin();
-            _spriteBatch.DrawString(_font, _label, new Vector2(_displayRect.X, _displayRect.Y + 1), Color.White);
-            _spriteBatch.Draw(_background, new Rectangle(_displayRect.Width + _displayRect.X - _textWidth - 6, _displayRect.Y, _textWidth + 7, _displayRect.Height), new Rectangle(39, 6, 1, 1), _focus ? Color.Blue : Color.White);
-            _spriteBatch.Draw(_background, new Rectangle(_displayRect.Width + _displayRect.X - _textWidth - 5, _displayRect.Y + 1, _textWidth + 5, _displayRect.Height - 2), new Rectangle(39, 6, 1, 1), _focus ? Color.DarkBlue : Color.Black);
-            _spriteBatch.DrawString(_font, _text, new Vector2(_displayRect.X + _displayRect.Width - _textWidth, _displayRect.Y + 2), Color.White);
-            if (_focus && (_cursor > -1) && (_cursor < _text.Length)
-                )
+            if (_visible)
             {
-                _counter += gameTime.ElapsedGameTime.Milliseconds;
-                if (_counter > 500)
+                _spriteBatch.Begin();
+                _spriteBatch.DrawString(_font, _label, new Vector2(_displayRect.X, _displayRect.Y + 1), Color.White);
+                _spriteBatch.Draw(_background, new Rectangle(_displayRect.Width + _displayRect.X - _textWidth - 6, _displayRect.Y, _textWidth + 7, _displayRect.Height), new Rectangle(39, 6, 1, 1), _focus ? Color.Blue : Color.White);
+                _spriteBatch.Draw(_background, new Rectangle(_displayRect.Width + _displayRect.X - _textWidth - 5, _displayRect.Y + 1, _textWidth + 5, _displayRect.Height - 2), new Rectangle(39, 6, 1, 1), _focus ? Color.DarkBlue : Color.Black);
+                _spriteBatch.DrawString(_font, _text, new Vector2(_displayRect.X + _displayRect.Width - _textWidth, _displayRect.Y + 2), Color.White);
+                if (_focus && (_cursor > -1) && (_cursor < _text.Length)
+                    )
                 {
-                    _counter -= 500;
-                    if (_color == 0) _color = 1; else _color = 0;
+                    _counter += gameTime.ElapsedGameTime.Milliseconds;
+                    if (_counter > 500)
+                    {
+                        _counter -= 500;
+                        if (_color == 0) _color = 1; else _color = 0;
+
+                    }
+                    _spriteBatch.Draw(_background, new Rectangle(_displayRect.X + _displayRect.Width - _textWidth - 1 + (int)_font.MeasureString(_text.Substring(0, _cursor)).X, _displayRect.Y + 2, 2, _displayRect.Height - 4), new Rectangle(39, 6, 1, 1), (_color == 1) ? Color.White : Color.Transparent);
+
 
                 }
-                _spriteBatch.Draw(_background, new Rectangle(_displayRect.X + _displayRect.Width - _textWidth - 1 + (int)_font.MeasureString(_text.Substring(0, _cursor)).X, _displayRect.Y + 2, 2, _displayRect.Height - 4), new Rectangle(39, 6, 1, 1), (_color==1)? Color.White:Color.Transparent);
+                _spriteBatch.End();
 
-
+                base.Draw(gameTime);
             }
-            _spriteBatch.End();
-
-            base.Draw(gameTime);
         }
 
         public override void Update(GameTime gameTime)

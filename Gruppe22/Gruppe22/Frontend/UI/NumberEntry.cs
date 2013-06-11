@@ -52,20 +52,23 @@ namespace Gruppe22
         }
         public override bool canFocus
         {
-            get { return _allowIncrease || _allowDecrease; }
+            get { return ((_allowIncrease || _allowDecrease) && (_visible)); }
         }
         public override void Draw(GameTime gameTime)
         {
-            _spriteBatch.Begin();
-            _spriteBatch.DrawString(_font, _label, new Vector2(_displayRect.X, _displayRect.Y + 1), Color.White);
-            _spriteBatch.Draw(_background, new Rectangle(_displayRect.Width + _displayRect.X - _textWidth - 12, _displayRect.Y, _textWidth + 12, _displayRect.Height), new Rectangle(39, 6, 1, 1), _focus ? Color.Blue : Color.White);
-            _spriteBatch.Draw(_background, new Rectangle(_displayRect.Width + _displayRect.X - _textWidth - 11, _displayRect.Y + 1, _textWidth + 10, _displayRect.Height - 2), new Rectangle(39, 6, 1, 1), _focus ? Color.DarkBlue : Color.Black);
-            _spriteBatch.DrawString(_font, _value.ToString(), new Vector2(_displayRect.X + _displayRect.Width - _textWidth - 10, _displayRect.Y + 2), (_allowIncrease || _allowDecrease) ? Color.Green : Color.White);
-            if (_allowIncrease)
-                _spriteBatch.Draw(_arrows, new Rectangle(_displayRect.Right - 12, _displayRect.Top + 2, 10, 10), new Rectangle(32, 0, 28, 28), _focus ? Color.Blue : Color.White);
-            if (_allowDecrease)
-                _spriteBatch.Draw(_arrows, new Rectangle(_displayRect.Right - 12, _displayRect.Bottom - 12, 10, 10), new Rectangle(0, 0, 28, 28), _focus ? Color.Blue : Color.White);
-            _spriteBatch.End();
+            if (_visible)
+            {
+                _spriteBatch.Begin();
+                _spriteBatch.DrawString(_font, _label, new Vector2(_displayRect.X, _displayRect.Y + 1), Color.White);
+                _spriteBatch.Draw(_background, new Rectangle(_displayRect.Width + _displayRect.X - _textWidth - 12, _displayRect.Y, _textWidth + 12, _displayRect.Height), new Rectangle(39, 6, 1, 1), _focus ? Color.Blue : Color.White);
+                _spriteBatch.Draw(_background, new Rectangle(_displayRect.Width + _displayRect.X - _textWidth - 11, _displayRect.Y + 1, _textWidth + 10, _displayRect.Height - 2), new Rectangle(39, 6, 1, 1), _focus ? Color.DarkBlue : (_allowIncrease || _allowDecrease) ? Color.DarkGreen : Color.Black);
+                _spriteBatch.DrawString(_font, _value.ToString(), new Vector2(_displayRect.X + _displayRect.Width - _textWidth - 10, _displayRect.Y + 2), Color.White);
+                if (_allowIncrease)
+                    _spriteBatch.Draw(_arrows, new Rectangle(_displayRect.Right - 12, _displayRect.Top + 2, 10, 10), new Rectangle(32, 0, 28, 28), _focus ? Color.Blue : Color.White);
+                if (_allowDecrease)
+                    _spriteBatch.Draw(_arrows, new Rectangle(_displayRect.Right - 12, _displayRect.Bottom - 12, 10, 10), new Rectangle(0, 0, 28, 28), _focus ? Color.Blue : Color.White);
+                _spriteBatch.End();
+            }
         }
 
         /// <summary>

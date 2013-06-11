@@ -73,91 +73,89 @@ namespace Gruppe22
 
         public async Task WorkoutMoves()
         {
-            if (_elapsed > _timeToThink)
+
+            Map map = (Map)((FloorTile)_parent).parent;
+
+
+            Direction dir = Direction.None;
+            Coords closestEnemy = map.ClosestEnemy(coords, actor.viewRange, !(actor is NPC), !(actor is NPC));
+
+            if (closestEnemy.x > -1) // There is an enemy close by
             {
-                _elapsed -= _timeToThink;
-                Map map = (Map)((FloorTile)_parent).parent;
 
-
-                Direction dir = Direction.None;
-                Coords closestEnemy = map.ClosestEnemy(coords, actor.viewRange, !(actor is NPC), !(actor is NPC));
-
-                if (closestEnemy.x > -1) // There is an enemy close by
+                if ((Math.Abs(closestEnemy.x - coords.x) < 2) &&
+                    (Math.Abs(closestEnemy.y - coords.y) < 2) &&
+                    (map.CanMove(coords, Map.WhichWayIs(closestEnemy, coords))))
                 {
+                    dir = Map.WhichWayIs(closestEnemy, coords);
+                    //System.Diagnostics.Debug.WriteLine("Attack -> " + coords.x + "/" + coords.y + "->" + closestEnemy.x + "/" + closestEnemy.y + "=>" + dir);
 
-                    if ((Math.Abs(closestEnemy.x - coords.x) < 2) &&
-                        (Math.Abs(closestEnemy.y - coords.y) < 2) &&
-                        (map.CanMove(coords, Map.WhichWayIs(closestEnemy, coords))))
+                }
+                else
+                {
+                    //System.Diagnostics.Debug.WriteLine("==============================");
+                    //System.Diagnostics.Debug.WriteLine(actor.ToString() + " (" + coords.ToString() + ") tries to catch " + map[closestEnemy].firstActor.ToString() + " (" + closestEnemy.ToString() + ")");
+                    //System.Diagnostics.Debug.WriteLine("------------------------------");
+
+                    List<Coords> path = null;
+                    SortedSet<Coords> temp = null;
+
+                    map.PathTo(coords, closestEnemy, out path, ref temp, 10);
+                    if ((path != null) && (path.Count > 0))
                     {
-                        dir = Map.WhichWayIs(closestEnemy, coords);
-                        //System.Diagnostics.Debug.WriteLine("Attack -> " + coords.x + "/" + coords.y + "->" + closestEnemy.x + "/" + closestEnemy.y + "=>" + dir);
-
+                        dir = Map.WhichWayIs(path[1], coords);
+                        // System.Diagnostics.Debug.WriteLine("=> Path found:" + path[1] + " (" + dir + ")");
                     }
-                    else
-                    {
-                        //System.Diagnostics.Debug.WriteLine("==============================");
-                        //System.Diagnostics.Debug.WriteLine(actor.ToString() + " (" + coords.ToString() + ") tries to catch " + map[closestEnemy].firstActor.ToString() + " (" + closestEnemy.ToString() + ")");
-                        //System.Diagnostics.Debug.WriteLine("------------------------------");
+                }
 
-                        List<Coords> path = null;
-                        SortedSet<Coords> temp = null;
+                if ((actor.health < actor.maxHealth / 4) || (actor is NPC))
+                {
+                    // Low health => try to flee
+                    //System.Diagnostics.Debug.WriteLine("=> Flee!");
 
-                        map.PathTo(coords, closestEnemy, out path, ref temp, 10);
-                        if ((path != null) && (path.Count > 0))
-                        {
-                            dir = Map.WhichWayIs(path[1], coords);
-                            // System.Diagnostics.Debug.WriteLine("=> Path found:" + path[1] + " (" + dir + ")");
-                        }
-                    }
+                    dir = Map.OppositeDirection(dir);
+                }
+                int count = 1;
 
-                    if ((actor.health < actor.maxHealth / 4) || (actor is NPC))
-                    {
-                        // Low health => try to flee
-                        //System.Diagnostics.Debug.WriteLine("=> Flee!");
+                while ((!map.TileByCoords(Map.DirectionTile(coords, dir)).canEnter) && (count < 9))
+                {
+                    //System.Diagnostics.Debug.WriteLine("Rotate");
+                    dir = Map.NextDirection(dir);
+                    count += 1;
+                }
+                if (!map.TileByCoords(Map.DirectionTile(coords, dir)).canEnter) dir = Direction.None;
+            }
 
-                        dir = Map.OppositeDirection(dir);
-                    }
+            else
+            {
+                // Nobody close by, just wander aimlessly
+                // TODO: Try to grab nearby items
+                if (!(actor is NPC))
+                {
+                    dir = (Direction)_random.Next(4);
                     int count = 1;
-
-                    while ((!map.TileByCoords(Map.DirectionTile(coords, dir)).canEnter) && (count < 9))
+                    while (((dir == Map.OppositeDirection(_lastDir)) || (!map.TileByCoords(Map.DirectionTile(coords, dir)).canEnter)) && (count < 9))
                     {
-                        //System.Diagnostics.Debug.WriteLine("Rotate");
                         dir = Map.NextDirection(dir);
                         count += 1;
                     }
-                    if (!map.TileByCoords(Map.DirectionTile(coords, dir)).canEnter) dir = Direction.None;
-                }
+                    if ((dir == Map.OppositeDirection(_lastDir)) || (!map.TileByCoords(Map.DirectionTile(coords, dir)).canEnter)) dir = Direction.None;
 
-                else
-                {
-                    // Nobody close by, just wander aimlessly
-                    // TODO: Try to grab nearby items
-                    if (!(actor is NPC))
+
+                    if (dir == Direction.None)
                     {
                         dir = (Direction)_random.Next(4);
-                        int count = 1;
-                        while (((dir == Map.OppositeDirection(_lastDir)) || (!map.TileByCoords(Map.DirectionTile(coords, dir)).canEnter)) && (count < 9))
-                        {
-                            dir = Map.NextDirection(dir);
-                            count += 1;
-                        }
-                        if ((dir == Map.OppositeDirection(_lastDir)) || (!map.TileByCoords(Map.DirectionTile(coords, dir)).canEnter)) dir = Direction.None;
-
-
-                        if (dir == Direction.None)
-                        {
-                            dir = (Direction)_random.Next(4);
-                        }
-
                     }
-                }
-                if (dir != Direction.None)
-                {
-                    ((IHandleEvent)parent).HandleEvent(false, Events.MoveActor, actor.id, dir);
-                    //System.Diagnostics.Debug.WriteLine("#####" + dir + "######");
-                }
 
+                }
             }
+            if (dir != Direction.None)
+            {
+                ((IHandleEvent)parent).HandleEvent(false, Events.MoveActor, actor.id, dir);
+                //System.Diagnostics.Debug.WriteLine("#####" + dir + "######");
+            }
+
+
         }
 
         public async Task ConsiderMoves()
@@ -169,18 +167,23 @@ namespace Gruppe22
 
         public override void Update(Microsoft.Xna.Framework.GameTime gameTime)
         {
-            _elapsed += gameTime.ElapsedGameTime.Milliseconds;
-            if (enabled
-                && !(actor is Player)
-                && (!_working))
+            if (actor.isDead)
             {
-                if (actor.isDead)
+                enabled = false;
+            }
+            else
+            {
+                _elapsed += gameTime.ElapsedGameTime.Milliseconds;
+                if (_elapsed > _timeToThink)
                 {
-                    enabled = false;
-                }
-                else
-                {
-                    ConsiderMoves();
+                    actor.Regen();
+                    _elapsed -= _timeToThink;
+                    if (enabled
+                        && !(actor is Player)
+                        && (!_working))
+                    {
+                        ConsiderMoves();
+                    }
                 }
             }
         }

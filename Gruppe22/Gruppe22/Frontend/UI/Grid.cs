@@ -17,6 +17,9 @@ namespace Gruppe22
         private string _tooltip = "";
         private VisibleObject _icon = null;
         private bool _checked = false;
+        private bool _enabled = false;
+        private int _flash = 0;
+
         public VisibleObject icon
         {
             get { return _icon; }
@@ -31,18 +34,37 @@ namespace Gruppe22
         {
             get { return _id; }
         }
-        public bool isChecked
+        public bool check
         {
             get { return _checked; }
             set { _checked = value; }
         }
 
-        public GridElement(int id, string tooltip, VisibleObject icon, bool isChecked)
+        public int flash
+        {
+            get { return _flash; }
+            set { _flash = value; }
+        }
+
+        public bool enabled
+        {
+            get
+            {
+                return _enabled;
+            }
+            set
+            {
+                _enabled = value;
+            }
+        }
+        public GridElement(int id, string tooltip, VisibleObject icon, bool Checked, bool enabled = true, int flash = 0)
         {
             _id = id;
             _tooltip = tooltip;
             _icon = icon;
-            _checked = isChecked;
+            _checked = Checked;
+            _flash = flash;
+            _enabled = enabled;
         }
     }
     /// <summary>
@@ -259,44 +281,46 @@ namespace Gruppe22
         /// <param name="gameTime"></param>
         public override void Draw(GameTime gameTime)
         {
-            int _selected = Pos2Tile(Mouse.GetState().X, Mouse.GetState().Y);
-            _spriteBatch.Begin();
-            int icon = _page * _cols * _rows;
-
-            for (int y = 0; y < _rows; ++y)
+            if (_visible)
             {
-                for (int x = 0; x < _cols; ++x)
+                int _selected = Pos2Tile(Mouse.GetState().X, Mouse.GetState().Y);
+                _spriteBatch.Begin();
+                int icon = _page * _cols * _rows;
+
+                for (int y = 0; y < _rows; ++y)
                 {
-                    _spriteBatch.Draw(_background, new Rectangle(_displayRect.Left + x * (_width + 3), _displayRect.Top + y * (_height + 3), _width + 2, _height + 2), new Rectangle(39, 6, 1, 1), Color.White);
-                    if (icon != _selected)
-                        _spriteBatch.Draw(_background, new Rectangle(_displayRect.Left + x * (_width + 3) + 1, _displayRect.Top + y * (_height + 3) + 1, _width, _height), new Rectangle(39, 6, 1, 1), Color.Black);
-
-                    if ((icon < _icons.Count) && (_icons[icon] != null))
+                    for (int x = 0; x < _cols; ++x)
                     {
-                        _spriteBatch.Draw(_icons[icon].icon.texture, new Rectangle(_displayRect.Left + x * (_width + 3) + 1, _displayRect.Top + y * (_height + 3) + 1, _width, _height), _icons[icon].icon.clipRect, Color.White);
-                        if (_icons[icon].isChecked)
-                        {
-                            _spriteBatch.Draw(_background, new Rectangle(_displayRect.Left + (x + 1) * (_width + 3) - 16, _displayRect.Top + y * (_height + 3) + 2, 16, 16), new Rectangle(48, 16, 16, 16), Color.White);
-                        }
-                        if (icon == _selected)
-                        {
-                            int textwidth = (int)_font.MeasureString(_icons[icon].tooltip).X + 1;
-                            int textheight = (int)_font.MeasureString(_icons[icon].tooltip).Y + 1;
+                        _spriteBatch.Draw(_background, new Rectangle(_displayRect.Left + x * (_width + 3), _displayRect.Top + y * (_height + 3), _width + 2, _height + 2), new Rectangle(39, 6, 1, 1), Color.White);
+                        if (icon != _selected)
+                            _spriteBatch.Draw(_background, new Rectangle(_displayRect.Left + x * (_width + 3) + 1, _displayRect.Top + y * (_height + 3) + 1, _width, _height), new Rectangle(39, 6, 1, 1), Color.Black);
 
-                            DisplayToolTip(icon, x, y);
+                        if ((icon < _icons.Count) && (_icons[icon] != null))
+                        {
+                            _spriteBatch.Draw(_icons[icon].icon.texture, new Rectangle(_displayRect.Left + x * (_width + 3) + 1, _displayRect.Top + y * (_height + 3) + 1, _width, _height), _icons[icon].icon.clipRect, Color.White);
+                            if (_icons[icon].check)
+                            {
+                                _spriteBatch.Draw(_background, new Rectangle(_displayRect.Left + (x + 1) * (_width + 3) - 16, _displayRect.Top + y * (_height + 3) + 2, 16, 16), new Rectangle(48, 16, 16, 16), Color.White);
+                            }
+                            if (icon == _selected)
+                            {
+                                int textwidth = (int)_font.MeasureString(_icons[icon].tooltip).X + 1;
+                                int textheight = (int)_font.MeasureString(_icons[icon].tooltip).Y + 1;
+                                DisplayToolTip(icon, x, y);
+                            }
                         }
+                        ++icon;
                     }
-                    ++icon;
                 }
-            }
-            if (_totalPages > 1)
-            {
-                _spriteBatch.Draw(_arrows, new Rectangle(_displayRect.Right - 35, _displayRect.Top + 5, 28, 28), new Rectangle(32, 0, 28, 28), Color.White);
-                _spriteBatch.Draw(_arrows, new Rectangle(_displayRect.Right - 35, _displayRect.Bottom - 35, 28, 28), new Rectangle(0, 0, 28, 28), Color.White);
-            }
+                if (_totalPages > 1)
+                {
+                    _spriteBatch.Draw(_arrows, new Rectangle(_displayRect.Right - 35, _displayRect.Top + 5, 28, 28), new Rectangle(32, 0, 28, 28), Color.White);
+                    _spriteBatch.Draw(_arrows, new Rectangle(_displayRect.Right - 35, _displayRect.Bottom - 35, 28, 28), new Rectangle(0, 0, 28, 28), Color.White);
+                }
 
-            _spriteBatch.End();
-            base.Draw(gameTime);
+                _spriteBatch.End();
+                base.Draw(gameTime);
+            }
         }
 
         public override bool OnMouseDown(int button)

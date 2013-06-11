@@ -19,13 +19,14 @@ namespace Gruppe22
     {
         #region protected Fields
         protected Random _random;
+        protected int _newItems = 0;
         protected ActorTile _tile;
         protected ActorType _actorType;
         protected int _id = 0;
         protected string _name = "";
         protected List<Item> _inventory = null;
         //protected int _deadcounter = 0;
-        protected int _mana = 0;
+        protected int _mana = 50;
         protected int _evade = 0;
         protected int _block = 0;
         protected int _penetrate = 0;
@@ -38,24 +39,30 @@ namespace Gruppe22
         protected int _iceDefense = 0;
         protected int _destroyWeapon = 0;
         protected int _destroyArmor = 0;
-        protected int _maxMana = 0;
+        protected int _maxMana = 100;
         protected int _manaReg = 0;
         protected int _gold = 0;
         protected bool _locked = false;
-        //protected List<Spell> _spellbook = null;
         protected int _level = 0;
         protected int _damage = 0;
         protected int _resist = 0;
         protected int _exp = 0;
+        int regCounter = 0;
         protected int _expNeeded = 0;
         protected int _maxhealth = 100;
         protected int _health = 50;
+        public List<int> _quicklist = null;
         protected int _armor = 40;
         protected int _abilityPoints = 0;
         protected int _skills = 0;
         protected ContentManager _content;
         protected int _viewRange = 4;
         protected string _animationFile = "player";
+        protected int _stunned = 0;
+        protected int _charmed = 0;
+        protected int _scared = 0;
+        protected List<Ability> _abilities = null;
+        private bool _regenerating = false;
         #endregion
 
         #region Public Fields
@@ -65,15 +72,51 @@ namespace Gruppe22
             set { _deadcounter = value; }
         }*/
 
+
+        public int newItems
+        {
+            get
+            {
+                return _newItems;
+            }
+            set
+            {
+                _newItems = value;
+            }
+        }
+
+        public void Regen()
+        {
+            if (_regenerating == false)
+            {
+                _regenerating = true;
+                regCounter += 1;
+                if (regCounter > 101)
+                    regCounter = 0;
+                if ((regCounter % (101 - _manaReg) == 0) && (regCounter / (101 - _manaReg) > 0))
+                {
+                    if (_mana < _maxMana)
+                        _mana += 1;
+                }
+                if ((regCounter % (101 - _healthReg) == 0) && (regCounter / (101 - _healthReg) > 0))
+                {
+                    if (_health < _maxhealth)
+                        _health += 1;
+                }
+                _regenerating = false;
+            }
+        }
+
         public int viewRange
         {
             get
             {
                 return _viewRange;
             }
-            set {
+            set
+            {
                 _viewRange = value;
-        }
+            }
         }
 
         public bool locked
@@ -99,6 +142,13 @@ namespace Gruppe22
             get
             {
                 return _inventory;
+            }
+        }
+        public List<Ability> abilities
+        {
+            get
+            {
+                return _abilities;
             }
         }
 
@@ -571,6 +621,9 @@ namespace Gruppe22
             writer.WriteAttributeString("destroyArmor", Convert.ToString(_destroyArmor));
             writer.WriteAttributeString("animation", Convert.ToString(_animationFile));
             writer.WriteAttributeString("viewRange", Convert.ToString(_viewRange));
+            writer.WriteAttributeString("stunned", Convert.ToString(_stunned));
+            writer.WriteAttributeString("charmed", Convert.ToString(_charmed));
+            writer.WriteAttributeString("scared", Convert.ToString(_scared));
 
             if (actorType == ActorType.NPC)
             {
@@ -587,6 +640,25 @@ namespace Gruppe22
             foreach (Item item in _inventory)
             {
                 item.Save(writer);
+            }
+            writer.WriteEndElement();
+
+
+            writer.WriteStartElement("Abilities");
+            foreach (Ability ability in _abilities)
+            {
+                ability.Save(writer);
+            }
+            writer.WriteEndElement();
+
+
+
+            writer.WriteStartElement("Toolbar");
+            for (int i = 0; i < 10; ++i)
+            {
+                writer.WriteStartElement("Ability" + i.ToString());
+                writer.WriteAttributeString("id", _quicklist[i].ToString());
+                writer.WriteEndElement();
             }
             writer.WriteEndElement();
             writer.WriteEndElement();
@@ -649,6 +721,7 @@ namespace Gruppe22
 
         public void Load(XmlReader reader)
         {
+            _newItems = 0;
             _name = reader.GetAttribute("name");
             _maxhealth = Convert.ToInt32(reader.GetAttribute("maxhp"));
             if (reader.GetAttribute("file") != null) _animationFile = Convert.ToString("file");
@@ -681,6 +754,12 @@ namespace Gruppe22
             _destroyWeapon = Convert.ToInt32(reader.GetAttribute("destroyWeapon"));
             _destroyArmor = Convert.ToInt32(reader.GetAttribute("destroyArmor"));
             _animationFile = reader.GetAttribute("animation");
+            if (reader.GetAttribute("stunned") == null)
+                _stunned = Convert.ToInt32(reader.GetAttribute("stunned"));
+            if (reader.GetAttribute("charmed") == null)
+                _charmed = Convert.ToInt32(reader.GetAttribute("charmed"));
+            if (reader.GetAttribute("scared") == null)
+                _scared = Convert.ToInt32(reader.GetAttribute("scared"));
 
             if (actorType == ActorType.NPC)
             {
@@ -693,25 +772,75 @@ namespace Gruppe22
                 }
             }
             reader.Read();
+
             if (reader.IsEmptyElement)
             {
                 reader.Read();
-                reader.Read();
-
-                return;
             }
-            reader.Read();
-            while (reader.NodeType != XmlNodeType.EndElement)
+            else
             {
-                Item item = new Item(_content);
-                item.Load(reader);
-                _inventory.Add(item);
+                reader.Read();
+                while (reader.NodeType != XmlNodeType.EndElement)
+                {
+                    Item item = new Item(_content);
+                    item.Load(reader);
+                    _inventory.Add(item);
+                    if (item.isNew)
+                        _newItems += 1;
+                    reader.Read();
+                }
+                reader.ReadEndElement();
                 reader.Read();
             }
-            reader.ReadEndElement();
-            reader.ReadEndElement(); // End Effects
 
+            System.Diagnostics.Debug.WriteLine(reader.Name);
+            if (reader.Name == "Abilities")
+            {
+                System.Diagnostics.Debug.WriteLine("Abilities");
+                if (reader.IsEmptyElement)
+                {
+                    reader.Read();
+                }
+                else
+                {
+                    reader.Read();
+                    while (reader.NodeType != XmlNodeType.EndElement)
+                    {
+                        Ability ability = new Ability(_content);
+                        ability.Load(reader);
+                        _abilities.Add(ability);
+                        reader.Read();
+                    }
+                    reader.ReadEndElement();
+                    reader.Read();
 
+                }
+
+                // Read Quickbar / Common attacks (ranked by frequency)
+                if (reader.IsEmptyElement)
+                {
+                    reader.Read();
+                }
+                else
+                {
+                    System.Diagnostics.Debug.WriteLine("Quickbar");
+                    reader.Read();
+                    int id = 0;
+                    while (reader.NodeType != XmlNodeType.EndElement)
+                    {
+                        reader.Read();
+                        if (reader.HasAttributes)
+                        {
+                            _quicklist[id] = Convert.ToInt32(reader.GetAttribute(0));
+                        }
+                        reader.Read();
+                    }
+                    reader.ReadEndElement();
+                }
+                reader.ReadEndElement();
+                System.Diagnostics.Debug.WriteLine(reader.Name);
+            }
+            else return;
         }
 
         public override string ToString()
@@ -840,6 +969,12 @@ namespace Gruppe22
         {
             _content = content;
             _actorType = actorType;
+            _abilities = new List<Ability>();
+            _quicklist = new List<int>(10);
+            for (int i = 0; i < 10; ++i)
+            {
+                _quicklist.Add(0);
+            }
             if (rnd == null) _random = new Random(); else _random = rnd;
 
             if (level < 0)

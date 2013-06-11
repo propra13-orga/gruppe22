@@ -74,7 +74,12 @@ namespace Gruppe22
         ExplodeProjectile,
         MoveProjectile,
         FinishedProjectileMove,
-        ButtonPressed
+        ButtonPressed,
+        ActivateAbility,
+        ShowCharacter,
+        ShowInventory,
+        ShowMenu,
+        ShowAbilities
 
     }
     public enum Buttons
@@ -97,7 +102,8 @@ namespace Gruppe22
         Running,
         NoRedraw,
         Paused,
-        FetchingData
+        FetchingData,
+        GameOver
     }
 
     /// <summary>

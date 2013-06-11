@@ -25,6 +25,7 @@ namespace Gruppe22
         private string _name = "";
         private string _description = "";
         private int _value = 0;
+        private bool _new = false;
         private bool _destroyed = false;
         private ContentManager _content = null;
         List<ItemEffect> _effects = null;
@@ -43,6 +44,18 @@ namespace Gruppe22
                 return _effects;
             }
         }
+        public bool isNew
+        {
+            get
+            {
+                return _new;
+            }
+            set
+            {
+                _new = value;
+            }
+        }
+
 
         public virtual void EquipItem()
         {
@@ -320,8 +333,8 @@ namespace Gruppe22
             _equipped = Convert.ToBoolean(reader.GetAttribute("equipped"));
             _destroyed = Convert.ToBoolean(reader.GetAttribute("destroyed"));
             _itemType = (ItemType)Enum.Parse(typeof(ItemType), reader.GetAttribute("type"));
-            if (reader.GetAttribute("destroyed") != null) _value = Convert.ToInt32(reader.GetAttribute("value"));
-            _name = reader.GetAttribute("name");
+            if (reader.GetAttribute("new") != null) _new = Convert.ToBoolean(reader.GetAttribute("new"));
+            if (reader.GetAttribute("value") != null) _value = Convert.ToInt32(reader.GetAttribute("value"));
             _description = reader.GetAttribute("description");
             reader.Read(); // Begin Effect
             if (reader.IsEmptyElement)
@@ -363,6 +376,8 @@ namespace Gruppe22
             xmlw.WriteAttributeString("destroyed", Convert.ToString(_destroyed));
             xmlw.WriteAttributeString("name", Convert.ToString(name));
             xmlw.WriteAttributeString("description", Convert.ToString(_description));
+            xmlw.WriteAttributeString("new", Convert.ToString(_new));
+
             xmlw.WriteStartElement("Effects");
 
             foreach (ItemEffect effect in _effects)

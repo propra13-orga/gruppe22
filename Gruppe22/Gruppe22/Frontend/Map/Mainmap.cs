@@ -14,6 +14,7 @@ namespace Gruppe22
         private Coords _position;
         private bool _finished = false;
         private int _count = 0;
+
         public bool finished
         {
             get
@@ -263,6 +264,8 @@ namespace Gruppe22
         private List<MapEffect> _effects;
         private Object _mylock = new Object();
         private uint _fireCount = 0;
+        private bool _noMove = true;
+
 
         private string _bigText = "";
         private string _smallText = "";
@@ -557,6 +560,18 @@ namespace Gruppe22
                         _walls[(int)dir].animationRect, transparent ? new Color(color, (float)0.5) : color);
                     break;
 
+            }
+        }
+
+        public bool noMove
+        {
+            get
+            {
+                return _noMove;
+            }
+            set
+            {
+                _noMove = value;
             }
         }
 
@@ -1161,11 +1176,11 @@ namespace Gruppe22
                             {
                                 if (_map[x, y].teleport.down)
                                 {
-                                    _spriteBatch.Draw(_environment[2][2].animationTexture, new Rectangle(_map2screen(x, y).x-16, _map2screen(x, y).y-92, _environment[2][2].animationRect.Width, _environment[2][2].animationRect.Height), _environment[2][2].animationRect, ((y == (int)_highlightedTile.y) && (x == (int)_highlightedTile.x)) ? Color.Red : Color.White);
+                                    _spriteBatch.Draw(_environment[2][2].animationTexture, new Rectangle(_map2screen(x, y).x - 16, _map2screen(x, y).y - 92, _environment[2][2].animationRect.Width, _environment[2][2].animationRect.Height), _environment[2][2].animationRect, ((y == (int)_highlightedTile.y) && (x == (int)_highlightedTile.x)) ? Color.Red : Color.White);
                                 }
                                 else
                                 {
-                                    _spriteBatch.Draw(_environment[2][7].animationTexture, new Rectangle(_map2screen(x, y).x-16, _map2screen(x, y).y-32, _environment[2][7].animationRect.Width, _environment[2][7].animationRect.Height), _environment[2][7].animationRect, ((y == (int)_highlightedTile.y) && (x == (int)_highlightedTile.x)) ? Color.Red : Color.White);
+                                    _spriteBatch.Draw(_environment[2][7].animationTexture, new Rectangle(_map2screen(x, y).x - 16, _map2screen(x, y).y - 32, _environment[2][7].animationRect.Width, _environment[2][7].animationRect.Height), _environment[2][7].animationRect, ((y == (int)_highlightedTile.y) && (x == (int)_highlightedTile.x)) ? Color.Red : Color.White);
                                 }
                             }
                         }
@@ -1196,6 +1211,10 @@ namespace Gruppe22
 
         public void resetActors()
         {
+            if (Mouse.GetState().LeftButton == ButtonState.Pressed)
+            {
+                _noMove = true;
+            }
             if (_effects != null) _effects.Clear();
 
             if (_floatnumbers != null) _floatnumbers.Clear();
@@ -1286,26 +1305,37 @@ namespace Gruppe22
                         i -= 1;
                     }
                 }
-                if (IsHit(Mouse.GetState().X, Mouse.GetState().Y))
+                if (!_noMove)
                 {
-                    _UpdateMouse(new Vector2(Mouse.GetState().X, Mouse.GetState().Y));
-
-                    if (Mouse.GetState().LeftButton == ButtonState.Pressed)
+                    if (IsHit(Mouse.GetState().X, Mouse.GetState().Y))
                     {
-                        if (!_actors[_playerID].isMoving)
+                        _UpdateMouse(new Vector2(Mouse.GetState().X, Mouse.GetState().Y));
+
+                        if (Mouse.GetState().LeftButton == ButtonState.Pressed)
                         {
-                            MovePlayer(Map.WhichWayIs(_highlightedTile, _map.actors[_playerID].tile.coords));
+                            if (!_actors[_playerID].isMoving)
+                            {
+                                MovePlayer(Map.WhichWayIs(_highlightedTile, _map.actors[_playerID].tile.coords));
+                            }
                         }
-                    }
 
-                    if (Mouse.GetState().RightButton == ButtonState.Pressed)
-                    {
-                        if (!_actors[_playerID].isMoving)
+                        if (Mouse.GetState().RightButton == ButtonState.Pressed)
                         {
-                            FireProjectile();
+                            if (!_actors[_playerID].isMoving)
+                            {
+                                FireProjectile();
+                            }
                         }
                     }
                 }
+                else
+                {
+                    if (Mouse.GetState().LeftButton == ButtonState.Released)
+                    {
+                        _noMove = false;
+                    }
+                }
+
                 /*   if (Math.Abs(gameTime.TotalGameTime.Milliseconds / 10 - _lastCheck) > 1)
                    {
                        _lastCheck = gameTime.TotalGameTime.Milliseconds / 10;*/

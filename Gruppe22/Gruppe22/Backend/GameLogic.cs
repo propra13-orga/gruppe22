@@ -203,10 +203,9 @@ namespace Gruppe22
                     File.WriteAllText("GameData", "room" + _map1.id.ToString() + ".xml" + Environment.NewLine + _deadcounter.ToString());
                     _mainmap1.resetActors();
                     //_mainmap2.resetActors();
-                    _inventory.actor = _map1.actors[0];
-                    _playerStats.actor = _map1.actors[0];
-                    _enemyStats.actor = null;
-                    _inventory.Update();
+                    _mana.actor = _map1.actors[0];
+                    _health.actor = _map1.actors[0];
+                    _toolbar.actor = _map1.actors[0];
                     _status = GameStatus.Paused;
                     HandleEvent(true, Events.ContinueGame);
                     break;
@@ -271,7 +270,6 @@ namespace Gruppe22
                                 _mainmap1.floatNumber(target, "Found " + _map1[target.x, target.y].firstItem.item.name, Color.DarkGreen);
                             _map1[target.x, target.y].firstItem.item.Pickup(_map1.actors[id]);
                             _map1[target.x, target.y].Remove(_map1[target.x, target.y].firstItem);
-                            _inventory.Update();
                         }
                         // Apply teleporter (move to next room)
                         if ((id == 0) && (_map1[target.x, target.y].hasTeleport))
@@ -341,20 +339,6 @@ namespace Gruppe22
 
                         if (_map1.CanMove(_map1.actors[id].tile.coords, dir))
                         {
-
-                            // Display enemy statistics
-                            if (_map1[target.x, target.y].firstActor is Player)
-                            {
-                                _enemyStats.actor = _map1.actors[id]; // Enemy attacked
-                            }
-                            else
-                            {
-                                if (id == 0)
-                                {
-                                    _enemyStats.actor = _map1[target.x, target.y].firstActor; // Player attacked enemy
-                                }
-
-                            }
                             _mainmap1.HandleEvent(true, Events.AnimateActor, id, Activity.Attack, false, dir, true);
                             _CombatDamage(id, _map1[target.x, target.y].firstActor.id);
                         }

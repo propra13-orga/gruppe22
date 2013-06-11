@@ -30,6 +30,8 @@ namespace Gruppe22
         /// </summary>
         protected Rectangle _displayRect;
 
+        protected bool _visible = true;
+
 
         protected IHandleEvent _parent;
 
@@ -58,7 +60,27 @@ namespace Gruppe22
             if ((_displayRect.Contains(Mouse.GetState().X, Mouse.GetState().Y)) && (canFocus && !_focus)) _parent.HandleEvent(false, Events.RequestFocus, this);
             return false;
         }
+        public virtual bool Visible
+        {
+            get
+            {
+                return _visible;
+            }
+            set
+            {
+                _visible = value;
+            }
+        }
 
+        public virtual void Show()
+        {
+            _visible = true;
+        }
+
+        public virtual void Hide()
+        {
+            _visible = false;
+        }
         public virtual bool OnMouseUp(int button)
         {
             return false;

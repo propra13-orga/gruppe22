@@ -15,7 +15,7 @@ namespace Gruppe22
         /// <summary>
         /// Single pixel to fill background
         /// </summary>
-        private Texture2D _background;
+        protected Texture2D _background;
 
         /// <summary>
         /// UI-Children

@@ -93,6 +93,7 @@
     <Compile Include="Backend\Actors\Enemy.cs" />
     <Compile Include="Backend\Actors\NPC.cs" />
     <Compile Include="Backend\Actors\Player.cs" />
+    <Compile Include="Backend\Items\Ability.cs" />
     <Compile Include="Backend\Items\Item.cs" />
     <Compile Include="Backend\Items\ItemEffect.cs" />
     <Compile Include="Backend\Map\BombTile.cs" />
@@ -124,6 +125,8 @@
     <Compile Include="Frontend\Map\VisibleObject.cs" />
     <Compile Include="Frontend\Map\Tileset.cs" />
     <Compile Include="Frontend\Map\WallTiles.cs" />
+    <Compile Include="Frontend\UI\Abilities.cs" />
+    <Compile Include="Frontend\UI\AbilityChoice.cs" />
     <Compile Include="Frontend\UI\AboutWindow.cs" />
     <Compile Include="Frontend\UI\Button.cs" />
     <Compile Include="Frontend\UI\CharacterWindow.cs" />
@@ -186,7 +189,9 @@
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\Orbs.png" />
+    <Content Include="Content\Orbs.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\sparks.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
