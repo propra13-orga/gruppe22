@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 namespace Gruppe22
 {
@@ -27,6 +28,38 @@ namespace Gruppe22
             {
                 _value = value;
             }
+        }
+
+        public override bool OnKeyDown(Microsoft.Xna.Framework.Input.Keys k)
+        {
+            if (_focus)
+            {
+                if ((k == Keys.Up) && _allowIncrease)
+                {
+                    _value += 1;
+                    _parent.HandleEvent(false, Events.Settings, 1);
+                    return true;
+                }
+
+                if ((k == Keys.Down) && _allowDecrease)
+                {
+                    _value -= 1;
+                    _parent.HandleEvent(false, Events.Settings, -1);
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public override bool OnMouseDown(int button)
+        {
+            Point pos = new Point(Mouse.GetState().X, Mouse.GetState().Y);
+            if (_displayRect.Contains(pos)) _parent.HandleEvent(false, Events.RequestFocus, this);
+            if ((_allowIncrease) && (new Rectangle(_displayRect.Left, _displayRect.Top, _displayRect.Width+2, _displayRect.Height / 2).Contains(pos))) { _value += 1; _parent.HandleEvent(false, Events.Settings, 1); return true; }
+            else
+                if ((_allowDecrease) && (new Rectangle(_displayRect.Left, _displayRect.Top + _displayRect.Height / 2, _displayRect.Width + 2, _displayRect.Height / 2).Contains(pos))) { _value -= 1; _parent.HandleEvent(false, Events.Settings, -1); return true; }
+                else
+                    return base.OnMouseDown(button);
         }
 
 
@@ -67,6 +100,12 @@ namespace Gruppe22
                     _spriteBatch.Draw(_arrows, new Rectangle(_displayRect.Right - 12, _displayRect.Top + 2, 10, 10), new Rectangle(32, 0, 28, 28), _focus ? Color.Blue : Color.White);
                 if (_allowDecrease)
                     _spriteBatch.Draw(_arrows, new Rectangle(_displayRect.Right - 12, _displayRect.Bottom - 12, 10, 10), new Rectangle(0, 0, 28, 28), _focus ? Color.Blue : Color.White);
+
+                Point pos = new Point(Mouse.GetState().X, Mouse.GetState().Y);
+                if (_displayRect.Contains(pos))
+                {
+                    _DisplayToolTip();
+                }
                 _spriteBatch.End();
             }
         }

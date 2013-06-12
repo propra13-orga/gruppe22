@@ -98,13 +98,13 @@ namespace Gruppe22
             {
                 case Events.Settings:
                     if ((int)data[0] > 0)
-                        _skills.value -= 1;
-                    else _skills.value += 1;
+                        _abilityPoints.value -= 1;
+                    else _abilityPoints.value += 1;
                     foreach (UIElement element in _children)
                     {
-                        if (element is NumberEntry)
+                        if ((element is NumberEntry) && (element != _abilityPoints) && (element != _skills))
                         {
-                            if (((NumberEntry)element).value > ((NumberEntry)element).originalValue)
+                            if ((((NumberEntry)element).value > ((NumberEntry)element).originalValue))
                             {
                                 ((NumberEntry)element).allowDecrease = true;
                             }
@@ -120,29 +120,35 @@ namespace Gruppe22
                     }
                     _RefreshSkills();
                     break;
-                case Events.ContinueGame:
-                    _actor.skills = _skills.value;
-                    _actor.evade = _evade.value;
-                    _actor.name = _name.text;
-                    _actor.block = _block.value;
-                    _actor.penetrate = _penetrate.value;
-                    _actor.healthReg = _healthReg.value;
-                    _actor.stealHealth = _stealHealth.value;
-                    _actor.stealMana = _stealMana.value;
-                    _actor.fireDamage = _fireDamage.value;
-                    _actor.iceDamage = _iceDamage.value;
-                    _actor.fireDefense = _fireDefense.value;
-                    _actor.iceDefense = _iceDefense.value;
-                    _actor.destroyWeapon = _destroyWeapon.value;
-                    _actor.destroyArmor = _destroyArmor.value;
-                    _actor.maxMana = _maxMana.value;
-                    _actor.manaReg = _manaReg.value;
-                    _actor.damage = _damage.value;
-                    _actor.resist = _resist.value;
-                    _actor.maxHealth = _maxhealth.value;
-                    _actor.armor = _armor.value;
-                    base.HandleEvent(DownStream, eventID, data);
+                case Events.ButtonPressed:
+                    switch ((Buttons)data[0])
+                    {
+                        case Buttons.Close:
+                            _actor.skills = _skills.value;
+                            _actor.evade = _evade.value;
+                            _actor.name = _name.text;
+                            _actor.block = _block.value;
+                            _actor.penetrate = _penetrate.value;
+                            _actor.healthReg = _healthReg.value;
+                            _actor.stealHealth = _stealHealth.value;
+                            _actor.stealMana = _stealMana.value;
+                            _actor.fireDamage = _fireDamage.value;
+                            _actor.iceDamage = _iceDamage.value;
+                            _actor.fireDefense = _fireDefense.value;
+                            _actor.iceDefense = _iceDefense.value;
+                            _actor.destroyWeapon = _destroyWeapon.value;
+                            _actor.destroyArmor = _destroyArmor.value;
+                            _actor.maxMana = _maxMana.value;
+                            _actor.manaReg = _manaReg.value;
+                            _actor.damage = _damage.value;
+                            _actor.resist = _resist.value;
+                            _actor.maxHealth = _maxhealth.value;
+                            _actor.armor = _armor.value;
+                            _parent.HandleEvent(false, Events.ContinueGame, null);
+                            break;
+                    }
                     break;
+
                 default:
                     base.HandleEvent(DownStream, eventID, data);
                     break;
@@ -154,7 +160,7 @@ namespace Gruppe22
         private void _RefreshSkills()
         {
 
-            if (_skills.value > 0)
+            if (_abilityPoints.value > 0)
             {
                 _evade.allowIncrease = true;
                 _block.allowIncrease = true;
@@ -240,21 +246,29 @@ namespace Gruppe22
 
         private void _drawTab(int pos, string text)
         {
-            _spriteBatch.Draw(_background, new Rectangle(_displayRect.Left + 135 * pos, _displayRect.Top - 32 - ((_page == pos) ? 5 : 0), 130, 32 + ((_page == pos) ? 5 : 0)), new Rectangle(39, 6, 1, 1), (_page == pos) ? Color.White : Color.Gray);
-            _spriteBatch.Draw(_background, new Rectangle(_displayRect.Left + 1 + 135 * pos, _displayRect.Top - 31 - ((_page == pos) ? 5 : 0), 128, 32 + ((_page == pos) ? 6 : 0)), new Rectangle(39, 6, 1, 1), (_selected == pos) ? Color.LightBlue : Color.Black);
+            _spriteBatch.Draw(_background, new Rectangle(_displayRect.Left - 1 + 135 * pos, _displayRect.Top - 34 - ((_page == pos) ? 4 : 0), 130, 32 + ((_page == pos) ? 5 : 0)), new Rectangle(39, 6, 1, 1), (_page == pos) ? Color.White : Color.Gray);
+            _spriteBatch.Draw(_background, new Rectangle(_displayRect.Left + 135 * pos, _displayRect.Top - 33 - ((_page == pos) ? 4 : 0), 128, 32 + ((_page == pos) ? 6 : 0)), new Rectangle(39, 6, 1, 1), (_selected == pos) ? Color.LightBlue : Color.Black);
             int center = (int)((128 - _font.MeasureString(text).X * 0.8f) / 2f);
-            _spriteBatch.DrawString(_font, text, new Vector2(_displayRect.Left + 135 * pos + center, _displayRect.Top - 30 - ((_page == pos) ? 5 : 0)), (_page == pos) ? Color.White : Color.Gray, 0f, Vector2.Zero, 0.8f, SpriteEffects.None, 0f);
+            _spriteBatch.DrawString(_font, text, new Vector2(_displayRect.Left - 1 + 135 * pos + center, _displayRect.Top - 31 - ((_page == pos) ? 5 : 0)), (_page == pos) ? Color.White : Color.Gray, 0f, Vector2.Zero, 0.8f, SpriteEffects.None, 0f);
         }
+
+
 
         public override void Draw(GameTime gameTime)
         {
             _UpdateSelection();
-            base.Draw(gameTime);
             _spriteBatch.Begin();
+            _spriteBatch.Draw(_background, new Rectangle(_displayRect.X - 1, _displayRect.Y - 1, _displayRect.Width + 2, _displayRect.Height + 2), new Rectangle(39, 6, 1, 1), Color.White);
+            _spriteBatch.Draw(_background, _displayRect, new Rectangle(39, 6, 1, 1), Color.Black);
             _drawTab(0, "Character" + ((_actor.abilityPoints > 0) ? (" (" + _actor.abilityPoints.ToString() + ")") : ""));
             _drawTab(1, "Inventory" + ((_actor.newItems > 0) ? (" (" + _actor.newItems.ToString() + ")") : ""));
             _drawTab(2, "Skills" + ((_actor.skills > 0) ? (" (" + _actor.skills.ToString() + ")") : ""));
             _spriteBatch.End();
+
+            foreach (UIElement child in _children)
+            {
+                child.Draw(gameTime);
+            }
         }
 
         /// <summary>
@@ -334,8 +348,8 @@ namespace Gruppe22
             _children.Add(_iceDamage);
             _children.Add(_fireDefense);
             _children.Add(_iceDefense);
-            _children.Add(_destroyArmor);
             _children.Add(_destroyWeapon);
+            _children.Add(_destroyArmor);
             _children.Add(_maxMana);
             _children.Add(_mana);
             _children.Add(_manaReg);
@@ -352,7 +366,7 @@ namespace Gruppe22
             _children.Add(_level);
             _children.Add(_inventory);
             _children.Add(_abilities);
-
+            _inventory.Update();
             _children.Add(_abilitychoice);
             _font = _content.Load<SpriteFont>("font");
             _children.Add(new Button(this, _spriteBatch, _content, new Rectangle(_displayRect.Left + (_displayRect.Width - 100) / 2, _displayRect.Top + _displayRect.Height - 45, 100, 30), "Ok", (int)Buttons.Close, false));

@@ -110,11 +110,8 @@ namespace Gruppe22
         public override void Draw(GameTime gameTime)
         {
             _spriteBatch.Begin();
-            _spriteBatch.Draw(_background, new Rectangle(_displayRect.X, _displayRect.Y, _displayRect.Width, 2), new Rectangle(39, 6, 1, 1), Color.White);
-            _spriteBatch.Draw(_background, new Rectangle(_displayRect.X + _displayRect.Width - 2, _displayRect.Y, 2, _displayRect.Height), new Rectangle(39, 6, 1, 1), Color.White);
-            _spriteBatch.Draw(_background, new Rectangle(_displayRect.X, _displayRect.Y, 2, _displayRect.Height), new Rectangle(39, 6, 1, 1), Color.White);
-            _spriteBatch.Draw(_background, new Rectangle(_displayRect.X, _displayRect.Y + _displayRect.Height - 2, _displayRect.Width, 2), new Rectangle(39, 6, 1, 1), Color.White);
-            _spriteBatch.Draw(_background, _displayRect, new Rectangle(39, 6, 1, 1), new Color(Color.Black, 0.6f));
+            _spriteBatch.Draw(_background, new Rectangle(_displayRect.X - 1, _displayRect.Y - 1, _displayRect.Width + 2, _displayRect.Height + 2), new Rectangle(39, 6, 1, 1), Color.White);
+            _spriteBatch.Draw(_background, _displayRect, new Rectangle(39, 6, 1, 1), Color.Black);
             _spriteBatch.End();
 
             foreach (UIElement child in _children)
@@ -145,7 +142,7 @@ namespace Gruppe22
                     {
                         current = _children.Count - 1;
                     }
-                        if (_children[current].canFocus)
+                    if (_children[current].canFocus)
                     {
                         _children[current].focus = true;
                         _focusID = current;
@@ -181,48 +178,48 @@ namespace Gruppe22
                 switch (eventID)
                 {
                     case Events.ButtonPressed:
-                            switch ((Buttons)data[0])
-                            {
-                                case Buttons.Close:
-                                    _parent.HandleEvent(false, Events.ContinueGame, null);
-                                    break;
-                                case Buttons.Credits:
-                                    _parent.HandleEvent(false, Events.About, null);
-                                    break;
-                                case Buttons.LAN:
-                                    _parent.HandleEvent(false, Events.LAN, null);
-                                    break;
-                                case Buttons.Load:
-                                    _parent.HandleEvent(false, Events.LoadFromCheckPoint, null);
-                                    break;
-                                case Buttons.Local:
-                                    _parent.HandleEvent(false, Events.Local, null);
-                                    break;
-                                case Buttons.NewMap:
-                                    _parent.HandleEvent(false, Events.NewMap, null);
-                                    break;
-                                case Buttons.Quit:
-                                    _parent.HandleEvent(false, Events.EndGame, null);
-                                    break;
-                                case Buttons.Reset:
-                                    _parent.HandleEvent(false, Events.ResetGame, null);
-                                    break;
-                                case Buttons.Restart:
-                                    _parent.HandleEvent(false, Events.ResetGame, null);
-                                    break;
-                                case Buttons.Settings:
-                                    _parent.HandleEvent(false, Events.Settings, null);
-                                    break;
-                                case Buttons.SinglePlayer:
-                                    _parent.HandleEvent(false, Events.Player1, null);
-                                    break;
-                                case Buttons.TwoPlayers:
-                                    _parent.HandleEvent(false, Events.Player2, null);
-                                    break;
-                                default:
-                                    _parent.HandleEvent(false, eventID, data);
-                                    break;
-                            }
+                        switch ((Buttons)data[0])
+                        {
+                            case Buttons.Close:
+                                _parent.HandleEvent(false, Events.ContinueGame, null);
+                                break;
+                            case Buttons.Credits:
+                                _parent.HandleEvent(false, Events.About, null);
+                                break;
+                            case Buttons.LAN:
+                                _parent.HandleEvent(false, Events.LAN, null);
+                                break;
+                            case Buttons.Load:
+                                _parent.HandleEvent(false, Events.LoadFromCheckPoint, null);
+                                break;
+                            case Buttons.Local:
+                                _parent.HandleEvent(false, Events.Local, null);
+                                break;
+                            case Buttons.NewMap:
+                                _parent.HandleEvent(false, Events.NewMap, null);
+                                break;
+                            case Buttons.Quit:
+                                _parent.HandleEvent(false, Events.EndGame, null);
+                                break;
+                            case Buttons.Reset:
+                                _parent.HandleEvent(false, Events.ResetGame, null);
+                                break;
+                            case Buttons.Restart:
+                                _parent.HandleEvent(false, Events.ResetGame, null);
+                                break;
+                            case Buttons.Settings:
+                                _parent.HandleEvent(false, Events.Settings, null);
+                                break;
+                            case Buttons.SinglePlayer:
+                                _parent.HandleEvent(false, Events.Player1, null);
+                                break;
+                            case Buttons.TwoPlayers:
+                                _parent.HandleEvent(false, Events.Player2, null);
+                                break;
+                            default:
+                                _parent.HandleEvent(false, eventID, data);
+                                break;
+                        }
                         break;
                     case Events.RequestFocus:
                         _children[_focusID].focus = false;

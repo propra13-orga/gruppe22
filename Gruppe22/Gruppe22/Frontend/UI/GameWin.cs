@@ -142,6 +142,8 @@ namespace Gruppe22
         /// Random number generator
         /// </summary>
         protected Random r = null;
+
+        private GridElement _draggedObject = null;
         #endregion
 
 
@@ -278,13 +280,18 @@ namespace Gruppe22
             {
                 for (int i = 0; i < _interfaceElements.Count; ++i)
                 {
-                    if (_interfaceElements[i].OnMouseUp(button)) return true;
+                    if (_interfaceElements[i].OnMouseUp(button))
+                    {
+                        _draggedObject = null;
+                        return true;
+                    }
                 }
+                _draggedObject = null;
                 return true;
             }
             else
             {
-
+                _draggedObject = null;
                 if (_focus != null)
                     _focus.OnMouseUp(button);
                 return true;
@@ -313,6 +320,9 @@ namespace Gruppe22
         {
             switch (eventID)
             {
+                case Events.AddDragItem:
+                    _draggedObject = (GridElement)data[0];
+                    break;
                 case Events.ShowMenu:
                     if (_focus is CharacterWindow)
                     {
@@ -815,6 +825,13 @@ namespace Gruppe22
                         base.Draw(gameTime);
                     }
                     _drawing = false;
+                }
+                if (_draggedObject != null)
+                {
+                    Point mousePos = new Point(Mouse.GetState().X, Mouse.GetState().Y);
+                    _spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+                    _spriteBatch.Draw(_draggedObject.icon.texture, new Rectangle(mousePos.X, mousePos.Y, _draggedObject.icon.clipRect.Width, _draggedObject.icon.clipRect.Height), _draggedObject.icon.clipRect, Color.White);
+                    _spriteBatch.End();
                 }
             }
             else

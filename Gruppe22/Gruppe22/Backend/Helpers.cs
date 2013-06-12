@@ -14,8 +14,8 @@ namespace Gruppe22
     [Flags]
     public enum Direction
     {
-        Up= 1,
-        Right = 2, 
+        Up = 1,
+        Right = 2,
         Down = 4,
 
         Left = 8,
@@ -79,7 +79,8 @@ namespace Gruppe22
         ShowCharacter,
         ShowInventory,
         ShowMenu,
-        ShowAbilities
+        ShowAbilities,
+        AddDragItem
 
     }
     public enum Buttons

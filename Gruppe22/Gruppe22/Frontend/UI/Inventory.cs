@@ -40,10 +40,12 @@ namespace Gruppe22
 
         public override bool OnMouseDown(int button)
         {
+
             int i = Pos2Tile(Mouse.GetState().X, Mouse.GetState().Y);
             if ((i > -1) && (i < _actor.inventory.Count))
             {
                 i = _icons[i].id;
+                _parent.HandleEvent(false, Events.AddDragItem, _icons[i]);
                 if (_actor.inventory[i].itemType == ItemType.Potion)
                 {
                     _actor.inventory[i].UseItem();

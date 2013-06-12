@@ -23,7 +23,9 @@ namespace Gruppe22
                 _actor = value;
             }
         }
-                #region Constructor
+
+
+        #region Constructor
         public AbilityChoice(IHandleEvent parent, SpriteBatch spriteBatch, ContentManager content, Rectangle displayRect, Actor actor = null)
             : base(parent, spriteBatch, content, displayRect)
         {

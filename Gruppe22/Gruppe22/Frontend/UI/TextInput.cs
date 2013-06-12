@@ -14,7 +14,7 @@ namespace Gruppe22
     {
         protected string _label = "";
         protected string _text = "";
-        protected string _toolTip = "";
+        protected string _tooltip = "";
         protected SpriteFont _font = null;
         protected Texture2D _background = null;
         protected int _textWidth = 0;
@@ -39,7 +39,7 @@ namespace Gruppe22
 
         public override bool OnKeyDown(Microsoft.Xna.Framework.Input.Keys k)
         {
-            if (_visible)
+            if ((_visible) && (_focus))
             {
                 switch (k)
                 {
@@ -85,12 +85,12 @@ namespace Gruppe22
                                 _text = _text.Insert(_cursor, k.ToString().ToUpper());
                             else
                                 _text = _text.Insert(_cursor, k.ToString().ToLower());
+                            return true;
                         }
-
-                        return true;
+                        break;
                 }
             }
-            return true;
+            return false;
         }
 
         public override bool canFocus
@@ -119,6 +119,49 @@ namespace Gruppe22
             base.HandleEvent(DownStream, eventID, data);
         }
 
+        /// <summary>
+        /// Append a new line of text to the status box; word wrap if necessary
+        /// </summary>
+        /// <param name="text"></param>
+        protected void _DisplayToolTip()
+        {
+
+            int textwidth = (int)_font.MeasureString(_tooltip.Replace("<red>", "").Replace("<green>", "")).X + 1;
+            int textheight = (int)_font.MeasureString(_tooltip.Replace("<red>", "").Replace("<green>", "")).Y + 1;
+            int lineHeight = (int)_font.MeasureString("Wgj").Y + 1;
+            Color color = Color.White;
+            _spriteBatch.Draw(_background, new Rectangle(_displayRect.Left
+    , _displayRect.Top - textheight - 9
+    , textwidth + 6, textheight + 6), new Rectangle(39, 6, 1, 1), new Color(Color.Black, 0.9f));
+            int line = 0;
+            string text = _tooltip;
+            while (text.IndexOf("\n") > -1)
+            {
+                color = Color.White;
+                text = _tooltip.TrimStart();
+                if (_tooltip.StartsWith("<red>")) { color = Color.Red; text = _tooltip.Substring(5); }
+                if (_tooltip.StartsWith("<green>")) { color = Color.Green; text = _tooltip.Substring(7); }
+                text = _tooltip.TrimStart();
+                string next = _tooltip.Substring(_tooltip.IndexOf("\n") + 1);
+                text = _tooltip.Substring(0, _tooltip.IndexOf("\n"));
+                _tooltip.TrimEnd();
+                _spriteBatch.DrawString(_font, text, new Vector2(_displayRect.Left + 4
+    , _displayRect.Top - textheight - 3 + 4 + line), Color.Black);
+                _spriteBatch.DrawString(_font, text, new Vector2(_displayRect.Left + 3
+    , _displayRect.Top - textheight - 3 + 3 + line), color);
+                text = next;
+
+                line += lineHeight;
+            }
+            if (_tooltip.StartsWith("<red>")) { color = Color.Red; text = _tooltip.Substring(5); }
+            if (_tooltip.StartsWith("<green>")) { color = Color.Green; text = _tooltip.Substring(7); }
+
+            _spriteBatch.DrawString(_font, text, new Vector2(_displayRect.Left + 4
+, _displayRect.Top - textheight - 3 + 4 + line), Color.Black);
+            _spriteBatch.DrawString(_font, text, new Vector2(_displayRect.Left + 3
+, _displayRect.Top - textheight - 3 + 3 + line), color);
+
+        }
         public override void Draw(GameTime gameTime)
         {
             if (_visible)
@@ -141,6 +184,11 @@ namespace Gruppe22
                     _spriteBatch.Draw(_background, new Rectangle(_displayRect.X + _displayRect.Width - _textWidth - 1 + (int)_font.MeasureString(_text.Substring(0, _cursor)).X, _displayRect.Y + 2, 2, _displayRect.Height - 4), new Rectangle(39, 6, 1, 1), (_color == 1) ? Color.White : Color.Transparent);
 
 
+                }
+                Point pos = new Point(Mouse.GetState().X, Mouse.GetState().Y);
+                if (_displayRect.Contains(pos))
+                {
+                    _DisplayToolTip();
                 }
                 _spriteBatch.End();
 
@@ -167,7 +215,7 @@ namespace Gruppe22
 
             _label = label;
             _text = text;
-            _toolTip = toolTip;
+            _tooltip = toolTip;
             _canEdit = canEdit;
             _font = _content.Load<SpriteFont>("SmallFont");
             _background = _content.Load<Texture2D>("Minimap");

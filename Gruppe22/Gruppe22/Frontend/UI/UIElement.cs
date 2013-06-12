@@ -129,7 +129,7 @@ namespace Gruppe22
         {
             get
             {
-                return true;
+                return _visible;
             }
         }
         #endregion

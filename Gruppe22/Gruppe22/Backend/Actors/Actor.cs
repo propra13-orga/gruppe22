@@ -522,7 +522,7 @@ namespace Gruppe22
         public void LevelUp()
         {
             _level++;
-            _abilityPoints += 40;
+            _abilityPoints += 10;
             _skills += 1;
             _expNeeded = 3 * (_level + 1) ^ 2 + 83 * (_level + 1) + 41;
             _health = _maxhealth;
@@ -721,6 +721,8 @@ namespace Gruppe22
 
         public void Load(XmlReader reader)
         {
+            System.Diagnostics.Debug.WriteLine(reader.Name);
+
             _newItems = 0;
             _name = reader.GetAttribute("name");
             _maxhealth = Convert.ToInt32(reader.GetAttribute("maxhp"));
@@ -790,7 +792,6 @@ namespace Gruppe22
                     reader.Read();
                 }
                 reader.ReadEndElement();
-                reader.Read();
             }
 
             System.Diagnostics.Debug.WriteLine(reader.Name);
