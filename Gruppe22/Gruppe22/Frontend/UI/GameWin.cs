@@ -145,15 +145,11 @@ namespace Gruppe22
         /// </summary>
         protected Random r = null;
 
-<<<<<<< HEAD
         private GridElement _draggedObject = null;
-=======
         /// <summary>
         /// List of all sounds using in the Game
         /// </summary>
         protected List<Song> soundEffects = null;
-
->>>>>>> SoundEffects
         #endregion
 
 
