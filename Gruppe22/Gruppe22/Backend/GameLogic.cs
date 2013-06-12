@@ -6,6 +6,8 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Media;
 
 namespace Gruppe22
 {
@@ -39,6 +41,12 @@ namespace Gruppe22
             base.Initialize();
         }
         #endregion
+
+
+        private void _PlaySoundEffect(int index)
+        {
+            MediaPlayer.Play(soundEffects[index]);
+        }
 
         /// <summary>
         /// methode to evaluate the damage in a combat between two actors
@@ -214,6 +222,7 @@ namespace Gruppe22
                     break;
 
                 case Events.ChangeMap: // Load another map
+                    _PlaySoundEffect(0); //SoundEffect change map
                     _status = GameStatus.NoRedraw; // prevent redraw (which would crash the game!)
                     _map1.Save("savedroom" + _map1.id + ".xml");
                     if (File.Exists("saved" + (string)data[0]))
@@ -254,6 +263,7 @@ namespace Gruppe22
                         Coords coords = (Coords)data[0];
                         if (((_map1[coords].hasEnemy) || (_map1[coords].hasPlayer)) && (!_map1[coords].firstActor.isDead))
                         {
+                            _PlaySoundEffect(3);
                             _TrapDamage(coords);
                         }
                     }
@@ -268,6 +278,7 @@ namespace Gruppe22
                         // Pickup any items
                         while (_map1[target.x, target.y].hasTreasure)
                         {
+                            _PlaySoundEffect(2); //SoundEffect pick items
                             AddMessage(((id == 0) ? "You found " : _map1.actors[id].name + " found ") + _map1[target.x, target.y].firstItem.item.name + " .");
                             if (id == 0)
                                 _mainmap1.floatNumber(target, "Found " + _map1[target.x, target.y].firstItem.item.name, Color.DarkGreen);
@@ -284,12 +295,14 @@ namespace Gruppe22
                         // Apply trap damage
                         if (((_map1[target.x, target.y].hasTrap) && _map1[target.x, target.y].trap.status == TrapState.On) && !(_map1.actors[id] is NPC))
                         {
+                            _PlaySoundEffect(4);//SoundEffect trap damage
                             _TrapDamage(target);
                         }
 
                         //Checkpoint - save by entering
                         if ((_map1[target.x, target.y].hasCheckpoint) && (!_map1[target.x, target.y].checkpoint.visited) && (id == 0))
                         {
+                            _PlaySoundEffect(1);//SoundEffect checkpoint
                             _map1[target.x, target.y].checkpoint.visited = true;
                             _map1.actors[id].health = _map1.actors[id].maxhealth;
                             _map1.actors[id].mana = _map1.actors[id].maxMana;

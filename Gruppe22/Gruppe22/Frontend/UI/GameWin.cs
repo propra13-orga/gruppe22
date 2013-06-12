@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Audio;
+using Microsoft.Xna.Framework.Media;
 
 namespace Gruppe22
 {
@@ -143,7 +145,15 @@ namespace Gruppe22
         /// </summary>
         protected Random r = null;
 
+<<<<<<< HEAD
         private GridElement _draggedObject = null;
+=======
+        /// <summary>
+        /// List of all sounds using in the Game
+        /// </summary>
+        protected List<Song> soundEffects = null;
+
+>>>>>>> SoundEffects
         #endregion
 
 
@@ -188,6 +198,19 @@ namespace Gruppe22
             {
                 ShowEndGame();
             }
+
+            //Load Sound
+            soundEffects = new List<Song>();
+            Song tmp = Content.Load<Song>("changemap1.wav");
+            soundEffects.Add(tmp);
+            tmp = Content.Load<Song>("checkpoint1.wav");
+            soundEffects.Add(tmp);
+            tmp = Content.Load<Song>("pickup1.wav");
+            soundEffects.Add(tmp);
+            tmp = Content.Load<Song>("trap1.wav");
+            soundEffects.Add(tmp);
+            tmp = Content.Load<Song>("trapdamage1.wav");
+            soundEffects.Add(tmp);
             // ShowCharacterWindow(_map1.actors[0]);
             // ShowShopWindow(_map1.actors[0], _map1.actors[1]);
             // _backMusic = Content.Load<Song>("Video Dungeon Crawl.wav"); // Todo: *.mp3
