@@ -77,6 +77,16 @@ namespace Gruppe22
             {
                 switch (eventID)
                 {
+                    case Events.AddDragItem:
+                        for (int i = 0; i < 10; ++i)
+                        {
+                            if (_functions[i].id == (int)data[0])
+                            {
+                                _functions[i].id = 0;
+                                _functions[i].enabled = false;
+                            }
+                        }
+                            break;
                     case Events.ContinueGame:
                         _functions[10].check = false;
                         _functions[13].check = false;
