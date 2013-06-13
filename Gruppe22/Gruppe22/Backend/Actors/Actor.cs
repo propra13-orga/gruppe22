@@ -864,7 +864,6 @@ namespace Gruppe22
                         reader.Read();
                     }
                     reader.ReadEndElement();
-                    reader.Read();
 
                 }
 

@@ -217,29 +217,45 @@ namespace Gruppe22
                         }
                         else
                         {
-                            actor.mana -= actor.abilities[id].cost;
-                            actor.abilities[id].currentCool = actor.abilities[id].cooldown;
-                            switch (actor.abilities[id].element)
+                            actor.mana -= actor.abilities[id - 1].cost;
+                            actor.abilities[id - 1].currentCool = actor.abilities[id - 1].cooldown * 7;
+                            switch (actor.abilities[id - 1].element)
                             {
                                 case AbilityElement.Charm:
+                                    _mainmap1.FireProjectile();
+
                                     break;
                                 case AbilityElement.Fire:
+                                    _mainmap1.FireProjectile();
+
                                     break;
                                 case AbilityElement.Health:
+                                    actor.health += actor.abilities[id - 1].intensity;
                                     break;
                                 case AbilityElement.HealthReg:
+                                    actor.health += actor.abilities[id - 1].intensity;
                                     break;
                                 case AbilityElement.Ice:
+                                    _mainmap1.FireProjectile();
+
                                     break;
                                 case AbilityElement.ManaReg:
                                     break;
                                 case AbilityElement.Morph:
+                                    _mainmap1.FireProjectile();
+
                                     break;
                                 case AbilityElement.Scare:
+                                    _mainmap1.FireProjectile();
+
                                     break;
                                 case AbilityElement.Stun:
+                                    _mainmap1.FireProjectile();
+
                                     break;
                                 case AbilityElement.Teleport:
+                                    _mainmap1.FireProjectile();
+
                                     break;
                             }
                         }

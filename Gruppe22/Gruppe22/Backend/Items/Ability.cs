@@ -86,7 +86,7 @@ namespace Gruppe22
             }
         }
 
-        public VisibleObject icon { get { return _icon; } set { _icon = value; } }
+        public VisibleObject icon { get { if (_icon == null)GetIcon(); return _icon; } set { _icon = value; } }
         public string name
         {
             get
@@ -230,17 +230,22 @@ namespace Gruppe22
                 case AbilityTarget.Aura:
                     name = "Aura";
                     break;
+
                 case AbilityTarget.Explode:
                     name = "Circle";
                     break;
+
                 case AbilityTarget.Item:
                     break;
+
                 case AbilityTarget.Map:
                     name = "Target";
                     break;
+
                 case AbilityTarget.Missile:
                     name = "Arrow";
                     break;
+
                 case AbilityTarget.Self:
                     name = "Me";
                     break;
@@ -249,66 +254,91 @@ namespace Gruppe22
             {
                 case AbilityElement.Teleport:
                     name = "Teleport";
-                    _icon = new VisibleObject(_content, "items", new Rectangle(160, 735, 32, 32));
                     break;
 
                 case AbilityElement.Stun:
                     name = "Stun " + name;
-                    _icon = new VisibleObject(_content, "items", new Rectangle(160, 768, 32, 32));
                     break;
 
                 case AbilityElement.Scare:
                     name = "Scare " + name;
-                    _icon = new VisibleObject(_content, "items", new Rectangle(160, 864, 32, 32));
-
                     break;
 
                 case AbilityElement.Morph:
                     name = "Morph " + name;
-                    _icon = new VisibleObject(_content, "items", new Rectangle(128, 767, 32, 32));
-
                     break;
 
                 case AbilityElement.ManaReg:
                     name = "Restore";
-                    _icon = new VisibleObject(_content, "items", new Rectangle(160, 800, 32, 32));
                     break;
 
                 case AbilityElement.Ice:
                     name = "Ice " + name;
-                    _icon = new VisibleObject(_content, "items", new Rectangle(160, 863, 32, 32));
                     break;
 
                 case AbilityElement.HealthReg:
                     name = "Regenerate";
-                    _icon = new VisibleObject(_content, "items", new Rectangle(160, 704, 32, 32));
-
                     break;
 
                 case AbilityElement.Health:
                     name = "Heal";
-                    _icon = new VisibleObject(_content, "items", new Rectangle(160, 704, 32, 32));
-
                     break;
 
                 case AbilityElement.Fire:
                     name = "Fire " + name;
-                    _icon = new VisibleObject(_content, "items", new Rectangle(160, 834, 32, 32));
-
                     break;
 
                 case AbilityElement.Charm:
                     name = "Charm " + name;
-                    _icon = new VisibleObject(_content, "items", new Rectangle(128, 736, 32, 32));
-
                     break;
             }
 
         }
 
-        public void GenerateDescription()
+        public void GetIcon()
         {
+            switch (element)
+            {
+                case AbilityElement.Teleport:
+                    _icon = new VisibleObject(_content, "items", new Rectangle(160, 735, 32, 32));
+                    break;
 
+                case AbilityElement.Stun:
+                    _icon = new VisibleObject(_content, "items", new Rectangle(160, 768, 32, 32));
+                    break;
+
+                case AbilityElement.Scare:
+                    _icon = new VisibleObject(_content, "items", new Rectangle(160, 864, 32, 32));
+                    break;
+
+                case AbilityElement.Morph:
+                    _icon = new VisibleObject(_content, "items", new Rectangle(128, 767, 32, 32));
+                    break;
+
+                case AbilityElement.ManaReg:
+                    _icon = new VisibleObject(_content, "items", new Rectangle(160, 800, 32, 32));
+                    break;
+
+                case AbilityElement.Ice:
+                    _icon = new VisibleObject(_content, "items", new Rectangle(160, 863, 32, 32));
+                    break;
+
+                case AbilityElement.HealthReg:
+                    _icon = new VisibleObject(_content, "items", new Rectangle(160, 704, 32, 32));
+                    break;
+
+                case AbilityElement.Health:
+                    _icon = new VisibleObject(_content, "items", new Rectangle(160, 704, 32, 32));
+                    break;
+
+                case AbilityElement.Fire:
+                    _icon = new VisibleObject(_content, "items", new Rectangle(160, 834, 32, 32));
+                    break;
+
+                case AbilityElement.Charm:
+                    _icon = new VisibleObject(_content, "items", new Rectangle(128, 736, 32, 32));
+                    break;
+            }
         }
 
         public Ability(ContentManager content, int cost = 2, int intensity = 1, int duration = 0, int cooldown = 5, AbilityTarget target = AbilityTarget.None, AbilityElement element = AbilityElement.None, string name = "", string description = "")
@@ -320,9 +350,12 @@ namespace Gruppe22
             _cooldown = cooldown;
             _target = target;
             _element = element;
-            if (name != "") _name = name;
-            else GenerateName();
+            if (name != "")
+                _name = name;
+            else
+                GenerateName();
             _description = description;
+            GetIcon();
         }
     }
 }

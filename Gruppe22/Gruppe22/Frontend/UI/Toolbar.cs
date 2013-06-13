@@ -45,7 +45,7 @@ namespace Gruppe22
                 _actor = value;
                 for (int i = 0; i < 10; ++i)
                 {
-                    System.Diagnostics.Debug.WriteLine(_actor.quickList[i]);
+                    // System.Diagnostics.Debug.WriteLine(_actor.quickList[i]);
 
                     if (_actor.quickList[i] < 0)
                     {
@@ -86,7 +86,7 @@ namespace Gruppe22
                                 _functions[i].enabled = false;
                             }
                         }
-                            break;
+                        break;
                     case Events.ContinueGame:
                         _functions[10].check = false;
                         _functions[13].check = false;
@@ -105,20 +105,20 @@ namespace Gruppe22
         {
             if (!_updating)
             {
+                _lastCheck += gameTime.ElapsedGameTime.Milliseconds;
                 _updating = true;
 
                 for (int i = 0; i < 10; ++i)
                 {
-                    if (((_functions[i].id > 0) && ((_actor.mana < _actor.abilities[_functions[i].id - 1].cost) && (_actor.abilities[_functions[i].id - 1].currentCool == 0)))
+                    if (((_functions[i].id > 0) && ((_actor.mana > _actor.abilities[_functions[i].id - 1].cost) && (_actor.abilities[_functions[i].id - 1].currentCool <= 0)))
                         || (_functions[i].id < 0))
                         _functions[i].enabled = true;
                     else
                     {
                         _functions[i].enabled = false;
-                        if ((_functions[i].id > 0) && (_actor.abilities[_functions[i].id - 1].currentCool > 0)) _actor.abilities[_functions[i].id - 1].currentCool -= 1;
+                        if ((_lastCheck > 70) && (_functions[i].id > 0) && (_actor.abilities[_functions[i].id - 1].currentCool > 0)) _actor.abilities[_functions[i].id - 1].currentCool -= 1;
                     }
                 }
-                _lastCheck += gameTime.ElapsedGameTime.Milliseconds;
                 if (_lastCheck > 70)
                 {
                     _lastCheck -= 70;
@@ -316,7 +316,7 @@ namespace Gruppe22
                             }
                             _functions[cursel] = _dragItem;
                             _actor.quickList[cursel] = _dragItem.id;
-                            
+
                         }
                         else
                         {
@@ -326,8 +326,8 @@ namespace Gruppe22
                                 _parent.HandleEvent(false, Events.ActivateAbility, _actor, _functions[cursel].id);
                             }
 
-                            
-                            
+
+
                         }
                         break;
                 }
@@ -370,7 +370,8 @@ namespace Gruppe22
                     _spriteBatch.Draw(_background, new Rectangle(_displayRect.Left + i * (_cellWidth + 1) + 1, _displayRect.Top, _cellWidth, _cellWidth + 2), new Rectangle(39, 6, 1, 1), Color.Black);
 
                 if (_functions[i].id != 0)
-                    _spriteBatch.Draw(_functions[i].icon.texture, new Rectangle(_displayRect.Left + 2 + i * (_cellWidth + 1) + 1, 2 + _displayRect.Top + 1, 32, 32), _functions[i].icon.clipRect, Color.White);
+                    _spriteBatch.Draw(_functions[i].icon.texture, new Rectangle(_displayRect.Left + 2 + i * (_cellWidth + 1) + 1, 2 + _displayRect.Top + 1, 32, 32), _functions[i].icon.clipRect, _functions[i].enabled ? Color.White : Color.LightBlue);
+
 
 
                 string key = "";
@@ -392,7 +393,7 @@ namespace Gruppe22
                         key = "0";
                         break;
                     default:
-                        key = (i+1).ToString();
+                        key = (i + 1).ToString();
                         break;
                 }
                 _spriteBatch.DrawString(_font, key, new Vector2(_displayRect.Left + i * (_cellWidth + 1) + 3, _displayRect.Top + 2), Color.Black, 0f, Vector2.Zero, 0.6f, SpriteEffects.None, 0f);
@@ -473,10 +474,10 @@ namespace Gruppe22
             _background = _content.Load<Texture2D>("Minimap");
             _actor = actor;
             _functions = new List<GridElement>(14);
-            System.Diagnostics.Debug.WriteLine(_actor.name);
+            // System.Diagnostics.Debug.WriteLine(_actor.name);
             for (int i = 0; i < 10; ++i)
             {
-                System.Diagnostics.Debug.WriteLine(_actor.quickList[i]);
+                //  System.Diagnostics.Debug.WriteLine(_actor.quickList[i]);
 
                 if (_actor.quickList[i] < 0)
                 {
@@ -490,7 +491,10 @@ namespace Gruppe22
                 {
                     if (_actor.quickList[i] > 0)
                     {
-                        _functions.Add(new GridElement(_actor.quickList[i], _actor.abilities[_actor.quickList[i]].name, _actor.abilities[_actor.quickList[i]].icon, false, true, 0));
+                        int icon = _actor.quickList[i] - 1;
+                        string text = _actor.abilities[icon].name + "\n Strength:" + _actor.abilities[icon].intensity + "\n Cooldown:" + _actor.abilities[icon].cooldown + "\n Cost: " + _actor.abilities[icon].cost + "MP" + ((_actor.abilities[icon].duration > 1) ? ("\n Duration:" + _actor.abilities[icon].duration) : "");
+
+                        _functions.Add(new GridElement(_actor.quickList[i], text, _actor.abilities[_actor.quickList[i] - 1].icon, false, true, 0));
                     }
                     else
                     {

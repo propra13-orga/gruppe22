@@ -71,10 +71,10 @@ namespace Gruppe22
 
         public virtual void EquipItem()
         {
-            System.Diagnostics.Debug.WriteLine("Equip");
+           // System.Diagnostics.Debug.WriteLine("Equip");
             if (_owner != null)
             {
-                System.Diagnostics.Debug.WriteLine(_owner.name);
+                //  System.Diagnostics.Debug.WriteLine(_owner.name);
                 if (!_equipped)
                 {
                     _equipped = true;
