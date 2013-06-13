@@ -482,7 +482,11 @@ namespace Gruppe22
                 blendState.Dispose();
 
 
-                if (_highlightedTile.x > -1)
+                if ((_highlightedTile.x > -1)
+                    && (_highlightedTile.x >= _map.actors[_playerID].tile.coords.x - _map.actors[_playerID].viewRange)
+                    && (_highlightedTile.x <= _map.actors[_playerID].tile.coords.x + _map.actors[_playerID].viewRange)
+                    && (_highlightedTile.y >= _map.actors[_playerID].tile.coords.y - _map.actors[_playerID].viewRange)
+                    && (_highlightedTile.y <= _map.actors[_playerID].tile.coords.y + _map.actors[_playerID].viewRange))
                     _tooltip.DisplayToolTip(_map[_highlightedTile.x, _highlightedTile.y]);
                 for (int i = 0; i < _floatnumbers.Count; ++i)
                 {
