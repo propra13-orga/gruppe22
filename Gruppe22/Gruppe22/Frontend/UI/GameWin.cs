@@ -149,7 +149,7 @@ namespace Gruppe22
         /// <summary>
         /// List of all sounds using in the Game
         /// </summary>
-        protected List<Song> soundEffects = null;
+        protected List<SoundEffect> soundEffects = null;
         #endregion
 
 
@@ -196,16 +196,16 @@ namespace Gruppe22
             }
 
             //Load Sound
-            soundEffects = new List<Song>();
-            Song tmp = Content.Load<Song>("changemap1.wav");
+            soundEffects = new List<SoundEffect>();
+            SoundEffect tmp = Content.Load<SoundEffect>("changemap1.wav");
             soundEffects.Add(tmp);
-            tmp = Content.Load<Song>("checkpoint1.wav");
+            tmp = Content.Load<SoundEffect>("checkpoint1.wav");
             soundEffects.Add(tmp);
-            tmp = Content.Load<Song>("pickup1.wav");
+            tmp = Content.Load<SoundEffect>("pickup1.wav");
             soundEffects.Add(tmp);
-            tmp = Content.Load<Song>("trap1.wav");
+            tmp = Content.Load<SoundEffect>("trap1.wav");
             soundEffects.Add(tmp);
-            tmp = Content.Load<Song>("trapdamage1.wav");
+            tmp = Content.Load<SoundEffect>("trapdamage1.wav");
             soundEffects.Add(tmp);
             // ShowCharacterWindow(_map1.actors[0]);
             // ShowShopWindow(_map1.actors[0], _map1.actors[1]);

@@ -45,7 +45,10 @@ namespace Gruppe22
 
         private void _PlaySoundEffect(int index)
         {
-            MediaPlayer.Play(soundEffects[index]);
+
+            /*SoundEffectInstance effect = soundEffects[index].CreateInstance();
+            effect.Pan = 1.0f;*/
+            soundEffects[index].Play();
         }
 
         /// <summary>
@@ -64,7 +67,7 @@ namespace Gruppe22
             else
             {
                 //if (_map1.actors[attacker].penetrate + r.Next(10) < _map1.actors[defender].block + r.Next(10))
-                if(r.Next(_map1.actors[attacker].penetrate) < r.Next(_map1.actors[defender].block))
+                if (r.Next(_map1.actors[attacker].penetrate) < r.Next(_map1.actors[defender].block))
                 {
                     if ((_map1.actors[attacker] is Player) || (_map1.actors[defender] is Player))
                         _mainmap1.floatNumber(_map1.actors[attacker].tile.coords, "Blocked", (_map1.actors[defender] is Player) ? Color.Green : Color.White);
@@ -72,7 +75,7 @@ namespace Gruppe22
                 else
                 {
                     double dmgReduction = (0.06 * (_map1.actors[defender].armor)) / (1 + 0.06 * (_map1.actors[defender].armor)); //max ~85% at 100 armor
-                    int damage = (int)(_map1.actors[attacker].damage*(1-dmgReduction));
+                    int damage = (int)(_map1.actors[attacker].damage * (1 - dmgReduction));
                     if (damage > 0)
                     {
                         _map1.actors[defender].health -= damage;
