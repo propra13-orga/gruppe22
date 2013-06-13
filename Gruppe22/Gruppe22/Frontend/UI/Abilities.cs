@@ -26,6 +26,18 @@ namespace Gruppe22
         }
 
 
+        public override int Pos2Tile(int x, int y)
+        {
+            int result = -1;
+            if (_displayRect.Contains(x, y))
+            {
+                y -= _displayRect.Top;
+                y = y / (_height + 3);
+                result = y + (_page * _cols * _rows);
+            }
+            return result;
+        }
+
         /// <summary>
         /// 
         /// </summary>
@@ -36,17 +48,19 @@ namespace Gruppe22
             {
                 int _selected = Pos2Tile(Mouse.GetState().X, Mouse.GetState().Y);
                 _spriteBatch.Begin();
-                int icon = _page * _cols * _rows;
+                int icon = _page * _rows;
 
                 for (int y = 0; y < _rows; ++y)
                 {
-                    _spriteBatch.Draw(_background, new Rectangle(_displayRect.Left, _displayRect.Top + y * (_height + 3), _displayRect.Width, _height + 2), new Rectangle(39, 6, 1, 1), Color.White);
+                    _spriteBatch.Draw(_background, new Rectangle(_displayRect.Left, _displayRect.Top + y * (_height + 3), _displayRect.Width-30, _height + 2), new Rectangle(39, 6, 1, 1), Color.White);
                     if (icon != _selected)
-                        _spriteBatch.Draw(_background, new Rectangle(_displayRect.Left + 1, _displayRect.Top + y * (_height + 3) + 1, _displayRect.Width - 2, _height), new Rectangle(39, 6, 1, 1), Color.Black);
+                        _spriteBatch.Draw(_background, new Rectangle(_displayRect.Left + 1, _displayRect.Top + y * (_height + 3) + 1, _displayRect.Width - 32, _height), new Rectangle(39, 6, 1, 1), Color.Black);
 
-                    if ((icon < _icons.Count) && (_icons[icon] != null))
+
+
+                    if ((icon < _actor.abilities.Count) && (_actor.abilities[icon].icon != null))
                     {
-                        _spriteBatch.Draw(_icons[icon].icon.texture, new Rectangle(_displayRect.Left + 1, _displayRect.Top + y * (_height + 3) + 1, _width, _height), _icons[icon].icon.clipRect, Color.White);
+                        _spriteBatch.Draw(_actor.abilities[icon].icon.texture, new Rectangle(_displayRect.Left + 1, _displayRect.Top + y * (_height + 3) + 1, _width, _height), _actor.abilities[icon].icon.clipRect, Color.White);
                         if (_icons[icon].check)
                         {
                             _spriteBatch.Draw(_background, new Rectangle(_displayRect.Right - 16, _displayRect.Top + y * (_height + 3) + 2, 8, 8), new Rectangle(48, 16, 16, 16), Color.White);
@@ -68,7 +82,6 @@ namespace Gruppe22
             }
 
             _spriteBatch.End();
-            base.Draw(gameTime);
         }
 
 

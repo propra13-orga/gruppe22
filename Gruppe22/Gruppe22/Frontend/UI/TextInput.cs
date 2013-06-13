@@ -85,6 +85,7 @@ namespace Gruppe22
                                 _text = _text.Insert(_cursor, k.ToString().ToUpper());
                             else
                                 _text = _text.Insert(_cursor, k.ToString().ToLower());
+                            _cursor += 1;
                             return true;
                         }
                         break;

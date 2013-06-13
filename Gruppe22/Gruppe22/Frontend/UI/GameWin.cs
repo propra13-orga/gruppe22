@@ -230,9 +230,9 @@ namespace Gruppe22
         {
             if (_status != GameStatus.GameOver)
             {
-                for (int i = 0; i < _interfaceElements.Count; ++i)
+                for (int i = _interfaceElements.Count - 1; i > -1; --i)
                 {
-                    _interfaceElements[i].OnKeyDown(k);
+                    if (_interfaceElements[i].OnKeyDown(k)) return true;
                 }
                 return true;
             }

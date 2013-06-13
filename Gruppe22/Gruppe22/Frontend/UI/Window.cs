@@ -86,7 +86,7 @@ namespace Gruppe22
                     ChangeFocus(true);
                     break;
             }
-            return true;
+            return false;
         }
 
         public override bool OnMouseDown(int button)

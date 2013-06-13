@@ -340,8 +340,8 @@ namespace Gruppe22
                 + (_displayRect.Width - 10) / 2 + 10, _displayRect.Top + 395, (_displayRect.Width - 10) / 2 - 10, 25), "Level:", _actor.level, "Your level determines your general character state.", 2, false);
 
 
-            _abilities = new Abilities(this, _spriteBatch, _content, new Rectangle(_displayRect.Left + 5, _displayRect.Top + 5, _displayRect.Width - 10, _displayRect.Height - 160), _actor);
-            _abilitychoice = new AbilityChoice(this, _spriteBatch, _content, new Rectangle(_displayRect.Left + 5, _displayRect.Bottom - 140, _displayRect.Width - 10, 60), _actor);
+            _abilities = new Abilities(this, _spriteBatch, _content, new Rectangle(_displayRect.Left + 5, _displayRect.Top + 5, _displayRect.Width - 10, _displayRect.Height - 260), _actor);
+            _abilitychoice = new AbilityChoice(this, _spriteBatch, _content, new Rectangle(_displayRect.Left + 5, _displayRect.Bottom - 240, _displayRect.Width - 10, 150), _actor);
 
             _inventory = new Inventory(this, _spriteBatch, _content, new Rectangle(_displayRect.Left + 5, _displayRect.Top + 5, _displayRect.Width - 10, _displayRect.Height - 40), _actor);
             _children.Add(_name);

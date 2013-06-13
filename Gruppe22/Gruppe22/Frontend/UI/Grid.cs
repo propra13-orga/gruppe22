@@ -205,7 +205,7 @@ namespace Gruppe22
         #endregion
         #region Public Methods
 
-        public int Pos2Tile(int x, int y)
+        public virtual int Pos2Tile(int x, int y)
         {
             int result = -1;
             if (_displayRect.Contains(x, y))
