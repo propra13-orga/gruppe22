@@ -20,7 +20,19 @@ namespace Gruppe22
         private bool _enabled = true;
         private int _lastCheck = 0;
         private bool _updating = false;
+        private GridElement _dragItem;
 
+        public GridElement dragItem
+        {
+            get
+            {
+                return _dragItem;
+            }
+            set
+            {
+                _dragItem = value;
+            }
+        }
 
         public Actor actor
         {
@@ -31,6 +43,31 @@ namespace Gruppe22
             set
             {
                 _actor = value;
+                for (int i = 0; i < 10; ++i)
+                {
+                    System.Diagnostics.Debug.WriteLine(_actor.quickList[i]);
+
+                    if (_actor.quickList[i] < 0)
+                    {
+                        Item item = _actor.Items(-_actor.quickList[i]);
+                        if (item != null)
+                            _functions[i] = new GridElement(_actor.quickList[i], item.name, item.icon, false, true, 0);
+                        else
+                            _functions[i] = new GridElement(0, "Function " + i.ToString() + " (" + i.ToString() + ")", new VisibleObject(_content, "items", new Rectangle(160, 704, 32, 32)), false, false, 0);
+                    }
+                    else
+                    {
+                        if (_actor.quickList[i] > 0)
+                        {
+                            _functions[i] = new GridElement(_actor.quickList[i], _actor.abilities[_actor.quickList[i]].name, _actor.abilities[_actor.quickList[i]].icon, false, true, 0);
+                        }
+                        else
+                        {
+                            _functions[i] = new GridElement(0, "Function " + i.ToString() + " (" + i.ToString() + ")", new VisibleObject(_content, "items", new Rectangle(160, 704, 32, 32)), false, false, 0);
+                        }
+                    }
+                }
+
             }
         }
 
@@ -111,7 +148,7 @@ namespace Gruppe22
                 switch (k)
                 {
                     case Keys.D1:
-                        if ((_functions[0].id != -1) && (_functions[0].enabled) && (_functions[0].flash == 0))
+                        if ((_functions[0].id != 0) && (_functions[0].enabled) && (_functions[0].flash == 0))
                         {
                             _functions[0].flash = 5;
                             _parent.HandleEvent(false, Events.ActivateAbility, _actor, _functions[0].id);
@@ -120,7 +157,7 @@ namespace Gruppe22
                         break;
 
                     case Keys.D2:
-                        if ((_functions[1].id != -1) && (_functions[1].enabled) && (_functions[1].flash == 0))
+                        if ((_functions[1].id != 0) && (_functions[1].enabled) && (_functions[1].flash == 0))
                         {
                             _functions[1].flash = 5;
                             _parent.HandleEvent(false, Events.ActivateAbility, _actor, _functions[1].id);
@@ -129,7 +166,7 @@ namespace Gruppe22
                         break;
 
                     case Keys.D3:
-                        if ((_functions[2].id != -1) && (_functions[2].enabled) && (_functions[2].flash == 0))
+                        if ((_functions[2].id != 0) && (_functions[2].enabled) && (_functions[2].flash == 0))
                         {
                             _functions[2].flash = 5;
                             _parent.HandleEvent(false, Events.ActivateAbility, _actor, _functions[2].id);
@@ -138,7 +175,7 @@ namespace Gruppe22
                         break;
 
                     case Keys.D4:
-                        if ((_functions[3].id != -1) && (_functions[3].enabled) && (_functions[3].flash == 0))
+                        if ((_functions[3].id != 0) && (_functions[3].enabled) && (_functions[3].flash == 0))
                         {
                             _functions[3].flash = 5;
                             _parent.HandleEvent(false, Events.ActivateAbility, _actor, _functions[3].id);
@@ -147,7 +184,7 @@ namespace Gruppe22
                         break;
 
                     case Keys.D5:
-                        if ((_functions[4].id != -1) && (_functions[4].enabled) && (_functions[4].flash == 0))
+                        if ((_functions[4].id != 0) && (_functions[4].enabled) && (_functions[4].flash == 0))
                         {
                             _functions[4].flash = 5;
                             _parent.HandleEvent(false, Events.ActivateAbility, _actor, _functions[4].id);
@@ -156,7 +193,7 @@ namespace Gruppe22
                         break;
 
                     case Keys.D6:
-                        if ((_functions[5].id != -1) && (_functions[5].enabled) && (_functions[5].flash == 0))
+                        if ((_functions[5].id != 0) && (_functions[5].enabled) && (_functions[5].flash == 0))
                         {
                             _functions[5].flash = 5;
                             _parent.HandleEvent(false, Events.ActivateAbility, _actor, _functions[5].id);
@@ -165,7 +202,7 @@ namespace Gruppe22
                         break;
 
                     case Keys.D7:
-                        if ((_functions[6].id != -1) && (_functions[6].enabled) && (_functions[6].flash == 0))
+                        if ((_functions[6].id != 0) && (_functions[6].enabled) && (_functions[6].flash == 0))
                         {
                             _functions[6].flash = 5;
                             _parent.HandleEvent(false, Events.ActivateAbility, _actor, _functions[6].id);
@@ -174,7 +211,7 @@ namespace Gruppe22
                         break;
 
                     case Keys.D8:
-                        if ((_functions[7].id != -1) && (_functions[7].enabled) && (_functions[7].flash == 0))
+                        if ((_functions[7].id != 0) && (_functions[7].enabled) && (_functions[7].flash == 0))
                         {
                             _functions[7].flash = 5;
                             _parent.HandleEvent(false, Events.ActivateAbility, _actor, _functions[7].id);
@@ -183,7 +220,7 @@ namespace Gruppe22
                         break;
 
                     case Keys.D9:
-                        if ((_functions[8].id != -1) && (_functions[8].enabled) && (_functions[8].flash == 0))
+                        if ((_functions[8].id != 0) && (_functions[8].enabled) && (_functions[8].flash == 0))
                         {
                             _functions[8].flash = 5;
                             _parent.HandleEvent(false, Events.ActivateAbility, _actor, _functions[8].id);
@@ -192,7 +229,7 @@ namespace Gruppe22
                         break;
 
                     case Keys.D0:
-                        if ((_functions[9].id != -1) && (_functions[9].enabled) && (_functions[9].flash == 0))
+                        if ((_functions[9].id != 0) && (_functions[9].enabled) && (_functions[9].flash == 0))
                         {
                             _functions[9].flash = 5;
                             _parent.HandleEvent(false, Events.ActivateAbility, _actor, _functions[9].id);
@@ -205,7 +242,7 @@ namespace Gruppe22
 
                     case Keys.I:
                         _functions[11].check = !_functions[11].check;
-                        _parent.HandleEvent(false, Events.ShowInventory,_actor);
+                        _parent.HandleEvent(false, Events.ShowInventory, _actor);
                         break;
 
 
@@ -256,14 +293,36 @@ namespace Gruppe22
 
 
                     default:
-                        if ((_functions[cursel].id != -1) && (_functions[cursel].enabled) && (_functions[cursel].flash == 0))
+                        if (_dragItem != null)
+                        {
+                            for (int i = 0; i < 10; ++i)
+                            {
+                                if (_actor.quickList[i] == _dragItem.id)
+                                {
+                                    _actor.quickList[i] = 0;
+                                    _functions[i].id = 0;
+                                    _functions[i].enabled = false;
+                                }
+                            }
+                            _functions[cursel] = _dragItem;
+                            _actor.quickList[cursel] = _dragItem.id;
+                            
+                        }
+                        else
+                        {
+                            if ((_functions[cursel].id != 0) && (_functions[cursel].enabled) && (_functions[cursel].flash == 0))
+                            {
+                                _functions[cursel].flash = 5;
+                                _parent.HandleEvent(false, Events.ActivateAbility, _actor, _functions[cursel].id);
+                            }
 
-                            _functions[cursel].flash = 5;
-                        _parent.HandleEvent(false, Events.ActivateAbility, _actor, _functions[cursel].id);
-
+                            
+                            
+                        }
                         break;
                 }
             }
+            _dragItem = null;
             return base.OnMouseUp(button);
         }
 
@@ -319,8 +378,11 @@ namespace Gruppe22
                     case 13:
                         key = "ESC";
                         break;
+                    case 9:
+                        key = "0";
+                        break;
                     default:
-                        key = i.ToString();
+                        key = (i+1).ToString();
                         break;
                 }
                 _spriteBatch.DrawString(_font, key, new Vector2(_displayRect.Left + i * (_cellWidth + 1) + 3, _displayRect.Top + 2), Color.Black, 0f, Vector2.Zero, 0.6f, SpriteEffects.None, 0f);
@@ -401,9 +463,31 @@ namespace Gruppe22
             _background = _content.Load<Texture2D>("Minimap");
             _actor = actor;
             _functions = new List<GridElement>(14);
+            System.Diagnostics.Debug.WriteLine(_actor.name);
             for (int i = 0; i < 10; ++i)
             {
-                _functions.Add(new GridElement(0, "Function " + i.ToString() + " (" + i.ToString() + ")", new VisibleObject(_content, "items", new Rectangle(160, 704, 32, 32)), false, false, 0));
+                System.Diagnostics.Debug.WriteLine(_actor.quickList[i]);
+
+                if (_actor.quickList[i] < 0)
+                {
+                    Item item = _actor.Items(-_actor.quickList[i]);
+                    if (item != null)
+                        _functions.Add(new GridElement(_actor.quickList[i], item.name, item.icon, false, true, 0));
+                    else
+                        _functions.Add(new GridElement(0, "Function " + i.ToString() + " (" + i.ToString() + ")", new VisibleObject(_content, "items", new Rectangle(160, 704, 32, 32)), false, false, 0));
+                }
+                else
+                {
+                    if (_actor.quickList[i] > 0)
+                    {
+                        _functions.Add(new GridElement(_actor.quickList[i], _actor.abilities[_actor.quickList[i]].name, _actor.abilities[_actor.quickList[i]].icon, false, true, 0));
+                    }
+                    else
+                    {
+                        _functions.Add(new GridElement(0, "Function " + i.ToString() + " (" + i.ToString() + ")", new VisibleObject(_content, "items", new Rectangle(160, 704, 32, 32)), false, false, 0));
+                    }
+                }
+
             }
             _functions.Add(new GridElement(1, "Character (C)", new VisibleObject(_content, "items", new Rectangle(128, 831, 32, 32)), false, true, 0));
             _functions.Add(new GridElement(1, "Inventory (I)", new VisibleObject(_content, "items", new Rectangle(288, 129, 32, 32)), false, true, 0));

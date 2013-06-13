@@ -17,6 +17,7 @@ namespace Gruppe22
     }
     public class Item
     {
+        private int _id = 1;
         private ItemType _itemType = ItemType.Armor;
         private ItemTile _tile = null;
         private Actor _owner = null;
@@ -56,11 +57,24 @@ namespace Gruppe22
             }
         }
 
+        public Actor owner
+        {
+            get
+            {
+                return _owner;
+            }
+            set
+            {
+                _owner = value;
+            }
+        }
 
         public virtual void EquipItem()
         {
+            System.Diagnostics.Debug.WriteLine("Equip");
             if (_owner != null)
             {
+                System.Diagnostics.Debug.WriteLine(_owner.name);
                 if (!_equipped)
                 {
                     _equipped = true;
@@ -79,6 +93,18 @@ namespace Gruppe22
                         ChangeEffect(effect, false);
                     }
                 }
+            }
+        }
+
+        public int id
+        {
+            get
+            {
+                return _id;
+            }
+            set
+            {
+                _id = value;
             }
         }
 
@@ -332,6 +358,9 @@ namespace Gruppe22
             _icon.cropY = Convert.ToInt32(reader.GetAttribute("iconcropY"));
             _equipped = Convert.ToBoolean(reader.GetAttribute("equipped"));
             _destroyed = Convert.ToBoolean(reader.GetAttribute("destroyed"));
+            if (reader.GetAttribute("id") != null) _id = Convert.ToInt32(reader.GetAttribute("id"));
+
+
             _itemType = (ItemType)Enum.Parse(typeof(ItemType), reader.GetAttribute("type"));
             if (reader.GetAttribute("new") != null) _new = Convert.ToBoolean(reader.GetAttribute("new"));
             if (reader.GetAttribute("value") != null) _value = Convert.ToInt32(reader.GetAttribute("value"));
@@ -371,6 +400,8 @@ namespace Gruppe22
             }
             xmlw.WriteAttributeString("equipped", Convert.ToString(_equipped));
             xmlw.WriteAttributeString("type", Convert.ToString(_itemType));
+            xmlw.WriteAttributeString("id", Convert.ToString(_id));
+
             xmlw.WriteAttributeString("value", Convert.ToString(_value));
 
             xmlw.WriteAttributeString("destroyed", Convert.ToString(_destroyed));
@@ -698,6 +729,12 @@ namespace Gruppe22
                 _owner.inventory.Remove(this);
             }
             _owner = actor;
+            int temp = 0;
+            for (int i = 0; i < actor.inventory.Count; ++i)
+            {
+                temp = Math.Max(id, actor.inventory[i].id);
+            }
+            _id = temp + 1;
             actor.inventory.Add(this);
             _tile = null;
         }

@@ -34,30 +34,31 @@ namespace Gruppe22
             for (int i = 0; i < _actor.inventory.Count; ++i)
             {
                 if (!_actor.inventory[i].destroyed)
-                    _icons.Add(new GridElement(i, _actor.inventory[i].name + (_actor.inventory[i].equipped ? " (equipped)" : "") + _actor.inventory[i].abilityList, _actor.inventory[i].icon, _actor.inventory[i].equipped));
+                    _icons.Add(new GridElement(-_actor.inventory[i].id, _actor.inventory[i].name + (_actor.inventory[i].equipped ? " (equipped)" : "") + _actor.inventory[i].abilityList, _actor.inventory[i].icon, _actor.inventory[i].equipped));
             }
         }
 
         public override bool OnMouseDown(int button)
         {
 
-            int i = Pos2Tile(Mouse.GetState().X, Mouse.GetState().Y);
-            if ((i > -1) && (i < _actor.inventory.Count))
+            int selected = Pos2Tile(Mouse.GetState().X, Mouse.GetState().Y);
+            if ((selected > -1) && (selected < _icons.Count))
             {
-                i = _icons[i].id;
-                _parent.HandleEvent(false, Events.AddDragItem, _icons[i]);
-                if (_actor.inventory[i].itemType == ItemType.Potion)
+                int i = -_icons[selected].id;
+                if (_actor.Items(i).itemType == ItemType.Potion)
                 {
-                    _actor.inventory[i].UseItem();
-                    _parent.HandleEvent(false, Events.ShowMessage, "You used " + _actor.inventory[i].name);
+                    //   _actor.inventory[i].UseItem();
+                    //   _parent.HandleEvent(false, Events.ShowMessage, "You used " + _actor.inventory[i].name);
+                    _parent.HandleEvent(false, Events.AddDragItem, _icons[selected]);
+
                 }
                 else
                 {
-                    _actor.inventory[i].EquipItem();
-                    if (_actor.inventory[i].equipped)
-                        _parent.HandleEvent(false, Events.ShowMessage, "You equipped " + _actor.inventory[i].name);
+                    _actor.Items(i).EquipItem();
+                    if (_actor.Items(i).equipped)
+                        _parent.HandleEvent(false, Events.ShowMessage, "You equipped " + _actor.Items(i).name);
                     else
-                        _parent.HandleEvent(false, Events.ShowMessage, "You removed " + _actor.inventory[i].name);
+                        _parent.HandleEvent(false, Events.ShowMessage, "You removed " + _actor.Items(i).name);
                 }
                 Update();
                 return true;

@@ -73,6 +73,16 @@ namespace Gruppe22
         }*/
 
 
+        public Item Items(int i)
+        {
+            for (int count = 0; count < inventory.Count; ++count)
+            {
+                if (_inventory[count].id == i) return _inventory[count];
+            }
+            return null;
+
+        }
+
         public int newItems
         {
             get
@@ -116,6 +126,37 @@ namespace Gruppe22
             set
             {
                 _viewRange = value;
+            }
+        }
+
+
+        public int scared
+        {
+            get { return _scared; }
+            set { _scared = value; }
+        }
+
+        public int stunned
+        {
+            get { return _stunned; }
+            set { _stunned = value; }
+        }
+
+        public int charmed
+        {
+            get { return _charmed; }
+            set { _charmed = value; }
+        }
+
+        public List<int> quickList
+        {
+            get
+            {
+                return _quicklist;
+            }
+            set
+            {
+                _quicklist = value;
             }
         }
 
@@ -675,6 +716,10 @@ namespace Gruppe22
             _gold = a.gold;
             _health = a.health;
             _inventory = a.inventory;
+            foreach (Item i in _inventory)
+            {
+                i.owner = this;
+            }
             _level = a.level;
             _animationFile = a.animationFile;
             _manaReg = a.manaReg;
@@ -705,6 +750,11 @@ namespace Gruppe22
             _maxMana = a.maxMana;
             _destroyWeapon = a.destroyWeapon;
             _destroyArmor = a.destroyArmor;
+            _scared = a.scared;
+            _stunned = a.stunned;
+            _charmed = a.charmed;
+            _quicklist = a.quickList;
+            _abilities = a.abilities;
 
             if ((a.actorType == ActorType.NPC) && (actorType == ActorType.NPC))
             {
@@ -721,7 +771,7 @@ namespace Gruppe22
 
         public void Load(XmlReader reader)
         {
-            System.Diagnostics.Debug.WriteLine(reader.Name);
+//            System.Diagnostics.Debug.WriteLine(reader.Name);
 
             _newItems = 0;
             _name = reader.GetAttribute("name");
@@ -786,6 +836,7 @@ namespace Gruppe22
                 {
                     Item item = new Item(_content);
                     item.Load(reader);
+                    item.owner = this;
                     _inventory.Add(item);
                     if (item.isNew)
                         _newItems += 1;
@@ -794,10 +845,10 @@ namespace Gruppe22
                 reader.ReadEndElement();
             }
 
-            System.Diagnostics.Debug.WriteLine(reader.Name);
+            // System.Diagnostics.Debug.WriteLine(reader.Name);
             if (reader.Name == "Abilities")
             {
-                System.Diagnostics.Debug.WriteLine("Abilities");
+                // System.Diagnostics.Debug.WriteLine("Abilities");
                 if (reader.IsEmptyElement)
                 {
                     reader.Read();
@@ -824,22 +875,26 @@ namespace Gruppe22
                 }
                 else
                 {
-                    System.Diagnostics.Debug.WriteLine("Quickbar");
-                    reader.Read();
+                    // System.Diagnostics.Debug.WriteLine("Quickbar");
+
                     int id = 0;
+                    reader.Read();
                     while (reader.NodeType != XmlNodeType.EndElement)
                     {
-                        reader.Read();
+                        // System.Diagnostics.Debug.WriteLine(reader.Name);
+
                         if (reader.HasAttributes)
                         {
                             _quicklist[id] = Convert.ToInt32(reader.GetAttribute(0));
+                            //     System.Diagnostics.Debug.WriteLine(reader.GetAttribute(0));
+                            ++id;
                         }
                         reader.Read();
                     }
                     reader.ReadEndElement();
                 }
                 reader.ReadEndElement();
-                System.Diagnostics.Debug.WriteLine(reader.Name);
+                // System.Diagnostics.Debug.WriteLine(reader.Name);
             }
             else return;
         }

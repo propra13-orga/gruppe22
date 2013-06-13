@@ -46,9 +46,9 @@ namespace Gruppe22
         private void _PlaySoundEffect(int index)
         {
 
-            /*SoundEffectInstance effect = soundEffects[index].CreateInstance();
-            effect.Pan = 1.0f;*/
-            soundEffects[index].Play();
+            SoundEffectInstance effect = soundEffects[index].CreateInstance();
+            /*effect.Pan = 1.0f;*/
+            effect.Play();
         }
 
         /// <summary>
@@ -202,6 +202,49 @@ namespace Gruppe22
 
             switch (eventID)
             {
+                case Events.ActivateAbility:
+                    {
+                        Actor actor = (Actor)data[0];
+                        int id = (int)data[1];
+                        if (id < 0)
+                        {
+                            actor.Items(-id).UseItem();
+                            HandleEvent(false, Events.ShowMessage, "You used " + actor.Items(-id).name);
+                            if (actor.Items(-id).destroyed)
+                            {
+                                _toolbar.HandleEvent(true, Events.AddDragItem, id);
+                            }
+                        }
+                        else
+                        {
+                            actor.mana -= actor.abilities[id].cost;
+                            actor.abilities[id].currentCool = actor.abilities[id].cooldown;
+                            switch (actor.abilities[id].element)
+                            {
+                                case AbilityElement.Charm:
+                                    break;
+                                case AbilityElement.Fire:
+                                    break;
+                                case AbilityElement.Health:
+                                    break;
+                                case AbilityElement.HealthReg:
+                                    break;
+                                case AbilityElement.Ice:
+                                    break;
+                                case AbilityElement.ManaReg:
+                                    break;
+                                case AbilityElement.Morph:
+                                    break;
+                                case AbilityElement.Scare:
+                                    break;
+                                case AbilityElement.Stun:
+                                    break;
+                                case AbilityElement.Teleport:
+                                    break;
+                            }
+                        }
+                    }
+                    break;
                 case Events.LoadFromCheckPoint:
                     _status = GameStatus.NoRedraw;
                     _deadcounter--;
@@ -616,9 +659,6 @@ namespace Gruppe22
                         rooms[i].connected = true;
                     }
                 }
-                System.Diagnostics.Debug.WriteLine("---------------------------------");
-                System.Diagnostics.Debug.WriteLine("Level " + level + ": " + totalRooms + " Rooms (" + LevelStart + " to " + (LevelStart + (totalRooms - 1)).ToString() + ")");
-                System.Diagnostics.Debug.WriteLine("---------------------------------");
                 // Phase 2 Generate roads between rooms
                 int roomsPerRow = (int)Math.Floor(Math.Sqrt(totalRooms));
                 int totalRows = (int)Math.Ceiling(((float)totalRooms / (float)roomsPerRow));
@@ -632,7 +672,6 @@ namespace Gruppe22
                     };
                     for (int col = 0; col < totalCols; ++col)
                     {
-                        System.Diagnostics.Debug.WriteLine("Checking Col: " + (col + 1).ToString() + "/" + totalCols + " - Row: " + (row + 1).ToString() + "/" + totalRows.ToString());
                         int From = LevelStart + roomsPerRow * row + col;
                         Direction exitsPossible = FindAvailableExits(rooms, From, col, totalCols, row, totalRows, totalRooms, roomsPerRow);
 
@@ -650,16 +689,11 @@ namespace Gruppe22
                         while ((exitsPossible != Direction.None) && r.Next(100) > 80);
                     }
                 }
-                System.Diagnostics.Debug.WriteLine("-------------------------");
-                System.Diagnostics.Debug.WriteLine("Checking for completeness");
-                System.Diagnostics.Debug.WriteLine("-------------------------");
-
                 for (int i = LevelStart; i < rooms.Count; ++i)
                 {
                     int col = (i - LevelStart) % roomsPerRow;
                     int maxcol = ((int)Math.Floor((float)(i - LevelStart) / (float)roomsPerRow) == totalRows - 1) ? (totalRooms - (roomsPerRow * (totalRows - 1))) : roomsPerRow;
                     int row = (int)Math.Floor((float)(i - LevelStart) / (float)roomsPerRow);
-                    System.Diagnostics.Debug.WriteLine("Checking Col: " + (col + 1).ToString() + "/" + maxcol + " - Row: " + (row + 1).ToString() + "/" + totalRows.ToString());
 
                     Direction exits = FindAvailableExits(rooms, i, col,
                         maxcol,

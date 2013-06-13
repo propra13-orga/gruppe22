@@ -341,6 +341,7 @@ namespace Gruppe22
             {
                 case Events.AddDragItem:
                     _draggedObject = (GridElement)data[0];
+                    _toolbar.dragItem = _draggedObject;
                     break;
                 case Events.ShowMenu:
                     if (_focus is CharacterWindow)
