@@ -108,12 +108,14 @@ namespace Gruppe22
                             if (_map1.actors[attacker] is Player)
                                 _mainmap1.floatNumber(_map1.actors[attacker].tile.coords, "+" + _map1.actors[defender].exp + " Exp", Color.Gold);
                             AddMessage((_map1.actors[defender] is Player ? "<red>" : "") + _map1.actors[defender].name + " was killed by " + _map1.actors[attacker].name + "  doing " + damage.ToString() + " points of damage.");
+                            if (_map1.actors[defender] is Player) _PlaySoundEffect(4); //SoundEffect damage
                         }
                         else
                         {
                             _mainmap1.HandleEvent(true, Events.AnimateActor, defender, Activity.Hit);
                             //_mainmap2.HandleEvent(true, Events.AnimateActor, defender, Activity.Hit);
                             AddMessage((_map1.actors[defender] is Player ? "<red>" : "") + _map1.actors[defender].name + " was hit by " + _map1.actors[attacker].name + " for " + damage.ToString() + " points of damage.");
+                            if (_map1.actors[defender] is Player) _PlaySoundEffect(4); //SoundEffect damage
                         }
                     }
                     else
@@ -126,7 +128,7 @@ namespace Gruppe22
         }
 
         /// <summary>
-        /// methode to evaluate the damage a trap deals to an actor walking over it
+        /// methode to evaluate the damage a trap deals to an actor walking over it or stands on raising trap
         /// </summary>
         /// <param name="target">Coords of the actor which walked over the trap</param>
         protected void _TrapDamage(Coords target)
@@ -170,12 +172,14 @@ namespace Gruppe22
                             _mainmap1.HandleEvent(true, Events.AnimateActor, actor.id, Activity.Die);
                             //_mainmap2.HandleEvent(true, Events.AnimateActor, actor.id, Activity.Die);
                             AddMessage((actor is Player ? "<red>" : "") + actor.name + " was killed by a trap  doing " + damage.ToString() + " points of damage.");
+                            if (actor is Player) _PlaySoundEffect(4); //SoundEffect damage
                         }
                         else
                         {
                             _mainmap1.HandleEvent(true, Events.AnimateActor, actor.id, Activity.Hit);
                             //_mainmap2.HandleEvent(true, Events.AnimateActor, actor.id, Activity.Hit);
                             AddMessage((actor is Player ? "<red>" : "") + actor.name + " was hit for " + damage.ToString() + " points of damage by a trap.");
+                            if (actor is Player) _PlaySoundEffect(4); //SoundEffect damage
                         }
                     }
                     else
@@ -266,7 +270,6 @@ namespace Gruppe22
                         Coords coords = (Coords)data[0];
                         if (((_map1[coords].hasEnemy) || (_map1[coords].hasPlayer)) && (!_map1[coords].firstActor.isDead))
                         {
-                            _PlaySoundEffect(3);
                             _TrapDamage(coords);
                         }
                     }
@@ -298,7 +301,6 @@ namespace Gruppe22
                         // Apply trap damage
                         if (((_map1[target.x, target.y].hasTrap) && _map1[target.x, target.y].trap.status == TrapState.On) && !(_map1.actors[id] is NPC))
                         {
-                            _PlaySoundEffect(4);//SoundEffect trap damage
                             _TrapDamage(target);
                         }
 
