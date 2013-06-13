@@ -77,7 +77,7 @@ namespace Gruppe22
     public class Grid : UIElement
     {
         #region Private Fields
-        private SpriteFont _font = null;
+        protected SpriteFont _font = null;
 
         /// <summary>
         /// 
@@ -87,40 +87,40 @@ namespace Gruppe22
         /// <summary>
         /// 
         /// </summary>
-        private int _rows = 2;
+        protected int _rows = 2;
 
         /// <summary>
         /// 
         /// </summary>
-        private int _cols = 3;
+        protected int _cols = 3;
 
         /// <summary>
         /// 
         /// </summary>
-        private int _width = 32;
+        protected int _width = 32;
 
         /// <summary>
         /// 
         /// </summary>
-        private int _height = 32;
+        protected int _height = 32;
 
         /// <summary>
         /// 
         /// </summary>
-        private int _selected = -1;
+        protected int _selected = -1;
 
         /// <summary>
         /// 
         /// </summary>
-        private int _totalPages = 1;
+        protected int _totalPages = 1;
 
         /// <summary>
         /// 
         /// </summary>
-        private int _page = 0;
+        protected int _page = 0;
 
-        private Texture2D _arrows = null;
-        private Texture2D _background = null;
+        protected Texture2D _arrows = null;
+        protected Texture2D _background = null;
         #endregion
 
         #region Public Fields

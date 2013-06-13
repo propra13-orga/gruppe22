@@ -849,9 +849,9 @@ namespace Gruppe22
                                         }
                                         else
                                         {
-                                            _actors[0].copyFrom(actor);
                                             if (!isReady)
                                             {
+                                                _actors[0].copyFrom(actor);
                                                 player.x = tile.coords.x;
                                                 player.y = tile.coords.y;
                                             }

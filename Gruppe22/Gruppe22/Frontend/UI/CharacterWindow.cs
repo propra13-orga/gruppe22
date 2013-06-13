@@ -75,9 +75,16 @@ namespace Gruppe22
                         }
                         _inventory.Hide();
                         _abilities.Show();
-                        _abilitychoice.Show();
                         _skills.Show();
                         _level.Show();
+                        if (_skills.value > 0)
+                        {
+                            _abilitychoice.Show();
+                        }
+                        else
+                        {
+                            _abilitychoice.Hide();
+                        }
                         break;
                     case 1:
                         foreach (UIElement child in _children)
@@ -326,9 +333,9 @@ namespace Gruppe22
 
             _armor = new NumberEntry(this, _spriteBatch, _content, new Rectangle(_displayRect.Left + 5, _displayRect.Top + 365, (_displayRect.Width - 10) / 2 - 10, 25), "Armor:", _actor.armor, "Armor is used to reduce damage.", 2, false);
             _abilityPoints = new NumberEntry(this, _spriteBatch, _content, new Rectangle(_displayRect.Left
-                + (_displayRect.Width - 10) / 2 + 10, _displayRect.Top + 365, (_displayRect.Width - 10) / 2 - 10, 25), "Abilitypoints:", _actor.abilityPoints, "Abilitypoints are used to learn new abilities or spells.", 2, false);
+                + (_displayRect.Width - 10) / 2 + 10, _displayRect.Top + 365, (_displayRect.Width - 10) / 2 - 10, 25), "Abilitypoints:", _actor.abilityPoints, "Abilitypoints are used to improve your statistics.", 2, false);
 
-            _skills = new NumberEntry(this, _spriteBatch, _content, new Rectangle(_displayRect.Left + 5, _displayRect.Top + 395, (_displayRect.Width - 10) / 2 - 10, 25), "Skillpoints:", _actor.skills, "Skillpoints are used to improve your statistics.", 2, false);
+            _skills = new NumberEntry(this, _spriteBatch, _content, new Rectangle(_displayRect.Left + 5, _displayRect.Top + 395, (_displayRect.Width - 10) / 2 - 10, 25), "New Skills:", _actor.skills, "Skills represent abilities and spells used in combat.", 2, false);
             _level = new NumberEntry(this, _spriteBatch, _content, new Rectangle(_displayRect.Left
                 + (_displayRect.Width - 10) / 2 + 10, _displayRect.Top + 395, (_displayRect.Width - 10) / 2 - 10, 25), "Level:", _actor.level, "Your level determines your general character state.", 2, false);
 
