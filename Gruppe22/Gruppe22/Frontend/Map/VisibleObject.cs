@@ -34,32 +34,59 @@ namespace Gruppe22
         /// <summary>
         /// 
         /// </summary>
-        public Rectangle clipRect { get { return _clipRect; } set { _clipRect = value; } }
+        public Rectangle clipRect { get { return _clipRect; } set { _clipRect = new Rectangle(value.Left,value.Top,value.Width-_offsetX-_cropX,value.Height-_offsetY-_cropY); } }
 
-        public Texture2D texture { get { return _texture; } }
+        public Texture2D texture
+        {
+            get
+            {
+
+                if ((_texture == null) && (_srcFile != null) && (_srcFile != ""))
+                {
+                    _texture = _content.Load<Texture2D>(_srcFile);
+                }
+                return _texture;
+            }
+        }
 
         public int offsetX
         {
             get { return _offsetX; }
-            set { _offsetX = value; }
+            set
+            {
+                _offsetX = value;
+                _clipRect.Width -= value;
+            }
         }
 
         public int offsetY
         {
             get { return _offsetY; }
-            set { _offsetY = value; }
+            set
+            {
+                _offsetY = value;
+                _clipRect.Height -= value;
+            }
         }
 
         public int cropX
         {
             get { return _cropX; }
-            set { _cropX = value; }
+            set
+            {
+                _cropX = value;
+                _clipRect.Width -= value;
+            }
         }
 
         public int cropY
         {
             get { return _cropY; }
-            set { _cropY = value; }
+            set
+            {
+                _cropY = value;
+                _clipRect.Height -= value;
+            }
         }
         #endregion
 
@@ -75,10 +102,7 @@ namespace Gruppe22
             _srcFile = srcFile;
             _clipRect = clipRect;
             _content = content;
-            if ((_srcFile != null) && (_srcFile != ""))
-            {
-                _texture = _content.Load<Texture2D>(_srcFile);
-            }
+            _texture = null;
         }
 
         public VisibleObject()
@@ -143,12 +167,12 @@ namespace Gruppe22
         {
             writer.WriteAttributeString("x", _clipRect.X.ToString());
             writer.WriteAttributeString("y", _clipRect.Y.ToString());
-            writer.WriteAttributeString("offsetY", _offsetY.ToString());
-            writer.WriteAttributeString("offsetX", _offsetX.ToString());
-            writer.WriteAttributeString("cropX", _cropX.ToString());
-            writer.WriteAttributeString("cropY", _cropY.ToString());
             writer.WriteAttributeString("width", _clipRect.Width.ToString());
             writer.WriteAttributeString("height", _clipRect.Height.ToString());
+            if (_offsetY != 0) writer.WriteAttributeString("offsetY", _offsetY.ToString());
+            if (_cropX != 0) writer.WriteAttributeString("cropX", _cropX.ToString());
+            if (_offsetX != 0) writer.WriteAttributeString("offsetX", _offsetX.ToString());
+            if (_cropY != 0) writer.WriteAttributeString("cropY", _cropY.ToString());
             writer.WriteAttributeString("file", _srcFile.ToString());
         }
     }
@@ -191,7 +215,7 @@ namespace Gruppe22
         {
             get
             {
-                if (_currentPhase < _animations.Count)
+                if ((_currentPhase < _animations.Count) && (_currentPhase >= 0))
                 {
                     return _animations[_currentPhase].offsetX;
                 }
@@ -214,7 +238,7 @@ namespace Gruppe22
         {
             get
             {
-                if (_currentPhase < _animations.Count)
+                if ((_currentPhase < _animations.Count) && (_currentPhase >= 0))
                 {
                     return _animations[_currentPhase].offsetY;
                 }
@@ -237,7 +261,7 @@ namespace Gruppe22
         {
             get
             {
-                if (_currentPhase < _animations.Count)
+                if ((_currentPhase < _animations.Count) && (_currentPhase >= 0))
                 {
                     return _animations[_currentPhase].cropX;
                 }
@@ -260,7 +284,7 @@ namespace Gruppe22
         {
             get
             {
-                if (_currentPhase < _animations.Count)
+                if ((_currentPhase < _animations.Count) && (_currentPhase >= 0))
                 {
                     return _animations[_currentPhase].cropY;
                 }
@@ -286,7 +310,7 @@ namespace Gruppe22
         {
             get
             {
-                if (_currentPhase < _animations.Count)
+                if ((_currentPhase < _animations.Count) && (_currentPhase >= 0))
                 {
                     return true;
                 }
@@ -305,7 +329,7 @@ namespace Gruppe22
         {
             get
             {
-                if ((_currentPhase < _animations.Count))
+                if ((_currentPhase < _animations.Count) && (_currentPhase >= 0))
                 {
                     return _animations[_currentPhase].src;
                 }
@@ -331,7 +355,7 @@ namespace Gruppe22
         {
             get
             {
-                if ((_currentPhase < _animations.Count))
+                if ((_currentPhase < _animations.Count) && (_currentPhase >= 0))
                 {
 
                     return _animations[_currentPhase].texture;
@@ -355,7 +379,7 @@ namespace Gruppe22
         {
             get
             {
-                if (_currentPhase < _animations.Count)
+                if ((_currentPhase < _animations.Count) && (_currentPhase >= 0))
                 {
                     return _animations[_currentPhase].clipRect;
                 }
@@ -367,6 +391,30 @@ namespace Gruppe22
             set
             {
                 _animations[_currentPhase].clipRect = value;
+            }
+        }
+
+        public int height
+        {
+            get
+            {
+                return _height;
+            }
+            set
+            {
+                _height = value;
+            }
+        }
+
+        public int width
+        {
+            get
+            {
+                return _width;
+            }
+            set
+            {
+                _width = value;
             }
         }
         #endregion

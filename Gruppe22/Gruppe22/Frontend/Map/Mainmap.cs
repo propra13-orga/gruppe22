@@ -363,13 +363,13 @@ namespace Gruppe22
                         };
                         break;
                     case Events.Player1:
-                        _actors[0].effect = new MapEffect(_environment[7][1], new Coords(_actors[0].position.x + 7, _actors[0].position.y + 2));
+                        _actors[0].effect = new MapEffect(_environment[2][2], new Coords(_actors[0].position.x + 7, _actors[0].position.y + 2));
                         break;
                     case Events.ExplodeProjectile:
                         if (data[2] != null)
                         {
                             int id = ((Actor)data[2]).id;
-                            _actors[id].effect = new MapEffect(_environment[7][0], new Coords(_actors[id].position.x + 7, _actors[id].position.y + 2));
+                            _actors[id].effect = new MapEffect(_environment[2][0], new Coords(_actors[id].position.x + 7, _actors[id].position.y + 2));
                         }
                         else
                         {
@@ -388,7 +388,7 @@ namespace Gruppe22
                             if (data.Length > 3) _actors[id].direction = (Direction)data[3];
                             if ((activity == Activity.Die) || (activity == Activity.Hit))
                             {
-                                _actors[id].effect = new MapEffect(_environment[7][0], new Coords(_actors[id].position.x + 7, _actors[id].position.y + 2));
+                                _actors[id].effect = new MapEffect(_environment[2][1], new Coords(_actors[id].position.x + 7, _actors[id].position.y + 2));
                             }
                             if (delay)
                             {
@@ -451,7 +451,7 @@ namespace Gruppe22
 
                 for (int i = 0; i < _projectiles.Count; ++i)
                 {
-                    _projectiles[i].Draw(_spriteBatch, _environment[5][(int)Math.Log((double)_projectiles[i].direction, 2)]);
+                    _projectiles[i].Draw(_spriteBatch, _environment[1][(int)Math.Log((double)_projectiles[i].direction, 2)]);
                 }
 
                 for (int i = 0; i < _effects.Count; ++i)
@@ -1039,7 +1039,8 @@ namespace Gruppe22
                         Coords apos = _screen2map((int)actor.position.x, (int)actor.position.y);
                         if (((int)apos.x == x) && ((int)apos.y == y))
                         {
-                            _spriteBatch.Draw(actor.animationTexture, new Vector2((actor.position.x + actor.offsetX + 25), (actor.position.y + actor.offsetY - 25)), actor.animationRect, ((_map.actors[actor.id].tile.coords.y == (int)_highlightedTile.y) && (_map.actors[actor.id].tile.coords.x == (int)_highlightedTile.x) && !(_map.actors[actor.id] is Player)) ? Color.Red : Color.White);
+                            if (actor.animationTexture != null)
+                                _spriteBatch.Draw(actor.animationTexture, new Vector2((actor.position.x + actor.offsetX + 25), (actor.position.y + actor.offsetY - 25)), actor.animationRect, ((_map.actors[actor.id].tile.coords.y == (int)_highlightedTile.y) && (_map.actors[actor.id].tile.coords.x == (int)_highlightedTile.x) && !(_map.actors[actor.id] is Player)) ? Color.Red : Color.White);
                             if (actor.effect != null)
                             {
                                 actor.effect.position = new Coords((actor.position.x + actor.offsetX + 25), (actor.position.y + actor.offsetY - 25));
@@ -1107,21 +1108,21 @@ namespace Gruppe22
                         {
                             if (_map[x, y].trap.visible)
                             {
-                                _spriteBatch.Draw(_environment[2][1].animationTexture, new Rectangle(_map2screen(x, y).x + 32, _map2screen(x, y).y + 16, 64, 64), _environment[2][1].animationRect, ((y == (int)_highlightedTile.y) && (x == (int)_highlightedTile.x)) ? Color.Red : Color.White);
+                                _spriteBatch.Draw(_environment[0][9].animationTexture, new Rectangle(_map2screen(x, y).x + 32, _map2screen(x, y).y + 16, 64, 64), _environment[0][9].animationRect, ((y == (int)_highlightedTile.y) && (x == (int)_highlightedTile.x)) ? Color.Red : Color.White);
                             }
                             else
                             {
-                                _spriteBatch.Draw(_environment[2][0].animationTexture, new Rectangle(_map2screen(x, y).x + 32, _map2screen(x, y).y + 16, 64, 64), _environment[2][0].animationRect, ((y == (int)_highlightedTile.y) && (x == (int)_highlightedTile.x)) ? Color.Red : Color.White);
+                                _spriteBatch.Draw(_environment[0][10].animationTexture, new Rectangle(_map2screen(x, y).x + 32, _map2screen(x, y).y + 16, 64, 64), _environment[0][10].animationRect, ((y == (int)_highlightedTile.y) && (x == (int)_highlightedTile.x)) ? Color.Red : Color.White);
                             }
                         }
                     }
                     if (_map[x, y].hasCheckpoint)
                     {
-                        _spriteBatch.Draw(_environment[3][1].animationTexture, new Rectangle(_map2screen(x, y).x, _map2screen(x, y).y, 128, 96), _environment[3][1].animationRect, (_map[x, y].checkpoint.visited) ? new Color(Color.Black, 0.4f) : ((y == (int)_highlightedTile.y) && (x == (int)_highlightedTile.x)) ? Color.Red : Color.White);
+                        _spriteBatch.Draw(_environment[0][24].animationTexture, new Rectangle(_map2screen(x, y).x, _map2screen(x, y).y, 128, 96), _environment[0][24].animationRect, (_map[x, y].checkpoint.visited) ? new Color(Color.Black, 0.4f) : ((y == (int)_highlightedTile.y) && (x == (int)_highlightedTile.x)) ? Color.Red : Color.White);
                     }
                     if (_map[x, y].hasTarget)
                     {
-                        _spriteBatch.Draw(_environment[3][0].animationTexture, new Rectangle(_map2screen(x, y).x + 32, _map2screen(x, y).y + 16, 64, 48), _environment[3][0].animationRect, ((y == (int)_highlightedTile.y) && (x == (int)_highlightedTile.x)) ? Color.Red : Color.White);
+                        _spriteBatch.Draw(_environment[0][23].animationTexture, new Rectangle(_map2screen(x, y).x + 32, _map2screen(x, y).y + 16, 64, 48), _environment[0][23].animationRect, ((y == (int)_highlightedTile.y) && (x == (int)_highlightedTile.x)) ? Color.Red : Color.White);
                     }
                     if (_map[x, y].hasTeleport)
                     {
@@ -1130,61 +1131,61 @@ namespace Gruppe22
                             if ((x == 0) && (y == 0))
                             {
 
-                                _environment[1][8].NextAnimation();
-                                _spriteBatch.Draw(_environment[1][8].animationTexture, new Rectangle(_map2screen(x, y).x + 32, _map2screen(x, y).y + 16, 64, 48), _environment[1][8].animationRect, ((y == (int)_highlightedTile.y) && (x == (int)_highlightedTile.x)) ? Color.Red : Color.White);
+                                _environment[0][8].NextAnimation();
+                                _spriteBatch.Draw(_environment[0][8].animationTexture, new Rectangle(_map2screen(x, y).x + 32, _map2screen(x, y).y + 16, 64, 48), _environment[0][8].animationRect, ((y == (int)_highlightedTile.y) && (x == (int)_highlightedTile.x)) ? Color.Red : Color.White);
 
                             }
 
                             else if ((x == 0) && (y == _map.height - 1))
                             {
-                                _environment[1][5].NextAnimation();
-                                _spriteBatch.Draw(_environment[1][5].animationTexture, new Rectangle(_map2screen(x, y).x + 32, _map2screen(x, y).y + 16, 64, 48), _environment[1][5].animationRect, ((y == (int)_highlightedTile.y) && (x == (int)_highlightedTile.x)) ? Color.Red : Color.White);
+                                _environment[0][5].NextAnimation();
+                                _spriteBatch.Draw(_environment[0][5].animationTexture, new Rectangle(_map2screen(x, y).x + 32, _map2screen(x, y).y + 16, 64, 48), _environment[0][5].animationRect, ((y == (int)_highlightedTile.y) && (x == (int)_highlightedTile.x)) ? Color.Red : Color.White);
 
                             }
                             else if ((x == _map.width - 1) && (y == 0))
                             {
-                                _environment[1][2].NextAnimation();
-                                _spriteBatch.Draw(_environment[1][2].animationTexture, new Rectangle(_map2screen(x, y).x + 32, _map2screen(x, y).y + 16, 64, 48), _environment[1][2].animationRect, ((y == (int)_highlightedTile.y) && (x == (int)_highlightedTile.x)) ? Color.Red : Color.White);
+                                _environment[0][2].NextAnimation();
+                                _spriteBatch.Draw(_environment[0][2].animationTexture, new Rectangle(_map2screen(x, y).x + 32, _map2screen(x, y).y + 16, 64, 48), _environment[0][2].animationRect, ((y == (int)_highlightedTile.y) && (x == (int)_highlightedTile.x)) ? Color.Red : Color.White);
 
                             }
                             else if ((x == _map.width - 1) && (y == _map.height - 1))
                             {
-                                _environment[1][1].NextAnimation();
-                                _spriteBatch.Draw(_environment[1][1].animationTexture, new Rectangle(_map2screen(x, y).x + 32, _map2screen(x, y).y + 16, 64, 48), _environment[1][1].animationRect, ((y == (int)_highlightedTile.y) && (x == (int)_highlightedTile.x)) ? Color.Red : Color.White);
+                                _environment[0][1].NextAnimation();
+                                _spriteBatch.Draw(_environment[0][1].animationTexture, new Rectangle(_map2screen(x, y).x + 32, _map2screen(x, y).y + 16, 64, 48), _environment[0][1].animationRect, ((y == (int)_highlightedTile.y) && (x == (int)_highlightedTile.x)) ? Color.Red : Color.White);
 
                             }
                             else if (y == _map.height - 1)
                             {
-                                _environment[1][6].NextAnimation();
-                                _spriteBatch.Draw(_environment[1][6].animationTexture, new Rectangle(_map2screen(x, y).x + 32, _map2screen(x, y).y + 16, 64, 48), _environment[1][6].animationRect, ((y == (int)_highlightedTile.y) && (x == (int)_highlightedTile.x)) ? Color.Red : Color.White);
+                                _environment[0][6].NextAnimation();
+                                _spriteBatch.Draw(_environment[0][6].animationTexture, new Rectangle(_map2screen(x, y).x + 32, _map2screen(x, y).y + 16, 64, 48), _environment[0][6].animationRect, ((y == (int)_highlightedTile.y) && (x == (int)_highlightedTile.x)) ? Color.Red : Color.White);
                             }
                             else if (y == 0)
                             {
 
-                                _environment[1][4].NextAnimation();
-                                _spriteBatch.Draw(_environment[1][4].animationTexture, new Rectangle(_map2screen(x, y).x + 32, _map2screen(x, y).y + 16, 64, 48), _environment[1][4].animationRect, ((y == (int)_highlightedTile.y) && (x == (int)_highlightedTile.x)) ? Color.Red : Color.White);
+                                _environment[0][4].NextAnimation();
+                                _spriteBatch.Draw(_environment[0][4].animationTexture, new Rectangle(_map2screen(x, y).x + 32, _map2screen(x, y).y + 16, 64, 48), _environment[0][4].animationRect, ((y == (int)_highlightedTile.y) && (x == (int)_highlightedTile.x)) ? Color.Red : Color.White);
 
                             }
                             else if (x == 0)
                             {
-                                _environment[1][7].NextAnimation();
-                                _spriteBatch.Draw(_environment[1][7].animationTexture, new Rectangle(_map2screen(x, y).x + 32, _map2screen(x, y).y + 16, 64, 48), _environment[1][7].animationRect, ((y == (int)_highlightedTile.y) && (x == (int)_highlightedTile.x)) ? Color.Red : Color.White);
+                                _environment[0][7].NextAnimation();
+                                _spriteBatch.Draw(_environment[0][7].animationTexture, new Rectangle(_map2screen(x, y).x + 32, _map2screen(x, y).y + 16, 64, 48), _environment[0][7].animationRect, ((y == (int)_highlightedTile.y) && (x == (int)_highlightedTile.x)) ? Color.Red : Color.White);
                             }
                             else if (x == _map.width - 1)
                             {
-                                _environment[1][3].NextAnimation();
-                                _spriteBatch.Draw(_environment[1][3].animationTexture, new Rectangle(_map2screen(x, y).x + 32, _map2screen(x, y).y + 16, 64, 48), _environment[1][3].animationRect, ((y == (int)_highlightedTile.y) && (x == (int)_highlightedTile.x)) ? Color.Red : Color.White);
+                                _environment[0][3].NextAnimation();
+                                _spriteBatch.Draw(_environment[0][3].animationTexture, new Rectangle(_map2screen(x, y).x + 32, _map2screen(x, y).y + 16, 64, 48), _environment[0][3].animationRect, ((y == (int)_highlightedTile.y) && (x == (int)_highlightedTile.x)) ? Color.Red : Color.White);
 
                             }
                             else
                             {
                                 if (_map[x, y].teleport.down)
                                 {
-                                    _spriteBatch.Draw(_environment[2][2].animationTexture, new Rectangle(_map2screen(x, y).x - 16, _map2screen(x, y).y - 92, _environment[2][2].animationRect.Width, _environment[2][2].animationRect.Height), _environment[2][2].animationRect, ((y == (int)_highlightedTile.y) && (x == (int)_highlightedTile.x)) ? Color.Red : Color.White);
+                                    _spriteBatch.Draw(_environment[0][12].animationTexture, new Rectangle(_map2screen(x, y).x - 16, _map2screen(x, y).y - 92, _environment[0][12].animationRect.Width, _environment[0][12].animationRect.Height), _environment[0][12].animationRect, ((y == (int)_highlightedTile.y) && (x == (int)_highlightedTile.x)) ? Color.Red : Color.White);
                                 }
                                 else
                                 {
-                                    _spriteBatch.Draw(_environment[2][7].animationTexture, new Rectangle(_map2screen(x, y).x - 16, _map2screen(x, y).y - 32, _environment[2][7].animationRect.Width, _environment[2][7].animationRect.Height), _environment[2][7].animationRect, ((y == (int)_highlightedTile.y) && (x == (int)_highlightedTile.x)) ? Color.Red : Color.White);
+                                    _spriteBatch.Draw(_environment[0][18].animationTexture, new Rectangle(_map2screen(x, y).x - 16, _map2screen(x, y).y - 32, _environment[0][18].animationRect.Width, _environment[0][18].animationRect.Height), _environment[0][18].animationRect, ((y == (int)_highlightedTile.y) && (x == (int)_highlightedTile.x)) ? Color.Red : Color.White);
                                 }
                             }
                         }
@@ -1416,217 +1417,6 @@ namespace Gruppe22
                 _parent.HandleEvent(false, Events.MoveActor, 0, dir);
         }
 
-
-
-
-        /// <summary>
-        /// Temporary function - work on dynamic tileset description syntax
-        /// </summary>
-        public void CreateTextureList()
-        {
-
-            ActorView player = new ActorView(_camera, this, 0, _content, Coords.Zero);
-
-            player.Add(Activity.Walk, Direction.DownRight, "Walk", new Coords(0, 0), 8, 1);
-            player.Add(Activity.Walk, Direction.UpRight, "Walk", new Coords(0, 96), 8, 1); // Ok
-            player.Add(Activity.Walk, Direction.Right, "Walk", new Coords(0, 192), 8, 1); // OK
-            player.Add(Activity.Walk, Direction.Up, "Walk", new Coords(0, 288), 8, 1); // Ok
-            player.Add(Activity.Walk, Direction.DownLeft, "Walk", new Coords(0, 384), 8, 1); // Ok
-            player.Add(Activity.Walk, Direction.Down, "Walk", new Coords(0, 480), 8, 1);
-            player.Add(Activity.Walk, Direction.Left, "Walk", new Coords(0, 576), 8, 1); // OK
-            player.Add(Activity.Walk, Direction.UpLeft, "Walk", new Coords(0, 672), 8, 1);
-
-            player.Add(Activity.Hit, Direction.DownRight, "Hit", new Coords(0, 0), 7, 1);
-            player.Add(Activity.Hit, Direction.UpRight, "Hit", new Coords(0, 96), 7, 1);
-            player.Add(Activity.Hit, Direction.Right, "Hit", new Coords(0, 192), 7, 1);
-            player.Add(Activity.Hit, Direction.Up, "Hit", new Coords(0, 288), 7, 1);
-            player.Add(Activity.Hit, Direction.DownLeft, "Hit", new Coords(0, 384), 7, 1);
-            player.Add(Activity.Hit, Direction.Down, "Hit", new Coords(0, 480), 7, 1);
-            player.Add(Activity.Hit, Direction.Left, "Hit", new Coords(0, 576), 7, 1);
-            player.Add(Activity.Hit, Direction.UpLeft, "Hit", new Coords(0, 672), 7, 1);
-
-            player.Add(Activity.Die, Direction.DownRight, "fall", new Coords(0, 0), 9, 1);
-            player.Add(Activity.Die, Direction.UpRight, "fall", new Coords(0, 96), 9, 1);
-            player.Add(Activity.Die, Direction.Right, "fall", new Coords(0, 192), 9, 1);
-            player.Add(Activity.Die, Direction.Up, "fall", new Coords(0, 288), 9, 1);
-            player.Add(Activity.Die, Direction.DownLeft, "fall", new Coords(0, 384), 9, 1);
-            player.Add(Activity.Die, Direction.Down, "fall", new Coords(0, 480), 9, 1);
-            player.Add(Activity.Die, Direction.Left, "fall", new Coords(0, 576), 9, 1);
-            player.Add(Activity.Die, Direction.UpLeft, "fall", new Coords(0, 672), 9, 1);
-
-            player.Add(Activity.Talk, Direction.DownRight, "Talk", new Coords(0, 0), 8, 1);
-            player.Add(Activity.Talk, Direction.UpRight, "Talk", new Coords(0, 96), 8, 1);
-            player.Add(Activity.Talk, Direction.Right, "Talk", new Coords(0, 192), 8, 1);
-            player.Add(Activity.Talk, Direction.Up, "Talk", new Coords(0, 288), 8, 1);
-            player.Add(Activity.Talk, Direction.DownLeft, "Talk", new Coords(0, 384), 8, 1);
-            player.Add(Activity.Talk, Direction.Down, "Talk", new Coords(0, 480), 8, 1);
-            player.Add(Activity.Talk, Direction.Left, "Talk", new Coords(0, 576), 8, 1);
-            player.Add(Activity.Talk, Direction.UpLeft, "Talk", new Coords(0, 672), 8, 1);
-
-            player.Add(Activity.Run, Direction.DownRight, "Run", new Coords(0, 0), 8, 1);
-            player.Add(Activity.Run, Direction.UpRight, "Run", new Coords(0, 96), 8, 1);
-            player.Add(Activity.Run, Direction.Right, "Run", new Coords(0, 192), 8, 1);
-            player.Add(Activity.Run, Direction.Up, "Run", new Coords(0, 288), 8, 1);
-            player.Add(Activity.Run, Direction.DownLeft, "Run", new Coords(0, 384), 8, 1);
-            player.Add(Activity.Run, Direction.Down, "Run", new Coords(0, 480), 8, 1);
-            player.Add(Activity.Run, Direction.Left, "Run", new Coords(0, 576), 8, 1);
-            player.Add(Activity.Run, Direction.UpLeft, "Run", new Coords(0, 672), 8, 1);
-
-
-            player.Add(Activity.Attack, Direction.DownRight, "Attack", new Coords(0, 0), 13, 1);
-            player.Add(Activity.Attack, Direction.UpRight, "Attack", new Coords(0, 96), 13, 1);
-            player.Add(Activity.Attack, Direction.Right, "Attack", new Coords(0, 192), 13, 1);
-            player.Add(Activity.Attack, Direction.Up, "Attack", new Coords(0, 288), 13, 1);
-            player.Add(Activity.Attack, Direction.DownLeft, "Attack", new Coords(0, 384), 13, 1);
-            player.Add(Activity.Attack, Direction.Down, "Attack", new Coords(0, 480), 13, 1);
-            player.Add(Activity.Attack, Direction.Left, "Attack", new Coords(0, 576), 13, 1);
-            player.Add(Activity.Attack, Direction.UpLeft, "Attack", new Coords(0, 672), 13, 1);
-            player.Save("content\\player.xml");
-
-            ActorView skel = new ActorView(_camera, this, 0, _content, Coords.Zero, "");
-            skel.Add(Activity.Walk, Direction.DownRight, "sWalk", new Coords(0, 0), 8, 1);
-            skel.Add(Activity.Walk, Direction.UpRight, "sWalk", new Coords(0, 96), 8, 1);
-            skel.Add(Activity.Walk, Direction.Right, "sWalk", new Coords(0, 192), 8, 1);
-            skel.Add(Activity.Walk, Direction.Up, "sWalk", new Coords(0, 288), 8, 1);
-            skel.Add(Activity.Walk, Direction.DownLeft, "sWalk", new Coords(0, 384), 8, 1);
-            skel.Add(Activity.Walk, Direction.Down, "sWalk", new Coords(0, 480), 8, 1);
-            skel.Add(Activity.Walk, Direction.Left, "sWalk", new Coords(0, 576), 8, 1);
-            skel.Add(Activity.Walk, Direction.UpLeft, "sWalk", new Coords(0, 672), 8, 1);
-
-
-            skel.Add(Activity.Attack, Direction.DownRight, "sattack", new Coords(0, 0), 10, 1);
-            skel.Add(Activity.Attack, Direction.UpRight, "sattack", new Coords(0, 96), 10, 1);
-            skel.Add(Activity.Attack, Direction.Right, "sattack", new Coords(0, 192), 10, 1);
-            skel.Add(Activity.Attack, Direction.Up, "sattack", new Coords(0, 288), 10, 1);
-            skel.Add(Activity.Attack, Direction.DownLeft, "sattack", new Coords(0, 384), 10, 1);
-            skel.Add(Activity.Attack, Direction.Down, "sattack", new Coords(0, 480), 10, 1);
-            skel.Add(Activity.Attack, Direction.Left, "sattack", new Coords(0, 576), 10, 1);
-            skel.Add(Activity.Attack, Direction.UpLeft, "sattack", new Coords(0, 672), 10, 1);
-
-            skel.Add(Activity.Hit, Direction.DownRight, "shit", new Coords(0, 0), 7, 1);
-            skel.Add(Activity.Hit, Direction.UpRight, "shit", new Coords(0, 96), 7, 1);
-            skel.Add(Activity.Hit, Direction.Right, "shit", new Coords(0, 192), 7, 1);
-            skel.Add(Activity.Hit, Direction.Up, "shit", new Coords(0, 288), 7, 1);
-            skel.Add(Activity.Hit, Direction.DownLeft, "shit", new Coords(0, 384), 7, 1);
-            skel.Add(Activity.Hit, Direction.Down, "shit", new Coords(0, 480), 7, 1);
-            skel.Add(Activity.Hit, Direction.Left, "shit", new Coords(0, 576), 7, 1);
-            skel.Add(Activity.Hit, Direction.UpLeft, "shit", new Coords(0, 672), 7, 1);
-
-            skel.Add(Activity.Die, Direction.DownRight, "skill", new Coords(0, 0), 9, 1);
-            skel.Add(Activity.Die, Direction.UpRight, "skill", new Coords(0, 96), 9, 1);
-            skel.Add(Activity.Die, Direction.Right, "skill", new Coords(0, 192), 9, 1);
-            skel.Add(Activity.Die, Direction.Up, "skill", new Coords(0, 288), 9, 1);
-            skel.Add(Activity.Die, Direction.DownLeft, "skill", new Coords(0, 384), 9, 1);
-            skel.Add(Activity.Die, Direction.Down, "skill", new Coords(0, 480), 9, 1);
-            skel.Add(Activity.Die, Direction.Left, "skill", new Coords(0, 576), 9, 1);
-            skel.Add(Activity.Die, Direction.UpLeft, "skill", new Coords(0, 672), 9, 1);
-
-
-
-            skel.Save("Content\\skeleton.xml");
-
-
-            ActorView luigi = new ActorView(_camera, this, 0, _content, Coords.Zero, "", 2, true, 128, 128);
-            luigi.Add(Activity.Walk, Direction.DownRight, "luigi-walk", new Coords(0, 0), 8, 1);
-            luigi.Add(Activity.Walk, Direction.UpRight, "luigi-walk", new Coords(0, 128), 8, 1);
-            luigi.Add(Activity.Walk, Direction.Right, "luigi-walk", new Coords(0, 256), 8, 1);
-            luigi.Add(Activity.Walk, Direction.Up, "luigi-walk", new Coords(0, 384), 8, 1);
-            luigi.Add(Activity.Walk, Direction.DownLeft, "luigi-walk", new Coords(0, 512), 8, 1);
-            luigi.Add(Activity.Walk, Direction.Down, "luigi-walk", new Coords(0, 640), 8, 1);
-            luigi.Add(Activity.Walk, Direction.Left, "luigi-walk", new Coords(0, 768), 8, 1);
-            luigi.Add(Activity.Walk, Direction.UpLeft, "luigi-walk", new Coords(0, 896), 8, 1);
-
-            luigi.Add(Activity.Talk, Direction.DownRight, "luigi-talk", new Coords(0, 0), 8, 1);
-            luigi.Add(Activity.Talk, Direction.UpRight, "luigi-talk", new Coords(0, 128), 8, 1);
-            luigi.Add(Activity.Talk, Direction.Right, "luigi-talk", new Coords(0, 256), 8, 1);
-            luigi.Add(Activity.Talk, Direction.Up, "luigi-talk", new Coords(0, 384), 8, 1);
-            luigi.Add(Activity.Talk, Direction.DownLeft, "luigi-talk", new Coords(0, 512), 8, 1);
-            luigi.Add(Activity.Talk, Direction.Down, "luigi-talk", new Coords(0, 640), 8, 1);
-            luigi.Add(Activity.Talk, Direction.Left, "luigi-talk", new Coords(0, 768), 8, 1);
-            luigi.Add(Activity.Talk, Direction.UpLeft, "luigi-talk", new Coords(0, 896), 8, 1);
-
-
-            luigi.Save("Content\\luigi.xml");
-
-
-
-
-
-
-            luigi.Save("Content\\luigi.xml");
-            /*
-            _tiles.Add("Wall1", WallDir.UpRight, new Rectangle(0, 768, 128, 192));
-            _tiles.Add("Wall1", WallDir.UpLeft, new Rectangle(128, 768, 128, 192));
-            _tiles.Add("Wall1", WallDir.DownLeft,
-                    new Rectangle(256, 576, 128, 192));
-            _tiles.Add("Wall1", WallDir.DownRight, new Rectangle(384, 576, 128, 192));
-            _tiles.Add("Wall1", WallDir.LeftRight, new Rectangle(0, 576, 128, 192));
-            _tiles.Add("Wall1", WallDir.UpDown, new Rectangle(128, 576, 128, 192));
-            _tiles.Add("Wall1", WallDir.FourWay, new Rectangle(384, 768, 128, 192));
-            _tiles.Add("Wall1", WallDir.RightClose, new Rectangle(256, 192, 128, 192));
-            _tiles.Add("Wall1", WallDir.UpClose, new Rectangle(128, 192, 128, 192));
-            _tiles.Add("Wall1", WallDir.LeftClose, new Rectangle(384, 192, 128, 192));
-            _tiles.Add("Wall1", WallDir.DownClose, new Rectangle(0, 192, 128, 192));
-            _tiles.Add("Wall1", WallDir.LeftRightUp,
-            new Rectangle(640, 576, 128, 192));
-            _tiles.Add("Wall1", WallDir.LeftRightDown,
-            new Rectangle(768, 576, 128, 192));
-            _tiles.Add("Wall1", WallDir.UpDownLeft,
-            new Rectangle(896, 576, 128, 192));
-            _tiles.Add("Wall1", WallDir.UpDownRight,
-            new Rectangle(512, 576, 128, 192));
-            _tiles.Add("Wall1", WallDir.UpRightDiag,
-            new Rectangle(681, 835, 128, 192));
-            _tiles.Add("Wall1", WallDir.UpLeftDiag,
-            new Rectangle(321, 0, 128, 192));
-            _tiles.Add("Wall1", WallDir.DownLeftDiag,
-            new Rectangle(384, 384, 128, 192));
-            _tiles.Add("Wall1", WallDir.DownRightDiag,
-            new Rectangle(128, 384, 128, 192));
-            _tiles.Add("Wall1", WallDir.UpDownLeftDiag,
-            new Rectangle(640, 384, 128, 192));
-            _tiles.Add("Wall1", WallDir.UpDownDiag,
-            new Rectangle(0, 384, 128, 192));
-            _tiles.Add("Wall1", WallDir.FourDiag,
-            new Rectangle(256, 768, 128, 192));
-            _tiles.Add("Wall1", WallDir.RightCloseDiag,
-            new Rectangle(681, 820, 128, 192));
-            _tiles.Add("Wall1", WallDir.UpCloseDiag,
-            new Rectangle(257, 0, 128, 192));
-            _tiles.Add("Wall1", WallDir.LeftCloseDiag,
-            new Rectangle(385, 0, 128, 192));
-            _tiles.Add("Wall1", WallDir.DownCloseDiag,
-            new Rectangle(136, 0, 128, 192));
-            _tiles.Add("Wall1", WallDir.LeftRightUpDiag,
-            new Rectangle(896, 384, 128, 192));
-            _tiles.Add("Wall1", WallDir.LeftRightDownDiag,
-            new Rectangle(768, 384, 128, 192));
-            _tiles.Add("Wall1", WallDir.LeftRightDiag,
-            new Rectangle(256, 384, 128, 192));
-            _tiles.Add("Wall1", WallDir.UpDownRightDiag,
-            new Rectangle(512, 384, 128, 192));
-            _tiles.Add("Wall1", WallDir.DiagUpClose,
-            new Rectangle(640, 192, 128, 192));
-            _tiles.Add("Wall1", WallDir.DiagDownClose,
-            new Rectangle(896, 0, 128, 192));
-            _tiles.Add("Wall1", WallDir.DiagUpClose2,
-            new Rectangle(512, 192, 128, 192));
-            _tiles.Add("Wall1", WallDir.DiagDownClose2,
-            new Rectangle(768, 0, 128, 192));
-            _tiles.Add("Wall1", WallDir.DiagLeftClose,
-            new Rectangle(640, 0, 128, 192));
-            _tiles.Add("Wall1", WallDir.DiagRightClose,
-            new Rectangle(896, 192, 128, 192));
-            _tiles.Add("Wall1", WallDir.DiagLeftClose2,
-            new Rectangle(512, 0, 128, 192));
-            _tiles.Add("Wall1", WallDir.DiagRightClose2,
-            new Rectangle(768, 192, 128, 192));
-            _tiles.Add("Column", WallDir.Free, new Rectangle(1920, 0, 128, 192)); */
-            /*WallTiles _tiles = new WallTiles(_content, 128, 192, "");
-            _tiles.Load();
-            _tiles.Save("neu.xml");*/
-        }
-
         #endregion
 
 
@@ -1651,92 +1441,25 @@ namespace Gruppe22
             _highlightedTile = new Coords(-1, -1);
             _tooltip = new TileTooltip(this, _spriteBatch, _content, _displayRect);
             // Load textures to use in environment
-            CreateTextureList();
-            // 1. Walls
+            // 1. Walls and floor
             _walls = new WallTiles(_content, 128, 192, "");
             _walls.Load("Content\\wall1.xml");
-
             _floors = new WallTiles(_content, 128, 192, "");
             _floors.Load("Content\\floor1.xml");
 
             // 2. Environmental objects (floor, items, traps, teleporters, chest...)
             _environment = new List<TileSet>();
             _environment.Add(new TileSet(_content, 128, 192));
-            _environment[0].Add("floor", 0, new Rectangle(512, 384, 128, 96));
-            _environment[0].Save("Content\\floor.xml");
-            //    _environment[0].Load("Content\\floor.xml");
-            _environment.Add(new TileSet(_content, 64, 64));
-            _environment.Add(new TileSet(_content, 64, 64));
-            _environment[1].Add("Aniarrow", 1, new Rectangle(0, 0, 64, 64), 16, 1, false);
-            _environment[1].Add("Aniarrow", 2, new Rectangle(0, 64, 64, 64), 16, 1, false);
-            _environment[1].Add("Aniarrow", 3, new Rectangle(0, 128, 64, 64), 16, 1, false);
-            _environment[1].Add("Aniarrow", 4, new Rectangle(0, 192, 64, 64), 16, 1, false);
-            _environment[1].Add("Aniarrow", 5, new Rectangle(0, 256, 64, 64), 16, 1, false);
-            _environment[1].Add("Aniarrow", 6, new Rectangle(0, 320, 64, 64), 16, 1, false);
-            _environment[1].Add("Aniarrow", 7, new Rectangle(0, 384, 64, 64), 16, 1, false);
-            _environment[1].Add("Aniarrow", 8, new Rectangle(0, 448, 64, 64), 16, 1, false);
-
-
-
-            _environment[2].Add("spikefield", 0, new Rectangle(64, 128, 64, 64));
-            _environment[2].Add("spikefield", 1, new Rectangle(64, 192, 64, 64));
-            _environment[2].Add("stairs1", 2, new Rectangle(0, 717, 160, 208));
-            _environment[2].Add("stairs1", 3, new Rectangle(160, 717, 160, 208));
-            _environment[2].Add("stairs1", 4, new Rectangle(398, 702, 112, 208));
-            _environment[2].Add("stairs2", 5, new Rectangle(0, 320, 192, 160));
-            _environment[2].Add("stairs2", 6, new Rectangle(0, 480, 192, 160));
-            _environment[2].Add("stairs2", 7, new Rectangle(192, 320, 192, 160));
-            _environment[2].Add("stairs2", 8, new Rectangle(192, 480, 192, 160));
-            _environment[2].Add("stairs2", 9, new Rectangle(400, 160, 112, 160));
-            _environment[2].Add("stairs2", 10, new Rectangle(400, 480, 112, 160));
-
-            _environment[2].Add("chest", 11, new Rectangle(0, 0, 64, 80), 9, 1, false);
-            _environment[2].Add("chest", 12, new Rectangle(0, 80, 64, 80), 9, 1, false);
-            _environment[2].Add("chest", 13, new Rectangle(0, 160, 64, 80), 9, 1, false);
-
-            _environment[2].Save("Content\\spikefield.xml");
-            //   _environment[2].Load("Content\\spikefield.xml");
+            _environment[0].Load("Content\\misc.xml");
             _environment.Add(new TileSet(_content, 64, 48));
-            _environment[3].Add("fields", 0, new Rectangle(0, 0, 64, 48));
-            _environment[3].Add("checkpoint", 1, new Rectangle(0, 0, 128, 96));
-
-            _environment[3].Save("Content\\field.xml");
-            //  _environment[3].Load("Content\\field.xml");
-            _environment.Add(new TileSet(_content, 64, 64));
-            _environment[4].Add("chest", 0, new Rectangle(0, 86, 64, 48));
-
-            _environment[4].Save("Content\\chest.xml");
-            //  _environment[4].Load("Content\\chest.xml");
-            _environment.Add(new TileSet(_content, 32, 64));
-            _environment[5].Add("Arrow", (int)Math.Log((double)Direction.UpRight, 2), new Rectangle(0, 0, 32, 64)); // ok
-            _environment[5].Add("Arrow", (int)Math.Log((double)Direction.Right, 2), new Rectangle(32, 0, 32, 64));
-            _environment[5].Add("Arrow", (int)Math.Log((double)Direction.DownRight, 2), new Rectangle(64, 0, 32, 64)); // ok
-            _environment[5].Add("Arrow", (int)Math.Log((double)Direction.Down, 2), new Rectangle(96, 0, 32, 64));
-            _environment[5].Add("Arrow", (int)Math.Log((double)Direction.DownLeft, 2), new Rectangle(0, 64, 32, 64)); // ok
-            _environment[5].Add("Arrow", (int)Math.Log((double)Direction.Left, 2), new Rectangle(32, 64, 32, 64));
-            _environment[5].Add("Arrow", (int)Math.Log((double)Direction.UpLeft, 2), new Rectangle(64, 64, 32, 64)); // ok
-            _environment[5].Add("Arrow", (int)Math.Log((double)Direction.Up, 2), new Rectangle(96, 64, 32, 64));
-
-            _environment[5].Save("Content\\Arrow.xml");
-            //   _environment[5].Load("Content\\Arrow.xml");
+            _environment[1].Load("Content\\Arrow.xml");
             _environment.Add(new TileSet(_content, 55, 55));
-
-            _environment[6].Add("sparks", 1, new Rectangle(0, 192, 64, 64), 1, 4);
-            _environment[6].Save("Content\\explosion.xml");
-
-
-
-            _environment.Add(new TileSet(_content, 96, 96));
-
-            _environment[7].Add("blood", 0, new Rectangle(0, 0, 96, 96), 6, 1);
-            _environment[7].Add("magic", 1, new Rectangle(0, 0, 64, 96), 17, 2, true);
-
-            _environment[7].Save("Content\\blood.xml");
-            // _environment[7].Load("Content\\blood.xml");
+            _environment[2].Load("Content\\explosion.xml");
 
             // 3. Moving entities (player, NPCs, enemies)
             _actors = new List<ActorView>();
             _effects = new List<MapEffect>();
+
             resetActors();
             _floatnumbers = new List<FloatNumber>();
             _projectiles = new List<Projectile>();

@@ -104,7 +104,8 @@ namespace Gruppe22
         NoRedraw,
         Paused,
         FetchingData,
-        GameOver
+        GameOver,
+        Loading
     }
 
     /// <summary>

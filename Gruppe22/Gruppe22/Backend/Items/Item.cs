@@ -71,7 +71,7 @@ namespace Gruppe22
 
         public virtual void EquipItem()
         {
-           // System.Diagnostics.Debug.WriteLine("Equip");
+            // System.Diagnostics.Debug.WriteLine("Equip");
             if (_owner != null)
             {
                 //  System.Diagnostics.Debug.WriteLine(_owner.name);
@@ -350,8 +350,8 @@ namespace Gruppe22
             _name = reader.GetAttribute("name");
             _icon = new VisibleObject(_content, reader.GetAttribute("iconfile"), new Rectangle(Convert.ToInt32(reader.GetAttribute("clipRectX")),
                 Convert.ToInt32(reader.GetAttribute("clipRectY")),
-                Convert.ToInt32(reader.GetAttribute("clipRectW")),
-                Convert.ToInt32(reader.GetAttribute("clipRectH"))));
+                Convert.ToInt32(reader.GetAttribute("clipRectW")) + Convert.ToInt32(reader.GetAttribute("iconoffsetX")) + Convert.ToInt32(reader.GetAttribute("iconcropX")),
+                Convert.ToInt32(reader.GetAttribute("clipRectH")) + Convert.ToInt32(reader.GetAttribute("iconcropY")) + Convert.ToInt32(reader.GetAttribute("iconoffsetY"))));
             _icon.offsetX = Convert.ToInt32(reader.GetAttribute("iconoffsetX"));
             _icon.offsetY = Convert.ToInt32(reader.GetAttribute("iconoffsetY"));
             _icon.cropX = Convert.ToInt32(reader.GetAttribute("iconcropX"));
@@ -770,7 +770,7 @@ namespace Gruppe22
                     _icon = new VisibleObject(_content, "items", new Rectangle(320, 0, 64, 64));
                     break;
                 case ItemType.Potion:
-                    _icon = new VisibleObject(_content, "items", new Rectangle(160, 256, 32, 32));
+                    _icon = new VisibleObject(_content, "items", new Rectangle(160, 256, 48, 48));
                     _icon.offsetX = 16;
                     _icon.offsetY = 16;
                     break;

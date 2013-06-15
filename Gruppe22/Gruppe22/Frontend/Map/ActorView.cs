@@ -15,7 +15,7 @@ namespace Gruppe22
         Attack,
         Hit,
         Die,
-        Run
+        Special
     }
 
     public class ActorView : TileSet
@@ -354,7 +354,7 @@ namespace Gruppe22
                 Direction dir = (Direction)Enum.Parse(typeof(Direction), reader.GetAttribute("Direction").ToString());
 
                 _textures[(int)acti * 8 + (int)dir].ReadXml(reader);
-                _textures[(int)acti * 8 + (int)dir].loop = ((acti == Activity.Walk) || (acti == Activity.Run));
+                _textures[(int)acti * 8 + (int)dir].loop = ((acti == Activity.Walk) );
             }
             reader.ReadEndElement();
 
@@ -433,7 +433,7 @@ namespace Gruppe22
         public void Animate(bool hasMoved)
         {
 
-            if ((_activity != Activity.Walk) && (_activity != Activity.Run))
+            if (_activity != Activity.Walk)
             {
                 if (_textures[(int)_activity * 8 + (int)Math.Log((double)_direction,2)].NextAnimation())
                 {

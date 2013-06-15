@@ -64,7 +64,7 @@ namespace Gruppe22
                 return result;
             }
         }
-        public Direction exits
+        public new Direction exits
         {
             get
             {

@@ -80,6 +80,8 @@ namespace Gruppe22
         /// </summary>
         protected Queue<string> _files2fetch;
 
+        private Song _backMusic;
+
         /// <summary>
         /// Previous state (to reset after all files are downloaded)
         /// </summary>
@@ -150,6 +152,8 @@ namespace Gruppe22
         /// List of all sounds using in the Game
         /// </summary>
         protected List<SoundEffect> soundEffects = null;
+
+        protected string _downloading = "";
         #endregion
 
 
@@ -163,15 +167,9 @@ namespace Gruppe22
             base.Initialize();
         }
 
-
-        /// <summary>
-        /// Cache Content
-        /// </summary>
-        protected override void LoadContent()
+        protected void SetupGame()
         {
-            _spriteBatch = new SpriteBatch(GraphicsDevice);             // Create a new SpriteBatch, which can be used to draw textures.
-            _font = Content.Load<SpriteFont>("font"); // Load the font
-
+            _status = GameStatus.Paused;
             // Setup user interface elements
             _minimap1 = new Minimap(this, _spriteBatch, Content, new Rectangle(_graphics.GraphicsDevice.Viewport.Width - 220, 5, 215, 215), _map1);
             _interfaceElements.Add(_minimap1);
@@ -207,12 +205,39 @@ namespace Gruppe22
             soundEffects.Add(tmp);
             tmp = Content.Load<SoundEffect>("trapdamage1.wav");
             soundEffects.Add(tmp);
-            // ShowCharacterWindow(_map1.actors[0]);
-            // ShowShopWindow(_map1.actors[0], _map1.actors[1]);
-            // _backMusic = Content.Load<Song>("Video Dungeon Crawl.wav"); // Todo: *.mp3
-            // _font = Content.Load<SpriteFont>("Font");
-            // MediaPlayer.Volume = (float)0.3;
-            // MediaPlayer.Play(_backMusic);            
+            _backMusic = Content.Load<Song>("Video Dungeon Crawl.wav"); // Todo: *.mp3
+            MediaPlayer.Volume = (float)0.3;
+            MediaPlayer.Play(_backMusic);
+
+            _status = GameStatus.Running;
+        }
+
+        /// <summary>
+        /// Cache Content
+        /// </summary>
+        protected override void LoadContent()
+        {
+            _spriteBatch = new SpriteBatch(GraphicsDevice);             // Create a new SpriteBatch, which can be used to draw textures.
+            _font = Content.Load<SpriteFont>("font"); // Load the font
+            if (!System.IO.File.Exists(".\\Content\\Zombie-walk.xnb"))
+            {
+                _status = GameStatus.Loading;
+                foreach (string s in System.IO.File.ReadAllLines(".\\content\\filestodownload.txt"))
+                {
+                    if (!System.IO.File.Exists(".\\Content\\" + s))
+                    {
+                        _files2fetch.Enqueue(s);
+                    }
+                }
+                _prevState = _status;
+                _status = GameStatus.FetchingData;
+                if (_files2fetch.Count > 0)
+                    _LoadFile(_files2fetch.Dequeue(), wc_DownloadProgressChanged, wc_DownloadFileCompleted);
+            }
+            else
+            {
+                SetupGame();
+            }
         }
 
 
@@ -838,9 +863,9 @@ namespace Gruppe22
                     {
                         GraphicsDevice.Clear(_backgroundcolor);
 
-                        foreach (UIElement element in _interfaceElements)
+                        for (int i = 0; i < _interfaceElements.Count; ++i)
                         {
-                            element.Draw(gameTime);
+                            _interfaceElements[i].Draw(gameTime);
                         }
                         base.Draw(gameTime);
                     }
@@ -860,9 +885,14 @@ namespace Gruppe22
                 _spriteBatch.Begin();
 
                 string text = "Downloading additional content...";
-                Vector2 position = new Vector2((GraphicsDevice.Viewport.Width - _font.MeasureString(text).X) / 2, (GraphicsDevice.Viewport.Height - _font.MeasureString(text).Y) / 2);
+                Vector2 position = new Vector2((GraphicsDevice.Viewport.Width - _font.MeasureString(text).X) / 2, (GraphicsDevice.Viewport.Height) / 2 - _font.MeasureString(text).Y);
                 _spriteBatch.DrawString(_font, text, position, Color.Gray);
                 _spriteBatch.DrawString(_font, text, new Vector2(position.X - 2, position.Y - 2), Color.White);
+
+                position = new Vector2((GraphicsDevice.Viewport.Width - _font.MeasureString(_downloading).X) / 2, (GraphicsDevice.Viewport.Height) / 2);
+                _spriteBatch.DrawString(_font, _downloading, position, Color.Gray);
+                _spriteBatch.DrawString(_font, _downloading, new Vector2(position.X - 2, position.Y - 2), Color.White);
+
                 _spriteBatch.End();
             }
         }
@@ -879,7 +909,8 @@ namespace Gruppe22
             wc.DownloadFileCompleted += finished;
             try
             {
-                await wc.DownloadFileTaskAsync("http://casim.hhu.de/Crawler/" + _filename, _filename);
+                _downloading = _files2fetch.Count.ToString() + ": " + _filename + "()";
+                await wc.DownloadFileTaskAsync("http://casim.hhu.de/Crawler/" + _filename, ".\\Content\\" + _filename);
             }
             catch
             {
@@ -894,7 +925,8 @@ namespace Gruppe22
         /// <param name="e">Event data</param>
         public void wc_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
         {
-            throw new NotImplementedException();
+            _downloading = _downloading.Substring(0, _downloading.LastIndexOf("(")) + "(" + e.BytesReceived.ToString("n0") + "/" + e.TotalBytesToReceive.ToString("n0") + "=" + e.ProgressPercentage.ToString() + "%)";
+            //  throw new NotImplementedException();
         }
 
         /// <summary>
@@ -907,14 +939,19 @@ namespace Gruppe22
             if (_files2fetch.Count == 0)
             {
                 _status = _prevState;
+                if (_status == GameStatus.Loading)
+                {
+                    CreateXMLFiles.CreateXML(_mainmap1, new Camera(Vector2.Zero), Content);
+                    SetupGame();
+                }
             }
             else
             {
                 string file = "";
                 do
                 { file = _files2fetch.Dequeue(); }
-                while ((System.IO.File.Exists(file)) && (_files2fetch.Count > 0));
-                if ((file != "") && (!System.IO.File.Exists(file)))
+                while ((System.IO.File.Exists(".\\Content\\" + file)) && (_files2fetch.Count > 0));
+                if ((file != "") && (!System.IO.File.Exists(".\\Content\\" + file)))
                 {
                     _LoadFile(file, wc_DownloadProgressChanged, wc_DownloadFileCompleted);
                 }

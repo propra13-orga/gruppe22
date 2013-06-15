@@ -91,11 +91,11 @@ namespace Gruppe22
         public override void Save(XmlWriter xmlw)
         {
             xmlw.WriteStartElement("WallTile");
-            xmlw.WriteAttributeString("Illusion", _illusion.ToString());
-            xmlw.WriteAttributeString("Illusionvisible", _illusionVisible.ToString());
-            xmlw.WriteAttributeString("Health", _health.ToString());
-            xmlw.WriteAttributeString("Decoration", _decoration.ToString());
-            xmlw.WriteAttributeString("Enabled", _enabled.ToString());
+            if (_illusion) xmlw.WriteAttributeString("Illusion", _illusion.ToString());
+            if (_illusionVisible) xmlw.WriteAttributeString("Illusionvisible", _illusionVisible.ToString());
+            if (_health > -1) xmlw.WriteAttributeString("Health", _health.ToString());
+            if (_decoration != 0) xmlw.WriteAttributeString("Decoration", _decoration.ToString());
+            if (!_enabled) xmlw.WriteAttributeString("Enabled", _enabled.ToString());
             xmlw.WriteEndElement();
         }
     }

@@ -138,11 +138,11 @@ namespace Gruppe22
             }
         }
 
-        public void Show()
+        public override void Show()
         {
             _hidden = false;
         }
-        public void Hide()
+        public override void Hide()
         {
             _hidden = true;
         }

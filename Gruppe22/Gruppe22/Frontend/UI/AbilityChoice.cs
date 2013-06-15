@@ -12,7 +12,7 @@ namespace Gruppe22
 {
     public class AbilityChoice : Grid
     {
-        private int _width = 163;
+        private new int _width = 163;
         private Random _random;
         private Actor _actor;
         private Ability[] _abilities;

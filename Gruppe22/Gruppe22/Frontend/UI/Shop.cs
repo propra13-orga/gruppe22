@@ -61,10 +61,6 @@ namespace Gruppe22
         /// </summary>
         private Texture2D _arrows = null;
 
-        /// <summary>
-        /// 
-        /// </summary>
-        private Texture2D _background = null;
 
         /// <summary>
         /// 

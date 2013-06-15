@@ -48,46 +48,42 @@ namespace Gruppe22
                             _text = _text.Remove(_cursor - 1, 1);
                         _cursor -= 1;
                         return true;
-                        break;
+                        
                     case Keys.Delete:
                         if (_text.Length+1 > _cursor + 1)
                             _text = _text.Remove(_cursor, 1);
                         return true;
-                        break;
+                        
                     case Keys.Space:
                         _text = _text.Insert(_cursor, " ");
                         return true;
-                        break;
+                        
                     case Keys.Insert:
                         _overwrite = !_overwrite;
                         return true;
-                        break;
+                        
                     case Keys.Enter:
                         base.OnKeyDown(Microsoft.Xna.Framework.Input.Keys.Tab);
                         return true;
-                        break;
-                    case Keys.Tab:
-                        base.OnKeyDown(k);
-                        break;
+                        
                     case Keys.Left:
                         if (_cursor > 0)
                             _cursor -= 1;
                         return true;
-                        break;
+                        
                     case Keys.Right:
                         if (_cursor < _text.Length)
                             _cursor += 1;
                         return true;
-                        break;
+                        
                     case Keys.Home:
-
                         _cursor = 0;
                         return true;
-                        break;
+                        
                     case Keys.End:
                         _cursor = _text.Length - 1;
                         return true;
-                        break;
+                        
                     default:
                         if (k.ToString().Length == 1)
                         {
@@ -99,6 +95,7 @@ namespace Gruppe22
                             return true;
                         }
                         break;
+                        
                 }
             }
             return false;

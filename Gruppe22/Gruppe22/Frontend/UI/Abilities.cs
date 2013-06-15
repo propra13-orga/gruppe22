@@ -35,7 +35,8 @@ namespace Gruppe22
                 y = y / (_height + 3);
                 result = y + (_page * _rows);
             }
-            if (x > _displayRect.Right - 30) return -1;
+            if ((x > _displayRect.Right - 30) || (result > _actor.abilities.Count)) return -1;
+
             return result;
         }
 
@@ -102,30 +103,33 @@ namespace Gruppe22
 
         public override bool OnMouseDown(int button)
         {
-            int x = Mouse.GetState().X;
-            int y = Mouse.GetState().Y;
-            _totalPages = (int)Math.Ceiling((float)_actor.abilities.Count / (float)_rows);
-
-            if (new Rectangle(_displayRect.Right - 70, _displayRect.Top, 90, _displayRect.Height / 2).Contains(new Point(x, y)))
+            if (_visible)
             {
-                if (_page > 0)
-                    _page -= 1;
-                return true;
-            }
+                int x = Mouse.GetState().X;
+                int y = Mouse.GetState().Y;
+                _totalPages = (int)Math.Ceiling((float)_actor.abilities.Count / (float)_rows);
 
-            if (new Rectangle(_displayRect.Right - 70, _displayRect.Bottom - _displayRect.Height / 2, 90, _displayRect.Height / 2 + 50).Contains(new Point(x, y)))
-            {
-                if (_page < _totalPages)
-                    _page += 1;
-                return true;
-            }
+                if (new Rectangle(_displayRect.Right - 70, _displayRect.Top, 90, _displayRect.Height / 2).Contains(new Point(x, y)))
+                {
+                    if (_page > 0)
+                        _page -= 1;
+                    return true;
+                }
 
-            int selected = Pos2Tile(x, y);
-            if (selected > -1)
-            {
-                _parent.HandleEvent(false, Events.AddDragItem, new GridElement(selected + 1,
-                    _actor.abilities[selected].name + "\n Strength:" + _actor.abilities[selected].intensity + "\n Cooldown:" + _actor.abilities[selected].cooldown + "\n Cost: " + _actor.abilities[selected].cost + "MP" + ((_actor.abilities[selected].duration > 1) ? ("\n Duration:" + _actor.abilities[selected].duration) : ""),
-                    _actor.abilities[selected].icon, false, true, 0));
+                if (new Rectangle(_displayRect.Right - 70, _displayRect.Bottom - _displayRect.Height / 2, 90, _displayRect.Height / 2 + 50).Contains(new Point(x, y)))
+                {
+                    if (_page < _totalPages)
+                        _page += 1;
+                    return true;
+                }
+
+                int selected = Pos2Tile(x, y);
+                if (selected > -1)
+                {
+                    _parent.HandleEvent(false, Events.AddDragItem, new GridElement(selected + 1,
+                        _actor.abilities[selected].name + "\n Strength:" + _actor.abilities[selected].intensity + "\n Cooldown:" + _actor.abilities[selected].cooldown + "\n Cost: " + _actor.abilities[selected].cost + "MP" + ((_actor.abilities[selected].duration > 1) ? ("\n Duration:" + _actor.abilities[selected].duration) : ""),
+                        _actor.abilities[selected].icon, false, true, 0));
+                }
             }
             return false;
         }

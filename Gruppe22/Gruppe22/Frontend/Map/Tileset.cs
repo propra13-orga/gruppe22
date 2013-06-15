@@ -151,7 +151,7 @@ namespace Gruppe22
             {
                 TileObject temp = new TileObject(_content, _width, _height);
                 int _id = Int32.Parse(reader.GetAttribute("ID").ToString());
-                while (_id > _textures.Count)
+                while (_id > _textures.Count - 1)
                 {
                     _textures.Add(new TileObject(_content, _width, _height));
                 }
