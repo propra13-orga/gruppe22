@@ -66,16 +66,22 @@ namespace Gruppe22
             }
             else
             {
-                //if (_map1.actors[attacker].penetrate + r.Next(10) < _map1.actors[defender].block + r.Next(10))
-                if (r.Next(_map1.actors[attacker].penetrate) < r.Next(_map1.actors[defender].block))
+                double dmgReduction = (0.06 * (_map1.actors[defender].armor)) / (1 + 0.06 * (_map1.actors[defender].armor)); //max ~85% at 100 armor
+                int damage = _map1.actors[attacker].damage; // the damage the attacker can deal
+                
+                // an actor can block some amount between 0 and the full damage
+                double blockChance = (0.02 * (_map1.actors[defender].block)) / (1 + 0.03 * (_map1.actors[defender].block)); // converges to ~50%
+                if (r.NextDouble() < blockChance)
                 {
+                    int blockedValue = Math.Max(_map1.actors[defender].block - _map1.actors[attacker].penetrate,0); // the amount of damage the defender can block
+                    if (blockedValue >= damage) blockedValue = damage;
+                    damage = Math.Max(damage - blockedValue,0);
                     if ((_map1.actors[attacker] is Player) || (_map1.actors[defender] is Player))
-                        _mainmap1.floatNumber(_map1.actors[attacker].tile.coords, "Blocked", (_map1.actors[defender] is Player) ? Color.Green : Color.White);
+                        _mainmap1.floatNumber(_map1.actors[attacker].tile.coords, "Blocked "+blockedValue+"dmg", (_map1.actors[defender] is Player) ? Color.Green : Color.White);
                 }
-                else
-                {
-                    double dmgReduction = (0.06 * (_map1.actors[defender].armor)) / (1 + 0.06 * (_map1.actors[defender].armor)); //max ~85% at 100 armor
-                    int damage = (int)(_map1.actors[attacker].damage * (1 - dmgReduction));
+
+                damage = (int)(damage * (1 - dmgReduction)); // the damage the attacker will deal
+
                     if (damage > 0)
                     {
                         _map1.actors[defender].health -= damage;
@@ -123,7 +129,6 @@ namespace Gruppe22
                         if ((_map1.actors[attacker] is Player) || (_map1.actors[defender] is Player))
                             _mainmap1.floatNumber(_map1.actors[defender].tile.coords, "No damage", _map1.actors[defender] is Player ? Color.Green : Color.White);
                     }
-                }
             }
         }
 
@@ -146,7 +151,9 @@ namespace Gruppe22
             }
             else
             {
-                if (r.Next(_map1[target.x, target.y].trap.penetrate) < r.Next(actor.block))
+                //a trap can either be fully blocked or not blocked
+                double blockChance = Math.Max((0.02 * (actor.block - _map1[target.x, target.y].trap.penetrate)) / (1 + 0.03 * (actor.block-_map1[target.x, target.y].trap.penetrate)),0);
+                if (r.NextDouble()<blockChance)
                 {
                     if (actor is Player)
                         _mainmap1.floatNumber(target, "Trap blocked", Color.Green);
@@ -261,6 +268,7 @@ namespace Gruppe22
                         }
                     }
                     break;
+
                 case Events.LoadFromCheckPoint:
                     _status = GameStatus.NoRedraw;
                     _deadcounter--;
@@ -439,6 +447,7 @@ namespace Gruppe22
 
                     }
                     break;
+
                 case Events.ExplodeProjectile:
                     {
                         _map1[((ProjectileTile)data[0]).coords].Remove((ProjectileTile)data[0]);
@@ -459,6 +468,7 @@ namespace Gruppe22
                         _mainmap1.HandleEvent(true, eventID, data);
                     }
                     break;
+
                 case Events.MoveProjectile:
                     if (data[0] == null)
                     {
@@ -472,12 +482,18 @@ namespace Gruppe22
                         _mainmap1.GetProjectile(((ProjectileTile)data[0]).id).moveTo((Coords)data[1]);
                     }
                     break;
+
                 case Events.FinishedProjectileMove:
                     ((ProjectileTile)data[0]).NextTile(true);
                     break;
+
                 case Events.Shop:
                     ShowShopWindow(_map1.actors[0], (Actor)data[0]);
                     break;
+
+                case Events.Dialogue:
+                    break;
+
                 case Events.MoveActor:
                     {
                         int id = (int)data[0];
