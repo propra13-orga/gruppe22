@@ -9,6 +9,7 @@ namespace Gruppe22
     public class NPC : Actor
     {
         private bool _hasShop = true;
+        private bool _hasDialogue = false;
         private int _love = 0;
 
         public bool hasShop
@@ -20,6 +21,18 @@ namespace Gruppe22
             set
             {
                 _hasShop = value;
+            }
+        }
+
+        public bool hasDialogue
+        {
+            get
+            {
+                return _hasDialogue;
+            }
+            set
+            {
+                _hasDialogue = value;
             }
         }
 
@@ -35,9 +48,13 @@ namespace Gruppe22
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public void Interact()
         {
             if (_hasShop) ((IHandleEvent)_tile.parent).HandleEvent(false, Events.Shop, this);
+            if (_hasDialogue) ((IHandleEvent)_tile.parent).HandleEvent(false, Events.Dialogue, this);
         }
 
         /// <summary>

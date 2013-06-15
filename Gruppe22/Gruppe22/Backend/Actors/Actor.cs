@@ -559,7 +559,6 @@ namespace Gruppe22
 
         #region Public Methods
 
-
         public void LevelUp()
         {
             _level++;
@@ -569,6 +568,10 @@ namespace Gruppe22
             _health = _maxhealth;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="amount"></param>
         public void AddProtection(int amount)
         {
             if (amount > _armor)
@@ -582,6 +585,10 @@ namespace Gruppe22
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="amount"></param>
         public void AddHealth(int amount)
         {
             int temp = Math.Max(amount, _maxhealth - _health - amount);
@@ -596,6 +603,10 @@ namespace Gruppe22
             _health = Math.Min(_health + amount, _maxhealth);
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="amount"></param>
         public void AddStrength(int amount)
         {
             if (amount > _damage)
@@ -610,6 +621,10 @@ namespace Gruppe22
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="writer"></param>
         public void Save(XmlWriter writer)
         {
             switch (_actorType)
@@ -673,7 +688,7 @@ namespace Gruppe22
                 {
                     writer.WriteAttributeString("love", Convert.ToString(n.love));
                     writer.WriteAttributeString("hasShop", Convert.ToString(n.hasShop));
-
+                    writer.WriteAttributeString("hasDialogue", Convert.ToString(n.hasDialogue));
                 }
             }
 
@@ -705,6 +720,10 @@ namespace Gruppe22
             writer.WriteEndElement();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="a"></param>
         public void copyFrom(Actor a)
         {
             _actorType = a.actorType;
@@ -769,6 +788,10 @@ namespace Gruppe22
             }
         }
 
+        /// <summary>
+        /// a method to read an actor from a (room-)file and set his values
+        /// </summary>
+        /// <param name="reader">the XmlReader which should be used</param>
         public void Load(XmlReader reader)
         {
 //            System.Diagnostics.Debug.WriteLine(reader.Name);
@@ -905,8 +928,8 @@ namespace Gruppe22
 
         /// <summary>
         /// Methode to generate random names for actors
+        /// uses GenerateName() for files if possible
         /// </summary>
-        /// <param name="r"></param>
         public void GenerateName()
         {
             int index = _random.Next(6);
@@ -998,7 +1021,11 @@ namespace Gruppe22
 
             }
         }
-
+        /// <summary>
+        /// Method to generate a random name from a given file
+        /// </summary>
+        /// <param name="filename">a file with one name in each line</param>
+        /// <returns>the chosen name</returns>
         public string GenerateName(string filename)
         {
             using (TextReader reader = new StreamReader(filename))
@@ -1014,12 +1041,18 @@ namespace Gruppe22
         }
 
         /// <summary>
-        /// Constructor.
+        /// Constructor
         /// </summary>
-        /// <param name="actorType"></param>
-        /// <param name="health"></param>
-        /// <param name="armor"></param>
-        /// <param name="damage"></param>
+        /// <param name="content"></param>
+        /// <param name="actorType">Player, NPC or Enemy</param>
+        /// <param name="health">default 15+random(30) or 5+random(maxhealth-5) if maxhealth is passed</param>
+        /// <param name="armor">default random(10)</param>
+        /// <param name="damage">default 12+random(10)</param>
+        /// <param name="maxHealth">default = health</param>
+        /// <param name="name">uses GenerateName() by default</param>
+        /// <param name="rnd">a random used to generate the actors starting values</param>
+        /// <param name="animationFile">the file used to display the actor</param>
+        /// <param name="level">the default starting level is 1</param>
         public Actor(ContentManager content, ActorType actorType, int health, int armor, int damage, int maxHealth = -1, string name = "", Random rnd = null, string animationFile = "", int level = -1)
         {
             _content = content;
@@ -1030,6 +1063,7 @@ namespace Gruppe22
             {
                 _quicklist.Add(0);
             }
+
             if (rnd == null) _random = new Random(); else _random = rnd;
 
             if (level < 0)
@@ -1048,6 +1082,7 @@ namespace Gruppe22
                 _expNeeded = 3 * (_level + 1) ^ 2 + 83 * (_level + 1) + 41;
 
             }
+
             if (health < 0)
             {
                 if (maxHealth > 0)
@@ -1060,22 +1095,27 @@ namespace Gruppe22
                 }
             }
             this._health = health;
+
             if (maxHealth == -1)
             {
                 _maxhealth = health;
             }
+
             if (armor < 0)
             {
                 armor = _random.Next(10);
             }
             this._armor = armor;
+
             if (damage < 0)
             {
                 damage = 12 + _random.Next(10);
             }
             this._damage = damage;
+
             if (name.Trim() == "") GenerateName();
             else _name = name;
+
             this._inventory = new List<Item>();
             _animationFile = animationFile;
         }

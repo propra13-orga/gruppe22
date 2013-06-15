@@ -80,7 +80,8 @@ namespace Gruppe22
         ShowInventory,
         ShowMenu,
         ShowAbilities,
-        AddDragItem
+        AddDragItem,
+        Dialogue
 
     }
     public enum Buttons
