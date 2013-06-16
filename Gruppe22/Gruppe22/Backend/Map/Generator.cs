@@ -447,10 +447,11 @@ namespace Gruppe22
                     npc.hasShop = true;
                     for (count = 0; count < 20; ++count)
                     {
-                        npc.inventory.Add(new Item(_content, r, 0, _level));
+                        npc.inventory.Add(new Item(_content, r, 0, _level, false));
                     }
                     ActorTile NPCTile = new ActorTile(_tiles[pos.y][pos.x], npc);
                     npc.tile = NPCTile;
+                    npc.stunned = -1;
                     _tiles[pos.y][pos.x].Add(NPCTile);
                     _actors.Add(npc);
                 }
@@ -1375,10 +1376,10 @@ namespace Gruppe22
 
         public void DrawWalls()
         {
-            for (int x = 1; x < _width-1; ++x)
+            for (int x = 1; x < _width - 1; ++x)
             {
                 _tiles[0][x].Add(new WallTile(_tiles[0][x]));
-                _tiles[_height - 1][x].Add(new WallTile(_tiles[_height - 1][x],r));
+                _tiles[_height - 1][x].Add(new WallTile(_tiles[_height - 1][x], r));
             }
             for (int y = 0; y < _height; ++y)
             {

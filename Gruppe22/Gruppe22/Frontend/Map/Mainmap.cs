@@ -209,12 +209,27 @@ namespace Gruppe22
         private SpriteFont _font;
         private int _timer = 0;
         private Camera _camera;
+        private uint _delay = 0;
 
+        public uint delay
+        {
+            get
+            {
+                return _delay;
+            }
+            set
+            {
+                _delay = value;
+            }
+        }
         public void Draw()
         {
-            _spritebatch.Begin(SpriteSortMode.Texture, BlendState.AlphaBlend, null, null, null, null, _camera.matrix);
-            _spritebatch.DrawString(_font, _text, new Vector2(_pos.X, _pos.Y - (20 * (10 - _counter))), new Color(_color, (float)_counter / 10), 0f, new Vector2(_width / 2, _height / 2), (10 - _counter) / 3, SpriteEffects.None, 0);
-            _spritebatch.End();
+            if (_delay == 0)
+            {
+                _spritebatch.Begin(SpriteSortMode.Texture, BlendState.AlphaBlend, null, null, null, null, _camera.matrix);
+                _spritebatch.DrawString(_font, _text, new Vector2(_pos.X, _pos.Y - (20 * (10 - _counter))), new Color(_color, (float)_counter / 10), 0f, new Vector2(_width / 2, _height / 2), (10 - _counter) / 3, SpriteEffects.None, 0);
+                _spritebatch.End();
+            }
         }
 
         public bool Update(GameTime gametime)
@@ -223,17 +238,25 @@ namespace Gruppe22
             if (_timer > 10)
             {
                 _timer -= 10;
-                _counter -= 0.1f;
-                if (_counter < 0.1f) return true;
+                if (_delay == 0)
+                {
+                    _counter -= 0.1f;
+                    if (_counter < 0.1f) return true;
+                }
+                else
+                {
+                    _delay -= 1;
+                }
             }
             return false;
         }
 
-        public FloatNumber(ContentManager content, SpriteBatch batch, Coords coords, string text, Camera camera, Color color, int counter = 10)
+        public FloatNumber(ContentManager content, SpriteBatch batch, Coords coords, string text, Camera camera, Color color, int counter = 10, uint delay = 0)
             : this(content, batch, coords, text, camera)
         {
             _color = color;
             _counter = counter;
+            _delay = (uint)delay;
         }
 
         public FloatNumber(ContentManager content, SpriteBatch batch, Coords coords, string text, Camera camera)
@@ -1269,7 +1292,12 @@ namespace Gruppe22
 
         public void floatNumber(Coords tile, string text, Color color)
         {
-            _floatnumbers.Add(new FloatNumber(_content, _spriteBatch, tile, text, _camera, color));
+            uint delay = 0;
+            if (_floatnumbers.Count > 0)
+            {
+                delay = _floatnumbers[_floatnumbers.Count-1].delay + 20;
+            }
+            _floatnumbers.Add(new FloatNumber(_content, _spriteBatch, tile, text, _camera, color, 10, delay));
         }
         /// <summary>
         /// Move camera, react to mouse

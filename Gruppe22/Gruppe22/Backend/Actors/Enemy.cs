@@ -171,7 +171,7 @@ namespace Gruppe22
             }
             if (_level > 0)
             {
-                Item item = new Item(_content, r, 0, _level);
+                Item item = new Item(_content, r, 0, _level, false);
                 _inventory.Add(item);
                 item.owner = this;
             }

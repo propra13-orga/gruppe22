@@ -328,9 +328,10 @@ namespace Gruppe22
                             if (_map1.actors[FinishedID].gold > 0)
                             {
 
-                                ItemTile tile=new ItemTile(((FloorTile)(_map1.actors[FinishedID].tile.parent)));
+                                ItemTile tile = new ItemTile(((FloorTile)(_map1.actors[FinishedID].tile.parent)));
 
                                 Item item = new Item(Content, tile, ItemType.Gold, "", null, _map1.actors[FinishedID].gold);
+                                item.value = _map1.actors[FinishedID].gold;
                                 tile.item = item;
                                 ((FloorTile)(_map1.actors[FinishedID].tile.parent)).Add(tile);
                             }
@@ -702,6 +703,11 @@ namespace Gruppe22
                     {
                         rooms[i].connected = true;
                     }
+
+                    if (i + LevelStart == 0)
+                    {
+                        rooms[i].AddShop();
+                    }
                 }
                 // Phase 2 Generate roads between rooms
                 int roomsPerRow = (int)Math.Floor(Math.Sqrt(totalRooms));
@@ -761,7 +767,6 @@ namespace Gruppe22
 
 
                 // Phase 4 Add stairs (up and corresponding down)
-
                 if (level != 1)
                 {
 
@@ -780,6 +785,7 @@ namespace Gruppe22
                     Coords exitCoords = rooms[exit].FindRoomForStairs;
                     rooms[exit].AddStairs(exitCoords, entrance + 1, entranceCoords, true);
                     rooms[entrance].AddStairs(entranceCoords, exit + 1, exitCoords, false);
+                    rooms[exit].AddShop();
                 }
 
                 int checkpoint = LevelStart + r.Next(totalRooms);

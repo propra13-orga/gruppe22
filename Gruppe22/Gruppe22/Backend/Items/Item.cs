@@ -621,7 +621,7 @@ namespace Gruppe22
                     _name = "Potion";
                     break;
             }
-            if (_effects.Count == 0)
+            if ((_effects.Count == 0) && (_itemType != ItemType.Gold) && (_itemType != ItemType.Key) && (_itemType != ItemType.Note) && (_itemType != ItemType.Ring))
             {
                 _name = "Broken " + _name;
             }
@@ -820,12 +820,19 @@ namespace Gruppe22
             }
             _owner = actor;
             int temp = 0;
-            for (int i = 0; i < actor.inventory.Count; ++i)
+            if (_itemType != ItemType.Gold)
             {
-                temp = Math.Max(id, actor.inventory[i].id);
+                for (int i = 0; i < actor.inventory.Count; ++i)
+                {
+                    temp = Math.Max(id, actor.inventory[i].id);
+                }
+                _id = temp + 1;
+                actor.inventory.Add(this);
             }
-            _id = temp + 1;
-            actor.inventory.Add(this);
+            else
+            {
+                actor.gold += _value;
+            }
             _tile = null;
         }
 
@@ -1038,7 +1045,7 @@ namespace Gruppe22
 
                     break;
                 case ItemType.Gold:
-                    _icon = new VisibleObject(_content, "armor", new Rectangle(381, 899, 38, 45), new Coords(13, 9), new Coords(13, 10));
+                    _icon = new VisibleObject(_content, "items", new Rectangle(381, 899, 38, 45), new Coords(13, 9), new Coords(13, 10));
                     break;
 
                 case ItemType.Potion:
@@ -1081,13 +1088,13 @@ namespace Gruppe22
 
         }
 
-        public Item(ContentManager content, Random r = null, int value = 0, int level = 1)
+        public Item(ContentManager content, Random r = null, int value = 0, int level = 1, bool gold = true)
             : this(content)
         {
             if (r == null) r = new Random();
             _value = value;
             _level = level;
-            switch (r.Next(6))
+            switch (r.Next(6 + (gold ? 1 : 0)))
             {
                 case 0:
                     _itemType = ItemType.Staff;
@@ -1106,6 +1113,9 @@ namespace Gruppe22
                     break;
                 case 5:
                     _itemType = ItemType.Weapon;
+                    break;
+                case 6:
+                    _itemType = ItemType.Gold;
                     break;
             }
             GenerateProperties(r);
@@ -1150,7 +1160,7 @@ namespace Gruppe22
             if (icon == null) GenerateIcon();
         }
 
-        public Item(ContentManager content, Actor owner, ItemType itemtype, string name = "", VisibleObject icon = null, int value = 0, int level=1)
+        public Item(ContentManager content, Actor owner, ItemType itemtype, string name = "", VisibleObject icon = null, int value = 0, int level = 1)
             : this(content)
         {
             _owner = owner;

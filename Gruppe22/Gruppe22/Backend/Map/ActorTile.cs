@@ -117,12 +117,12 @@ namespace Gruppe22
                         }
                     }
 
-                    if ((actor.health < actor.maxHealth / 4) || (actor is NPC) || (actor.scared != 0))
+                    if ((actor.health < actor.maxHealth / 4) || (actor.scared != 0))
                     {
                         // Low health => try to flee
                         //System.Diagnostics.Debug.WriteLine("=> Flee!");
 
-                        if ((!canAttack) || (actor is NPC) || ((actor.health > 10) && (_random.Next(100) > 50)))
+                        if ((!canAttack)  || ((actor.health > 10) && (_random.Next(100) > 50)))
                         {
                             dir = Map.OppositeDirection(dir);
                             // TODO: Versuche Pfade zu finden, die ABstand vergrößern (insb. wenn geblockt)
@@ -170,8 +170,7 @@ namespace Gruppe22
                     && (!actor.crazy) && (!actor.friendly))
                     dir = Direction.None;
 
-                if ((map.TileByCoords(Map.DirectionTile(coords, dir)).hasNPC) && (!map.TileByCoords(Map.DirectionTile(coords, dir)).firstActor.isDead)
-                    && ((!actor.aggro) || (actor.friendly)))
+                if ((map.TileByCoords(Map.DirectionTile(coords, dir)).hasNPC) && (!map.TileByCoords(Map.DirectionTile(coords, dir)).firstActor.isDead))
                     dir = Direction.None;
 
 
@@ -179,7 +178,7 @@ namespace Gruppe22
                     && ((!actor.aggro) || (actor.friendly)))
                     dir = Direction.None;
 
-                if ((dir != Direction.None) && (!map.TileByCoords(Map.DirectionTile(coords, dir)).hasTeleport))
+                if ((dir != Direction.None) && (!map.TileByCoords(Map.DirectionTile(coords, dir)).hasTeleport)&&(!map.TileByCoords(Map.DirectionTile(coords, dir)).hasPlayer))
                 {
                     ((IHandleEvent)parent).HandleEvent(false, Events.MoveActor, actor.id, dir);
                     //System.Diagnostics.Debug.WriteLine("#####" + dir + "######");
