@@ -11,7 +11,7 @@ namespace Gruppe22
 {
     public class CreateXMLFiles
     {
-        public static void CreateXML(Mainmap _map, Camera _camera, ContentManager _content)
+        public static async Task CreateXML(Mainmap _map, Camera _camera, ContentManager _content)
         {
             CreateMix(_content);
             CreateWalls(_content, "wall1");
@@ -52,6 +52,7 @@ namespace Gruppe22
             CreateActor(_map, _content, _camera, "xmas");
             CreateActor(_map, _content, _camera, "Zombie");
             _content.Unload();
+            return;
         }
 
         private static void _AddActivity(ContentManager _content, ActorView actor, string character, string action, Activity activity)
@@ -260,6 +261,12 @@ namespace Gruppe22
             tmp.Add("magic", 2, new Rectangle(0, 0, 64, 96), 17, 2, true);
             tmp.Save("Content\\explosion.xml");
 
+            tmp = new TileSet(_content, 64, 64);
+            tmp.Add("Shop", 0, new Rectangle(448, 192, 64, 64), 1, 1, false);
+            tmp.Add("Shop", 1, new Rectangle(354, 509, 64, 96), 1, 1, false);
+            tmp.Add("Shop", 2, new Rectangle(195, 256, 64, 64), 1, 1, false);
+            tmp.Add("Shop", 3, new Rectangle(0, 512, 96, 128), 1, 1, false);
+            tmp.Save("Content\\shop.xml");
         }
     }
 }

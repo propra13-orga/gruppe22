@@ -783,8 +783,16 @@ namespace Gruppe22
                                     case "ReservedTile":
                                         ReservedTile reserved = new ReservedTile(tile);
 
-                                        if (xmlr.GetAttribute("enabled") != null)
-                                        { reserved.enabled = Boolean.Parse(xmlr.GetAttribute("enabled")); }
+                                        if (xmlr.GetAttribute("Enabled") != null)
+                                        { reserved.enabled = Boolean.Parse(xmlr.GetAttribute("Enabled")); }
+
+                                        if (xmlr.GetAttribute("CanEnter") != null)
+                                        { reserved.canEnter = Boolean.Parse(xmlr.GetAttribute("CanEnter")); }
+                                        if (xmlr.GetAttribute("Filename") != null)
+                                        { reserved.filename = xmlr.GetAttribute("Filename"); }
+                                        if (xmlr.GetAttribute("Index") != null)
+                                        { reserved.index = Int32.Parse(xmlr.GetAttribute("Index")); }
+
                                         tile.Add(reserved);
 
                                         break;

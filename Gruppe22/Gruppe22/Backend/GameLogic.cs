@@ -312,10 +312,10 @@ namespace Gruppe22
 
                     AddMessage("You entered room number " + data[0].ToString().Substring(4, 1) + ".");
                     File.WriteAllText("GameData", data[0].ToString() + Environment.NewLine + _deadcounter.ToString());
-                    
-                        _backMusic = Content.Load<Song>(_map1.music); // Todo: *.mp3
-                        MediaPlayer.Play(_backMusic);
-                        MediaPlayer.Volume = (float)0.3;
+
+                    _backMusic = Content.Load<Song>(_map1.music); // Todo: *.mp3
+                    MediaPlayer.Play(_backMusic);
+                    MediaPlayer.Volume = (float)0.3;
                     _status = GameStatus.Running;
                     break;
 
@@ -688,7 +688,7 @@ namespace Gruppe22
         /// </summary>
         /// <param name="message"></param>
         /// <param name="title"></param>
-        public void ShowMessage(string message = "You have failed in your mission. Better luck next time.", string title = "Game over!")
+        public void ShowMessage(string message = "You have failed in your mission. Better luck next time.")
         {
             switch (r.Next(10))
             {
@@ -733,9 +733,9 @@ namespace Gruppe22
             _status = GameStatus.Paused;
             Window _messagebox = new Window(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width) / 2.0f) - 300, (int)(GraphicsDevice.Viewport.Height / 2.0f) - 100, 600, 200));
             Statusbox stat = new Statusbox(_messagebox, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width) / 2.0f) - 300 + 10, (int)(GraphicsDevice.Viewport.Height / 2.0f) - 70, 590, 110), false, true);
-            stat.AddLine(title + "\n \n" + message);
+            stat.AddLine( message);
             _messagebox.AddChild(stat);
-            _messagebox.AddChild(new Button(_messagebox, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width) / 2.0f) - 300 + 10, (int)(GraphicsDevice.Viewport.Height / 2.0f) + 30, 130, 40), "Goodbye!", (int)Buttons.Close));
+            _messagebox.AddChild(new Button(_messagebox, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width) / 2.0f) - 65, (int)(GraphicsDevice.Viewport.Height / 2.0f) + 30, 130, 40), "Goodbye!", (int)Buttons.Close));
             //  _mainMenu.AddChild(new ProgressBar(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) + 80, 300, 30), ProgressStyle.Block,100,2));
 
             _interfaceElements.Add(_messagebox);
@@ -765,7 +765,7 @@ namespace Gruppe22
                 for (int i = 0; i < totalRooms; ++i)
                 {
 
-                    rooms.Add(new Generator(Content, this, 6 + r.Next(8) + ((i == totalRooms) ? 5 : 0), 6 + r.Next(8) + ((i == totalRooms) ? 5 : 0), true, null, LevelStart + i + 1, totalRooms, r, _name, level));
+                    rooms.Add(new Generator(Content, this, 10 + r.Next(8) + ((i == totalRooms) ? 5 : 0), 10 + r.Next(8) + ((i == totalRooms) ? 5 : 0), true, null, LevelStart + i + 1, totalRooms, r, _name, level));
                     if (_name == null) _name = rooms[i].dungeonname;
                     if (i == 0)
                     {
@@ -775,6 +775,8 @@ namespace Gruppe22
                     if (i + LevelStart == 0)
                     {
                         rooms[i].AddShop();
+                        rooms[i].AddNPC();
+
                     }
                 }
                 // Phase 2 Generate roads between rooms
@@ -858,7 +860,7 @@ namespace Gruppe22
 
                 int checkpoint = LevelStart + r.Next(totalRooms);
                 rooms[checkpoint].AddCheckpoint();
-                for (int i = 0; i < r.Next(3); ++i)
+                for (int i = 0; i < r.Next(3) + 1; ++i)
                 {
                     int npc = LevelStart + r.Next(totalRooms);
                     rooms[npc].AddNPC();

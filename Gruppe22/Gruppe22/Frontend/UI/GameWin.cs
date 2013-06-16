@@ -937,14 +937,16 @@ namespace Gruppe22
         /// </summary>
         /// <param name="sender">The source of the event</param>
         /// <param name="e">Event data</param>
-        public void wc_DownloadFileCompleted(object sender, System.ComponentModel.AsyncCompletedEventArgs e)
+        public async void wc_DownloadFileCompleted(object sender, System.ComponentModel.AsyncCompletedEventArgs e)
         {
             if (_files2fetch.Count == 0)
             {
                 _status = _prevState;
                 if (_status == GameStatus.Loading)
                 {
-                    CreateXMLFiles.CreateXML(_mainmap1, new Camera(Vector2.Zero), Content);
+                    _status = GameStatus.FetchingData;
+                    await CreateXMLFiles.CreateXML(_mainmap1, new Camera(Vector2.Zero), Content);
+                    _downloading = "Creating XML files...";
                     SetupGame();
                 }
             }

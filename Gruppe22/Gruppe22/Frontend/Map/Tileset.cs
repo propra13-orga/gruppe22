@@ -73,6 +73,17 @@ namespace Gruppe22
         #endregion
 
         #region Public Fields
+        public string filename
+        {
+            get
+            {
+                return _fileName;
+            }
+            set
+            {
+                _fileName = value;
+            }
+        }
         /// <summary>
         /// 
         /// </summary>
@@ -189,6 +200,7 @@ namespace Gruppe22
         /// <param name="filename"></param>
         public virtual void Save(string filename = "bla.xml")
         {
+            _fileName = filename;
             System.Xml.XmlTextWriter writer = new System.Xml.XmlTextWriter(filename, Encoding.Unicode);
 
             XmlSerializer serializer = new XmlSerializer(typeof(TileSet));
@@ -202,6 +214,7 @@ namespace Gruppe22
         /// <param name="filename"></param>
         public virtual void Load(string filename = "bla.xml")
         {
+            _fileName = filename;
             System.Xml.XmlReaderSettings settings = new System.Xml.XmlReaderSettings();
             settings.IgnoreWhitespace = true;
             System.Xml.XmlReader reader = System.Xml.XmlReader.Create(filename, settings);
@@ -246,6 +259,9 @@ namespace Gruppe22
             _width = width;
             _height = height;
             _content = content;
+            _fileName = fileName;
+            if (fileName != "")
+                Load(fileName);
         }
         #endregion
     }

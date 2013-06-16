@@ -1087,6 +1087,29 @@ namespace Gruppe22
                         {
                             _spriteBatch.Draw(_environment[0][18].animationTexture, new Rectangle(_map2screen(x, y).x - 16, _map2screen(x, y).y - 32, _environment[0][18].animationRect.Width, _environment[0][18].animationRect.Height), _environment[0][18].animationRect, ((y == (int)_highlightedTile.y) && (x == (int)_highlightedTile.x)) ? Color.Red : Color.White);
                         }
+
+                    // show special objects
+                    ReservedTile temp = _map[x, y].reserved;
+                    if (temp != null)
+                    {
+                        if (temp.envIndex == -1)
+                        {
+                            for (int i = 0; i < _environment.Count; ++i)
+                            {
+                                if (_environment[i].filename == temp.filename) temp.envIndex = i; break;
+                            }
+                            if (temp.envIndex == -1)
+                            {
+                                TileSet tmp = new TileSet(_content, 96, 96);
+                                tmp.Load(temp.filename);
+                                _environment.Add(tmp);
+                                temp.envIndex = _environment.Count - 1;
+                            }
+                        }
+                        _spriteBatch.Draw(_environment[temp.envIndex][temp.index].animationTexture, new Rectangle(_map2screen(x, y).x - 16, _map2screen(x, y).y - 32, _environment[temp.envIndex][temp.index].animationRect.Width, _environment[temp.envIndex][temp.index].animationRect.Height), _environment[temp.envIndex][temp.index].animationRect, ((y == (int)_highlightedTile.y) && (x == (int)_highlightedTile.x)) ? Color.Red : Color.White);
+                        _environment[temp.envIndex][temp.index].NextAnimation();
+
+                    }
                     foreach (ActorView actor in _actors)
                     {
                         Coords apos = _screen2map((int)actor.position.x, (int)actor.position.y);
@@ -1295,7 +1318,7 @@ namespace Gruppe22
             uint delay = 0;
             if (_floatnumbers.Count > 0)
             {
-                delay = _floatnumbers[_floatnumbers.Count-1].delay + 20;
+                delay = _floatnumbers[_floatnumbers.Count - 1].delay + 20;
             }
             _floatnumbers.Add(new FloatNumber(_content, _spriteBatch, tile, text, _camera, color, 10, delay));
         }

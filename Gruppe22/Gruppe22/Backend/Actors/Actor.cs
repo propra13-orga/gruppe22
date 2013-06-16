@@ -909,6 +909,7 @@ namespace Gruppe22
                 {
                     n.love = Convert.ToInt32(reader.GetAttribute("love"));
                     n.hasShop = Convert.ToBoolean(reader.GetAttribute("hasShop"));
+                    n.hasDialogue = Convert.ToBoolean(reader.GetAttribute("hasDialogue"));
 
                 }
             }
