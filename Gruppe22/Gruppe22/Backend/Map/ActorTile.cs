@@ -74,6 +74,7 @@ namespace Gruppe22
         public async Task WorkoutMoves()
         {
             bool canAttack = false;
+            bool finished = false;
             Map map = (Map)((FloorTile)_parent).parent;
 
             if (_actor.stunned > 0) _actor.stunned -= 1;
@@ -124,40 +125,45 @@ namespace Gruppe22
                         if ((!canAttack) || (actor is NPC) || ((actor.health > 10) && (_random.Next(100) > 50)))
                         {
                             dir = Map.OppositeDirection(dir);
+                            // TODO: Versuche Pfade zu finden, die ABstand vergrößern (insb. wenn geblockt)
+                            finished = true;
                         }
                     }
                     int count = 1;
-
-                    while ((!map.TileByCoords(Map.DirectionTile(coords, dir)).canEnter) && (count < 9))
+                    if (!finished)
                     {
-                        //System.Diagnostics.Debug.WriteLine("Rotate");
-                        dir = Map.NextDirection(dir);
-                        count += 1;
-                    }
-                    if (!map.TileByCoords(Map.DirectionTile(coords, dir)).canEnter) dir = Direction.None;
-                }
-
-                if (dir == Direction.None)
-                {
-                    // Nobody close by, just wander aimlessly
-                    // TODO: Try to grab nearby items
-                    if (_random.Next(10) > 5)
-                    {
-                        dir = (Direction)_random.Next(4);
-                        int count = 1;
-                        while (((dir == Map.OppositeDirection(_lastDir)) || (!map.TileByCoords(Map.DirectionTile(coords, dir)).canEnter)) && (count < 9))
+                        while ((!map.TileByCoords(Map.DirectionTile(coords, dir)).canEnter) && (count < 9))
                         {
+                            //System.Diagnostics.Debug.WriteLine("Rotate");
                             dir = Map.NextDirection(dir);
                             count += 1;
                         }
-                        if ((dir == Map.OppositeDirection(_lastDir)) || (!map.TileByCoords(Map.DirectionTile(coords, dir)).canEnter))
-                        {
-                            dir = Direction.None;
-                            _lastDir = Direction.None;
-                        }
-
+                        if (!map.TileByCoords(Map.DirectionTile(coords, dir)).canEnter) dir = Direction.None;
                     }
                 }
+                else
+
+                    if (dir == Direction.None)
+                    {
+                        // Nobody close by, just wander aimlessly
+                        // TODO: Try to grab nearby items
+                        if (_random.Next(10) > 5)
+                        {
+                            dir = (Direction)_random.Next(4);
+                            int count = 1;
+                            while (((dir == Map.OppositeDirection(_lastDir)) || (!map.TileByCoords(Map.DirectionTile(coords, dir)).canEnter)) && (count < 9))
+                            {
+                                dir = Map.NextDirection(dir);
+                                count += 1;
+                            }
+                            if ((dir == Map.OppositeDirection(_lastDir)) || (!map.TileByCoords(Map.DirectionTile(coords, dir)).canEnter))
+                            {
+                                dir = Direction.None;
+                                _lastDir = Direction.None;
+                            }
+
+                        }
+                    }
 
                 // Do not attack friendly units!
                 if ((map.TileByCoords(Map.DirectionTile(coords, dir)).hasEnemy) && (!map.TileByCoords(Map.DirectionTile(coords, dir)).firstActor.isDead)

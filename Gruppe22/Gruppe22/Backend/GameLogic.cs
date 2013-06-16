@@ -68,69 +68,70 @@ namespace Gruppe22
             {
                 double dmgReduction = (0.06 * (_map1.actors[defender].armor)) / (1 + 0.06 * (_map1.actors[defender].armor)); //max ~85% at 100 armor
                 int damage = _map1.actors[attacker].damage; // the damage the attacker can deal
-                
+
                 // an actor can block some amount between 0 and the full damage
                 double blockChance = (0.02 * (_map1.actors[defender].block)) / (1 + 0.03 * (_map1.actors[defender].block)); // converges to ~50%
                 if (r.NextDouble() < blockChance)
                 {
-                    int blockedValue = Math.Max(_map1.actors[defender].block - _map1.actors[attacker].penetrate,0); // the amount of damage the defender can block
+                    int blockedValue = Math.Max(_map1.actors[defender].block - _map1.actors[attacker].penetrate, 0); // the amount of damage the defender can block
                     if (blockedValue >= damage) blockedValue = damage;
-                    damage = Math.Max(damage - blockedValue,0);
+                    damage = Math.Max(damage - blockedValue, 0);
                     if ((_map1.actors[attacker] is Player) || (_map1.actors[defender] is Player))
-                        _mainmap1.floatNumber(_map1.actors[attacker].tile.coords, "Blocked "+blockedValue+"dmg", (_map1.actors[defender] is Player) ? Color.Green : Color.White);
+                        _mainmap1.floatNumber(_map1.actors[attacker].tile.coords, "Blocked " + blockedValue + "dmg", (_map1.actors[defender] is Player) ? Color.Green : Color.White);
                 }
 
                 damage = (int)(damage * (1 - dmgReduction)); // the damage the attacker will deal
 
-                    if (damage > 0)
+                if (damage > 0)
+                {
+                    _map1.actors[defender].health -= damage;
+                    if (_map1.actors[defender] is Player)
                     {
-                        _map1.actors[defender].health -= damage;
-                        if (_map1.actors[defender] is Player)
-                        {
-                            _mainmap1.floatNumber(_map1.actors[defender].tile.coords, damage.ToString(), Color.DarkRed);
-                            RemoveHealth();
-                        }
-                        else
-                        {
-                            if (_map1.actors[attacker] is Player) { 
-                                _mainmap1.floatNumber(_map1.actors[defender].tile.coords, damage.ToString(), Color.White);
-                                _map1.actors[defender].aggro = true;
-                            }
-                        }
-                        if (_map1.actors[defender].isDead)
-                        {
-                            _mainmap1.HandleEvent(true, Events.AnimateActor, defender, Activity.Die);
-                            //_mainmap2.HandleEvent(true, Events.AnimateActor, defender, Activity.Die);
-                            _map1.actors[attacker].exp += _map1.actors[defender].exp;
-                            if (_map1.actors[attacker].exp > _map1.actors[attacker].expNeeded)
-                            {
-                                _map1.actors[attacker].LevelUp();
-
-                                if (_map1.actors[attacker] is Player)
-                                    _mainmap1.floatNumber(_map1.actors[attacker].tile.coords, "Level " + _map1.actors[attacker].level.ToString(), Color.Gold);
-                                else
-                                {
-                                    ((Enemy)_map1.actors[attacker]).AssignSkillsAndAbilities();
-                                }
-                            }
-                            if (_map1.actors[attacker] is Player)
-                                _mainmap1.floatNumber(_map1.actors[attacker].tile.coords, "+" + _map1.actors[defender].exp + " Exp", Color.Gold);
-                            AddMessage((_map1.actors[defender] is Player ? "<red>" : "") + _map1.actors[defender].name + " was killed by " + _map1.actors[attacker].name + "  doing " + damage.ToString() + " points of damage.");
-                            if (_map1.actors[defender] is Player) _PlaySoundEffect(4); //SoundEffect damage
-                        }
-                        else
-                        {
-                            _mainmap1.HandleEvent(true, Events.AnimateActor, defender, Activity.Hit);
-                            //_mainmap2.HandleEvent(true, Events.AnimateActor, defender, Activity.Hit);
-                            AddMessage((_map1.actors[defender] is Player ? "<red>" : "") + _map1.actors[defender].name + " was hit by " + _map1.actors[attacker].name + " for " + damage.ToString() + " points of damage.");
-                            if (_map1.actors[defender] is Player) _PlaySoundEffect(4); //SoundEffect damage
-                        }
+                        _mainmap1.floatNumber(_map1.actors[defender].tile.coords, damage.ToString(), Color.DarkRed);
+                        RemoveHealth();
                     }
                     else
                     {
-                        if ((_map1.actors[attacker] is Player) || (_map1.actors[defender] is Player))
-                            _mainmap1.floatNumber(_map1.actors[defender].tile.coords, "No damage", _map1.actors[defender] is Player ? Color.Green : Color.White);
+                        if (_map1.actors[attacker] is Player)
+                        {
+                            _mainmap1.floatNumber(_map1.actors[defender].tile.coords, damage.ToString(), Color.White);
+                            _map1.actors[defender].aggro = true;
+                        }
                     }
+                    if (_map1.actors[defender].isDead)
+                    {
+                        _mainmap1.HandleEvent(true, Events.AnimateActor, defender, Activity.Die);
+                        //_mainmap2.HandleEvent(true, Events.AnimateActor, defender, Activity.Die);
+                        _map1.actors[attacker].exp += _map1.actors[defender].exp;
+                        if (_map1.actors[attacker].exp > _map1.actors[attacker].expNeeded)
+                        {
+                            _map1.actors[attacker].LevelUp();
+
+                            if (_map1.actors[attacker] is Player)
+                                _mainmap1.floatNumber(_map1.actors[attacker].tile.coords, "Level " + _map1.actors[attacker].level.ToString(), Color.Gold);
+                            else
+                            {
+                                ((Enemy)_map1.actors[attacker]).AssignSkillsAndAbilities();
+                            }
+                        }
+                        if (_map1.actors[attacker] is Player)
+                            _mainmap1.floatNumber(_map1.actors[attacker].tile.coords, "+" + _map1.actors[defender].exp + " Exp", Color.Gold);
+                        AddMessage((_map1.actors[defender] is Player ? "<red>" : "") + _map1.actors[defender].name + " was killed by " + _map1.actors[attacker].name + "  doing " + damage.ToString() + " points of damage.");
+                        if (_map1.actors[defender] is Player) _PlaySoundEffect(4); //SoundEffect damage
+                    }
+                    else
+                    {
+                        _mainmap1.HandleEvent(true, Events.AnimateActor, defender, Activity.Hit);
+                        //_mainmap2.HandleEvent(true, Events.AnimateActor, defender, Activity.Hit);
+                        AddMessage((_map1.actors[defender] is Player ? "<red>" : "") + _map1.actors[defender].name + " was hit by " + _map1.actors[attacker].name + " for " + damage.ToString() + " points of damage.");
+                        if (_map1.actors[defender] is Player) _PlaySoundEffect(4); //SoundEffect damage
+                    }
+                }
+                else
+                {
+                    if ((_map1.actors[attacker] is Player) || (_map1.actors[defender] is Player))
+                        _mainmap1.floatNumber(_map1.actors[defender].tile.coords, "No damage", _map1.actors[defender] is Player ? Color.Green : Color.White);
+                }
             }
         }
 
@@ -154,8 +155,8 @@ namespace Gruppe22
             else
             {
                 //a trap can either be fully blocked or not blocked
-                double blockChance = Math.Max((0.02 * (actor.block - _map1[target.x, target.y].trap.penetrate)) / (1 + 0.03 * (actor.block-_map1[target.x, target.y].trap.penetrate)),0);
-                if (r.NextDouble()<blockChance)
+                double blockChance = Math.Max((0.02 * (actor.block - _map1[target.x, target.y].trap.penetrate)) / (1 + 0.03 * (actor.block - _map1[target.x, target.y].trap.penetrate)), 0);
+                if (r.NextDouble() < blockChance)
                 {
                     if (actor is Player)
                         _mainmap1.floatNumber(target, "Trap blocked", Color.Green);
@@ -426,7 +427,7 @@ namespace Gruppe22
                         int id = (int)data[0];
                         Direction dir = (Direction)data[1];
                         Coords target = Map.DirectionTile(_map1.actors[id].tile.coords, dir);
-                        
+
                         if (_map1.CanMove(_map1.actors[id].tile.coords, dir))
                         {
                             _mainmap1.HandleEvent(true, Events.AnimateActor, id, Activity.Attack, false, dir, true);
@@ -772,7 +773,13 @@ namespace Gruppe22
                     rooms[entrance].AddStairs(entranceCoords, exit + 1, exitCoords, false);
                 }
 
-
+                int checkpoint = LevelStart + r.Next(totalRooms);
+                rooms[checkpoint].AddCheckpoint();
+                for (int i = 0; i < r.Next(3); ++i)
+                {
+                    int npc = LevelStart + r.Next(totalRooms);
+                    rooms[npc].AddNPC();
+                }
                 if (level == maxLevel)
                 {
                     int exit = r.Next(totalRooms) + LevelStart;
