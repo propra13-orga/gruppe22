@@ -422,10 +422,10 @@ namespace Gruppe22
         /// <param name="cols"></param>
         /// <param name="rows"></param>
         /// <param name="vertical"></param>
-        public void Add(Activity activity, Direction direction, string filename, Coords startPos, int cols = 1, int rows = 1, bool vertical = false)
+        public void Add(Activity activity, Direction direction, string filename, Coords startPos, int cols = 1, int rows = 1, Coords offset = null, Coords crop = null, bool vertical = false)
         {
             int x = (int)Math.Log((double)direction, 2);
-            _textures[(int)activity * 8 + (int)Math.Log((double)direction, 2)].AddAnimation(filename, startPos, cols, rows, vertical);
+            _textures[(int)activity * 8 + (int)Math.Log((double)direction, 2)].AddAnimation(filename, startPos, cols, rows,offset,crop, vertical);
         }
 
 

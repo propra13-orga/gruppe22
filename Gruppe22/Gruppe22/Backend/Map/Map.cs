@@ -45,6 +45,7 @@ namespace Gruppe22
         protected string _dungeonname;
         protected string _wallFile = "wall1";
         protected string _floorFile = "floor1";
+        protected int _light;
 
         protected int _id;
 
@@ -108,6 +109,18 @@ namespace Gruppe22
         {
             get { return _wallFile; }
             set { _wallFile = value; }
+        }
+
+        public int light
+        {
+            get
+            {
+                return _light;
+            }
+            set
+            {
+                _light = value;
+            }
         }
 
         public string name
@@ -665,6 +678,8 @@ namespace Gruppe22
             if (xmlr.GetAttribute("dungeon") != null) _dungeonname = xmlr.GetAttribute("dungeon");
             if (xmlr.GetAttribute("floor") != null) _floorFile = xmlr.GetAttribute("floor");
             if (xmlr.GetAttribute("wall") != null) _wallFile = xmlr.GetAttribute("wall");
+            if (xmlr.GetAttribute("light") != null) _light = int.Parse(xmlr.GetAttribute("light"));
+
             xmlr.ReadStartElement("GameMap");//GameMap
 
             for (int row = 0; row < _height; ++row)
@@ -917,6 +932,7 @@ namespace Gruppe22
             xmlw.WriteAttributeString("name", _name);
             xmlw.WriteAttributeString("level", _level.ToString());
             xmlw.WriteAttributeString("dungeon", _dungeonname);
+            xmlw.WriteAttributeString("light", _light.ToString());
             xmlw.WriteAttributeString("floor", _floorFile);
             xmlw.WriteAttributeString("wall", _wallFile);
 

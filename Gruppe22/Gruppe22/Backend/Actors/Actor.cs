@@ -57,7 +57,7 @@ namespace Gruppe22
         protected int _skills = 0;
         protected ContentManager _content;
         protected int _viewRange = 4;
-        protected string _animationFile = "player";
+        protected string _animationFile = ".\\content\\player.xml";
         protected int _stunned = 0;
         protected int _charmed = 0;
         protected int _scared = 0;

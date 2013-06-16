@@ -13,11 +13,18 @@ namespace Gruppe22
         Armor = 0,
         Potion = 1,
         Weapon = 2,
-        Gold = 3
+        Gold = 3,
+        Key = 4,
+        Note = 5,
+        Cloak = 6,
+        Bow = 7,
+        Staff = 8,
+        Ring = 9
     }
     public class Item
     {
         private int _id = 1;
+        private int _level = 1;
         private ItemType _itemType = ItemType.Armor;
         private ItemTile _tile = null;
         private Actor _owner = null;
@@ -311,7 +318,7 @@ namespace Gruppe22
             }
 
         }
-
+        public int level { get { return _level; } set { _level = value; } }
         public VisibleObject icon { get { return _icon; } set { _icon = value; } }
         public bool equipped { get { return _equipped; } set { _equipped = value; } }
 
@@ -358,6 +365,8 @@ namespace Gruppe22
             _icon.cropY = Convert.ToInt32(reader.GetAttribute("iconcropY"));
             _equipped = Convert.ToBoolean(reader.GetAttribute("equipped"));
             _destroyed = Convert.ToBoolean(reader.GetAttribute("destroyed"));
+            if (reader.GetAttribute("level") != null) _level = Convert.ToInt32(reader.GetAttribute("level"));
+
             if (reader.GetAttribute("id") != null) _id = Convert.ToInt32(reader.GetAttribute("id"));
 
 
@@ -400,6 +409,8 @@ namespace Gruppe22
             }
             xmlw.WriteAttributeString("equipped", Convert.ToString(_equipped));
             xmlw.WriteAttributeString("type", Convert.ToString(_itemType));
+            xmlw.WriteAttributeString("level", Convert.ToString(_level));
+
             xmlw.WriteAttributeString("id", Convert.ToString(_id));
 
             xmlw.WriteAttributeString("value", Convert.ToString(_value));
@@ -572,20 +583,43 @@ namespace Gruppe22
 
         public void GenerateName()
         {
+
             switch (_itemType)
             {
+                case ItemType.Cloak:
+                    _name = "Cloak";
+                    break;
                 case ItemType.Armor:
-                    _name = "Armor";
+                    _name = "Chainmail";
+
                     break;
                 case ItemType.Weapon:
                     _name = "Sword";
                     break;
-                case ItemType.Potion:
-                    _name = "Potion";
+                case ItemType.Staff:
+                    _name = "Staff";
+                    break;
+                case ItemType.Bow:
+                    _name = "Bow";
+                    break;
+                case ItemType.Key:
+                    _name = "Key";
+                    break;
+
+                case ItemType.Note:
+                    _name = "Note";
+                    break;
+                case ItemType.Ring:
+                    _name = "Ring";
+
                     break;
                 case ItemType.Gold:
                     _name = _value.ToString() + " gold pieces";
-                    return;
+                    break;
+
+                case ItemType.Potion:
+                    _name = "Potion";
+                    break;
             }
             if (_effects.Count == 0)
             {
@@ -682,6 +716,7 @@ namespace Gruppe22
             {
                 switch (_itemType)
                 {
+                    case ItemType.Cloak:
                     case ItemType.Armor:
                         value = 30;
                         break;
@@ -692,33 +727,88 @@ namespace Gruppe22
                         value = 10;
                         break;
                     case ItemType.Weapon:
+                    case ItemType.Staff:
+                    case ItemType.Bow:
                         value = 20;
                         break;
+                    default:
+                        value = 0;
+                        break;
                 }
-                foreach (ItemEffect effect in _effects)
-                {
-                    if (effect.effect < 0)
+                if (value > 0)
+                    foreach (ItemEffect effect in _effects)
                     {
-                        value -= 2;
+                        if (effect.effect < 0)
+                        {
+                            value -= 2;
+                        }
+                        else
+                        {
+                            value += effect.effect * 2;
+                        }
+                        if (effect.duration > 0) value += effect.duration;
                     }
-                    else
-                    {
-                        value += effect.effect * 2;
-                    }
-                    if (effect.duration > 0) value += effect.duration;
-                }
             }
         }
 
         public void GenerateProperties(Random r = null)
         {
             if (r == null) r = new Random();
-
+            /*
             int properties = r.Next(3);
             for (int i = 0; i < r.Next(4); ++i)
             {
                 _effects.Add(new ItemEffect((ItemProperty)r.Next(Enum.GetValues(typeof(ItemProperty)).Length),
                 10 - r.Next(20), r.Next(5) - 1));
+            } */
+
+            switch (_itemType)
+            {
+                case ItemType.Cloak:
+                case ItemType.Armor:
+                    _effects.Add(new ItemEffect(ItemProperty.ReduceDamage, 5 * _level + r.Next(10)));
+                    break;
+                case ItemType.Weapon:
+                case ItemType.Staff:
+                case ItemType.Bow:
+                    _effects.Add(new ItemEffect(ItemProperty.Damage, 5 * _level + r.Next(10)));
+                    if (r.Next(100) > 50)
+                    {
+                        _effects.Add(new ItemEffect(ItemProperty.Penetrate, 2 * (_level + r.Next(5))));
+                    }
+                    if (r.Next(100) > 50)
+                    {
+                        _effects.Add(new ItemEffect(ItemProperty.Evade, 2 * (_level + r.Next(5))));
+                    }
+                    if (r.Next(100) > 50)
+                    {
+                        _effects.Add(new ItemEffect(ItemProperty.FireDamage, 2 * (_level + r.Next(5))));
+                    }
+                    if (r.Next(100) > 50)
+                    {
+                        _effects.Add(new ItemEffect(ItemProperty.IceDamage, 2 * (_level + r.Next(5))));
+                    }
+                    break;
+
+                case ItemType.Gold:
+                case ItemType.Key:
+                case ItemType.Note:
+                case ItemType.Ring:
+                    break;
+
+                case ItemType.Potion:
+                    switch (r.Next(2))
+                    {
+                        case 0:
+                            _effects.Add(new ItemEffect(ItemProperty.Health, 5 + 10 * (_level + r.Next(5))));
+
+                            break;
+                        case 1:
+                            _effects.Add(new ItemEffect(ItemProperty.Mana, 5 + 10 * (_level + r.Next(5))));
+
+                            break;
+                    }
+                    break;
             }
         }
 
@@ -763,34 +853,272 @@ namespace Gruppe22
              */
             switch (itemType)
             {
+
+
                 case ItemType.Armor:
-                    _icon = new VisibleObject(_content, "items", new Rectangle(0, 0, 64, 64));
+                    if (_effects[0].effect > 15)
+                    {
+                        if (_effects[0].effect > 20)
+                        {
+                            _icon = new VisibleObject(_content, "armor", new Rectangle(199, 573, 48, 48), new Coords(8, 8), new Coords(8, 8));
+                        }
+                        else
+                        {
+                            _icon = new VisibleObject(_content, "armor", new Rectangle(136, 573, 48, 48), new Coords(8, 8), new Coords(8, 8));
+                        }
+                    }
+                    else
+                    {
+                        if (_effects[0].effect > 10)
+                        {
+                            _icon = new VisibleObject(_content, "armor", new Rectangle(8, 573, 48, 48), new Coords(8, 8), new Coords(8, 8));
+                        }
+                        else
+                        {
+                            _icon = new VisibleObject(_content, "armor", new Rectangle(72, 573, 48, 48), new Coords(8, 8), new Coords(8, 8));
+                        }
+                    }
+                    break;
+                case ItemType.Cloak:
+                    if (_effects[0].effect > 17)
+                    {
+                        if (_effects[0].effect > 21)
+                        {
+                            _icon = new VisibleObject(_content, "items", new Rectangle(128, 384, 64, 64));
+                        }
+                        else
+                        {
+                            _icon = new VisibleObject(_content, "items", new Rectangle(192, 0, 64, 64));
+                        }
+                    }
+                    else
+                    {
+                        if (_effects[0].effect > 13)
+                        {
+                            _icon = new VisibleObject(_content, "items", new Rectangle(128, 0, 64, 64));
+                        }
+                        else
+                        {
+                            if (_effects[0].effect > 9)
+                            {
+                                _icon = new VisibleObject(_content, "items", new Rectangle(64, 0, 64, 64));
+                            }
+                            else
+                            {
+                                _icon = new VisibleObject(_content, "items", new Rectangle(0, 0, 64, 64));
+                            }
+                        }
+                    }
+
                     break;
                 case ItemType.Weapon:
-                    _icon = new VisibleObject(_content, "items", new Rectangle(320, 0, 64, 64));
+                    if (_effects[0].effect > 17)
+                    {
+                        if (_effects[0].effect > 21)
+                        {
+                            _icon = new VisibleObject(_content, "weapon", new Rectangle(8, 186, 58, 58), new Coords(3, 3), new Coords(3, 3));
+                        }
+                        else
+                        {
+                            _icon = new VisibleObject(_content, "weapon", new Rectangle(69, 186, 58, 58), new Coords(3, 3), new Coords(3, 3));
+                        }
+                    }
+                    else
+                    {
+                        if (_effects[0].effect > 13)
+                        {
+                            _icon = new VisibleObject(_content, "weapon", new Rectangle(197, 186, 58, 58), new Coords(3, 3), new Coords(3, 3));
+                        }
+                        else
+                        {
+                            if (_effects[0].effect > 9)
+                            {
+                                _icon = new VisibleObject(_content, "weapon", new Rectangle(260, 186, 58, 58), new Coords(3, 3), new Coords(3, 3));
+                            }
+                            else
+                            {
+                                _icon = new VisibleObject(_content, "items", new Rectangle(320, 0, 64, 64));
+                            }
+                        }
+                    }
                     break;
+                case ItemType.Staff:
+                    if (_effects[0].effect > 17)
+                    {
+                        if (_effects[0].effect > 21)
+                        {
+                            _icon = new VisibleObject(_content, "weapon", new Rectangle(3, 380, 63, 52), new Coords(1, 6), new Coords(0, 6));
+                        }
+                        else
+                        {
+                            _icon = new VisibleObject(_content, "weapon", new Rectangle(67, 380, 63, 52), new Coords(1, 6), new Coords(0, 6));
+                        }
+                    }
+                    else
+                    {
+                        if (_effects[0].effect > 13)
+                        {
+                            _icon = new VisibleObject(_content, "weapon", new Rectangle(131, 380, 63, 52), new Coords(1, 6), new Coords(0, 6));
+                        }
+                        else
+                        {
+                            if (_effects[0].effect > 9)
+                            {
+                                _icon = new VisibleObject(_content, "weapon", new Rectangle(195, 380, 63, 52), new Coords(1, 6), new Coords(0, 6));
+                            }
+                            else
+                            {
+                                _icon = new VisibleObject(_content, "weapon", new Rectangle(260, 380, 63, 52), new Coords(1, 6), new Coords(0, 6));
+                            }
+                        }
+                    }
+                    break;
+                case ItemType.Bow:
+                    if (_effects[0].effect > 17)
+                    {
+                        if (_effects[0].effect > 21)
+                        {
+                            _icon = new VisibleObject(_content, "weapon", new Rectangle(8, 186, 60, 53), new Coords(2, 5), new Coords(2, 6));
+                        }
+                        else
+                        {
+                            _icon = new VisibleObject(_content, "weapon", new Rectangle(69, 186, 60, 53), new Coords(2, 5), new Coords(2, 6));
+                        }
+                    }
+                    else
+                    {
+                        if (_effects[0].effect > 13)
+                        {
+                            _icon = new VisibleObject(_content, "weapon", new Rectangle(197, 186, 60, 53), new Coords(2, 5), new Coords(2, 6));
+                        }
+                        else
+                        {
+                            if (_effects[0].effect > 9)
+                            {
+                                _icon = new VisibleObject(_content, "weapon", new Rectangle(260, 186, 60, 53), new Coords(2, 5), new Coords(2, 6));
+                            }
+                            else
+                            {
+                                _icon = new VisibleObject(_content, "weapon", new Rectangle(320, 0, 60, 53), new Coords(2, 5), new Coords(2, 6));
+                            }
+                        }
+                    }
+                    break;
+                case ItemType.Key:
+                    switch (_level)
+                    {
+                        case 1:
+                            _icon = new VisibleObject(_content, "questitems", new Rectangle(0, 224, 32, 32), new Coords(16, 16), new Coords(16, 16));
+                            break;
+                        case 2:
+                            _icon = new VisibleObject(_content, "questitems", new Rectangle(0, 256, 32, 32), new Coords(16, 16), new Coords(16, 16));
+                            break;
+                        case 3:
+                            _icon = new VisibleObject(_content, "questitems", new Rectangle(0, 320, 32, 32), new Coords(16, 16), new Coords(16, 16));
+                            break;
+                        default:
+                            _icon = new VisibleObject(_content, "questitems", new Rectangle(0, 352, 32, 32), new Coords(16, 16), new Coords(16, 16));
+                            break;
+                    }
+                    break;
+
+                case ItemType.Note:
+                    if (_level < 3)
+                    {
+                        _icon = new VisibleObject(_content, "questitems", new Rectangle(128, 192, 32, 32), new Coords(16, 16), new Coords(16, 16));
+
+                    }
+                    else
+                    {
+                        _icon = new VisibleObject(_content, "questitems", new Rectangle(128, 159, 32, 32), new Coords(16, 16), new Coords(16, 16));
+                    }
+                    break;
+                case ItemType.Ring:
+                    _icon = new VisibleObject(_content, "armor", new Rectangle(331, 478, 47, 47), new Coords(9, 9), new Coords(8, 8));
+
+                    break;
+                case ItemType.Gold:
+                    _icon = new VisibleObject(_content, "armor", new Rectangle(381, 899, 38, 45), new Coords(13, 9), new Coords(13, 10));
+                    break;
+
                 case ItemType.Potion:
-                    _icon = new VisibleObject(_content, "items", new Rectangle(160, 256, 48, 48));
-                    _icon.offsetX = 16;
-                    _icon.offsetY = 16;
+                    switch (_effects[0].property)
+                    {
+                        case ItemProperty.Mana:
+                            if (_effects[0].effect > 30)
+                            {
+                                _icon = new VisibleObject(_content, "items", new Rectangle(160, 256, 48, 48), new Coords(8, 8), new Coords(8, 8));
+                            }
+                            else
+                            {
+                                _icon = new VisibleObject(_content, "items", new Rectangle(127, 256, 48, 48), new Coords(8, 8), new Coords(8, 8));
+
+                            }
+                            break;
+                        case ItemProperty.Health:
+                            if (_effects[0].effect > 30)
+                            {
+                                _icon = new VisibleObject(_content, "items", new Rectangle(97, 256, 48, 48), new Coords(8, 8), new Coords(8, 8));
+                            }
+                            else
+                            {
+                                _icon = new VisibleObject(_content, "items", new Rectangle(65, 256, 48, 48), new Coords(8, 8), new Coords(8, 8));
+
+                            }
+                            break;
+                        default:
+                            if (_effects[0].effect > 30)
+                            {
+                                _icon = new VisibleObject(_content, "items", new Rectangle(223, 256, 48, 48), new Coords(8, 8), new Coords(8, 8));
+                            }
+                            else
+                            {
+                                _icon = new VisibleObject(_content, "items", new Rectangle(193, 256, 48, 48), new Coords(8, 8), new Coords(8, 8));
+
+                            } break;
+                    }
+
                     break;
             }
+
         }
 
-        public Item(ContentManager content, Random r = null, int value = 0)
+        public Item(ContentManager content, Random r = null, int value = 0, int level = 1)
             : this(content)
         {
             if (r == null) r = new Random();
             _value = value;
-            _itemType = (ItemType)r.Next(3);
+            _level = level;
+            switch (r.Next(6))
+            {
+                case 0:
+                    _itemType = ItemType.Staff;
+                    break;
+                case 1:
+                    _itemType = ItemType.Potion;
+                    break;
+                case 2:
+                    _itemType = ItemType.Cloak;
+                    break;
+                case 3:
+                    _itemType = ItemType.Bow;
+                    break;
+                case 4:
+                    _itemType = ItemType.Armor;
+                    break;
+                case 5:
+                    _itemType = ItemType.Weapon;
+                    break;
+            }
             GenerateProperties(r);
             GenerateName();
             GenerateIcon();
         }
 
-        public Item(ContentManager content, ItemType itemtype, string name = "", Random r = null, VisibleObject icon = null, int value = 0)
+        public Item(ContentManager content, ItemType itemtype, string name = "", Random r = null, VisibleObject icon = null, int value = 0, int level = 1)
             : this(content)
         {
+            _level = level;
             _value = value;
             _itemType = itemtype;
             if (name != "")
@@ -806,22 +1134,41 @@ namespace Gruppe22
 
         }
 
-        public Item(ContentManager content, ItemTile parent, ItemType itemtype, string name = "", VisibleObject icon = null, int value = 0)
+        public Item(ContentManager content, ItemTile parent, ItemType itemtype, string name = "", VisibleObject icon = null, int value = 0, int level = 1)
             : this(content)
         {
+            _level = level;
             _tile = parent;
             _value = value;
-            _name = name;
+            if (name != "")
+            {
+                _name = name;
+            }
+            else
+            {
+                GenerateName();
+            }
             _itemType = itemtype;
             if (icon == null) GenerateIcon();
         }
 
-        public Item(ContentManager content, Actor owner, ItemType itemtype, string name = "", VisibleObject icon = null, int value = 0)
+        public Item(ContentManager content, Actor owner, ItemType itemtype, string name = "", VisibleObject icon = null, int value = 0, int level=1)
             : this(content)
         {
             _owner = owner;
             _value = value;
-
+            _level = level;
+            _itemType = itemtype;
+            if (name != "")
+            {
+                _name = name;
+            }
+            else
+            {
+                GenerateName();
+            }
+            _icon = icon;
+            if (icon == null) GenerateIcon();
         }
 
         public Item(ContentManager content)

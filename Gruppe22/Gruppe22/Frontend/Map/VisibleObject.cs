@@ -34,7 +34,7 @@ namespace Gruppe22
         /// <summary>
         /// 
         /// </summary>
-        public Rectangle clipRect { get { return _clipRect; } set { _clipRect = new Rectangle(value.Left,value.Top,value.Width-_offsetX-_cropX,value.Height-_offsetY-_cropY); } }
+        public Rectangle clipRect { get { return _clipRect; } set { _clipRect = new Rectangle(value.Left, value.Top, value.Width - _offsetX - _cropX, value.Height - _offsetY - _cropY); } }
 
         public Texture2D texture
         {
@@ -97,11 +97,21 @@ namespace Gruppe22
         /// <param name="srcFile"></param>
         /// <param name="startX"></param>
         /// <param name="startY"></param>
-        public VisibleObject(ContentManager content, string srcFile, Rectangle clipRect)
+        public VisibleObject(ContentManager content, string srcFile, Rectangle clipRect, Coords offset = null, Coords crop = null)
         {
             _srcFile = srcFile;
             _clipRect = clipRect;
             _content = content;
+            if (offset != null)
+            {
+                _offsetX = offset.x;
+                _offsetY = offset.y;
+            }
+            if (crop != null)
+            {
+                _cropY = crop.y;
+                _cropX = crop.x;
+            }
             _texture = null;
         }
 
@@ -464,7 +474,7 @@ namespace Gruppe22
         /// <param name="rows">Number of rows used in the animation</param>
         /// <param name="order">Whether to read row by row (false, default) or column by column (true)</param>
         /// <returns>ID of Animation added to or -1 if invalid target was passed</returns>
-        public void AddAnimation(string src, Coords start, int cols = 1, int rows = 1, bool order = false)
+        public void AddAnimation(string src, Coords start, int cols = 1, int rows = 1, Coords offset = null, Coords crop = null, bool order = false)
         {
             if (order)
             {
@@ -474,7 +484,7 @@ namespace Gruppe22
                     {
 
                         _animations.Add(new VisibleObject(_content, src, new Rectangle((int)start.x + x * _width,
-                            (int)start.y + y * _height, _width, _height)));
+                            (int)start.y + y * _height, _width, _height),offset,crop));
                     }
                 }
             }
@@ -486,7 +496,7 @@ namespace Gruppe22
                     {
 
                         _animations.Add(new VisibleObject(_content, src, new Rectangle((int)start.x + x * _width,
-                            (int)start.y + y * _height, _width, _height)));
+                            (int)start.y + y * _height, _width, _height), offset, crop));
                     }
                 }
 
@@ -582,6 +592,12 @@ namespace Gruppe22
             }
             writer.WriteEndElement();
 
+
+        }
+
+        internal void Clear()
+        {
+            _animations.Clear();
 
         }
     }

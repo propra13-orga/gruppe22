@@ -17,7 +17,7 @@ namespace Gruppe22
         {
             _actorType = ActorType.Player;
             _viewRange = 4;
-            _animationFile = "player";
+            _animationFile = ".\\content\\player.xml";
         }
     }
 }

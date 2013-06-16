@@ -100,6 +100,8 @@ namespace Gruppe22
             set
             {
                 _width = value;
+                for (int i = 0; i < _textures.Count; ++i)
+                    _textures[i].width = _width;
             }
         }
 
@@ -115,6 +117,8 @@ namespace Gruppe22
             set
             {
                 _height = value;
+                for (int i = 0; i < _textures.Count; ++i)
+                    _textures[i].height = _height;
             }
         }
         #endregion
@@ -176,7 +180,7 @@ namespace Gruppe22
             {
                 _textures.Add(new TileObject(_content, cutOut.Width, cutOut.Height));
             }
-            _textures[id].AddAnimation(filename, new Coords(cutOut.Left, cutOut.Top), cols, rows, dir);
+            _textures[id].AddAnimation(filename, new Coords(cutOut.Left, cutOut.Top), cols, rows, null, null, dir);
         }
 
         /// <summary>

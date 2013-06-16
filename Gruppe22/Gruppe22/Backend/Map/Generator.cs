@@ -238,6 +238,7 @@ namespace Gruppe22
             xmlw.WriteAttributeString("dungeon", _dungeonname);
             xmlw.WriteAttributeString("floor", _floorFile);
             xmlw.WriteAttributeString("wall", _wallFile);
+            xmlw.WriteAttributeString("light", _light.ToString());
 
 
             //_tiles[0][0].overlay.Add(new TeleportTile("map2.xml", new Microsoft.Xna.Framework.Vector2(0,0)));//test
@@ -287,7 +288,7 @@ namespace Gruppe22
 
                 if ((pos.x >= 0) && (pos.x < _width) && (pos.y < _height) && (pos.y >= 0))
                 {
-                    Enemy enemy = new Enemy(_content, -1, -1, -1, -1, "", r);
+                    Enemy enemy = new Enemy(_content, -1, -1, -1, -1, "", r, (_id == 1) ? 0 : _level);
                     ActorTile enemyTile = new ActorTile(_tiles[pos.y][pos.x], enemy);
                     enemy.tile = enemyTile;
                     _tiles[pos.y][pos.x].Add(enemyTile);
@@ -331,13 +332,9 @@ namespace Gruppe22
 
                 if ((pos.x >= 0) && (pos.x < _width) && (pos.y < _height) && (pos.y >= 0))
                 {
-                    NPC npc = new NPC(_content, -1, -1, -1, -1, "", r);
+                    NPC npc = new NPC(_content, -1, -1, -1, -1, "", r, _level);
                     npc.gold = 50000;
-                    npc.hasShop = true;
-                    for (count = 0; count < 20; ++count)
-                    {
-                        npc.inventory.Add(new Item(_content, r));
-                    }
+                    npc.hasShop = false;
                     ActorTile NPCTile = new ActorTile(_tiles[pos.y][pos.x], npc);
                     npc.tile = NPCTile;
                     _tiles[pos.y][pos.x].Add(NPCTile);
@@ -347,6 +344,97 @@ namespace Gruppe22
 
         }
 
+        public void AddBoss(int amount = -1)
+        {
+            if (amount < 0) amount = 1;
+            for (int i = 0; i < amount; ++i)
+            {
+                int count = 0;
+                Path pos = new Path(1 + r.Next(_width - 2), 1 + r.Next(_height - 2));
+                while ((count < _width * height) && (pos.x > 0)
+         && (_tiles[pos.y][pos.x].overlay.Count != 0)
+         )
+                {
+                    count += 1;
+                    pos.x += 1;
+                    if (pos.x > _width - 2)
+                    {
+                        pos.x = 1;
+                        pos.y += 1;
+                    };
+                    if (pos.y > _height - 2)
+                    {
+                        pos.y = 1;
+                        pos.x = 1;
+                    }
+                    if (count >= _width * _height)
+                    {
+                        pos.x = -1;
+                        pos.y = -1;
+                    }
+                }
+
+
+                if ((pos.x >= 0) && (pos.x < _width) && (pos.y < _height) && (pos.y >= 0))
+                {
+                    Enemy boss = new Enemy(_content, -1, -1, -1, -1, "", r, 10 + _level);
+                    ActorTile BossTile = new ActorTile(_tiles[pos.y][pos.x], boss);
+                    boss.tile = BossTile;
+                    _tiles[pos.y][pos.x].Add(BossTile);
+                    _actors.Add(boss);
+                }
+            }
+
+        }
+
+        public void AddShop(int amount = -1)
+        {
+            if (amount < 0) amount = 1;
+            for (int i = 0; i < amount; ++i)
+            {
+                int count = 0;
+                Path pos = new Path(1 + r.Next(_width - 2), 1 + r.Next(_height - 2));
+                while ((count < _width * height) && (pos.x > 0)
+         && (_tiles[pos.y][pos.x].overlay.Count != 0)
+         )
+                {
+                    count += 1;
+                    pos.x += 1;
+                    if (pos.x > _width - 2)
+                    {
+                        pos.x = 1;
+                        pos.y += 1;
+                    };
+                    if (pos.y > _height - 2)
+                    {
+                        pos.y = 1;
+                        pos.x = 1;
+                    }
+                    if (count >= _width * _height)
+                    {
+                        pos.x = -1;
+                        pos.y = -1;
+                    }
+                }
+
+
+                if ((pos.x >= 0) && (pos.x < _width) && (pos.y < _height) && (pos.y >= 0))
+                {
+                    NPC npc = new NPC(_content, -1, -1, -1, -1, "", r, _level);
+                    npc.gold = 50000;
+                    npc.hasShop = true;
+                    for (count = 0; count < 20; ++count)
+                    {
+                        npc.inventory.Add(new Item(_content, r, 0, _level));
+                    }
+                    ActorTile NPCTile = new ActorTile(_tiles[pos.y][pos.x], npc);
+                    npc.tile = NPCTile;
+                    _tiles[pos.y][pos.x].Add(NPCTile);
+                    _actors.Add(npc);
+                }
+            }
+
+        }
 
         public void AddCheckpoint()
         {
@@ -615,7 +703,7 @@ namespace Gruppe22
 
                 if ((pos.x >= 0) && (pos.x < _width) && (pos.y < _height) && (pos.y >= 0))
                 {
-                    Item item = new Item(_content, r);
+                    Item item = new Item(_content, r, 0, _level);
                     ItemTile itemTile = new ItemTile(_tiles[pos.y][pos.x], item);
                     item.tile = itemTile;
                     _tiles[pos.y][pos.x].Add(itemTile);
@@ -659,9 +747,18 @@ namespace Gruppe22
                         pos.y = -1;
                     }
                 }
-                _tiles[pos.y][pos.x].Remove(TileType.Wall);
+                if (pos.x > -1)
+                {
+                    _tiles[pos.y][pos.x].Remove(TileType.Wall);
+                }
+                else break;
             }
 
+
+        }
+
+        public void CleanupRoom()
+        {
             // Remove bad looking places: Walls surrounded by free space become free space, free space surrounded by walls becomes free space surrounded by free space
             for (int y = 1; y < _height - 1; ++y)
             {
@@ -725,8 +822,6 @@ namespace Gruppe22
             }
         }
 
-
-
         /// <summary>
         /// Create a grid of walls
         /// </summary>
@@ -788,13 +883,13 @@ namespace Gruppe22
 
                 if ((pos.x >= 0) && (pos.x < _width) && (pos.y < _height) && (pos.y >= 0))
                 {
-                    TrapTile trapTile = new TrapTile(_tiles[pos.y][pos.x], r.Next(10) + 10);
-                    if (r.Next(10) > 3)
+                    TrapTile trapTile = new TrapTile(_tiles[pos.y][pos.x], r.Next(10 * _level) + 10);
+                    /*if (r.Next(10) > 3)
                         trapTile.type = trapTile.type | TrapType.OnlyOnce;
                     if (r.Next(10) > 7)
                         trapTile.type = trapTile.type | TrapType.Hidden;
-                    if (r.Next(10) > 4)
-                        trapTile.type = trapTile.type | TrapType.Changing;
+                    if (r.Next(10) > 4) */
+                    trapTile.type = trapTile.type | TrapType.Changing;
                     trapTile.penetrate = r.Next(10);
                     trapTile.evade = r.Next(10);
 
@@ -925,7 +1020,6 @@ namespace Gruppe22
                 }
                 startPos = new Path(1 + r.Next((_width - 3) / 2) * 2, 1 + r.Next((_height - 2) / 2) * 2);
             }
-            ClearWalls(); // Remove random walls
         }
 
         public bool FromString(string input, int roomID, int MaxRoom)
@@ -1057,34 +1151,34 @@ namespace Gruppe22
             switch (r.Next(11))
             {
                 case 0:
-                    _dungeonname += "of evil ";
+                    _dungeonname += "of Evil ";
                     break;
                 case 1:
-                    _dungeonname += "of deadly ";
+                    _dungeonname += "of Deadly ";
                     break;
                 case 2:
-                    _dungeonname += "of elemental ";
+                    _dungeonname += "of Elemental ";
                     break;
                 case 3:
-                    _dungeonname += "of strange ";
+                    _dungeonname += "of Strange ";
                     break;
                 case 4:
-                    _dungeonname += "of mysterious ";
+                    _dungeonname += "of Mysterious ";
                     break;
                 case 5:
-                    _dungeonname += "of unknown ";
+                    _dungeonname += "of Unknown ";
                     break;
                 case 6:
-                    _dungeonname += "of incredible ";
+                    _dungeonname += "of Incredible ";
                     break;
                 case 7:
-                    _dungeonname += "of legendary ";
+                    _dungeonname += "of Legendary ";
                     break;
                 case 8:
-                    _dungeonname += "of growing ";
+                    _dungeonname += "of Growing ";
                     break;
                 case 9:
-                    _dungeonname += "of scary ";
+                    _dungeonname += "of Scary ";
                     break;
             }
             switch (r.Next(11))
@@ -1193,34 +1287,34 @@ namespace Gruppe22
             switch (r.Next(10))
             {
                 case 0:
-                    _name += " of evil ";
+                    _name += " of Evil ";
                     break;
                 case 1:
-                    _name += " of mad ";
+                    _name += " of Mad ";
                     break;
                 case 2:
-                    _name += " of dangerous ";
+                    _name += " of Dangerous ";
                     break;
                 case 3:
-                    _name += " of forgotten ";
+                    _name += " of Forgotten ";
                     break;
                 case 4:
-                    _name += " of predatory ";
+                    _name += " of Predatory ";
                     break;
                 case 5:
-                    _name += " of unknown ";
+                    _name += " of Unknown ";
                     break;
                 case 6:
-                    _name += " of timeless ";
+                    _name += " of Timeless ";
                     break;
                 case 7:
-                    _name += " of hidden ";
+                    _name += " of Hidden ";
                     break;
                 case 8:
-                    _name += " of treacherous ";
+                    _name += " of Treacherous ";
                     break;
                 case 9:
-                    _name += " of lost ";
+                    _name += " of Lost ";
                     break;
             }
             switch (r.Next(10))
@@ -1258,12 +1352,26 @@ namespace Gruppe22
             }
         }
 
+        public void DrawWalls()
+        {
+            for (int x = 1; x < _width-1; ++x)
+            {
+                _tiles[0][x].Add(new WallTile(_tiles[0][x]));
+                _tiles[_height - 1][x].Add(new WallTile(_tiles[_height - 1][x]));
+            }
+            for (int y = 0; y < _height; ++y)
+            {
+                _tiles[y][0].Add(new WallTile(_tiles[y][0]));
+                _tiles[y][_width - 1].Add(new WallTile(_tiles[y][_width - 1]));
+            }
+        }
+
         /// <summary>
         /// Create an empty map
         /// </summary>
         /// <param name="width">The width of the map</param>
         /// <param name="height">The height of the map</param>
-        public Generator(ContentManager content, object parent = null, int width = 10, int height = 10, bool generate = false, Coords playerPos = null, int roomNr = 1, int maxRoom = 3, Random rnd = null, string dungeonname = "", int level = 0)
+        public Generator(ContentManager content, object parent = null, int width = 10, int height = 10, bool generate = false, Coords playerPos = null, int roomNr = 1, int maxRoom = 3, Random rnd = null, string dungeonname = "", int level = 0, bool hasShop = false, bool hasNPC = false, bool hasBoss = false)
             : base(content)
         {
             if (rnd == null) r = new Random(); else r = rnd;
@@ -1283,14 +1391,58 @@ namespace Gruppe22
             if (generate)
             {
                 ClearMaze(); // set up grid
-                GenerateMaze();
+                if (roomNr > 1)
+                    GenerateMaze();
+                else
+                    DrawWalls();
                 if (roomNr == 1)
                 {
                     AddPlayer(playerPos);
                 }
-                AddTraps();
+                if (_id > 1)
+                    AddTraps();
                 AddEnemies();
-                AddItems();
+                if (_id > 1)
+                    AddItems();
+                if (hasShop)
+                {
+                    AddShop();
+                }
+                if (hasBoss)
+                {
+                    AddBoss();
+                }
+                if (hasNPC)
+                {
+                    AddNPC();
+                }
+                switch (_level)
+                {
+                    case 1:
+                        _wallFile = "wall4";
+                        _floorFile = "floor3";
+                        _light = 12;
+                        break;
+                    case 2:
+                        _wallFile = "wall2";
+                        _floorFile = "floor2";
+                        _light = 0;
+                        break;
+                    case 3:
+                        _wallFile = "wall3";
+                        _floorFile = "floor3";
+                        _light = 20;
+                        break;
+                }
+                if (_id == 1)
+                {
+                    _wallFile = "wall1";
+                    _floorFile = "floor1";
+                    _light = 200;
+                }
+
+                ClearWalls(Math.Min((_level - 1) * (2 + r.Next(10)), ((_width - 1) * (_height - 1))));
+
                 GenerateRoomName();
                 if ((dungeonname != "") && (dungeonname != null))
                 {
@@ -1300,6 +1452,8 @@ namespace Gruppe22
                 {
                     GenerateDungeon();
                 }
+                CleanupRoom(); // Remove "ugly" walls
+
             }
         }
     }

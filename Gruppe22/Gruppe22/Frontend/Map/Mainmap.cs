@@ -471,8 +471,8 @@ namespace Gruppe22
                             null,
                             _camera.matrix);
                 _spriteBatch.Draw(_circle, new Rectangle(
-                    (int)(_actors[_playerID].position.x + 1) - 250 * _map.actors[_playerID].viewRange,
-                    (int)(_actors[_playerID].position.y + 1) - 250 * _map.actors[_playerID].viewRange, 520 * _map.actors[_playerID].viewRange, 520 * _map.actors[_playerID].viewRange), Color.White);
+                    (int)(_actors[_playerID].position.x + 1) - 250 * Math.Max(_map.actors[_playerID].viewRange,_map.light),
+                    (int)(_actors[_playerID].position.y + 1) - 250 * Math.Max(_map.actors[_playerID].viewRange, _map.light), 520 * Math.Max(_map.actors[_playerID].viewRange, _map.light), 520 * Math.Max(_map.actors[_playerID].viewRange, _map.light)), Color.White);
                 _spriteBatch.End();
 
 
@@ -483,10 +483,10 @@ namespace Gruppe22
 
 
                 if ((_highlightedTile.x > -1)
-                    && (_highlightedTile.x >= _map.actors[_playerID].tile.coords.x - _map.actors[_playerID].viewRange)
-                    && (_highlightedTile.x <= _map.actors[_playerID].tile.coords.x + _map.actors[_playerID].viewRange)
-                    && (_highlightedTile.y >= _map.actors[_playerID].tile.coords.y - _map.actors[_playerID].viewRange)
-                    && (_highlightedTile.y <= _map.actors[_playerID].tile.coords.y + _map.actors[_playerID].viewRange))
+                    && (_highlightedTile.x >= _map.actors[_playerID].tile.coords.x - Math.Max(_map.actors[_playerID].viewRange, _map.light))
+                    && (_highlightedTile.x <= _map.actors[_playerID].tile.coords.x + Math.Max(_map.actors[_playerID].viewRange, _map.light))
+                    && (_highlightedTile.y >= _map.actors[_playerID].tile.coords.y - Math.Max(_map.actors[_playerID].viewRange, _map.light))
+                    && (_highlightedTile.y <= _map.actors[_playerID].tile.coords.y + Math.Max(_map.actors[_playerID].viewRange, _map.light)))
                     _tooltip.DisplayToolTip(_map[_highlightedTile.x, _highlightedTile.y]);
                 for (int i = 0; i < _floatnumbers.Count; ++i)
                 {
@@ -525,10 +525,15 @@ namespace Gruppe22
         /// <param name="x">Horizontal position</param>
         /// <param name="y">Vertical position</param>
         /// <param name="transparent"></param>
-        private void _drawWall(WallDir dir, Rectangle target, bool transparent, bool active)
+        private void _drawWall(WallDir dir, Rectangle target, bool transparent, bool active, WallType special = WallType.Normal)
         {
+            if (dir == WallDir.LeftRight) special = WallType.Deco3;
+            if (dir == WallDir.UpDown) special = WallType.Deco3;
+            if (dir == WallDir.UpLeftDiag) special = WallType.OpenDoor;
+
             switch (dir)
             {
+
 
                 case WallDir.DiagUpDownClose: // Done
                     _drawWall(WallDir.DiagUpClose, target, transparent, active);
@@ -554,14 +559,33 @@ namespace Gruppe22
                     break;
 
                 default:
-                    // System.Diagnostics.Debug.WriteLine("--" + dir.ToString());
                     Color color = active ? Color.Red : Color.White;
-                    _spriteBatch.Draw(_walls[(int)dir].animationTexture, new Rectangle(
-                        target.Left + _walls[(int)dir].offsetX,
-                        target.Top + _walls[(int)dir].offsetY,
-                        target.Width - _walls[(int)dir].offsetX - _walls[(int)dir].cropX,
-                        target.Height - _walls[(int)dir].offsetY - _walls[(int)dir].cropY),
-                        _walls[(int)dir].animationRect, transparent ? new Color(color, (float)0.5) : color);
+                    if ((dir == WallDir.UpLeftDiag) && (special != WallType.Normal))
+                    {
+
+                        // 32 PIXEL LINKS
+                        // 32 PIXEL RECHTS
+                        _spriteBatch.Draw(_walls[(int)dir].animationTexture, new Rectangle(
+                            target.Left + _walls[(int)dir].offsetX,
+                            target.Top + _walls[(int)dir].offsetY,
+                            target.Width - _walls[(int)dir].offsetX - _walls[(int)dir].cropX - 96,
+                            target.Height - _walls[(int)dir].offsetY - _walls[(int)dir].cropY),
+                            new Rectangle(_walls[(int)dir].animationRect.Left, _walls[(int)dir].animationRect.Top, _walls[(int)dir].animationRect.Width - 96, _walls[(int)dir].animationRect.Height), transparent ? new Color(color, (float)0.5) : color);
+                        _spriteBatch.Draw(_walls[(int)dir].animationTexture, new Rectangle(
+    target.Left + _walls[(int)dir].offsetX + 96,
+    target.Top + _walls[(int)dir].offsetY,
+    target.Width - _walls[(int)dir].offsetX - _walls[(int)dir].cropX - 96,
+    target.Height - _walls[(int)dir].offsetY - _walls[(int)dir].cropY),
+    new Rectangle(_walls[(int)dir].animationRect.Left, _walls[(int)dir].animationRect.Top, _walls[(int)dir].animationRect.Width - 96, _walls[(int)dir].animationRect.Height), transparent ? new Color(color, (float)0.5) : color);
+
+                    }
+
+                    _spriteBatch.Draw(_walls[(int)dir + (int)special * 100].animationTexture, new Rectangle(
+                        target.Left + _walls[(int)dir + (int)special * 100].offsetX,
+                        target.Top + _walls[(int)dir + (int)special * 100].offsetY,
+                        target.Width - _walls[(int)dir + (int)special * 100].offsetX - _walls[(int)dir + (int)special * 100].cropX,
+                        target.Height - _walls[(int)dir + (int)special * 100].offsetY - _walls[(int)dir + (int)special * 100].cropY),
+                        _walls[(int)dir + (int)special * 100].animationRect, transparent ? new Color(color, (float)0.5) : color);
                     break;
 
             }
@@ -1028,9 +1052,9 @@ namespace Gruppe22
             //            System.Diagnostics.Debug.WriteLine((Math.Max(currentPos.y - _renderScope, 0)) + " " + (Math.Min(currentPos.y + _renderScope, _map.height)));
             //          System.Diagnostics.Debug.WriteLine((Math.Max(currentPos.x - _renderScope, 0)) + " " + (Math.Min(currentPos.x + _renderScope, _map.height)));
 
-            for (int y = (Math.Max(currentPos.y - _map.actors[_playerID].viewRange, 0)); y < (Math.Min(currentPos.y + _map.actors[_playerID].viewRange + 1, _map.height)); ++y)
+            for (int y = (Math.Max(currentPos.y - Math.Max(_map.actors[_playerID].viewRange, _map.light), 0)); y < (Math.Min(currentPos.y + Math.Max(_map.actors[_playerID].viewRange, _map.light) + 1, _map.height)); ++y)
             {
-                for (int x = (Math.Min(currentPos.x + _map.actors[_playerID].viewRange + 1, _map.width)); x >= (Math.Max(currentPos.x - _map.actors[_playerID].viewRange, 0)); --x)
+                for (int x = (Math.Min(currentPos.x + Math.Max(_map.actors[_playerID].viewRange, _map.light) + 1, _map.width)); x >= (Math.Max(currentPos.x - Math.Max(_map.actors[_playerID].viewRange, _map.light), 0)); --x)
                 {
                     _drawWall(GetWallStyle(x, y), _tileRect(new Vector2(x + 1, y - 1), true), false, ((y == (int)_highlightedTile.y) && (x == (int)_highlightedTile.x)));
 
@@ -1040,13 +1064,13 @@ namespace Gruppe22
                         if (((int)apos.x == x) && ((int)apos.y == y))
                         {
                             if (actor.animationTexture != null)
-                                _spriteBatch.Draw(actor.animationTexture, new Vector2((actor.position.x + actor.offsetX + 25), (actor.position.y + actor.offsetY - 25)), actor.animationRect, ((_map.actors[actor.id].tile.coords.y == (int)_highlightedTile.y) && (_map.actors[actor.id].tile.coords.x == (int)_highlightedTile.x) && !(_map.actors[actor.id] is Player)) ? Color.Red : Color.White);
+                                _spriteBatch.Draw(actor.animationTexture, new Vector2((actor.position.x + actor.offsetX), (actor.position.y + actor.offsetY - 32)), actor.animationRect, ((_map.actors[actor.id].tile.coords.y == (int)_highlightedTile.y) && (_map.actors[actor.id].tile.coords.x == (int)_highlightedTile.x) && !(_map.actors[actor.id] is Player)) ? Color.Red : Color.White);
                             if (actor.effect != null)
                             {
-                                actor.effect.position = new Coords((actor.position.x + actor.offsetX + 25), (actor.position.y + actor.offsetY - 25));
+                                actor.effect.position = new Coords((actor.position.x + actor.offsetX), (actor.position.y + actor.offsetY - 32));
                                 actor.effect.Draw(_spriteBatch, gametime);
                             }
-                            if ((actor.activity != Activity.Die) && !(_map.actors[actor.id] is NPC))
+                            if (actor.activity != Activity.Die)
                             {
                                 _spriteBatch.Draw(_background, new Rectangle((actor.position.x + actor.offsetX + 25), (actor.position.y + actor.offsetY - 30), actor.animationRect.Width, 5), new Rectangle(39, 6, 1, 1), Color.Black);
                                 _spriteBatch.Draw(_background, new Rectangle((actor.position.x + actor.offsetX + 26), (actor.position.y + actor.offsetY - 29), (_map.actors[actor.id].health * (actor.animationRect.Width - 2)) / _map.actors[actor.id].maxHealth, 3), new Rectangle(39, 6, 1, 1), Color.Red);
@@ -1066,9 +1090,9 @@ namespace Gruppe22
         private void _drawFloor()
         {
             Coords currentPos = _map.actors[_playerID].tile.coords;
-            for (int y = (Math.Max(currentPos.y - _map.actors[_playerID].viewRange, 0)); y < (Math.Min(currentPos.y + _map.actors[_playerID].viewRange + 1, _map.height)); ++y)
+            for (int y = (Math.Max(currentPos.y - Math.Max(_map.actors[_playerID].viewRange, _map.light), 0)); y < (Math.Min(currentPos.y + Math.Max(_map.actors[_playerID].viewRange, _map.light) + 1, _map.height)); ++y)
             {
-                for (int x = (Math.Max(currentPos.x - _map.actors[_playerID].viewRange, 0)); x < (Math.Min(currentPos.x + _map.actors[_playerID].viewRange + 1, _map.width)); ++x)
+                for (int x = (Math.Max(currentPos.x - Math.Max(_map.actors[_playerID].viewRange, _map.light), 0)); x < (Math.Min(currentPos.x + Math.Max(_map.actors[_playerID].viewRange, _map.light) + 1, _map.width)); ++x)
                 {
                     WallDir dir = GetWallStyle(x, y, false, 0);
                     switch (dir)
@@ -1096,9 +1120,9 @@ namespace Gruppe22
                 }
             }
 
-            for (int y = (Math.Max(currentPos.y - _map.actors[_playerID].viewRange, 0)); y < (Math.Min(currentPos.y + _map.actors[_playerID].viewRange + 1, _map.height)); ++y)
+            for (int y = (Math.Max(currentPos.y - Math.Max(_map.actors[_playerID].viewRange, _map.light), 0)); y < (Math.Min(currentPos.y + Math.Max(_map.actors[_playerID].viewRange, _map.light) + 1, _map.height)); ++y)
             {
-                for (int x = (Math.Max(currentPos.x - _map.actors[_playerID].viewRange, 0)); x < (Math.Min(currentPos.x + _map.actors[_playerID].viewRange + 1, _map.width)); ++x)
+                for (int x = (Math.Max(currentPos.x - Math.Max(_map.actors[_playerID].viewRange, _map.light), 0)); x < (Math.Min(currentPos.x + Math.Max(_map.actors[_playerID].viewRange, _map.light) + 1, _map.width)); ++x)
                 {
 
 
@@ -1225,20 +1249,21 @@ namespace Gruppe22
             if (_floatnumbers != null) _floatnumbers.Clear();
             if (_projectiles != null) _projectiles.Clear();
             _maxProjectile = 0;
-
+            _walls.Load("Content\\" + _map.wallFile + ".xml");
+            _floors.Load("Content\\" + _map.floorFile + ".xml");
             _actors.Clear();
             for (int count = 0; count < _map.actorPositions.Count; ++count)
             {
                 switch (_map.actors[count].actorType)
                 {
                     case ActorType.Player:
-                        _actors.Add(new ActorView(_camera, this, count, _content, _map2screen(_map.actorPositions[count]), "Content\\player.xml", 3, _map.actors[count].health > 0));
+                        _actors.Add(new ActorView(_camera, this, count, _content, _map2screen(_map.actorPositions[count]), _map.actors[count].animationFile, 3, _map.actors[count].health > 0));
                         break;
                     case ActorType.Enemy:
-                        _actors.Add(new ActorView(_camera, this, count, _content, _map2screen(_map.actorPositions[count]), "Content\\skeleton.xml", 3, _map.actors[count].health > 0));
+                        _actors.Add(new ActorView(_camera, this, count, _content, _map2screen(_map.actorPositions[count]), _map.actors[count].animationFile, 3, _map.actors[count].health > 0));
                         break;
                     case ActorType.NPC:
-                        _actors.Add(new ActorView(_camera, this, count, _content, _map2screen(_map.actorPositions[count]), "Content\\luigi.xml", 12, _map.actors[count].health > 0));
+                        _actors.Add(new ActorView(_camera, this, count, _content, _map2screen(_map.actorPositions[count]), _map.actors[count].animationFile, 12, _map.actors[count].health > 0));
                         break;
                 }
             }
@@ -1443,9 +1468,8 @@ namespace Gruppe22
             // Load textures to use in environment
             // 1. Walls and floor
             _walls = new WallTiles(_content, 128, 192, "");
-            _walls.Load("Content\\wall1.xml");
             _floors = new WallTiles(_content, 128, 192, "");
-            _floors.Load("Content\\floor1.xml");
+
 
             // 2. Environmental objects (floor, items, traps, teleporters, chest...)
             _environment = new List<TileSet>();

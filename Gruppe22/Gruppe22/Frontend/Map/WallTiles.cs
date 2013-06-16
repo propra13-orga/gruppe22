@@ -48,6 +48,7 @@ namespace Gruppe22
                 if (reader.GetAttribute("Type") != null)
                     _type = (WallType)Enum.Parse(typeof(WallType), reader.GetAttribute("Type").ToString());
                 WallDir _id = (WallDir)Enum.Parse(typeof(WallDir), reader.GetAttribute("Direction").ToString());
+                _textures[(int)_type * 100 + (int)_id].Clear();
                 _textures[(int)_type * 100 + (int)_id].ReadXml(reader);
             }
             reader.ReadEndElement();
@@ -120,7 +121,7 @@ namespace Gruppe22
             {
                 // _textures[(int)direction].width = cutOut.Width;
                 // _textures[(int)direction].height = cutOut.Height;
-                _textures[(int)direction + (int)subtype * 100].AddAnimation(filename, new Coords(cutOut.Left, cutOut.Top), 1, 1, false);
+                _textures[(int)direction + (int)subtype * 100].AddAnimation(filename, new Coords(cutOut.Left, cutOut.Top), 1, 1, null, null, false);
                 _textures[(int)direction + (int)subtype * 100].cropX = crop.x;
                 _textures[(int)direction + (int)subtype * 100].cropY = crop.y;
                 _textures[(int)direction + (int)subtype * 100].offsetX = offset.x;

@@ -63,15 +63,23 @@ namespace Gruppe22
                     Texture2D texture = _content.Load<Texture2D>(character + "-" + action);
                     int size = texture.Height / 8;
                     int cols = texture.Width / size;
+                    actor.width = size;
+                    actor.height = size;
+                    int diff = 0;
+                    if (size < 128)
+                    {
+                        diff = 128 - size;
+                    }
 
-                    actor.Add(activity, Direction.DownRight, character + "-" + action, new Coords(size * 0, size * 0), cols, 1);
-                    actor.Add(activity, Direction.UpRight, character + "-" + action, new Coords(size * 0, size * 1), cols, 1); // Ok
-                    actor.Add(activity, Direction.Right, character + "-" + action, new Coords(size * 0, size * 2), cols, 1); // OK
-                    actor.Add(activity, Direction.Up, character + "-" + action, new Coords(size * 0, size * 3), cols, 1); // Ok
-                    actor.Add(activity, Direction.DownLeft, character + "-" + action, new Coords(size * 0, size * 4), cols, 1); // Ok
-                    actor.Add(activity, Direction.Down, character + "-" + action, new Coords(size * 0, size * 5), cols, 1);
-                    actor.Add(activity, Direction.Left, character + "-" + action, new Coords(size * 0, size * 6), cols, 1); // OK
-                    actor.Add(activity, Direction.UpLeft, character + "-" + action, new Coords(size * 0, size * 7), cols, 1);
+                    // add offset / crop
+                    actor.Add(activity, Direction.DownRight, character + "-" + action, new Coords(size * 0, size * 0), cols, 1,new Coords(diff/2,diff/2),new Coords(diff-diff/2,diff-diff/2));
+                    actor.Add(activity, Direction.UpRight, character + "-" + action, new Coords(size * 0, size * 1), cols, 1,new Coords(diff/2,diff/2),new Coords(diff-diff/2,diff-diff/2)); // Ok
+                    actor.Add(activity, Direction.Right, character + "-" + action, new Coords(size * 0, size * 2), cols, 1,new Coords(diff/2,diff/2),new Coords(diff-diff/2,diff-diff/2)); // OK
+                    actor.Add(activity, Direction.Up, character + "-" + action, new Coords(size * 0, size * 3), cols, 1,new Coords(diff/2,diff/2),new Coords(diff-diff/2,diff-diff/2)); // Ok
+                    actor.Add(activity, Direction.DownLeft, character + "-" + action, new Coords(size * 0, size * 4), cols, 1,new Coords(diff/2,diff/2),new Coords(diff-diff/2,diff-diff/2)); // Ok
+                    actor.Add(activity, Direction.Down, character + "-" + action, new Coords(size * 0, size * 5), cols, 1,new Coords(diff/2,diff/2),new Coords(diff-diff/2,diff-diff/2));
+                    actor.Add(activity, Direction.Left, character + "-" + action, new Coords(size * 0, size * 6), cols, 1,new Coords(diff/2,diff/2),new Coords(diff-diff/2,diff-diff/2)); // OK
+                    actor.Add(activity, Direction.UpLeft, character + "-" + action, new Coords(size * 0, size * 7), cols, 1,new Coords(diff/2,diff/2),new Coords(diff-diff/2,diff-diff/2));
                 }
                 catch
                 {
@@ -164,30 +172,32 @@ namespace Gruppe22
             new Rectangle(768, 192, 128, 192));
             _tiles.Add("Column", WallDir.Free, new Rectangle(1920, 0, 128, 192));
 
-            _tiles.Add(name + "b", WallDir.UpLeftDiag, new Rectangle(0, 0, 64, 192), new Coords(32, 0), new Coords(32, 0), WallType.OpenDoor);
-            _tiles.Add(name + "b", WallDir.UpLeftDiag, new Rectangle(64, 0, 64, 192), new Coords(32, 0), new Coords(32, 0), WallType.ClosedDoor);
 
 
-            _tiles.Add(name + "b", WallDir.UpDown, new Rectangle(0, 208, 128, 192), null, null, WallType.OpenDoor);
-            _tiles.Add(name + "b", WallDir.UpDown, new Rectangle(128, 208, 128, 192), null, null, WallType.ClosedDoor);
+            _tiles.Add(name + "b", WallDir.UpLeftDiag, new Rectangle(192, 0, 64, 176), new Coords(32, 16), new Coords(32, 0), WallType.OpenDoor);
+            _tiles.Add(name + "b", WallDir.UpLeftDiag, new Rectangle(128, 0, 64, 176), new Coords(32, 16), new Coords(32, 0), WallType.ClosedDoor);
 
 
-            _tiles.Add(name + "b", WallDir.LeftRight, new Rectangle(256, 208, 128, 192), null, null, WallType.OpenDoor);
-            _tiles.Add(name + "b", WallDir.LeftRight, new Rectangle(384, 208, 128, 192), null, null, WallType.ClosedDoor);
+            _tiles.Add(name + "b", WallDir.UpDown, new Rectangle(0, 211, 128, 172), new Coords(0, 20), null, WallType.ClosedDoor);
+            _tiles.Add(name + "b", WallDir.UpDown, new Rectangle(128, 211, 128, 172), new Coords(0, 20), null, WallType.OpenDoor);
 
 
-            _tiles.Add(name + "b", WallDir.UpLeftDiag, new Rectangle(256, 0, 128, 192), new Coords(32, 0), new Coords(32, 0), WallType.Deco1);
-            _tiles.Add(name + "b", WallDir.UpLeftDiag, new Rectangle(320, 0, 128, 192), new Coords(32, 0), new Coords(32, 0), WallType.Deco2);
-            _tiles.Add(name + "b", WallDir.UpLeftDiag, new Rectangle(384, 0, 128, 192), new Coords(32, 0), new Coords(32, 0), WallType.Deco3);
+            _tiles.Add(name + "b", WallDir.LeftRight, new Rectangle(384, 211, 128, 172), new Coords(0, 20), null, WallType.OpenDoor);
+            _tiles.Add(name + "b", WallDir.LeftRight, new Rectangle(256, 211, 128, 172), new Coords(0,20), null, WallType.ClosedDoor);
 
 
-            _tiles.Add(name + "b", WallDir.UpDown, new Rectangle(0, 592, 128, 192), null, null, WallType.Deco1);
-            _tiles.Add(name + "b", WallDir.UpDown, new Rectangle(256, 592, 128, 192), null, null, WallType.Deco2);
-            _tiles.Add(name + "b", WallDir.UpDown, new Rectangle(0, 784, 128, 192), null, null, WallType.Deco3);
+            _tiles.Add(name + "b", WallDir.UpLeftDiag, new Rectangle(256, 0, 128, 192), new Coords(32, 16), new Coords(32, 0), WallType.Deco1);
+            _tiles.Add(name + "b", WallDir.UpLeftDiag, new Rectangle(320, 0, 128, 192), new Coords(32, 16), new Coords(32, 0), WallType.Deco2);
+            _tiles.Add(name + "b", WallDir.UpLeftDiag, new Rectangle(384, 0, 128, 192), new Coords(32, 16), new Coords(32, 0), WallType.Deco3);
 
-            _tiles.Add(name + "b", WallDir.LeftRight, new Rectangle(128, 592, 128, 192), null, null, WallType.Deco1);
+
+            _tiles.Add(name + "b", WallDir.UpDown, new Rectangle(0, 575, 128, 192), null, null, WallType.Deco1);
+            _tiles.Add(name + "b", WallDir.UpDown, new Rectangle(256, 575, 128, 192), null, null, WallType.Deco2);
+            _tiles.Add(name + "b", WallDir.UpDown, new Rectangle(0, 768, 128, 192), null, null, WallType.Deco3);
+
+            _tiles.Add(name + "b", WallDir.LeftRight, new Rectangle(128, 575, 128, 192), null, null, WallType.Deco1);
             _tiles.Add(name + "b", WallDir.LeftRight, new Rectangle(384, 592, 128, 192), null, null, WallType.Deco2);
-            _tiles.Add(name + "b", WallDir.LeftRight, new Rectangle(128, 784, 128, 192), null, null, WallType.Deco3);
+            _tiles.Add(name + "b", WallDir.LeftRight, new Rectangle(128, 768, 128, 192), null, null, WallType.Deco3);
 
             _tiles.Save("Content\\" + name + ".xml");
         }
