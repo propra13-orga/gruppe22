@@ -200,7 +200,7 @@ namespace Gruppe22
             soundEffects.Add(tmp);
             tmp = Content.Load<SoundEffect>("trapdamage1.wav");
             soundEffects.Add(tmp);
-
+            MediaPlayer.IsRepeating = true;
             _backMusic = Content.Load<Song>(_map1.music); // Todo: *.mp3
             MediaPlayer.Play(_backMusic);
             MediaPlayer.IsRepeating = true;

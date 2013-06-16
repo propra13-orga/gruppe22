@@ -396,7 +396,7 @@ namespace Gruppe22
                         }
                         else
                         {
-                            addEffect(7, _map2screen((Coords)data[1]));
+                            addEffect(2, _map2screen((Coords)data[1]));
                         }
                         RemoveProjectile(((ProjectileTile)data[0]).id);
 
