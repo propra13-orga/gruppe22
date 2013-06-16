@@ -895,11 +895,11 @@ namespace Gruppe22
 
 
             _animationFile = reader.GetAttribute("animation");
-            if (reader.GetAttribute("stunned") == null)
+            if (reader.GetAttribute("stunned") != null)
                 _stunned = Convert.ToInt32(reader.GetAttribute("stunned"));
-            if (reader.GetAttribute("charmed") == null)
+            if (reader.GetAttribute("charmed") != null)
                 _charmed = Convert.ToInt32(reader.GetAttribute("charmed"));
-            if (reader.GetAttribute("scared") == null)
+            if (reader.GetAttribute("scared") != null)
                 _scared = Convert.ToInt32(reader.GetAttribute("scared"));
 
             if (actorType == ActorType.NPC)

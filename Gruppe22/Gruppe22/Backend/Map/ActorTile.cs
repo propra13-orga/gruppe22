@@ -73,7 +73,7 @@ namespace Gruppe22
 
         public async Task WorkoutMoves()
         {
-
+            bool canAttack = false;
             Map map = (Map)((FloorTile)_parent).parent;
 
             if (_actor.stunned > 0) _actor.stunned -= 1;
@@ -97,7 +97,7 @@ namespace Gruppe22
                     {
                         dir = Map.WhichWayIs(closestEnemy, coords);
                         //System.Diagnostics.Debug.WriteLine("Attack -> " + coords.x + "/" + coords.y + "->" + closestEnemy.x + "/" + closestEnemy.y + "=>" + dir);
-
+                        canAttack = true;
                     }
                     else
                     {
@@ -121,7 +121,10 @@ namespace Gruppe22
                         // Low health => try to flee
                         //System.Diagnostics.Debug.WriteLine("=> Flee!");
 
-                        dir = Map.OppositeDirection(dir);
+                        if ((!canAttack) || (actor is NPC) || ((actor.health > 10) && (_random.Next(100) > 50)))
+                        {
+                            dir = Map.OppositeDirection(dir);
+                        }
                     }
                     int count = 1;
 
@@ -162,12 +165,12 @@ namespace Gruppe22
                     dir = Direction.None;
 
                 if ((map.TileByCoords(Map.DirectionTile(coords, dir)).hasNPC) && (!map.TileByCoords(Map.DirectionTile(coords, dir)).firstActor.isDead)
-                    && ((!actor.aggro) || (!actor.friendly)))
+                    && ((!actor.aggro) || (actor.friendly)))
                     dir = Direction.None;
 
 
                 if ((map.TileByCoords(Map.DirectionTile(coords, dir)).hasPlayer) && (!map.TileByCoords(Map.DirectionTile(coords, dir)).firstActor.isDead)
-                    && ((!actor.aggro) || (!actor.friendly)))
+                    && ((!actor.aggro) || (actor.friendly)))
                     dir = Direction.None;
 
                 if ((dir != Direction.None) && (!map.TileByCoords(Map.DirectionTile(coords, dir)).hasTeleport))
