@@ -537,13 +537,12 @@ namespace Gruppe22
                             {
                                 (a as NPC).Interact();
                             }
-                            if ((a is Enemy || a is Player) && !(_map1.actors[id] is NPC))
+                            if (((a is Enemy || a is Player) && !(_map1.actors[id] is NPC))
+                                && ((a.id != id) && (!a.isDead)))
                             {
-                                if ((a.id != id) && (!a.isDead))
-                                {
-                                    HandleEvent(true, Events.Attack, id, dir);
-                                    _map1.actors[id].locked = true;
-                                }
+                                HandleEvent(true, Events.Attack, id, dir);
+                                _map1.actors[id].locked = true;
+
                             }
                             else
                             {
