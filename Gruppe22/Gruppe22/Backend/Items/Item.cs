@@ -1148,6 +1148,8 @@ namespace Gruppe22
             _level = level;
             _tile = parent;
             _value = value;
+            _itemType = itemtype;
+
             if (name != "")
             {
                 _name = name;
@@ -1156,7 +1158,6 @@ namespace Gruppe22
             {
                 GenerateName();
             }
-            _itemType = itemtype;
             if (icon == null) GenerateIcon();
         }
 
