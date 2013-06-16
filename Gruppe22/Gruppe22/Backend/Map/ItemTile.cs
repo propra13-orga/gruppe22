@@ -13,6 +13,7 @@ namespace Gruppe22
         public Item item
         {
             get { return _item; }
+            set { _item = value; }
         }
 
         public ItemType itemType

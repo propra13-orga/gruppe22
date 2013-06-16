@@ -325,6 +325,15 @@ namespace Gruppe22
                             ((ActorTile)_map1.actors[FinishedID].tile).enabled = false;
                             AddMessage(_map1.actors[FinishedID].name + " is dead.");
                             ((ActorTile)_map1.actors[FinishedID].tile).DropItems();
+                            if (_map1.actors[FinishedID].gold > 0)
+                            {
+
+                                ItemTile tile=new ItemTile(((FloorTile)(_map1.actors[FinishedID].tile.parent)));
+
+                                Item item = new Item(Content, tile, ItemType.Gold, "", null, _map1.actors[FinishedID].gold);
+                                tile.item = item;
+                                ((FloorTile)(_map1.actors[FinishedID].tile.parent)).Add(tile);
+                            }
                         }
                         else
                         {
