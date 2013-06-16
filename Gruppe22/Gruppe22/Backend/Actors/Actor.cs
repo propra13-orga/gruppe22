@@ -151,8 +151,10 @@ namespace Gruppe22
         public int charmed
         {
             get { return _charmed; }
-            set { _charmed = value;
-            if (_charmed != 0) _friendly = true;
+            set
+            {
+                _charmed = value;
+                if (_charmed != 0) _friendly = true;
             }
         }
 
@@ -777,6 +779,15 @@ namespace Gruppe22
             }
             writer.WriteEndElement();
             writer.WriteEndElement();
+        }
+
+        public bool HasKey(int level)
+        {
+            for (int i = 0; i < _inventory.Count; ++i)
+            {
+                if ((_inventory[i].itemType == ItemType.Key) && (_inventory[i].level == level)) return true;
+            }
+            return false;
         }
 
         /// <summary>

@@ -7,7 +7,7 @@ using System.Xml;
 
 namespace Gruppe22
 {
-    class DoorTile:WallTile
+    public class DoorTile : WallTile
     {
         /// <summary>
         /// Whether the door is open
@@ -27,7 +27,7 @@ namespace Gruppe22
 
         public int key { get { return _key; } set { _key = value; } }
 
-        public DoorTile(object parent, bool locked=true, int key=0)
+        public DoorTile(object parent, bool locked = true, int key = 0)
             : base(parent)
         {
             _key = key;
@@ -35,17 +35,14 @@ namespace Gruppe22
         }
 
 
-        public new WallType type{
+        new public WallType type
+        {
             get
             {
                 if (_open) return WallType.OpenDoor;
                 else return WallType.ClosedDoor;
             }
-            set
-            {
-
-            }
-    }
+        }
         public override void Save(XmlWriter xmlw)
         {
             xmlw.WriteStartElement("DoorTile");

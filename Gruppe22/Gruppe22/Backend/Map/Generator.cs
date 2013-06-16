@@ -117,8 +117,8 @@ namespace Gruppe22
 
 
 
-                for (int y = 1; y < _height - 2; ++y)
-                    for (int x = 1; x < _width - 2; ++x)
+                for (int y = 2; y < _height - 2; ++y)
+                    for (int x = 2; x < _width - 2; ++x)
                     {
                         if ((_tiles[y][x].overlay.Count == 0)
                             && (_tiles[y + 1][x].overlay.Count == 0)
@@ -136,8 +136,8 @@ namespace Gruppe22
                     }
                 if (result.Count == 0)
                 {
-                    int x = r.Next(_width - 3) + 1;
-                    int y = r.Next(_height - 3) + 1;
+                    int x = r.Next(_width - 4) + 2;
+                    int y = r.Next(_height - 4) + 2;
                     while ((_tiles[y][x].hasTeleport) ||
                         (_tiles[y + 1][x].hasTeleport) ||
                         (_tiles[y - 1][x].hasTeleport) ||
@@ -168,18 +168,9 @@ namespace Gruppe22
                         (_tiles[y - 1][x - 1].hasTarget) ||
                         (_tiles[y - 1][x + 1].hasTarget))
                     {
-                        x = r.Next(_width - 3) + 1;
-                        y = r.Next(_height - 3) + 1;
+                        x = r.Next(_width - 4) + 2;
+                        y = r.Next(_height - 4) + 2;
                     };
-                    _tiles[y][x].overlay.Clear();
-                    if (y < _height - 1) _tiles[y + 1][x].overlay.Clear();
-                    if (y > 1) _tiles[y - 1][x].overlay.Clear();
-                    if (x > 1) _tiles[y][x - 1].overlay.Clear();
-                    if (x < _width - 1) _tiles[y][x + 1].overlay.Clear();
-                    if ((y < _height - 1) && (x < _width - 1)) _tiles[y + 1][x + 1].overlay.Clear();
-                    if ((y < _height - 1) && (x > 1)) _tiles[y - 1][x - 1].overlay.Clear();
-                    if ((y > 1) && (x > 1)) _tiles[y + 1][x - 1].overlay.Clear();
-                    if ((y > 1) && (x < _width - 1)) _tiles[y - 1][x + 1].overlay.Clear();
                     result.Add(new Coords(x, y));
                 }
                 return result[r.Next(result.Count)];
@@ -188,22 +179,22 @@ namespace Gruppe22
 
         public void AddStairs(Coords srcCoords, int targetRoom, Coords targetCoords, bool up)
         {
+
+            for (int y = -1; y < 3; ++y)
+            {
+                for (int x = -1; x < 2; ++x)
+                {
+                    _tiles[srcCoords.y + y][srcCoords.x + x].overlay.Clear();
+                    if ((x < 2) && (y < 2) && (y > -2) && (x > -2))
+                        _tiles[srcCoords.y + y][srcCoords.x + x].overlay.Add(new WallTile(_tiles[srcCoords.y + y][srcCoords.x + x], r));
+                }
+            }
+
             _tiles[srcCoords.y][srcCoords.x].overlay.Clear();
             _tiles[srcCoords.y][srcCoords.x].overlay.Add(new TeleportTile(_tiles[srcCoords.y][srcCoords.x], "room" + targetRoom.ToString() + ".xml", targetCoords, false, false, true, up));
 
-            for (int x = srcCoords.x - 1; x < srcCoords.x + 1; ++x)
-            {
-                _tiles[srcCoords.y + 1][x].overlay.Clear();
-                _tiles[srcCoords.y + 1][x].overlay.Add(new WallTile(_tiles[srcCoords.y + 1][x], r));
-
-                _tiles[srcCoords.y - 1][x].overlay.Clear();
-                _tiles[srcCoords.y - 1][x].overlay.Add(new WallTile(_tiles[srcCoords.y - 1][x], r));
-            }
-
-            _tiles[srcCoords.y + 1][srcCoords.x].overlay.Clear();
-            _tiles[srcCoords.y + 1][srcCoords.x].overlay.Add(new DoorTile(_tiles[srcCoords.y + 1][srcCoords.x], true, _level));
-            _tiles[srcCoords.y - 1][srcCoords.x].overlay.Clear();
-            _tiles[srcCoords.y - 1][srcCoords.x].overlay.Add(new WallTile(_tiles[srcCoords.y - 1][srcCoords.x], r));
+            _tiles[srcCoords.y][srcCoords.x - 1].overlay.Clear();
+            _tiles[srcCoords.y][srcCoords.x - 1].overlay.Add(new DoorTile(_tiles[srcCoords.y][srcCoords.x - 1], true, _level));
 
         }
 
@@ -368,46 +359,33 @@ namespace Gruppe22
 
         }
 
-        public void AddBoss(int amount = -1)
+        public void AddBoss()
         {
-            if (amount < 0) amount = 1;
-            for (int i = 0; i < amount; ++i)
+            for (int x = 0; x < _width; ++x)
             {
-                int count = 0;
-                Path pos = new Path(1 + r.Next(_width - 2), 1 + r.Next(_height - 2));
-                while ((count < _width * height) && (pos.x > 0)
-         && (_tiles[pos.y][pos.x].overlay.Count != 0)
-         )
+                for (int y = 0; y < _height; ++y)
                 {
-                    count += 1;
-                    pos.x += 1;
-                    if (pos.x > _width - 2)
-                    {
-                        pos.x = 1;
-                        pos.y += 1;
-                    };
-                    if (pos.y > _height - 2)
-                    {
-                        pos.y = 1;
-                        pos.x = 1;
-                    }
-                    if (count >= _width * _height)
-                    {
-                        pos.x = -1;
-                        pos.y = -1;
-                    }
-                }
+                    if ((_tiles[y][x].hasEnemy) || (_tiles[y][x].hasNPC) || (_tiles[y][x].hasTreasure))
+                        _tiles[y][x].overlay.Clear();
 
-
-                if ((pos.x >= 0) && (pos.x < _width) && (pos.y < _height) && (pos.y >= 0))
-                {
-                    Enemy boss = new Enemy(_content, -1, -1, -1, -1, "", r, 10 + _level);
-                    ActorTile BossTile = new ActorTile(_tiles[pos.y][pos.x], boss);
-                    boss.tile = BossTile;
-                    _tiles[pos.y][pos.x].Add(BossTile);
-                    _actors.Add(boss);
                 }
             }
+
+            Coords pos = new Coords(2 + r.Next(_width - 4), 2 + r.Next(_height - 4));
+            for (int x = -1; x < 2; ++x)
+            {
+                for (int y = -1; y < 2; ++y)
+                {
+                    _tiles[pos.y + y][pos.x + x].overlay.Clear();
+
+                }
+            }
+
+            Enemy boss = new Enemy(_content, -1, -1, -1, -1, "", r, 10 + _level);
+            ActorTile BossTile = new ActorTile(_tiles[pos.y][pos.x], boss);
+            boss.tile = BossTile;
+            _tiles[pos.y][pos.x].Add(BossTile);
+            _actors.Add(boss);
             if (_level == 1) _music = "boss1.wav"; else _music = "boss2.wav";
         }
 

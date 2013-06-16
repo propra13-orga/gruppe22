@@ -133,6 +133,19 @@ namespace Gruppe22
             }
         }
 
+        public DoorTile door
+        {
+            get
+            {
+                foreach (Tile tile in _overlay)
+                {
+                    if (tile is DoorTile)
+                        return ((DoorTile)tile);
+                }
+                return null;
+            }
+        }
+
         public ItemTile firstItem
         {
             get
@@ -208,13 +221,16 @@ namespace Gruppe22
             }
         }
 
+
+
         public WallType wallType
         {
             get
             {
                 for (int i = 0; i < _overlay.Count; ++i)
                 {
-                    if ((_overlay[i] is WallTile) || (_overlay[i] is DoorTile)) return (_overlay[i] as WallTile).type;
+                    if (_overlay[i] is DoorTile) return (_overlay[i] as DoorTile).type;
+                    if (_overlay[i] is WallTile) return (_overlay[i] as WallTile).type;
                 }
 
                 return WallType.Normal;

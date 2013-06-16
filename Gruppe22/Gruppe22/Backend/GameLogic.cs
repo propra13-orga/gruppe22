@@ -543,6 +543,18 @@ namespace Gruppe22
                             }
                             else
                             {
+                                if ((_map1[target].hasDoor) && (_map1.actors[id] is Player) && (!_map1[target].door.open))
+                                {
+                                    if (_map1.actors[id].HasKey(_map1.level))
+                                    {
+                                        _map1[target].door.open = true;
+                                        ShowMessage("You open the door using the key you fought for.");
+                                    }
+                                    else
+                                    {
+                                        ShowMessage("The door is locked.\n It is likely a strong creature guards the key.");
+                                    }
+                                }
                                 if (_map1.CanMove(_map1.actors[id].tile.coords, dir))
                                 {
                                     _map1.MoveActor(_map1.actors[id], dir);
@@ -688,52 +700,53 @@ namespace Gruppe22
         /// </summary>
         /// <param name="message"></param>
         /// <param name="title"></param>
-        public void ShowMessage(string message = "You have failed in your mission. Better luck next time.")
+        public void ShowMessage(string message = "")
         {
-            switch (r.Next(10))
-            {
-                case 0:
-                    message = "This is a cursed place. Evil creatures are attacking everyone in sight.";
-                    break;
-                case 1:
-                    message = "You should really get better equipment at a shop. My brother might help you out.\n He is over at the entrance.";
-                    break;
-                case 2:
-                    message = "It is hopeless. We are all going to die...";
-                    break;
+            if (message == "")
+                switch (r.Next(10))
+                {
+                    case 0:
+                        message = "This is a cursed place. Evil creatures are attacking everyone in sight.";
+                        break;
+                    case 1:
+                        message = "You should really get better equipment at a shop. My brother might help you out.\n He is over at the entrance.";
+                        break;
+                    case 2:
+                        message = "It is hopeless. We are all going to die...";
+                        break;
 
-                case 3:
-                    message = "There are pests on the first level, undead on the second and unknown evil on the third...";
-                    break;
+                    case 3:
+                        message = "There are pests on the first level, undead on the second and unknown evil on the third...";
+                        break;
 
-                case 4:
-                    message = "Nobody has ever found a way out of here...";
-                    break;
+                    case 4:
+                        message = "Nobody has ever found a way out of here...";
+                        break;
 
-                case 5:
-                    message = "Are you sure you can take on the enemies around here?";
-                    break;
+                    case 5:
+                        message = "Are you sure you can take on the enemies around here?";
+                        break;
 
-                case 6:
-                    message = "I haven't gotten any sleep for a week!";
-                    break;
+                    case 6:
+                        message = "I haven't gotten any sleep for a week!";
+                        break;
 
-                case 7:
-                    message = "It is rumored that there is a deadly beast on the lowest level...";
-                    break;
+                    case 7:
+                        message = "It is rumored that there is a deadly beast on the lowest level...";
+                        break;
 
-                case 8:
-                    message = "The lower levels are far darker than this level...";
-                    break;
+                    case 8:
+                        message = "The lower levels are far darker than this level...";
+                        break;
 
-                case 9:
-                    message = "If this were a real dungeon, someone might have a quest for you...";
-                    break;
-            }
+                    case 9:
+                        message = "If this were a real dungeon, someone might have a quest for you...";
+                        break;
+                }
             _status = GameStatus.Paused;
             Window _messagebox = new Window(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width) / 2.0f) - 300, (int)(GraphicsDevice.Viewport.Height / 2.0f) - 100, 600, 200));
             Statusbox stat = new Statusbox(_messagebox, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width) / 2.0f) - 300 + 10, (int)(GraphicsDevice.Viewport.Height / 2.0f) - 70, 590, 110), false, true);
-            stat.AddLine( message);
+            stat.AddLine(message);
             _messagebox.AddChild(stat);
             _messagebox.AddChild(new Button(_messagebox, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width) / 2.0f) - 65, (int)(GraphicsDevice.Viewport.Height / 2.0f) + 30, 130, 40), "Goodbye!", (int)Buttons.Close));
             //  _mainMenu.AddChild(new ProgressBar(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) + 80, 300, 30), ProgressStyle.Block,100,2));
@@ -880,6 +893,12 @@ namespace Gruppe22
                 // Phase 6 Add a few challenges: Switches, Doors, Illusionary and destructible walls, keys and locks
 
                 // Phase 7 Add Other NPCs, environmental elements and Quest Items / Enemies / NPCs
+                int boss = r.Next(totalRooms) + LevelStart;
+                while ((rooms[boss].hasStairs) || (boss == 0))
+                {
+                    boss = r.Next(totalRooms) + LevelStart;
+                };
+                rooms[boss].AddBoss();
 
                 prevLevelStart = LevelStart;
                 prevTotal = totalRooms;

@@ -78,7 +78,7 @@ namespace Gruppe22
 
         }
 
-        public WallType type
+        public virtual WallType type
         {
             get
             {

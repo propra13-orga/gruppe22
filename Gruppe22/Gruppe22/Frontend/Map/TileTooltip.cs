@@ -152,7 +152,7 @@ namespace Gruppe22
         {
             if (!(a is ItemTile)) return "";
             ItemTile item = a as ItemTile;
-            return item.item.name.ToString() +"\n";
+            return item.item.name.ToString() + "\n";
         }
 
         /// <summary>
@@ -174,7 +174,9 @@ namespace Gruppe22
         {
             if (!(a is WallTile)) return "";
             WallTile wall = a as WallTile;
-            return "Wall\n";
+            if (a is DoorTile)
+                return "Door\n"+wall.type;
+            else return "Wall\n"+wall.type;
         }
         #endregion
 

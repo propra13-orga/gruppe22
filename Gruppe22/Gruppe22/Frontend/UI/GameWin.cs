@@ -133,11 +133,6 @@ namespace Gruppe22
         protected StateToEvent _events = null;
 
         /// <summary>
-        /// Whether a second player is participating in the game
-        /// </summary>
-        private bool _secondPlayer = false;
-
-        /// <summary>
         /// Whether we are playing by network (i.e. communicating with a server)
         /// </summary>
         private bool _lan = false;
@@ -465,7 +460,7 @@ namespace Gruppe22
                         element.HandleEvent(true, Events.ToggleButton, Events.Local, true);
                         element.HandleEvent(true, Events.ToggleButton, Events.LAN, false);
                     }
-                    _secondPlayer = false;
+                    //_secondPlayer = false;
                     _mainmap1.Resize(new Rectangle(5, 5, _graphics.GraphicsDevice.Viewport.Width - 230, ((_graphics.GraphicsDevice.Viewport.Height - 20)) - 115));
                     _lan = false;
                     break;
@@ -490,7 +485,7 @@ namespace Gruppe22
                         element.HandleEvent(true, Events.ToggleButton, Events.Player2, true);
                         element.HandleEvent(true, Events.ToggleButton, Events.Player1, false);
                     }
-                    _secondPlayer = true;
+                    //_secondPlayer = true;
                     if (!_lan)
                     {
                         // _mainmap2.enabled = true;
@@ -505,7 +500,7 @@ namespace Gruppe22
                     break;
 
                 case Events.LAN:
-                    _secondPlayer = true;
+                    //_secondPlayer = true;
                     _lan = true;
                     foreach (UIElement element in _interfaceElements)
                     {

@@ -550,6 +550,14 @@ namespace Gruppe22
         /// <param name="transparent"></param>
         private void _drawWall(WallDir dir, Rectangle target, bool transparent, bool active, WallType special = WallType.Normal)
         {
+            if (special == WallType.OpenDoor)
+            {
+                System.Diagnostics.Debug.WriteLine("Door");
+            }
+            if (special == WallType.ClosedDoor)
+            {
+                System.Diagnostics.Debug.WriteLine("Door");
+            }
             if ((special != WallType.Normal) && (dir != WallDir.LeftRight) && (dir != WallDir.UpDown) && (dir != WallDir.UpLeftDiag)) special = WallType.Normal;
 
             switch (dir)
@@ -1096,7 +1104,7 @@ namespace Gruppe22
                         {
                             for (int i = 0; i < _environment.Count; ++i)
                             {
-                                if (_environment[i].filename == temp.filename) temp.envIndex = i; break;
+                                if (_environment[i].filename == temp.filename) { temp.envIndex = i; break; }
                             }
                             if (temp.envIndex == -1)
                             {

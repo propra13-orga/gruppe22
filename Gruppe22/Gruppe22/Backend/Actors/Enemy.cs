@@ -157,28 +157,31 @@ namespace Gruppe22
                     _animationFile = ".\\content\\rat.xml";
                     aggro = true;
                     crazy = false;
+                    level = 4;
                     break;
                 case 12:
                     _animationFile = ".\\content\\necro.xml";
                     aggro = true;
                     crazy = false;
+                    level = 5;
                     break;
                 case 13:
                     _animationFile = ".\\content\\dragon.xml";
                     aggro = true;
                     crazy = false;
+                    _level = 6;
                     break;
             }
-            if (_level > 0)
+            if (level > 0)
             {
                 Item item = new Item(_content, r, 0, _level, false);
                 _inventory.Add(item);
                 item.owner = this;
             }
             _gold = _random.Next(10 + _level / 10) * _level;
-            if (_level > 10)
+            if (level > 10)
             {
-                Item item = new Item(_content, this, ItemType.Key, "Key to level " + (_level / 10).ToString(), null, 0, level);
+                Item item = new Item(_content, this, ItemType.Key, "Key to level " + (level % 10).ToString(), null, 0, level);
                 _inventory.Add(item);
 
             }
