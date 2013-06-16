@@ -95,7 +95,7 @@ namespace Gruppe22
                 {
                     for (int y = 1; y < _height - 1; ++y)
                     {
-                        if ((_tiles[y][x].hasTeleport) && (!_tiles[y][x].teleport.teleport))
+                        if (((_tiles[y][x].hasTeleport) && (!_tiles[y][x].teleport.teleport)) || (_tiles[y][x].hasTarget))
                             return true;
                     }
                 }
@@ -108,81 +108,34 @@ namespace Gruppe22
         {
             get
             {
-                List<Coords> result = new List<Coords>();
-
-
-
-
-
-
-
-
-                for (int y = 2; y < _height - 2; ++y)
-                    for (int x = 2; x < _width - 2; ++x)
+                int x = -1;
+                int y = -1;
+                while (x == -1)
+                {
+                    x = 3 + r.Next(_width - 4);
+                    y = 2 + r.Next(_height - 3);
+                    for (int px = x - 3; px < x + 2; ++px)
                     {
-                        if ((_tiles[y][x].overlay.Count == 0)
-                            && (_tiles[y + 1][x].overlay.Count == 0)
-                            && (_tiles[y - 1][x].overlay.Count == 0)
-                            && (_tiles[y][x - 1].overlay.Count == 0)
-                            && (_tiles[y][x + 1].overlay.Count == 0)
-                            && (((_tiles[y + 1][x + 1].overlay.Count == 0)
-                            && (_tiles[y - 1][x + 1].overlay.Count == 0)) ||
-                            ((_tiles[y + 1][x - 1].overlay.Count == 0)
-                            && (_tiles[y - 1][x - 1].overlay.Count == 0)))
-                            )
+                        for (int py = y - 2; py < y + 2; ++py)
                         {
-                            result.Add(new Coords(x, y));
+                            if (_tiles[py][px].hasTeleport)
+                            {
+                                x = -1;
+                                break;
+                            }
                         }
                     }
-                if (result.Count == 0)
-                {
-                    int x = r.Next(_width - 4) + 2;
-                    int y = r.Next(_height - 4) + 2;
-                    while ((_tiles[y][x].hasTeleport) ||
-                        (_tiles[y + 1][x].hasTeleport) ||
-                        (_tiles[y - 1][x].hasTeleport) ||
-                        (_tiles[y][x - 1].hasTeleport) ||
-                        (_tiles[y][x + 1].hasTeleport) ||
-                        (_tiles[y + 1][x + 1].hasTeleport) ||
-                        (_tiles[y + 1][x - 1].hasTeleport) ||
-                        (_tiles[y - 1][x - 1].hasTeleport) ||
-                        (_tiles[y - 1][x + 1].hasTeleport) ||
-
-                        (_tiles[y][x].hasPlayer) ||
-                        (_tiles[y + 1][x].hasPlayer) ||
-                        (_tiles[y - 1][x].hasPlayer) ||
-                        (_tiles[y][x - 1].hasPlayer) ||
-                        (_tiles[y][x + 1].hasPlayer) ||
-                        (_tiles[y + 1][x + 1].hasPlayer) ||
-                        (_tiles[y + 1][x - 1].hasPlayer) ||
-                        (_tiles[y - 1][x - 1].hasPlayer) ||
-                        (_tiles[y - 1][x + 1].hasPlayer) ||
-
-                        (_tiles[y][x].hasTarget) ||
-                        (_tiles[y + 1][x].hasTarget) ||
-                        (_tiles[y - 1][x].hasTarget) ||
-                        (_tiles[y][x - 1].hasTarget) ||
-                        (_tiles[y][x + 1].hasTarget) ||
-                        (_tiles[y + 1][x + 1].hasTarget) ||
-                        (_tiles[y + 1][x - 1].hasTarget) ||
-                        (_tiles[y - 1][x - 1].hasTarget) ||
-                        (_tiles[y - 1][x + 1].hasTarget))
-                    {
-                        x = r.Next(_width - 4) + 2;
-                        y = r.Next(_height - 4) + 2;
-                    };
-                    result.Add(new Coords(x, y));
                 }
-                return result[r.Next(result.Count)];
+                return new Coords(x, y);
             }
         }
 
         public void AddStairs(Coords srcCoords, int targetRoom, Coords targetCoords, bool up)
         {
 
-            for (int y = -1; y < 3; ++y)
+            for (int y = -1; y < 2; ++y)
             {
-                for (int x = -1; x < 2; ++x)
+                for (int x = -2; x < 2; ++x)
                 {
                     _tiles[srcCoords.y + y][srcCoords.x + x].overlay.Clear();
                     if ((x < 2) && (y < 2) && (y > -2) && (x > -2))
@@ -470,40 +423,26 @@ namespace Gruppe22
             }
         }
 
-        public void AddTarget()
+        public void AddTarget(Coords srcCoords)
         {
 
-            int count = 0;
-            Path pos = new Path(2 + r.Next(_width / 2 - 2) * 2, 2 + r.Next(_height / 2 - 2) * 2);
-            while ((pos.x > 0) &&
-                (_tiles[pos.y][pos.x].overlay.Count != 0))
-            {
-                count += 1;
-                pos.x += 1;
-                if (pos.x > _width - 2)
-                {
-                    pos.x = 1;
-                    pos.y += 1;
-                };
-                if (pos.y > _height - 2)
-                {
-                    pos.y = 1;
-                    pos.x = 1;
-                }
 
-                if (count >= _width * _height)
+            for (int y = -1; y < 2; ++y)
+            {
+                for (int x = -2; x < 2; ++x)
                 {
-                    pos.x = -1;
-                    pos.y = -1;
+                    _tiles[srcCoords.y + y][srcCoords.x + x].overlay.Clear();
+                    if ((x < 2) && (y < 2) && (y > -2) && (x > -2))
+                        _tiles[srcCoords.y + y][srcCoords.x + x].overlay.Add(new WallTile(_tiles[srcCoords.y + y][srcCoords.x + x], r));
                 }
             }
 
-            if ((pos.x >= 0) && (pos.x < _width) && (pos.y < _height) && (pos.y >= 0))
-            {
+            _tiles[srcCoords.y][srcCoords.x].overlay.Clear();
+            _tiles[srcCoords.y][srcCoords.x].overlay.Add(new TargetTile(_tiles[srcCoords.y][srcCoords.x]));
 
-                TargetTile target = new TargetTile(_tiles[pos.y][pos.x]);
-                _tiles[pos.y][pos.x].Add(target);
-            }
+            _tiles[srcCoords.y][srcCoords.x - 1].overlay.Clear();
+            _tiles[srcCoords.y][srcCoords.x - 1].overlay.Add(new DoorTile(_tiles[srcCoords.y][srcCoords.x - 1], true, _level));
+
         }
 
         public void AddDoors(int roomID = 1, int maxRoom = 3, List<Exit> doors = null)

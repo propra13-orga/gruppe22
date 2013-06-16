@@ -315,6 +315,7 @@ namespace Gruppe22
 
                     _backMusic = Content.Load<Song>(_map1.music); // Todo: *.mp3
                     MediaPlayer.Play(_backMusic);
+                    MediaPlayer.IsRepeating = true;
                     MediaPlayer.Volume = (float)0.3;
                     _status = GameStatus.Running;
                     break;
@@ -326,18 +327,21 @@ namespace Gruppe22
                     {
                         if (_map1.actors[FinishedID] is Enemy)
                         {
-                            ((ActorTile)_map1.actors[FinishedID].tile).enabled = false;
-                            AddMessage(_map1.actors[FinishedID].name + " is dead.");
-                            ((ActorTile)_map1.actors[FinishedID].tile).DropItems();
-                            if (_map1.actors[FinishedID].gold > 0)
+                            if (_map1.actors[FinishedID].tile.enabled)
                             {
+                                ((ActorTile)_map1.actors[FinishedID].tile).enabled = false;
+                                AddMessage(_map1.actors[FinishedID].name + " is dead.");
+                                ((ActorTile)_map1.actors[FinishedID].tile).DropItems();
+                                if (_map1.actors[FinishedID].gold > 0)
+                                {
 
-                                ItemTile tile = new ItemTile(((FloorTile)(_map1.actors[FinishedID].tile.parent)));
+                                    ItemTile tile = new ItemTile(((FloorTile)(_map1.actors[FinishedID].tile.parent)));
 
-                                Item item = new Item(Content, tile, ItemType.Gold, "", null, _map1.actors[FinishedID].gold);
-                                item.value = _map1.actors[FinishedID].gold;
-                                tile.item = item;
-                                ((FloorTile)(_map1.actors[FinishedID].tile.parent)).Add(tile);
+                                    Item item = new Item(Content, tile, ItemType.Gold, "", null, _map1.actors[FinishedID].gold);
+                                    item.value = _map1.actors[FinishedID].gold;
+                                    tile.item = item;
+                                    ((FloorTile)(_map1.actors[FinishedID].tile.parent)).Add(tile);
+                                }
                             }
                         }
                         else
@@ -885,7 +889,8 @@ namespace Gruppe22
                     {
                         exit = r.Next(totalRooms) + LevelStart;
                     };
-                    rooms[exit].AddTarget();
+                    Coords targetCoords = rooms[exit].FindRoomForStairs;
+                    rooms[exit].AddTarget(targetCoords);
                 }
 
                 // Phase 5 Add Checkpoints, Shops and Boss Fights; cut out areas in maps and add appropriate "regions"

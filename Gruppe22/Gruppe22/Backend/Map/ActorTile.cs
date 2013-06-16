@@ -122,7 +122,7 @@ namespace Gruppe22
                         // Low health => try to flee
                         //System.Diagnostics.Debug.WriteLine("=> Flee!");
 
-                        if ((!canAttack)  || ((actor.health > 10) && (_random.Next(100) > 50)))
+                        if ((!canAttack) || ((actor.health > 10) && (_random.Next(100) > 50)))
                         {
                             dir = Map.OppositeDirection(dir);
                             // TODO: Versuche Pfade zu finden, die ABstand vergrößern (insb. wenn geblockt)
@@ -178,7 +178,7 @@ namespace Gruppe22
                     && ((!actor.aggro) || (actor.friendly)))
                     dir = Direction.None;
 
-                if ((dir != Direction.None) && (!map.TileByCoords(Map.DirectionTile(coords, dir)).hasTeleport)&&(!map.TileByCoords(Map.DirectionTile(coords, dir)).hasPlayer))
+                if ((dir != Direction.None) && ((!map.TileByCoords(Map.DirectionTile(coords, dir)).hasTeleport) || (map.TileByCoords(Map.DirectionTile(coords, dir)).hasPlayer)))
                 {
                     ((IHandleEvent)parent).HandleEvent(false, Events.MoveActor, actor.id, dir);
                     //System.Diagnostics.Debug.WriteLine("#####" + dir + "######");
@@ -196,11 +196,7 @@ namespace Gruppe22
 
         public override void Update(Microsoft.Xna.Framework.GameTime gameTime)
         {
-            if (actor.isDead)
-            {
-                enabled = false;
-            }
-            else
+            if (!actor.isDead)
             {
                 _elapsed += gameTime.ElapsedGameTime.Milliseconds;
                 if (_elapsed > _timeToThink)

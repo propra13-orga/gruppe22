@@ -203,6 +203,8 @@ namespace Gruppe22
 
             _backMusic = Content.Load<Song>(_map1.music); // Todo: *.mp3
             MediaPlayer.Play(_backMusic);
+            MediaPlayer.IsRepeating = true;
+
             MediaPlayer.Volume = (float)0.3;
             _status = GameStatus.Running;
         }
@@ -541,6 +543,7 @@ namespace Gruppe22
                         _backMusic = Content.Load<Song>(_map1.music); // Todo: *.mp3
                         MediaPlayer.Play(_backMusic);
                         MediaPlayer.Volume = (float)0.3;
+                        MediaPlayer.IsRepeating = true;
                         _status = GameStatus.Running;
                     }
                     break;

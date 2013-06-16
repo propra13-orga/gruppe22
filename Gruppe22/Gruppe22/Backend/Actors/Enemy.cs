@@ -157,13 +157,13 @@ namespace Gruppe22
                     _animationFile = ".\\content\\rat.xml";
                     aggro = true;
                     crazy = false;
-                    level = 4;
+                    _level = 4;
                     break;
                 case 12:
                     _animationFile = ".\\content\\necro.xml";
                     aggro = true;
                     crazy = false;
-                    level = 5;
+                    _level = 5;
                     break;
                 case 13:
                     _animationFile = ".\\content\\dragon.xml";
@@ -183,7 +183,7 @@ namespace Gruppe22
             {
                 Item item = new Item(_content, this, ItemType.Key, "Key to level " + (level % 10).ToString(), null, 0, level);
                 _inventory.Add(item);
-
+                item.owner = this;
             }
         }
     }

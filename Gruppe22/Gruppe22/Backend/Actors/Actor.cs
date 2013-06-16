@@ -867,6 +867,7 @@ namespace Gruppe22
             //            System.Diagnostics.Debug.WriteLine(reader.Name);
 
             _newItems = 0;
+            _inventory.Clear();
             _name = reader.GetAttribute("name");
             _maxhealth = Convert.ToInt32(reader.GetAttribute("maxhp"));
             if (reader.GetAttribute("file") != null) _animationFile = Convert.ToString("file");
