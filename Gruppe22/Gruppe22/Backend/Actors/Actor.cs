@@ -45,6 +45,12 @@ namespace Gruppe22
         protected bool _locked = false;
         protected int _level = 0;
         protected int _damage = 0;
+        protected bool _aggro = true;
+        protected bool _ranged = false;
+
+        protected bool _crazy = false;
+        protected bool _friendly = false;
+
         protected int _resist = 0;
         protected int _exp = 0;
         int regCounter = 0;
@@ -145,7 +151,9 @@ namespace Gruppe22
         public int charmed
         {
             get { return _charmed; }
-            set { _charmed = value; }
+            set { _charmed = value;
+            if (_charmed != 0) _friendly = true;
+            }
         }
 
         public List<int> quickList
@@ -160,6 +168,51 @@ namespace Gruppe22
             }
         }
 
+        public bool friendly
+        {
+            get
+            {
+                return _friendly;
+            }
+            set
+            {
+                _friendly = value;
+            }
+        }
+
+        public bool aggro
+        {
+            get
+            {
+                return _aggro;
+            }
+            set
+            {
+                _aggro = value;
+            }
+        }
+        public bool crazy
+        {
+            get
+            {
+                return _crazy;
+            }
+            set
+            {
+                _crazy = value;
+            }
+        }
+        public bool ranged
+        {
+            get
+            {
+                return _ranged;
+            }
+            set
+            {
+                _ranged = value;
+            }
+        }
         public bool locked
         {
             get { return _locked; }
@@ -663,6 +716,11 @@ namespace Gruppe22
             writer.WriteAttributeString("stealMana", Convert.ToString(_stealMana));
             writer.WriteAttributeString("fireDamage", Convert.ToString(_fireDamage));
             writer.WriteAttributeString("iceDamage", Convert.ToString(_iceDamage));
+            writer.WriteAttributeString("crazy", Convert.ToString(_crazy));
+            writer.WriteAttributeString("ranged", Convert.ToString(_ranged));
+            writer.WriteAttributeString("aggro", Convert.ToString(_aggro));
+            writer.WriteAttributeString("friendly", Convert.ToString(_friendly));
+
             writer.WriteAttributeString("fireDefense", Convert.ToString(_fireDefense));
             writer.WriteAttributeString("iceDefense", Convert.ToString(_iceDefense));
             writer.WriteAttributeString("expNeeded", Convert.ToString(_expNeeded));
@@ -679,6 +737,7 @@ namespace Gruppe22
             writer.WriteAttributeString("viewRange", Convert.ToString(_viewRange));
             writer.WriteAttributeString("stunned", Convert.ToString(_stunned));
             writer.WriteAttributeString("charmed", Convert.ToString(_charmed));
+            if (_charmed != 0) _friendly = true;
             writer.WriteAttributeString("scared", Convert.ToString(_scared));
 
             if (actorType == ActorType.NPC)
@@ -794,7 +853,7 @@ namespace Gruppe22
         /// <param name="reader">the XmlReader which should be used</param>
         public void Load(XmlReader reader)
         {
-//            System.Diagnostics.Debug.WriteLine(reader.Name);
+            //            System.Diagnostics.Debug.WriteLine(reader.Name);
 
             _newItems = 0;
             _name = reader.GetAttribute("name");
@@ -828,6 +887,13 @@ namespace Gruppe22
             _maxMana = Convert.ToInt32(reader.GetAttribute("maxMana"));
             _destroyWeapon = Convert.ToInt32(reader.GetAttribute("destroyWeapon"));
             _destroyArmor = Convert.ToInt32(reader.GetAttribute("destroyArmor"));
+
+            if (reader.GetAttribute("crazy") != null) _crazy = Convert.ToBoolean(reader.GetAttribute("crazy"));
+            if (reader.GetAttribute("ranged") != null) _ranged = Convert.ToBoolean(reader.GetAttribute("ranged"));
+            if (reader.GetAttribute("aggro") != null) _aggro = Convert.ToBoolean(reader.GetAttribute("aggro"));
+            if (reader.GetAttribute("friendly") != null) _friendly = Convert.ToBoolean(reader.GetAttribute("friendly"));
+
+
             _animationFile = reader.GetAttribute("animation");
             if (reader.GetAttribute("stunned") == null)
                 _stunned = Convert.ToInt32(reader.GetAttribute("stunned"));

@@ -11,8 +11,8 @@ namespace Gruppe22
         private bool _illusion = false;
         private bool _illusionVisible = false;
         private int _health = -1;
-        private int _decoration = 0;
         private bool _enabled = true;
+        public WallType _type = WallType.Normal;
 
         public int health
         {
@@ -26,18 +26,7 @@ namespace Gruppe22
             }
         }
 
-        public int decoration
-        {
-            get
-            {
-                return _decoration;
-            }
-            set
-            {
-                _decoration = value;
-            }
-        }
-
+        
         public bool enabled
         {
             get
@@ -86,15 +75,44 @@ namespace Gruppe22
         public WallTile(object parent)
             : base(parent)
         {
+
         }
 
+        public WallType type
+        {
+            get
+            {
+                return _type;
+            }
+            set
+            {
+                _type = value;
+            }
+        }
+
+        public WallTile(object parent, Random r)
+            : base(parent)
+        {
+            if (r.Next(100) > 80)
+            {
+                _type = WallType.Deco1;
+            }
+            if (r.Next(100) > 80)
+            {
+                _type = WallType.Deco3;
+            }
+            if (r.Next(100) > 80)
+            {
+                _type = WallType.Deco2;
+            }
+        }
         public override void Save(XmlWriter xmlw)
         {
             xmlw.WriteStartElement("WallTile");
             if (_illusion) xmlw.WriteAttributeString("Illusion", _illusion.ToString());
             if (_illusionVisible) xmlw.WriteAttributeString("Illusionvisible", _illusionVisible.ToString());
             if (_health > -1) xmlw.WriteAttributeString("Health", _health.ToString());
-            if (_decoration != 0) xmlw.WriteAttributeString("Decoration", _decoration.ToString());
+            if (_type != WallType.Normal) xmlw.WriteAttributeString("Type", _type.ToString());
             if (!_enabled) xmlw.WriteAttributeString("Enabled", _enabled.ToString());
             xmlw.WriteEndElement();
         }

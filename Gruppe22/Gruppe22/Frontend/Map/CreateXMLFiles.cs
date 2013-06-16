@@ -191,12 +191,12 @@ namespace Gruppe22
             _tiles.Add(name + "b", WallDir.UpLeftDiag, new Rectangle(384, 0, 128, 192), new Coords(32, 16), new Coords(32, 0), WallType.Deco3);
 
 
-            _tiles.Add(name + "b", WallDir.UpDown, new Rectangle(0, 575, 128, 192), null, null, WallType.Deco1);
-            _tiles.Add(name + "b", WallDir.UpDown, new Rectangle(256, 575, 128, 192), null, null, WallType.Deco2);
+            _tiles.Add(name + "b", WallDir.UpDown, new Rectangle(0, 576, 127, 191), null, new Coords(1, 1), WallType.Deco1);
+            _tiles.Add(name + "b", WallDir.UpDown, new Rectangle(256, 576, 127, 191), null, new Coords(1, 1), WallType.Deco2);
             _tiles.Add(name + "b", WallDir.UpDown, new Rectangle(0, 768, 128, 192), null, null, WallType.Deco3);
 
             _tiles.Add(name + "b", WallDir.LeftRight, new Rectangle(128, 575, 128, 192), null, null, WallType.Deco1);
-            _tiles.Add(name + "b", WallDir.LeftRight, new Rectangle(384, 592, 128, 192), null, null, WallType.Deco2);
+            _tiles.Add(name + "b", WallDir.LeftRight, new Rectangle(384, 576, 127, 191), null, new Coords(1, 1), WallType.Deco2);
             _tiles.Add(name + "b", WallDir.LeftRight, new Rectangle(128, 768, 128, 192), null, null, WallType.Deco3);
 
             _tiles.Save("Content\\" + name + ".xml");

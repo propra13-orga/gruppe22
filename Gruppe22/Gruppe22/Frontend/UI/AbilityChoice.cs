@@ -65,7 +65,7 @@ namespace Gruppe22
 
         public void GenerateAbility(int id)
         {
-            AbilityElement element = (AbilityElement)Math.Pow(2, _random.Next(10));
+            AbilityElement element = AbilityElement.Health;// (AbilityElement)Math.Pow(2, _random.Next(10));
             AbilityTarget target = AbilityTarget.None;
             switch (element)
             {

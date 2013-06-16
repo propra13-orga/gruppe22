@@ -185,18 +185,18 @@ namespace Gruppe22
                 _block.allowIncrease = true;
                 _penetrate.allowIncrease = true;
                 _healthReg.allowIncrease = true;
-                _stealHealth.allowIncrease = true;
-                _stealMana.allowIncrease = true;
-                _fireDamage.allowIncrease = true;
-                _iceDamage.allowIncrease = true;
-                _fireDefense.allowIncrease = true;
-                _iceDefense.allowIncrease = true;
-                _destroyWeapon.allowIncrease = true;
-                _destroyArmor.allowIncrease = true;
+               // _stealHealth.allowIncrease = true;
+                // _stealMana.allowIncrease = true;
+                // _fireDamage.allowIncrease = true;
+                //_iceDamage.allowIncrease = true;
+                //_fireDefense.allowIncrease = true;
+                //_iceDefense.allowIncrease = true;
+                //_destroyWeapon.allowIncrease = true;
+                //_destroyArmor.allowIncrease = true;
                 _maxMana.allowIncrease = true;
                 _manaReg.allowIncrease = true;
                 _damage.allowIncrease = true;
-                _resist.allowIncrease = true;
+                //_resist.allowIncrease = true;
                 _maxhealth.allowIncrease = true;
                 _armor.allowIncrease = true;
             }

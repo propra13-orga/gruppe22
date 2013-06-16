@@ -55,10 +55,17 @@ namespace Gruppe22
         /// <summary>
         /// An empty constructor (setting default values)
         /// </summary>
-        public GeneratorTile(object parent, Coords coords = null, bool canEnter = true)
-            : base(parent, coords, canEnter)
+        public GeneratorTile(object parent, Coords coords, bool canEnter, Random r)
+            : base(parent)
         {
-
+            if (coords != null)
+            {
+                _coords = coords;
+            }
+            if (!canEnter)
+            {
+                Add(new WallTile(this, r));
+            }
         }
         #endregion
     }

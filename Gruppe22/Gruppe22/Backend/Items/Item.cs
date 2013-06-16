@@ -978,28 +978,28 @@ namespace Gruppe22
                     {
                         if (_effects[0].effect > 21)
                         {
-                            _icon = new VisibleObject(_content, "weapon", new Rectangle(8, 186, 60, 53), new Coords(2, 5), new Coords(2, 6));
+                            _icon = new VisibleObject(_content, "weapon", new Rectangle(5, 282, 60, 53), new Coords(2, 5), new Coords(2, 6));
                         }
                         else
                         {
-                            _icon = new VisibleObject(_content, "weapon", new Rectangle(69, 186, 60, 53), new Coords(2, 5), new Coords(2, 6));
+                            _icon = new VisibleObject(_content, "weapon", new Rectangle(70, 282, 60, 53), new Coords(2, 5), new Coords(2, 6));
                         }
                     }
                     else
                     {
                         if (_effects[0].effect > 13)
                         {
-                            _icon = new VisibleObject(_content, "weapon", new Rectangle(197, 186, 60, 53), new Coords(2, 5), new Coords(2, 6));
+                            _icon = new VisibleObject(_content, "weapon", new Rectangle(134, 282, 60, 53), new Coords(2, 5), new Coords(2, 6));
                         }
                         else
                         {
                             if (_effects[0].effect > 9)
                             {
-                                _icon = new VisibleObject(_content, "weapon", new Rectangle(260, 186, 60, 53), new Coords(2, 5), new Coords(2, 6));
+                                _icon = new VisibleObject(_content, "weapon", new Rectangle(198, 282, 60, 53), new Coords(2, 5), new Coords(2, 6));
                             }
                             else
                             {
-                                _icon = new VisibleObject(_content, "weapon", new Rectangle(320, 0, 60, 53), new Coords(2, 5), new Coords(2, 6));
+                                _icon = new VisibleObject(_content, "weapon", new Rectangle(262, 282, 60, 53), new Coords(2, 5), new Coords(2, 6));
                             }
                         }
                     }
@@ -1047,33 +1047,31 @@ namespace Gruppe22
                         case ItemProperty.Mana:
                             if (_effects[0].effect > 30)
                             {
-                                _icon = new VisibleObject(_content, "items", new Rectangle(160, 256, 48, 48), new Coords(8, 8), new Coords(8, 8));
+                                _icon = new VisibleObject(_content, "items", new Rectangle(160, 256, 32, 32), new Coords(16, 16), new Coords(16, 16));
                             }
                             else
                             {
-                                _icon = new VisibleObject(_content, "items", new Rectangle(127, 256, 48, 48), new Coords(8, 8), new Coords(8, 8));
-
+                                _icon = new VisibleObject(_content, "items", new Rectangle(127, 256, 32, 32), new Coords(16, 16), new Coords(16, 16));
                             }
                             break;
                         case ItemProperty.Health:
                             if (_effects[0].effect > 30)
                             {
-                                _icon = new VisibleObject(_content, "items", new Rectangle(97, 256, 48, 48), new Coords(8, 8), new Coords(8, 8));
+                                _icon = new VisibleObject(_content, "items", new Rectangle(97, 256, 32, 32), new Coords(16, 16), new Coords(16, 16));
                             }
                             else
                             {
-                                _icon = new VisibleObject(_content, "items", new Rectangle(65, 256, 48, 48), new Coords(8, 8), new Coords(8, 8));
-
+                                _icon = new VisibleObject(_content, "items", new Rectangle(65, 256, 32, 32), new Coords(16, 16), new Coords(16, 16));
                             }
                             break;
                         default:
                             if (_effects[0].effect > 30)
                             {
-                                _icon = new VisibleObject(_content, "items", new Rectangle(223, 256, 48, 48), new Coords(8, 8), new Coords(8, 8));
+                                _icon = new VisibleObject(_content, "items", new Rectangle(223, 256, 32, 32), new Coords(16, 16), new Coords(16, 16));
                             }
                             else
                             {
-                                _icon = new VisibleObject(_content, "items", new Rectangle(193, 256, 48, 48), new Coords(8, 8), new Coords(8, 8));
+                                _icon = new VisibleObject(_content, "items", new Rectangle(193, 256, 32, 32), new Coords(16, 16), new Coords(16, 16));
 
                             } break;
                     }

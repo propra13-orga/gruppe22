@@ -713,6 +713,8 @@ namespace Gruppe22
                                         WallTile wall = new WallTile(this);
                                         if (xmlr.GetAttribute("Enabled") != null) wall.enabled = Boolean.Parse(xmlr.GetAttribute("Enabled"));
                                         if (xmlr.GetAttribute("Health") != null) wall.health = Int32.Parse(xmlr.GetAttribute("Health"));
+                                        if (xmlr.GetAttribute("Type") != null) wall.type = (WallType)Enum.Parse(typeof(WallType), xmlr.GetAttribute("Type").ToString());
+
                                         if (xmlr.GetAttribute("Illusion") != null) wall.illusion = Boolean.Parse(xmlr.GetAttribute("Illusion"));
                                         if (xmlr.GetAttribute("Illusionvisible") != null) wall.illusionVisible = Boolean.Parse(xmlr.GetAttribute("Illusionvisible"));
                                         tile.Add(wall);
@@ -781,6 +783,16 @@ namespace Gruppe22
                                         tile.Add(reserved);
 
                                         break;
+
+                                    case "DoorTile":
+                                        DoorTile door = new DoorTile(tile);
+                                        if (xmlr.GetAttribute("locked") != null)
+                                        { door.open = Boolean.Parse(xmlr.GetAttribute("open")); }
+                                        if (xmlr.GetAttribute("key") != null)
+                                        { door.key = int.Parse(xmlr.GetAttribute("key")); }
+                                        tile.Add(door);
+                                        break;
+
                                     case "TeleportTile":
 
 

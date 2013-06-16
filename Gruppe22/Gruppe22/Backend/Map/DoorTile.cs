@@ -27,11 +27,25 @@ namespace Gruppe22
 
         public int key { get { return _key; } set { _key = value; } }
 
-        public DoorTile(object parent)
+        public DoorTile(object parent, bool locked=true, int key=0)
             : base(parent)
         {
+            _key = key;
+            _open = !locked;
         }
 
+
+        public new WallType type{
+            get
+            {
+                if (_open) return WallType.OpenDoor;
+                else return WallType.ClosedDoor;
+            }
+            set
+            {
+
+            }
+    }
         public override void Save(XmlWriter xmlw)
         {
             xmlw.WriteStartElement("DoorTile");

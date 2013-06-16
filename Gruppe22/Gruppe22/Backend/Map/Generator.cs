@@ -110,6 +110,13 @@ namespace Gruppe22
             {
                 List<Coords> result = new List<Coords>();
 
+
+
+
+
+
+
+
                 for (int y = 1; y < _height - 2; ++y)
                     for (int x = 1; x < _width - 2; ++x)
                     {
@@ -183,6 +190,21 @@ namespace Gruppe22
         {
             _tiles[srcCoords.y][srcCoords.x].overlay.Clear();
             _tiles[srcCoords.y][srcCoords.x].overlay.Add(new TeleportTile(_tiles[srcCoords.y][srcCoords.x], "room" + targetRoom.ToString() + ".xml", targetCoords, false, false, true, up));
+
+            for (int x = srcCoords.x - 1; x < srcCoords.x + 1; ++x)
+            {
+                _tiles[srcCoords.y + 1][x].overlay.Clear();
+                _tiles[srcCoords.y + 1][x].overlay.Add(new WallTile(_tiles[srcCoords.y + 1][x], r));
+
+                _tiles[srcCoords.y - 1][x].overlay.Clear();
+                _tiles[srcCoords.y - 1][x].overlay.Add(new WallTile(_tiles[srcCoords.y - 1][x], r));
+            }
+
+            _tiles[srcCoords.y + 1][srcCoords.x].overlay.Clear();
+            _tiles[srcCoords.y + 1][srcCoords.x].overlay.Add(new DoorTile(_tiles[srcCoords.y + 1][srcCoords.x], true, _level));
+            _tiles[srcCoords.y - 1][srcCoords.x].overlay.Clear();
+            _tiles[srcCoords.y - 1][srcCoords.x].overlay.Add(new WallTile(_tiles[srcCoords.y - 1][srcCoords.x], r));
+
         }
 
         public Direction blocked
@@ -597,27 +619,27 @@ namespace Gruppe22
 
                 case Direction.Up:
                     {
-                        Coords tmp = new Coords(1 + r.Next(_width / 2) * 2, 0);
+                        Coords tmp = new Coords(1 + r.Next((_width - 1) / 2) * 2, 0);
                         _tiles[1][tmp.x].overlay.Clear();
                         return tmp;
                     }
 
                 case Direction.Down:
                     {
-                        Coords tmp = new Coords(1 + r.Next(_width / 2) * 2, _height - 1);
+                        Coords tmp = new Coords(1 + r.Next((_width - 1) / 2) * 2, _height - 1);
                         _tiles[tmp.y - 1][tmp.x].overlay.Clear();
                         return tmp;
                     }
 
                 case Direction.Left:
                     {
-                        Coords tmp = new Coords(0, 1 + r.Next(_height / 2) * 2);
+                        Coords tmp = new Coords(0, 1 + r.Next((_height - 1) / 2) * 2);
                         _tiles[tmp.y][1].overlay.Clear();
                         return tmp;
                     }
                 case Direction.Right:
                     {
-                        Coords tmp = new Coords(_width - 1, 1 + r.Next(_height / 2) * 2);
+                        Coords tmp = new Coords(_width - 1, 1 + r.Next((_height - 1) / 2) * 2);
                         _tiles[tmp.y][tmp.x - 1].overlay.Clear();
                         return tmp;
                     }
@@ -842,7 +864,7 @@ namespace Gruppe22
                     _tiles[row].Add(new GeneratorTile(this, new Coords(col, row),
 
                         (row % 2 == 1)
-                        && (col % 2 == 1))
+                        && (col % 2 == 1), r)
                         );
                 }
             }
@@ -1031,8 +1053,7 @@ namespace Gruppe22
                 switch (c)
                 {
                     case '#':
-                        _tiles[row].Add(new GeneratorTile(this, new Coords(col, row)));
-                        _tiles[row][col].Add(new WallTile(_tiles[row][col]));
+                        _tiles[row].Add(new GeneratorTile(this, new Coords(col, row), true, r));
                         col += 1;
                         break;
                     case '\n':
@@ -1044,7 +1065,7 @@ namespace Gruppe22
                         break;
                     case 'S':
 
-                        _tiles[row].Add(new GeneratorTile(this, new Coords(col, row)));
+                        _tiles[row].Add(new GeneratorTile(this, new Coords(col, row), false, r));
 
                         if (roomID != 1)
                         {
@@ -1058,7 +1079,7 @@ namespace Gruppe22
                         col += 1;
                         break;
                     case 'G':
-                        _tiles[row].Add(new GeneratorTile(this, new Coords(col, row)));
+                        _tiles[row].Add(new GeneratorTile(this, new Coords(col, row), false, r));
 
                         if (roomID == MaxRoom)
                         {
@@ -1073,7 +1094,7 @@ namespace Gruppe22
                         col += 1;
                         break;
                     case 'F':
-                        _tiles[row].Add(new GeneratorTile(this, new Coords(col, row)));
+                        _tiles[row].Add(new GeneratorTile(this, new Coords(col, row), false, r));
 
                         Enemy enemy = new Enemy(_content, -1, -1, -1, -1, "", r);
                         ActorTile enemyTile = new ActorTile(_tiles[row][col], enemy);
@@ -1083,7 +1104,7 @@ namespace Gruppe22
                         col += 1;
                         break;
                     default:
-                        _tiles[row].Add(new GeneratorTile(this, new Coords(col, row)));
+                        _tiles[row].Add(new GeneratorTile(this, new Coords(col, row), false, r));
                         col += 1;
                         break;
                 }
@@ -1098,7 +1119,7 @@ namespace Gruppe22
             {
                 while (_tiles[i].Count < maxcol)
                 {
-                    _tiles[i].Add(new GeneratorTile(this, new Coords(_tiles[i].Count + 1, i)));
+                    _tiles[i].Add(new GeneratorTile(this, new Coords(_tiles[i].Count + 1, i), false, r));
                 }
             }
             return true;
@@ -1357,12 +1378,12 @@ namespace Gruppe22
             for (int x = 1; x < _width-1; ++x)
             {
                 _tiles[0][x].Add(new WallTile(_tiles[0][x]));
-                _tiles[_height - 1][x].Add(new WallTile(_tiles[_height - 1][x]));
+                _tiles[_height - 1][x].Add(new WallTile(_tiles[_height - 1][x],r));
             }
             for (int y = 0; y < _height; ++y)
             {
                 _tiles[y][0].Add(new WallTile(_tiles[y][0]));
-                _tiles[y][_width - 1].Add(new WallTile(_tiles[y][_width - 1]));
+                _tiles[y][_width - 1].Add(new WallTile(_tiles[y][_width - 1], r));
             }
         }
 
@@ -1385,14 +1406,18 @@ namespace Gruppe22
                 _tiles.Add(new List<GeneratorTile>());
                 for (int x = 0; x < width; ++x)
                 {
-                    _tiles[y].Add(new GeneratorTile(this, new Coords(x, y)));
+                    _tiles[y].Add(new GeneratorTile(this, new Coords(x, y), true, r));
                 }
             }
             if (generate)
             {
-                ClearMaze(); // set up grid
                 if (roomNr > 1)
+                {
+                    ClearMaze(); // set up grid
                     GenerateMaze();
+                    ClearWalls(Math.Min((_level - 1) * (2 + r.Next(10)), ((_width - 1) * (_height - 1))));
+                }
+
                 else
                     DrawWalls();
                 if (roomNr == 1)
@@ -1400,10 +1425,11 @@ namespace Gruppe22
                     AddPlayer(playerPos);
                 }
                 if (_id > 1)
+                {
                     AddTraps();
-                AddEnemies();
-                if (_id > 1)
                     AddItems();
+                }
+                AddEnemies(_level * (r.Next(5) + 3));
                 if (hasShop)
                 {
                     AddShop();
@@ -1440,8 +1466,8 @@ namespace Gruppe22
                     _floorFile = "floor1";
                     _light = 200;
                 }
-
-                ClearWalls(Math.Min((_level - 1) * (2 + r.Next(10)), ((_width - 1) * (_height - 1))));
+                else
+                    CleanupRoom(); // Remove "ugly" walls
 
                 GenerateRoomName();
                 if ((dungeonname != "") && (dungeonname != null))
@@ -1452,7 +1478,6 @@ namespace Gruppe22
                 {
                     GenerateDungeon();
                 }
-                CleanupRoom(); // Remove "ugly" walls
 
             }
         }

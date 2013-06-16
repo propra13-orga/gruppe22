@@ -92,8 +92,10 @@ namespace Gruppe22
                         }
                         else
                         {
-                            if (_map1.actors[attacker] is Player)
+                            if (_map1.actors[attacker] is Player) { 
                                 _mainmap1.floatNumber(_map1.actors[defender].tile.coords, damage.ToString(), Color.White);
+                                _map1.actors[defender].aggro = true;
+                            }
                         }
                         if (_map1.actors[defender].isDead)
                         {
@@ -424,7 +426,7 @@ namespace Gruppe22
                         int id = (int)data[0];
                         Direction dir = (Direction)data[1];
                         Coords target = Map.DirectionTile(_map1.actors[id].tile.coords, dir);
-
+                        
                         if (_map1.CanMove(_map1.actors[id].tile.coords, dir))
                         {
                             _mainmap1.HandleEvent(true, Events.AnimateActor, id, Activity.Attack, false, dir, true);
@@ -766,8 +768,8 @@ namespace Gruppe22
                     };
                     Coords entranceCoords = rooms[entrance].FindRoomForStairs;
                     Coords exitCoords = rooms[exit].FindRoomForStairs;
-                    rooms[exit].AddStairs(exitCoords, entrance + 1, entranceCoords, false);
-                    rooms[entrance].AddStairs(entranceCoords, exit + 1, exitCoords, true);
+                    rooms[exit].AddStairs(exitCoords, entrance + 1, entranceCoords, true);
+                    rooms[entrance].AddStairs(entranceCoords, exit + 1, exitCoords, false);
                 }
 
 

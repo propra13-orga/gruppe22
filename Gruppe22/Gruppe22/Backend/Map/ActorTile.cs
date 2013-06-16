@@ -76,85 +76,106 @@ namespace Gruppe22
 
             Map map = (Map)((FloorTile)_parent).parent;
 
-
-            Direction dir = Direction.None;
-            Coords closestEnemy = map.ClosestEnemy(coords, actor.viewRange, !(actor is NPC), !(actor is NPC));
-
-            if (closestEnemy.x > -1) // There is an enemy close by
+            if (_actor.stunned > 0) _actor.stunned -= 1;
+            if (_actor.charmed > 0)
             {
-
-                if ((Math.Abs(closestEnemy.x - coords.x) < 2) &&
-                    (Math.Abs(closestEnemy.y - coords.y) < 2) &&
-                    (map.CanMove(coords, Map.WhichWayIs(closestEnemy, coords))))
-                {
-                    dir = Map.WhichWayIs(closestEnemy, coords);
-                    //System.Diagnostics.Debug.WriteLine("Attack -> " + coords.x + "/" + coords.y + "->" + closestEnemy.x + "/" + closestEnemy.y + "=>" + dir);
-
-                }
-                else
-                {
-                    //System.Diagnostics.Debug.WriteLine("==============================");
-                    //System.Diagnostics.Debug.WriteLine(actor.ToString() + " (" + coords.ToString() + ") tries to catch " + map[closestEnemy].firstActor.ToString() + " (" + closestEnemy.ToString() + ")");
-                    //System.Diagnostics.Debug.WriteLine("------------------------------");
-
-                    List<Coords> path = null;
-                    SortedSet<Coords> temp = null;
-
-                    map.PathTo(coords, closestEnemy, out path, ref temp, 10);
-                    if ((path != null) && (path.Count > 0))
-                    {
-                        dir = Map.WhichWayIs(path[1], coords);
-                        // System.Diagnostics.Debug.WriteLine("=> Path found:" + path[1] + " (" + dir + ")");
-                    }
-                }
-
-                if ((actor.health < actor.maxHealth / 4) || (actor is NPC))
-                {
-                    // Low health => try to flee
-                    //System.Diagnostics.Debug.WriteLine("=> Flee!");
-
-                    dir = Map.OppositeDirection(dir);
-                }
-                int count = 1;
-
-                while ((!map.TileByCoords(Map.DirectionTile(coords, dir)).canEnter) && (count < 9))
-                {
-                    //System.Diagnostics.Debug.WriteLine("Rotate");
-                    dir = Map.NextDirection(dir);
-                    count += 1;
-                }
-                if (!map.TileByCoords(Map.DirectionTile(coords, dir)).canEnter) dir = Direction.None;
+                _actor.charmed -= 1;
+                if (_actor.charmed == 0) _actor.friendly = false;
             }
-
-            else
+            if (_actor.stunned == 0)
             {
-                // Nobody close by, just wander aimlessly
-                // TODO: Try to grab nearby items
-                if (!(actor is NPC))
+
+                Direction dir = Direction.None;
+                Coords closestEnemy = map.ClosestEnemy(coords, actor.viewRange, !(actor is NPC) && (actor.aggro) && (!actor.friendly), !(actor is NPC) && !(actor.aggro) && (!actor.friendly), (actor.friendly) || actor.crazy);
+
+                if (closestEnemy.x > -1) // There is an enemy close by
                 {
-                    dir = (Direction)_random.Next(4);
-                    int count = 1;
-                    while (((dir == Map.OppositeDirection(_lastDir)) || (!map.TileByCoords(Map.DirectionTile(coords, dir)).canEnter)) && (count < 9))
+
+                    if ((Math.Abs(closestEnemy.x - coords.x) < 2) &&
+                        (Math.Abs(closestEnemy.y - coords.y) < 2) &&
+                        (map.CanMove(coords, Map.WhichWayIs(closestEnemy, coords))))
                     {
+                        dir = Map.WhichWayIs(closestEnemy, coords);
+                        //System.Diagnostics.Debug.WriteLine("Attack -> " + coords.x + "/" + coords.y + "->" + closestEnemy.x + "/" + closestEnemy.y + "=>" + dir);
+
+                    }
+                    else
+                    {
+                        //System.Diagnostics.Debug.WriteLine("==============================");
+                        //System.Diagnostics.Debug.WriteLine(actor.ToString() + " (" + coords.ToString() + ") tries to catch " + map[closestEnemy].firstActor.ToString() + " (" + closestEnemy.ToString() + ")");
+                        //System.Diagnostics.Debug.WriteLine("------------------------------");
+
+                        List<Coords> path = null;
+                        SortedSet<Coords> temp = null;
+
+                        map.PathTo(coords, closestEnemy, out path, ref temp, 10);
+                        if ((path != null) && (path.Count > 0))
+                        {
+                            dir = Map.WhichWayIs(path[1], coords);
+                            // System.Diagnostics.Debug.WriteLine("=> Path found:" + path[1] + " (" + dir + ")");
+                        }
+                    }
+
+                    if ((actor.health < actor.maxHealth / 4) || (actor is NPC) || (actor.scared != 0))
+                    {
+                        // Low health => try to flee
+                        //System.Diagnostics.Debug.WriteLine("=> Flee!");
+
+                        dir = Map.OppositeDirection(dir);
+                    }
+                    int count = 1;
+
+                    while ((!map.TileByCoords(Map.DirectionTile(coords, dir)).canEnter) && (count < 9))
+                    {
+                        //System.Diagnostics.Debug.WriteLine("Rotate");
                         dir = Map.NextDirection(dir);
                         count += 1;
                     }
-                    if ((dir == Map.OppositeDirection(_lastDir)) || (!map.TileByCoords(Map.DirectionTile(coords, dir)).canEnter)) dir = Direction.None;
+                    if (!map.TileByCoords(Map.DirectionTile(coords, dir)).canEnter) dir = Direction.None;
+                }
 
-
-                    if (dir == Direction.None)
+                if (dir == Direction.None)
+                {
+                    // Nobody close by, just wander aimlessly
+                    // TODO: Try to grab nearby items
+                    if (_random.Next(10) > 5)
                     {
                         dir = (Direction)_random.Next(4);
-                    }
+                        int count = 1;
+                        while (((dir == Map.OppositeDirection(_lastDir)) || (!map.TileByCoords(Map.DirectionTile(coords, dir)).canEnter)) && (count < 9))
+                        {
+                            dir = Map.NextDirection(dir);
+                            count += 1;
+                        }
+                        if ((dir == Map.OppositeDirection(_lastDir)) || (!map.TileByCoords(Map.DirectionTile(coords, dir)).canEnter))
+                        {
+                            dir = Direction.None;
+                            _lastDir = Direction.None;
+                        }
 
+                    }
+                }
+
+                // Do not attack friendly units!
+                if ((map.TileByCoords(Map.DirectionTile(coords, dir)).hasEnemy) && (!map.TileByCoords(Map.DirectionTile(coords, dir)).firstActor.isDead)
+                    && (!actor.crazy) && (!actor.friendly))
+                    dir = Direction.None;
+
+                if ((map.TileByCoords(Map.DirectionTile(coords, dir)).hasNPC) && (!map.TileByCoords(Map.DirectionTile(coords, dir)).firstActor.isDead)
+                    && ((!actor.aggro) || (!actor.friendly)))
+                    dir = Direction.None;
+
+
+                if ((map.TileByCoords(Map.DirectionTile(coords, dir)).hasPlayer) && (!map.TileByCoords(Map.DirectionTile(coords, dir)).firstActor.isDead)
+                    && ((!actor.aggro) || (!actor.friendly)))
+                    dir = Direction.None;
+
+                if ((dir != Direction.None) && (!map.TileByCoords(Map.DirectionTile(coords, dir)).hasTeleport))
+                {
+                    ((IHandleEvent)parent).HandleEvent(false, Events.MoveActor, actor.id, dir);
+                    //System.Diagnostics.Debug.WriteLine("#####" + dir + "######");
                 }
             }
-            if (dir != Direction.None)
-            {
-                ((IHandleEvent)parent).HandleEvent(false, Events.MoveActor, actor.id, dir);
-                //System.Diagnostics.Debug.WriteLine("#####" + dir + "######");
-            }
-
 
         }
 

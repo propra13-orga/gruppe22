@@ -71,24 +71,35 @@ namespace Gruppe22
             {
                 case 0:
                     _animationFile = ".\\content\\mouse.xml";
-                    _damage = 5;
+                    _damage = 2;
                     _penetrate = 0;
                     _scared = -1;
+                    _exp = 10;
+                    aggro = true;
+                    crazy = false;
                     break;
                 case 1:
                     switch (_random.Next(4))
                     {
                         case 0:
                             _animationFile = ".\\content\\bat.xml";
+                            aggro = true;
+                            crazy = true;
                             break;
                         case 1:
                             _animationFile = ".\\content\\gnome.xml";
+                            aggro = true;
+                            crazy = false;
                             break;
                         case 2:
                             _animationFile = ".\\content\\wolf.xml";
+                            aggro = true;
+                            crazy = false;
                             break;
                         case 3:
                             _animationFile = ".\\content\\spider.xml";
+                            aggro = true;
+                            crazy = true;
                             break;
                     }
                     break;
@@ -97,15 +108,23 @@ namespace Gruppe22
                     {
                         case 0:
                             _animationFile = ".\\content\\skeleton.xml";
+                            aggro = true;
+                            crazy = true;
                             break;
                         case 1:
                             _animationFile = ".\\content\\ghost.xml";
+                            aggro = false;
+                            crazy = false;
                             break;
                         case 2:
                             _animationFile = ".\\content\\mummy.xml";
+                            aggro = true;
+                            crazy = false;
                             break;
                         case 3:
                             _animationFile = ".\\content\\vamp.xml";
+                            aggro = true;
+                            crazy = false;
                             break;
                     }
                     break;
@@ -114,26 +133,40 @@ namespace Gruppe22
                     {
                         case 0:
                             _animationFile = ".\\content\\croc.xml";
+                            aggro = true;
+                            crazy = false;
                             break;
                         case 1:
                             _animationFile = ".\\content\\thief.xml";
+                            aggro = true;
+                            crazy = false;
                             break;
                         case 2:
                             _animationFile = ".\\content\\cyclops.xml";
+                            aggro = true;
+                            crazy = false;
                             break;
                         case 3:
                             _animationFile = ".\\content\\devil.xml";
+                            aggro = true;
+                            crazy = false;
                             break;
                     }
                     break;
                 case 11:
                     _animationFile = ".\\content\\rat.xml";
+                    aggro = true;
+                    crazy = false;
                     break;
                 case 12:
                     _animationFile = ".\\content\\necro.xml";
+                    aggro = true;
+                    crazy = false;
                     break;
                 case 13:
                     _animationFile = ".\\content\\dragon.xml";
+                    aggro = true;
+                    crazy = false;
                     break;
             }
             if (_level > 0)
@@ -142,7 +175,6 @@ namespace Gruppe22
                 _inventory.Add(item);
                 item.owner = this;
             }
-            if (_level == 0) _exp = 10;
             _gold = _random.Next(10 + _level / 10) * _level;
             if (_level > 10)
             {

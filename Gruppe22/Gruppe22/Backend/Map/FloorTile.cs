@@ -21,7 +21,7 @@ namespace Gruppe22
         /// <summary>
         /// The Position of the tile
         /// </summary>
-        private Coords _coords = null;
+        protected Coords _coords = null;
 
         /// <summary>
         /// Whether field is visible on the minimap
@@ -98,7 +98,7 @@ namespace Gruppe22
         {
             get
             {
-                
+
                 foreach (Tile tile in _overlay)
                 {
                     if (tile is TeleportTile) return tile as TeleportTile;
@@ -170,7 +170,7 @@ namespace Gruppe22
             {
                 for (int i = 0; i < _overlay.Count; ++i)
                 {
-                    if ((_overlay[i] is WallTile) || (_overlay[i] is GapTile)) return false;
+                    if ((_overlay[i] is WallTile) || (_overlay[i] is GapTile) || ((_overlay[i] is DoorTile) && ((DoorTile)_overlay[i]).open == false)) return false;
                 }
 
                 return true;
@@ -187,6 +187,35 @@ namespace Gruppe22
                 for (int i = 0; i < _overlay.Count; ++i)
                 {
                     if ((_overlay[i] is WallTile) || (_overlay[i] is DoorTile)) return true;
+                }
+
+                return false;
+            }
+        }
+
+        public WallType wallType
+        {
+            get
+            {
+                for (int i = 0; i < _overlay.Count; ++i)
+                {
+                    if ((_overlay[i] is WallTile) || (_overlay[i] is DoorTile)) return (_overlay[i] as WallTile).type;
+                }
+
+                return WallType.Normal;
+            }
+        }
+
+        /// <summary>
+        /// Determine whether tile has a door on it
+        /// </summary>
+        public bool hasDoor
+        {
+            get
+            {
+                for (int i = 0; i < _overlay.Count; ++i)
+                {
+                    if (_overlay[i] is DoorTile) return true;
                 }
 
                 return false;
@@ -494,6 +523,7 @@ namespace Gruppe22
                 Add(new WallTile(this));
             }
         }
+
         #endregion
 
         /// <summary>
