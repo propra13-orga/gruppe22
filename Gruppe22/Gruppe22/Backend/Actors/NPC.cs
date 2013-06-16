@@ -60,55 +60,57 @@ namespace Gruppe22
         /// <summary>
         /// Constructor
         /// </summary>
-        public NPC(ContentManager content, int health = 10, int armor = 0, int damage = 0, int maxHealth = 10, string name = "", Random r = null, int _level=1)
+        public NPC(ContentManager content, int health = 10, int armor = 0, int damage = 0, int maxHealth = 10, string name = "", Random r = null, int _level = 1, bool shop = false)
             : base(content, ActorType.NPC, health, armor, damage, maxHealth, name, r)
         {
             _actorType = ActorType.NPC;
-            switch (_level)
-            {
-                case 1:
-                    switch (_random.Next(3))
-                    {
-                        case 0:
-                            _animationFile = ".\\content\\luigi.xml";
-                            break;
-                        case 1:
-                            _animationFile = ".\\content\\guard.xml";
-                            break;
-                        case 2:
-                            _animationFile = ".\\content\\npc1.xml";
-                            break;
-                    }
-                    break;
-                case 2:
-                    switch (_random.Next(3))
-                    {
-                        case 0:
-                            _animationFile = ".\\content\\mage.xml";
-                            break;
-                        case 1:
-                            _animationFile = ".\\content\\monk.xml";
-                            break;
-                        case 2:
-                            _animationFile = ".\\content\\npc1.xml";
-                            break;
-                    }
-                    break;
-                default:
-                    switch (_random.Next(3))
-                    {
-                        case 0:
-                            _animationFile = ".\\content\\princess.xml";
-                            break;
-                        case 1:
-                            _animationFile = ".\\content\\xmas.xml";
-                            break;
-                        case 2:
-                            _animationFile = ".\\content\\npc1.xml";
-                            break;
-                    }
-                    break;
-            }
+            if (shop) _animationFile = ".\\content\\luigi.xml";
+            else
+                switch (_level)
+                {
+                    case 1:
+                        switch (_random.Next(3))
+                        {
+                            case 0:
+                                _animationFile = ".\\content\\mage.xml";
+                                break;
+                            case 1:
+                                _animationFile = ".\\content\\guard.xml";
+                                break;
+                            case 2:
+                                _animationFile = ".\\content\\npc1.xml";
+                                break;
+                        }
+                        break;
+                    case 2:
+                        switch (_random.Next(3))
+                        {
+                            case 0:
+                                _animationFile = ".\\content\\mage.xml";
+                                break;
+                            case 1:
+                                _animationFile = ".\\content\\monk.xml";
+                                break;
+                            case 2:
+                                _animationFile = ".\\content\\npc1.xml";
+                                break;
+                        }
+                        break;
+                    default:
+                        switch (_random.Next(3))
+                        {
+                            case 0:
+                                _animationFile = ".\\content\\princess.xml";
+                                break;
+                            case 1:
+                                _animationFile = ".\\content\\xmas.xml";
+                                break;
+                            case 2:
+                                _animationFile = ".\\content\\npc1.xml";
+                                break;
+                        }
+                        break;
+                }
         }
     }
 }

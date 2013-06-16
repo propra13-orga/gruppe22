@@ -61,7 +61,7 @@ namespace Gruppe22
                     case 0:
                         foreach (UIElement child in _children)
                         {
-                            if ((child is NumberEntry) || (child is TextInput))
+                            if ((child is NumberEntry) || (child is TextInput) || (child is Button))
                                 child.Show();
                             else
                                 child.Hide();
@@ -71,7 +71,7 @@ namespace Gruppe22
                     case 2:
                         foreach (UIElement child in _children)
                         {
-                            if ((child is NumberEntry) || (child is TextInput)) child.Hide();
+                            if ((child is NumberEntry) || (child is TextInput)) child.Hide(); else child.Show();
                         }
                         _inventory.Hide();
                         _abilities.Show();
@@ -89,7 +89,7 @@ namespace Gruppe22
                     case 1:
                         foreach (UIElement child in _children)
                         {
-                            if ((child is NumberEntry) || (child is TextInput)) child.Hide();
+                            if ((child is NumberEntry) || (child is TextInput)) child.Hide(); else child.Show();
                         }
                         _inventory.Show();
                         _abilities.Hide();

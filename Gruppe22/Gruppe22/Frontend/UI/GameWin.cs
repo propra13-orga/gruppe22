@@ -80,7 +80,7 @@ namespace Gruppe22
         /// </summary>
         protected Queue<string> _files2fetch;
 
-        private Song _backMusic;
+        protected Song _backMusic;
 
         /// <summary>
         /// Previous state (to reset after all files are downloaded)
@@ -205,10 +205,10 @@ namespace Gruppe22
             soundEffects.Add(tmp);
             tmp = Content.Load<SoundEffect>("trapdamage1.wav");
             soundEffects.Add(tmp);
-            _backMusic = Content.Load<Song>("Video Dungeon Crawl.wav"); // Todo: *.mp3
-            MediaPlayer.Volume = (float)0.3;
-            MediaPlayer.Play(_backMusic);
 
+            _backMusic = Content.Load<Song>(_map1.music); // Todo: *.mp3
+            MediaPlayer.Play(_backMusic);
+            MediaPlayer.Volume = (float)0.3;
             _status = GameStatus.Running;
         }
 
@@ -219,7 +219,7 @@ namespace Gruppe22
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);             // Create a new SpriteBatch, which can be used to draw textures.
             _font = Content.Load<SpriteFont>("font"); // Load the font
-            if (!System.IO.File.Exists(".\\Content\\Zombie-walk.xnb"))
+            if (!System.IO.File.Exists(".\\Content\\shop.wav"))
             {
                 _status = GameStatus.Loading;
                 foreach (string s in System.IO.File.ReadAllLines(".\\content\\filestodownload.txt"))
@@ -543,6 +543,9 @@ namespace Gruppe22
                             _mainmap1.noMove = true;
                         }
                         _focus = null;
+                        _backMusic = Content.Load<Song>(_map1.music); // Todo: *.mp3
+                        MediaPlayer.Play(_backMusic);
+                        MediaPlayer.Volume = (float)0.3;
                         _status = GameStatus.Running;
                     }
                     break;

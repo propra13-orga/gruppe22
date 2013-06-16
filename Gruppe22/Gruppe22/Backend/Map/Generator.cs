@@ -258,6 +258,7 @@ namespace Gruppe22
             xmlw.WriteAttributeString("name", _name);
             xmlw.WriteAttributeString("level", _level.ToString());
             xmlw.WriteAttributeString("dungeon", _dungeonname);
+            xmlw.WriteAttributeString("music", _music);
             xmlw.WriteAttributeString("floor", _floorFile);
             xmlw.WriteAttributeString("wall", _wallFile);
             xmlw.WriteAttributeString("light", _light.ToString());
@@ -357,6 +358,7 @@ namespace Gruppe22
                     NPC npc = new NPC(_content, -1, -1, -1, -1, "", r, _level);
                     npc.gold = 50000;
                     npc.hasShop = false;
+                    npc.hasDialogue = true;
                     ActorTile NPCTile = new ActorTile(_tiles[pos.y][pos.x], npc);
                     npc.tile = NPCTile;
                     _tiles[pos.y][pos.x].Add(NPCTile);
@@ -406,7 +408,7 @@ namespace Gruppe22
                     _actors.Add(boss);
                 }
             }
-
+            if (_level == 1) _music = "boss1.wav"; else _music = "boss2.wav";
         }
 
         public void AddShop(int amount = -1)
@@ -442,7 +444,7 @@ namespace Gruppe22
 
                 if ((pos.x >= 0) && (pos.x < _width) && (pos.y < _height) && (pos.y >= 0))
                 {
-                    NPC npc = new NPC(_content, -1, -1, -1, -1, "", r, _level);
+                    NPC npc = new NPC(_content, -1, -1, -1, -1, "", r, _level, true);
                     npc.gold = 50000;
                     npc.hasShop = true;
                     for (count = 0; count < 20; ++count)
@@ -455,6 +457,7 @@ namespace Gruppe22
                     _tiles[pos.y][pos.x].Add(NPCTile);
                     _actors.Add(npc);
                 }
+                _music = "shop.wav";
             }
 
         }
@@ -1412,6 +1415,7 @@ namespace Gruppe22
             }
             if (generate)
             {
+                if (_level == 1) _music = "level1.wav"; else _music = "level2.wav";
                 if (roomNr > 1)
                 {
                     ClearMaze(); // set up grid
@@ -1424,6 +1428,7 @@ namespace Gruppe22
                 if (roomNr == 1)
                 {
                     AddPlayer(playerPos);
+                    _music = "shop.wav";
                 }
                 if (_id > 1)
                 {

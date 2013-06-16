@@ -139,7 +139,10 @@ vamp-die.xnb
 vamp-hit.xnb
 vamp-talk.xnb
 vamp-walk.xnb
-video dungeon crawl.wav
+level1.wav
+level2.wav
+boss1.wav
+boss2.wav
 wall1a.xnb
 wall1b.xnb
 wall2a.xnb
@@ -162,3 +165,4 @@ Zombie-Attack.xnb
 Zombie-Die.xnb
 Zombie-Hit.xnb
 Zombie-walk.xnb
+shop.wav

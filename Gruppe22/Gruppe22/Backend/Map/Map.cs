@@ -46,7 +46,7 @@ namespace Gruppe22
         protected string _wallFile = "wall1";
         protected string _floorFile = "floor1";
         protected int _light;
-
+        protected string _music = "level1";
         protected int _id;
 
         private object _parent = null;
@@ -103,7 +103,11 @@ namespace Gruppe22
             set { _floorFile = value; }
         }
 
-
+        public string music
+        {
+            get { return _music; }
+            set { _music = value; }
+        }
 
         public string wallFile
         {
@@ -679,6 +683,7 @@ namespace Gruppe22
             if (xmlr.GetAttribute("floor") != null) _floorFile = xmlr.GetAttribute("floor");
             if (xmlr.GetAttribute("wall") != null) _wallFile = xmlr.GetAttribute("wall");
             if (xmlr.GetAttribute("light") != null) _light = int.Parse(xmlr.GetAttribute("light"));
+            if (xmlr.GetAttribute("music") != null) _music = xmlr.GetAttribute("music");
 
             xmlr.ReadStartElement("GameMap");//GameMap
 
@@ -946,6 +951,7 @@ namespace Gruppe22
             xmlw.WriteAttributeString("dungeon", _dungeonname);
             xmlw.WriteAttributeString("light", _light.ToString());
             xmlw.WriteAttributeString("floor", _floorFile);
+            xmlw.WriteAttributeString("music", _music);
             xmlw.WriteAttributeString("wall", _wallFile);
 
             foreach (List<FloorTile> ltiles in _tiles)

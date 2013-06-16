@@ -312,6 +312,10 @@ namespace Gruppe22
 
                     AddMessage("You entered room number " + data[0].ToString().Substring(4, 1) + ".");
                     File.WriteAllText("GameData", data[0].ToString() + Environment.NewLine + _deadcounter.ToString());
+                    
+                        _backMusic = Content.Load<Song>(_map1.music); // Todo: *.mp3
+                        MediaPlayer.Play(_backMusic);
+                        MediaPlayer.Volume = (float)0.3;
                     _status = GameStatus.Running;
                     break;
 
@@ -505,6 +509,7 @@ namespace Gruppe22
                     break;
 
                 case Events.Dialogue:
+                    ShowMessage();
                     break;
 
                 case Events.MoveActor:
@@ -675,6 +680,69 @@ namespace Gruppe22
                 }
             }
         }
+
+
+
+        /// <summary>
+        /// A text displayed if the player died
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="title"></param>
+        public void ShowMessage(string message = "You have failed in your mission. Better luck next time.", string title = "Game over!")
+        {
+            switch (r.Next(10))
+            {
+                case 0:
+                    message = "This is a cursed place. Evil creatures are attacking everyone in sight.";
+                    break;
+                case 1:
+                    message = "You should really get better equipment at a shop. My brother might help you out.\n He is over at the entrance.";
+                    break;
+                case 2:
+                    message = "It is hopeless. We are all going to die...";
+                    break;
+
+                case 3:
+                    message = "There are pests on the first level, undead on the second and unknown evil on the third...";
+                    break;
+
+                case 4:
+                    message = "Nobody has ever found a way out of here...";
+                    break;
+
+                case 5:
+                    message = "Are you sure you can take on the enemies around here?";
+                    break;
+
+                case 6:
+                    message = "I haven't gotten any sleep for a week!";
+                    break;
+
+                case 7:
+                    message = "It is rumored that there is a deadly beast on the lowest level...";
+                    break;
+
+                case 8:
+                    message = "The lower levels are far darker than this level...";
+                    break;
+
+                case 9:
+                    message = "If this were a real dungeon, someone might have a quest for you...";
+                    break;
+            }
+            _status = GameStatus.Paused;
+            Window _messagebox = new Window(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width) / 2.0f) - 300, (int)(GraphicsDevice.Viewport.Height / 2.0f) - 100, 600, 200));
+            Statusbox stat = new Statusbox(_messagebox, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width) / 2.0f) - 300 + 10, (int)(GraphicsDevice.Viewport.Height / 2.0f) - 70, 590, 110), false, true);
+            stat.AddLine(title + "\n \n" + message);
+            _messagebox.AddChild(stat);
+            _messagebox.AddChild(new Button(_messagebox, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width) / 2.0f) - 300 + 10, (int)(GraphicsDevice.Viewport.Height / 2.0f) + 30, 130, 40), "Goodbye!", (int)Buttons.Close));
+            //  _mainMenu.AddChild(new ProgressBar(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) + 80, 300, 30), ProgressStyle.Block,100,2));
+
+            _interfaceElements.Add(_messagebox);
+            _messagebox.ChangeFocus();
+            _focus = _interfaceElements[_interfaceElements.Count - 1];
+        }
+
 
         /// <summary>
         /// Generate three levels consisting of multiple rooms each and save them to xml files
