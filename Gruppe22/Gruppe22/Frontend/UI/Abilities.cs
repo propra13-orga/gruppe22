@@ -159,8 +159,8 @@ namespace Gruppe22
                     if ((icon < _actor.abilities.Count) && (_actor.abilities[icon].icon != null))
                     {
                         _spriteBatch.Draw(_actor.abilities[icon].icon.texture, new Rectangle(_displayRect.Left + 1, _displayRect.Top + y * (_height + 3) + 1, _height, _height), _actor.abilities[icon].icon.clipRect, Color.White);
-                        _spriteBatch.DrawString(_font, _actor.abilities[icon].name + " (" + _actor.abilities[icon].cost + "MP," + _actor.abilities[icon].cooldown + " Cooldown) - " + _actor.abilities[icon].intensity + _actor.abilities[icon].duration, new Vector2(_displayRect.Left + _height + 5, _displayRect.Top + y * (_height + 3) + 1), Color.Black);
-                        _spriteBatch.DrawString(_font, _actor.abilities[icon].name + " (" + _actor.abilities[icon].cost + "MP," + _actor.abilities[icon].cooldown + " Cooldown) - " + _actor.abilities[icon].intensity + _actor.abilities[icon].duration, new Vector2(_displayRect.Left + _height + 6, _displayRect.Top + y * (_height + 3) + 2), Color.White);
+                        _spriteBatch.DrawString(_font, _actor.abilities[icon].name + " (" + _actor.abilities[icon].cost + "MP," + _actor.abilities[icon].cooldown + " Cooldown) - Strength: " + _actor.abilities[icon].intensity + " Duration: " + _actor.abilities[icon].duration, new Vector2(_displayRect.Left + _height + 5, _displayRect.Top + y * (_height + 3) + 1), Color.Black);
+                        _spriteBatch.DrawString(_font, _actor.abilities[icon].name + " (" + _actor.abilities[icon].cost + "MP," + _actor.abilities[icon].cooldown + " Cooldown) - Strength: " + _actor.abilities[icon].intensity + " Duration: " + _actor.abilities[icon].duration, new Vector2(_displayRect.Left + _height + 6, _displayRect.Top + y * (_height + 3) + 2), Color.White);
 
                         if (icon == _selected)
                         {

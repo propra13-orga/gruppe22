@@ -176,7 +176,7 @@ namespace Gruppe22
             xmlw.WriteAttributeString("description", Convert.ToString(_description));
 
             xmlw.WriteAttributeString("cost", Convert.ToString(_cost));
-            xmlw.WriteAttributeString("intensity", Convert.ToString(_duration));
+            xmlw.WriteAttributeString("intensity", Convert.ToString(_intensity));
             xmlw.WriteAttributeString("duration", Convert.ToString(_duration));
             xmlw.WriteAttributeString("cooldown", Convert.ToString(_cooldown));
             xmlw.WriteAttributeString("currentCool", Convert.ToString(_currentCool));

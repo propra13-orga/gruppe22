@@ -40,28 +40,30 @@ namespace Gruppe22
 
         public override bool OnMouseDown(int button)
         {
-
-            int selected = Pos2Tile(Mouse.GetState().X, Mouse.GetState().Y);
-            if ((selected > -1) && (selected < _icons.Count))
+            if (_visible)
             {
-                int i = -_icons[selected].id;
-                if (_actor.Items(i).itemType == ItemType.Potion)
+                int selected = Pos2Tile(Mouse.GetState().X, Mouse.GetState().Y);
+                if ((selected > -1) && (selected < _icons.Count))
                 {
-                    //   _actor.inventory[i].UseItem();
-                    //   _parent.HandleEvent(false, Events.ShowMessage, "You used " + _actor.inventory[i].name);
-                    _parent.HandleEvent(false, Events.AddDragItem, _icons[selected]);
+                    int i = -_icons[selected].id;
+                    if (_actor.Items(i).itemType == ItemType.Potion)
+                    {
+                        //   _actor.inventory[i].UseItem();
+                        //   _parent.HandleEvent(false, Events.ShowMessage, "You used " + _actor.inventory[i].name);
+                        _parent.HandleEvent(false, Events.AddDragItem, _icons[selected]);
 
-                }
-                else
-                {
-                    _actor.Items(i).EquipItem();
-                    if (_actor.Items(i).equipped)
-                        _parent.HandleEvent(false, Events.ShowMessage, "You equipped " + _actor.Items(i).name);
+                    }
                     else
-                        _parent.HandleEvent(false, Events.ShowMessage, "You removed " + _actor.Items(i).name);
+                    {
+                        _actor.Items(i).EquipItem();
+                        if (_actor.Items(i).equipped)
+                            _parent.HandleEvent(false, Events.ShowMessage, "You equipped " + _actor.Items(i).name);
+                        else
+                            _parent.HandleEvent(false, Events.ShowMessage, "You removed " + _actor.Items(i).name);
+                    }
+                    Update();
+                    return true;
                 }
-                Update();
-                return true;
             }
             return false;
         }
