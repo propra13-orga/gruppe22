@@ -270,6 +270,8 @@ namespace DungeonServer
                 _config.EnableMessageType(NetIncomingMessageType.ConnectionApproval);
                 _config.Port = 666;
                 _config.UseMessageRecycling = true;
+                _config.EnableUPnP = true;
+
                 _server = new NetServer(_config);
                 _server.Start();
             }
@@ -283,8 +285,9 @@ namespace DungeonServer
             {
                 _serverThread = new Thread(WorkMessages);
                 _serverThread.Start(_server);
-
-                Log("Server started successfully on " + _server.Configuration.LocalAddress.ToString());
+                IPAddress mask;
+                Log("Server started successfully on " + NetUtility.GetMyAddress(out mask).ToString()+ " ("+_server.UPnP.GetExternalIP()+")");
+                
                 while (!error)
                 {
                     WaitForInput();
