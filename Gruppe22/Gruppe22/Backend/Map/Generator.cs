@@ -112,7 +112,7 @@ namespace Gruppe22
                 int y = -1;
                 while (x == -1)
                 {
-                    x = 3 + r.Next(_width - 4);
+                    x = 3 + r.Next(_width - 5);
                     y = 2 + r.Next(_height - 3);
                     for (int px = x - 3; px < x + 2; ++px)
                     {
@@ -146,9 +146,17 @@ namespace Gruppe22
             _tiles[srcCoords.y][srcCoords.x].overlay.Clear();
             _tiles[srcCoords.y][srcCoords.x].overlay.Add(new TeleportTile(_tiles[srcCoords.y][srcCoords.x], "room" + targetRoom.ToString() + ".xml", targetCoords, false, false, true, up));
 
-            _tiles[srcCoords.y][srcCoords.x - 1].overlay.Clear();
+
             if (!up)
+            {
+                                _tiles[srcCoords.y][srcCoords.x - 1].overlay.Clear();
+
                 _tiles[srcCoords.y][srcCoords.x - 1].overlay.Add(new DoorTile(_tiles[srcCoords.y][srcCoords.x - 1], true, _level));
+            }
+            else
+            {
+                _tiles[srcCoords.y][srcCoords.x + 1].overlay.Clear();
+            }
 
         }
 

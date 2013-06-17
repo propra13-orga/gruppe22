@@ -196,7 +196,7 @@ namespace Gruppe22
             {
                 for (int i = 0; i < _overlay.Count; ++i)
                 {
-                    if ((_overlay[i] is WallTile) || (_overlay[i] is GapTile) || ((_overlay[i] is DoorTile) && ((DoorTile)_overlay[i]).open == false)
+                    if ((_overlay[i] is WallTile && !(_overlay[i] is DoorTile)) || (_overlay[i] is GapTile) || ((_overlay[i] is DoorTile) && ((DoorTile)_overlay[i]).open == false)
                         || ((_overlay[i] is ReservedTile) && ((ReservedTile)_overlay[i]).canEnter == false)
                         ) return false;
                 }
