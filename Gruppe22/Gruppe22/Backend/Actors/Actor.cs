@@ -785,7 +785,7 @@ namespace Gruppe22
         {
             for (int i = 0; i < _inventory.Count; ++i)
             {
-                if ((_inventory[i].itemType == ItemType.Key) && (_inventory[i].level == level)) return true;
+                if ((_inventory[i].itemType == ItemType.Key) && (_inventory[i].level == 10 + level)) return true;
             }
             return false;
         }
