@@ -3,19 +3,51 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gruppe22", "Gruppe22\Gruppe22.csproj", "{164C14B2-1140-4BCE-B368-B8CDC21E7471}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DungeonServer", "DungeonServer\DungeonServer.csproj", "{033A103E-A659-451D-B83C-C14A4C27BF12}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|Mixed Platforms = Debug|Mixed Platforms
 		Debug|x86 = Debug|x86
+		Isometric View (Test)|Any CPU = Isometric View (Test)|Any CPU
+		Isometric View (Test)|Mixed Platforms = Isometric View (Test)|Mixed Platforms
 		Isometric View (Test)|x86 = Isometric View (Test)|x86
+		Release|Any CPU = Release|Any CPU
+		Release|Mixed Platforms = Release|Mixed Platforms
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{164C14B2-1140-4BCE-B368-B8CDC21E7471}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{164C14B2-1140-4BCE-B368-B8CDC21E7471}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{164C14B2-1140-4BCE-B368-B8CDC21E7471}.Debug|Mixed Platforms.Build.0 = Debug|x86
 		{164C14B2-1140-4BCE-B368-B8CDC21E7471}.Debug|x86.ActiveCfg = Debug|x86
 		{164C14B2-1140-4BCE-B368-B8CDC21E7471}.Debug|x86.Build.0 = Debug|x86
+		{164C14B2-1140-4BCE-B368-B8CDC21E7471}.Isometric View (Test)|Any CPU.ActiveCfg = Isometric View (Test)|x86
+		{164C14B2-1140-4BCE-B368-B8CDC21E7471}.Isometric View (Test)|Mixed Platforms.ActiveCfg = Isometric View (Test)|x86
+		{164C14B2-1140-4BCE-B368-B8CDC21E7471}.Isometric View (Test)|Mixed Platforms.Build.0 = Isometric View (Test)|x86
 		{164C14B2-1140-4BCE-B368-B8CDC21E7471}.Isometric View (Test)|x86.ActiveCfg = Isometric View (Test)|x86
 		{164C14B2-1140-4BCE-B368-B8CDC21E7471}.Isometric View (Test)|x86.Build.0 = Isometric View (Test)|x86
+		{164C14B2-1140-4BCE-B368-B8CDC21E7471}.Release|Any CPU.ActiveCfg = Release|x86
+		{164C14B2-1140-4BCE-B368-B8CDC21E7471}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{164C14B2-1140-4BCE-B368-B8CDC21E7471}.Release|Mixed Platforms.Build.0 = Release|x86
 		{164C14B2-1140-4BCE-B368-B8CDC21E7471}.Release|x86.ActiveCfg = Release|x86
 		{164C14B2-1140-4BCE-B368-B8CDC21E7471}.Release|x86.Build.0 = Release|x86
+		{033A103E-A659-451D-B83C-C14A4C27BF12}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{033A103E-A659-451D-B83C-C14A4C27BF12}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{033A103E-A659-451D-B83C-C14A4C27BF12}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{033A103E-A659-451D-B83C-C14A4C27BF12}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{033A103E-A659-451D-B83C-C14A4C27BF12}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{033A103E-A659-451D-B83C-C14A4C27BF12}.Isometric View (Test)|Any CPU.ActiveCfg = Release|Any CPU
+		{033A103E-A659-451D-B83C-C14A4C27BF12}.Isometric View (Test)|Any CPU.Build.0 = Release|Any CPU
+		{033A103E-A659-451D-B83C-C14A4C27BF12}.Isometric View (Test)|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{033A103E-A659-451D-B83C-C14A4C27BF12}.Isometric View (Test)|Mixed Platforms.Build.0 = Release|Any CPU
+		{033A103E-A659-451D-B83C-C14A4C27BF12}.Isometric View (Test)|x86.ActiveCfg = Release|Any CPU
+		{033A103E-A659-451D-B83C-C14A4C27BF12}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{033A103E-A659-451D-B83C-C14A4C27BF12}.Release|Any CPU.Build.0 = Release|Any CPU
+		{033A103E-A659-451D-B83C-C14A4C27BF12}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{033A103E-A659-451D-B83C-C14A4C27BF12}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{033A103E-A659-451D-B83C-C14A4C27BF12}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
