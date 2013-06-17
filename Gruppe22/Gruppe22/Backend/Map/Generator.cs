@@ -147,7 +147,8 @@ namespace Gruppe22
             _tiles[srcCoords.y][srcCoords.x].overlay.Add(new TeleportTile(_tiles[srcCoords.y][srcCoords.x], "room" + targetRoom.ToString() + ".xml", targetCoords, false, false, true, up));
 
             _tiles[srcCoords.y][srcCoords.x - 1].overlay.Clear();
-            _tiles[srcCoords.y][srcCoords.x - 1].overlay.Add(new DoorTile(_tiles[srcCoords.y][srcCoords.x - 1], true, _level));
+            if (!up)
+                _tiles[srcCoords.y][srcCoords.x - 1].overlay.Add(new DoorTile(_tiles[srcCoords.y][srcCoords.x - 1], true, _level));
 
         }
 
