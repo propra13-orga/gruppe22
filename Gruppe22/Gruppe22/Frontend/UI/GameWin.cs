@@ -373,7 +373,13 @@ namespace Gruppe22
                         _toolbar.HandleEvent(true, Events.ContinueGame, 13);
                         _status = GameStatus.Running;
                     }
-                    if (_status == GameStatus.Running) ShowMenu();
+                    if (_status == GameStatus.Running)
+                    {
+                        //TODO: Funktioniert nicht, warum??? eventuell zugriffsrechte vom Songobjekt?
+                        //MediaPlayer.Pause();
+                        //MediaPlayer.Resume();
+                        ShowMenu();
+                    }
                     else HandleEvent(true, Events.ContinueGame, 0);
                     break;
                 case Events.ShowCharacter:
@@ -540,10 +546,10 @@ namespace Gruppe22
                             _mainmap1.noMove = true;
                         }
                         _focus = null;
-                        _backMusic = Content.Load<Song>(_map1.music); // Todo: *.mp3
+                        //_backMusic = Content.Load<Song>(_map1.music); // Todo: *.mp3
                         MediaPlayer.Play(_backMusic);
-                        MediaPlayer.Volume = (float)0.3;
-                        MediaPlayer.IsRepeating = true;
+                        //MediaPlayer.Volume = (float)0.3;
+                        //MediaPlayer.IsRepeating = true;
                         _status = GameStatus.Running;
                     }
                     break;
