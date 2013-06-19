@@ -1190,7 +1190,7 @@ namespace Gruppe22
                     {
                         if (_map[x, y].trap.status != TrapState.NoDisplay)
                         {
-                            if (_map[x, y].trap.visible)
+                            if (!_map[x, y].trap.visible)
                             {
                                 _spriteBatch.Draw(_environment[0][9].animationTexture, new Rectangle(_map2screen(x, y).x + 32, _map2screen(x, y).y + 16, 64, 64), _environment[0][9].animationRect, ((y == (int)_highlightedTile.y) && (x == (int)_highlightedTile.x)) ? Color.Red : Color.White);
                             }
