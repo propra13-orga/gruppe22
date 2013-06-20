@@ -122,6 +122,7 @@
     <Compile Include="Frontend\Map\CreateXMLFiles.cs" />
     <Compile Include="Frontend\Map\Mainmap.cs" />
     <Compile Include="Frontend\Map\Minimap.cs" />
+    <Compile Include="Frontend\Map\SimpleTextOutput.cs" />
     <Compile Include="Frontend\Map\TileTooltip.cs" />
     <Compile Include="Frontend\Map\VisibleObject.cs" />
     <Compile Include="Frontend\Map\Tileset.cs" />
@@ -132,6 +133,7 @@
     <Compile Include="Frontend\UI\Button.cs" />
     <Compile Include="Frontend\UI\CharacterWindow.cs" />
     <Compile Include="Frontend\UI\CheckBox.cs" />
+    <Compile Include="Frontend\UI\ClientData.cs" />
     <Compile Include="Frontend\UI\Dialog.cs" />
     <Compile Include="Frontend\UI\FileDialog.cs" />
     <Compile Include="Backend\GameLogic.cs" />

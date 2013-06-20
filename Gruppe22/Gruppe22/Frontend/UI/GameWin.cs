@@ -11,6 +11,8 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Media;
+using Lidgren.Network;
+using System.Net;
 
 namespace Gruppe22
 {
@@ -138,6 +140,23 @@ namespace Gruppe22
         private bool _lan = false;
 
         /// <summary>
+        /// private Felder für das Netzwerk
+        /// </summary>
+        private SimpleTextOutput _output;
+        //private Texture2D _playerTexture; das machen wir anders
+        //private SpriteFont _font; das haben wir schon
+        
+        private NetPeerConfiguration _config;
+        private NetClient _client;
+        private Dictionary<short, ClientData> _clients;
+        private ClientData _self = new ClientData(-1);
+
+        private const float f_sendInterval = 0.5f;
+        private float f_elapsedTime;
+
+        private NetConnectionStatus _lastStatus;
+
+        /// <summary>
         /// Random number generator
         /// </summary>
         protected Random r = null;
@@ -206,6 +225,22 @@ namespace Gruppe22
             MediaPlayer.IsRepeating = true;
 
             MediaPlayer.Volume = (float)0.3;
+
+            //Netzwerk vorbereiten und configurieren
+            _output = new SimpleTextOutput(this);
+            //_playerTexture = Content.Load<Texture2D>("player"); das lösen wir anders
+            _clients = new Dictionary<short, ClientData>();
+            //Config erstellen, Client erstellen und starten
+            _config = new NetPeerConfiguration("DungeonCrawler");
+            _config.EnableMessageType(NetIncomingMessageType.DiscoveryResponse);
+            _config.EnableMessageType(NetIncomingMessageType.ConnectionApproval);
+            _config.Port = 666; //TODO: server und client am selben rechner dürfen nicht den selben socket benutzen!!
+            _client = new NetClient(_config);
+            _client.Start();
+            //Todo: _output in die obere linke ecke an unser system anpassen
+            _output.ShowMessage("Client started on " + _client.Port + " @ " + _client.Socket.LocalEndPoint);
+            Window.Title = _client.Port + " @ " + _client.Socket.LocalEndPoint;
+            //
             _status = GameStatus.Running;
         }
 

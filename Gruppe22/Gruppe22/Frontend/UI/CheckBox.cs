@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Gruppe22.Frontend.UI
+namespace Gruppe22
 {
     class CheckBox : UIElement
     {
