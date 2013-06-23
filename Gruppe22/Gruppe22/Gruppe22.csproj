@@ -117,16 +117,18 @@
     <Compile Include="Backend\Map\TrapTile.cs" />
     <Compile Include="Backend\Map\TriggerTile.cs" />
     <Compile Include="Backend\Map\WallTile.cs" />
+    <Compile Include="Backend\Network\NetPlayer.cs" />
     <Compile Include="Frontend\Map\ActorView.cs" />
     <Compile Include="Frontend\Map\Camera.cs" />
     <Compile Include="Frontend\Map\CreateXMLFiles.cs" />
     <Compile Include="Frontend\Map\Mainmap.cs" />
     <Compile Include="Frontend\Map\Minimap.cs" />
-    <Compile Include="Frontend\Map\SimpleTextOutput.cs" />
     <Compile Include="Frontend\Map\TileTooltip.cs" />
     <Compile Include="Frontend\Map\VisibleObject.cs" />
     <Compile Include="Frontend\Map\Tileset.cs" />
     <Compile Include="Frontend\Map\WallTiles.cs" />
+    <Compile Include="Frontend\Network\Chat.cs" />
+    <Compile Include="Frontend\Network\Lobby.cs" />
     <Compile Include="Frontend\UI\Abilities.cs" />
     <Compile Include="Frontend\UI\AbilityChoice.cs" />
     <Compile Include="Frontend\UI\AboutWindow.cs" />
@@ -153,6 +155,7 @@
     <Compile Include="Frontend\UI\SimpleStats.cs" />
     <Compile Include="Frontend\UI\Statusbox.cs" />
     <Compile Include="Frontend\UI\TextInput.cs" />
+    <Compile Include="Frontend\UI\Textoutput.cs" />
     <Compile Include="Frontend\UI\Toolbar.cs" />
     <Compile Include="Frontend\UI\ToolTip.cs" />
     <Compile Include="Frontend\UI\UIElement.cs" />
@@ -267,6 +270,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

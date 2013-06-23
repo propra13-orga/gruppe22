@@ -12,7 +12,6 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Media;
 using Lidgren.Network;
-using System.Net;
 
 namespace Gruppe22
 {
@@ -139,23 +138,9 @@ namespace Gruppe22
         /// </summary>
         private bool _lan = false;
 
-        /// <summary>
-        /// private Felder für das Netzwerk
-        /// </summary>
-        private SimpleTextOutput _output;
         //private Texture2D _playerTexture; das machen wir anders
         //private SpriteFont _font; das haben wir schon
         
-        private NetPeerConfiguration _config;
-        private NetClient _client;
-        private Dictionary<short, ClientData> _clients;
-        private ClientData _self = new ClientData(-1);
-
-        private const float f_sendInterval = 0.5f;
-        private float f_elapsedTime;
-
-        private NetConnectionStatus _lastStatus;
-
         /// <summary>
         /// Random number generator
         /// </summary>
@@ -226,21 +211,6 @@ namespace Gruppe22
 
             MediaPlayer.Volume = (float)0.3;
 
-            //Netzwerk vorbereiten und configurieren
-            _output = new SimpleTextOutput(this);
-            //_playerTexture = Content.Load<Texture2D>("player"); das lösen wir anders
-            _clients = new Dictionary<short, ClientData>();
-            //Config erstellen, Client erstellen und starten
-            _config = new NetPeerConfiguration("DungeonCrawler");
-            _config.EnableMessageType(NetIncomingMessageType.DiscoveryResponse);
-            _config.EnableMessageType(NetIncomingMessageType.ConnectionApproval);
-            _config.Port = 666; //TODO: server und client am selben rechner dürfen nicht den selben socket benutzen!!
-            _client = new NetClient(_config);
-            _client.Start();
-            //Todo: _output in die obere linke ecke an unser system anpassen
-            _output.ShowMessage("Client started on " + _client.Port + " @ " + _client.Socket.LocalEndPoint);
-            Window.Title = _client.Port + " @ " + _client.Socket.LocalEndPoint;
-            //
             _status = GameStatus.Running;
         }
 
@@ -272,6 +242,157 @@ namespace Gruppe22
             }
         }
 
+
+
+
+        /// <summary>
+        /// Allows the game to run logic such as updating the world,
+        /// checking for collisions, gathering input, and playing audio.
+        /// </summary>
+        /// <param name="gameTime">Provides a snapshot of timing values.</param>
+        protected override void Update(GameTime gameTime)
+        {
+            if (_status != GameStatus.GameOver)
+            {
+                foreach (Keys k in _events.keys) { HandleMovementKeys(k); }
+
+                if ((!_updating) && (_status != GameStatus.FetchingData))
+                {
+                    {
+                        // _updating = true;
+
+                        _events.Update(gameTime);
+                        if (_backgroundcolor.R > 0) // Remove Red Tint
+                        {
+                            _backgroundcolor.R -= 1;
+                        };
+                        if (_backgroundcolor.G > 0) // Remove Green Tint
+                        {
+                            _backgroundcolor.G -= 1;
+                        };
+                        for (int i = 0; i < _interfaceElements.Count; ++i)
+                        {
+                            UIElement element = _interfaceElements[i];
+                            if (!_dragging)
+                            {
+                                if (element.IsHit(Mouse.GetState().X, Mouse.GetState().Y))
+                                {
+                                    if ((_focus == null) || (!_focus.holdFocus))
+                                    {
+                                        _focus = element;
+                                    }
+                                }
+                            }
+
+                            if (_status == GameStatus.Running || ((_status == GameStatus.Paused) && (element.ignorePause)))
+                                element.Update(gameTime);
+                        }
+
+                        if (_status == GameStatus.Running)
+                        {
+                            _map1.Update(gameTime);
+                        }
+
+                        if (_focus != null)
+                        {
+
+                            if (Mouse.GetState().ScrollWheelValue != _mouseWheel)
+                            {
+
+                                int Difference = _mouseWheel - Mouse.GetState().ScrollWheelValue;
+                                _mouseWheel = Mouse.GetState().ScrollWheelValue;
+                                _focus.ScrollWheel(Difference / Math.Abs(Difference));
+                            }
+
+
+                            if (Mouse.GetState().LeftButton == ButtonState.Pressed)
+                            {
+                                if (_mousepos.X != -1)
+                                {
+                                    _dragging = true;
+                                    _focus.MoveContent(new Vector2(Mouse.GetState().X - _mousepos.X, Mouse.GetState().Y - _mousepos.Y));
+                                }
+                                _mousepos.X = Mouse.GetState().X;
+                                _mousepos.Y = Mouse.GetState().Y;
+                            }
+                            else
+                            {
+                                _mousepos.X = -1;
+                                _mousepos.Y = -1;
+                                _dragging = false;
+                            }
+
+
+
+
+
+                        }
+
+                        _updating = false;
+                    }
+                }
+                base.Update(gameTime);
+            }
+            else
+            {
+                _events.Update(gameTime);
+
+                if (_focus != null)
+                {
+                    _focus.Update(gameTime);
+                }
+            }
+
+        }
+
+        /// <summary>
+        /// This is called when the game should draw itself.
+        /// </summary>
+        /// <param name="gameTime">Provides a snapshot of timing values.</param>
+        protected override void Draw(GameTime gameTime)
+        {
+            if (_status != GameStatus.FetchingData)
+            {
+                if (!_drawing)
+                {
+                    _drawing = true;
+                    if (_status != GameStatus.NoRedraw)
+                    {
+                        GraphicsDevice.Clear(_backgroundcolor);
+
+                        for (int i = 0; i < _interfaceElements.Count; ++i)
+                        {
+                            _interfaceElements[i].Draw(gameTime);
+                        }
+                        base.Draw(gameTime);
+                    }
+                    _drawing = false;
+                }
+                if (_draggedObject != null)
+                {
+                    Point mousePos = new Point(Mouse.GetState().X, Mouse.GetState().Y);
+                    _spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
+                    _spriteBatch.Draw(_draggedObject.icon.texture, new Rectangle(mousePos.X, mousePos.Y, _draggedObject.icon.clipRect.Width, _draggedObject.icon.clipRect.Height), _draggedObject.icon.clipRect, Color.White);
+                    _spriteBatch.End();
+                }
+            }
+            else
+            {
+                GraphicsDevice.Clear(Color.DarkBlue);
+                _spriteBatch.Begin();
+
+                string text = "Downloading additional content...";
+                Vector2 position = new Vector2((GraphicsDevice.Viewport.Width - _font.MeasureString(text).X) / 2, (GraphicsDevice.Viewport.Height) / 2 - _font.MeasureString(text).Y);
+                _spriteBatch.DrawString(_font, text, position, Color.Gray);
+                _spriteBatch.DrawString(_font, text, new Vector2(position.X - 2, position.Y - 2), Color.White);
+
+                position = new Vector2((GraphicsDevice.Viewport.Width - _font.MeasureString(_downloading).X) / 2, (GraphicsDevice.Viewport.Height) / 2);
+                _spriteBatch.DrawString(_font, _downloading, position, Color.Gray);
+                _spriteBatch.DrawString(_font, _downloading, new Vector2(position.X - 2, position.Y - 2), Color.White);
+
+                _spriteBatch.End();
+            }
+        }
 
         /// <summary>
         /// Unload all managed content which has not been disposed of elsewhere
@@ -624,7 +745,7 @@ namespace Gruppe22
                     break;
 
                 case Events.ShowMessage:
-                    AddMessage(data[0].ToString());
+                    _AddMessage(data[0].ToString());
                     break;
             }
         }
@@ -634,7 +755,7 @@ namespace Gruppe22
         /// <summary>
         /// Methode to delete old saved rooms
         /// </summary>
-        public void DeleteSavedRooms()
+        private void DeleteSavedRooms()
         {
             if (File.Exists("GameData")) File.Delete("GameData");
             while (Directory.GetFiles(".", "savedroom*.xml").Length > 0)
@@ -643,6 +764,36 @@ namespace Gruppe22
             }
         }
 
+
+
+        /// <summary>
+        /// Add text to status box
+        /// </summary>
+        /// <param name="s"></param>
+        protected void _AddMessage(string s)
+        {
+            _statusbox.AddLine(s);
+        }
+
+        /// <summary>
+        /// Indicate damage  done to player
+        /// </summary>
+        protected void _RemoveHealth()
+        {
+            _backgroundcolor.G = 0;
+            _backgroundcolor.R = 200;
+            // Play sound
+        }
+
+        /// <summary>
+        /// Indicate health regained by potions
+        /// </summary>
+        protected void _AddHealth()
+        {
+            _backgroundcolor.R = 0;
+            _backgroundcolor.G = 200;
+            // Play sound
+        }
         #endregion
 
 
@@ -759,186 +910,7 @@ namespace Gruppe22
         }
         #endregion
 
-
-
-        /// <summary>
-        /// Add text to status box
-        /// </summary>
-        /// <param name="s"></param>
-        public void AddMessage(string s)
-        {
-            _statusbox.AddLine(s);
-        }
-
-        /// <summary>
-        /// Indicate damage  done to player
-        /// </summary>
-        public void RemoveHealth()
-        {
-            _backgroundcolor.G = 0;
-            _backgroundcolor.R = 200;
-            // Play sound
-        }
-
-        /// <summary>
-        /// Indicate health regained by potions
-        /// </summary>
-        public void AddHealth()
-        {
-            _backgroundcolor.R = 0;
-            _backgroundcolor.G = 200;
-            // Play sound
-        }
-
-        /// <summary>
-        /// Allows the game to run logic such as updating the world,
-        /// checking for collisions, gathering input, and playing audio.
-        /// </summary>
-        /// <param name="gameTime">Provides a snapshot of timing values.</param>
-        protected override void Update(GameTime gameTime)
-        {
-            if (_status != GameStatus.GameOver)
-            {
-                foreach (Keys k in _events.keys) { HandleMovementKeys(k); }
-
-                if ((!_updating) && (_status != GameStatus.FetchingData))
-                {
-                    {
-                        // _updating = true;
-
-                        _events.Update(gameTime);
-                        if (_backgroundcolor.R > 0) // Remove Red Tint
-                        {
-                            _backgroundcolor.R -= 1;
-                        };
-                        if (_backgroundcolor.G > 0) // Remove Green Tint
-                        {
-                            _backgroundcolor.G -= 1;
-                        };
-                        for (int i = 0; i < _interfaceElements.Count; ++i)
-                        {
-                            UIElement element = _interfaceElements[i];
-                            if (!_dragging)
-                            {
-                                if (element.IsHit(Mouse.GetState().X, Mouse.GetState().Y))
-                                {
-                                    if ((_focus == null) || (!_focus.holdFocus))
-                                    {
-                                        _focus = element;
-                                    }
-                                }
-                            }
-
-                            if (_status == GameStatus.Running || ((_status == GameStatus.Paused) && (element.ignorePause)))
-                                element.Update(gameTime);
-                        }
-
-                        if (_status == GameStatus.Running)
-                        {
-                            _map1.Update(gameTime);
-                        }
-
-                        if (_focus != null)
-                        {
-
-                            if (Mouse.GetState().ScrollWheelValue != _mouseWheel)
-                            {
-
-                                int Difference = _mouseWheel - Mouse.GetState().ScrollWheelValue;
-                                _mouseWheel = Mouse.GetState().ScrollWheelValue;
-                                _focus.ScrollWheel(Difference / Math.Abs(Difference));
-                            }
-
-
-                            if (Mouse.GetState().LeftButton == ButtonState.Pressed)
-                            {
-                                if (_mousepos.X != -1)
-                                {
-                                    _dragging = true;
-                                    _focus.MoveContent(new Vector2(Mouse.GetState().X - _mousepos.X, Mouse.GetState().Y - _mousepos.Y));
-                                }
-                                _mousepos.X = Mouse.GetState().X;
-                                _mousepos.Y = Mouse.GetState().Y;
-                            }
-                            else
-                            {
-                                _mousepos.X = -1;
-                                _mousepos.Y = -1;
-                                _dragging = false;
-                            }
-
-
-
-
-
-                        }
-
-                        _updating = false;
-                    }
-                }
-                base.Update(gameTime);
-            }
-            else
-            {
-                _events.Update(gameTime);
-
-                if (_focus != null)
-                {
-                    _focus.Update(gameTime);
-                }
-            }
-
-        }
-
-        /// <summary>
-        /// This is called when the game should draw itself.
-        /// </summary>
-        /// <param name="gameTime">Provides a snapshot of timing values.</param>
-        protected override void Draw(GameTime gameTime)
-        {
-            if (_status != GameStatus.FetchingData)
-            {
-                if (!_drawing)
-                {
-                    _drawing = true;
-                    if (_status != GameStatus.NoRedraw)
-                    {
-                        GraphicsDevice.Clear(_backgroundcolor);
-
-                        for (int i = 0; i < _interfaceElements.Count; ++i)
-                        {
-                            _interfaceElements[i].Draw(gameTime);
-                        }
-                        base.Draw(gameTime);
-                    }
-                    _drawing = false;
-                }
-                if (_draggedObject != null)
-                {
-                    Point mousePos = new Point(Mouse.GetState().X, Mouse.GetState().Y);
-                    _spriteBatch.Begin(SpriteSortMode.Immediate, BlendState.AlphaBlend);
-                    _spriteBatch.Draw(_draggedObject.icon.texture, new Rectangle(mousePos.X, mousePos.Y, _draggedObject.icon.clipRect.Width, _draggedObject.icon.clipRect.Height), _draggedObject.icon.clipRect, Color.White);
-                    _spriteBatch.End();
-                }
-            }
-            else
-            {
-                GraphicsDevice.Clear(Color.DarkBlue);
-                _spriteBatch.Begin();
-
-                string text = "Downloading additional content...";
-                Vector2 position = new Vector2((GraphicsDevice.Viewport.Width - _font.MeasureString(text).X) / 2, (GraphicsDevice.Viewport.Height) / 2 - _font.MeasureString(text).Y);
-                _spriteBatch.DrawString(_font, text, position, Color.Gray);
-                _spriteBatch.DrawString(_font, text, new Vector2(position.X - 2, position.Y - 2), Color.White);
-
-                position = new Vector2((GraphicsDevice.Viewport.Width - _font.MeasureString(_downloading).X) / 2, (GraphicsDevice.Viewport.Height) / 2);
-                _spriteBatch.DrawString(_font, _downloading, position, Color.Gray);
-                _spriteBatch.DrawString(_font, _downloading, new Vector2(position.X - 2, position.Y - 2), Color.White);
-
-                _spriteBatch.End();
-            }
-        }
-
+#region Download
         /// <summary>
         /// Download a file from the internet and place it in the local documents directory
         /// </summary>
@@ -1002,7 +974,8 @@ namespace Gruppe22
 
             }
         }
-
+#endregion
+        #region Constructor
         /// <summary>
         /// Constructor
         /// </summary>
@@ -1016,5 +989,7 @@ namespace Gruppe22
             r = new Random();
 
         }
+        #endregion
+
     }
 }

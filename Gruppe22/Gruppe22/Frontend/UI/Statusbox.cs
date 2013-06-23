@@ -10,7 +10,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Gruppe22
 {
-    public class Statusbox : UIElement
+    public class Statusbox : TextOutput
     {
         #region Private Fields
         private SpriteFont _font = null;

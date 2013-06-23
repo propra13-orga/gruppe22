@@ -88,7 +88,7 @@ namespace Gruppe22
                     if (_map1.actors[defender] is Player)
                     {
                         _mainmap1.floatNumber(_map1.actors[defender].tile.coords, damage.ToString(), Color.DarkRed);
-                        RemoveHealth();
+                        _RemoveHealth();
                     }
                     else
                     {
@@ -116,14 +116,14 @@ namespace Gruppe22
                         }
                         if (_map1.actors[attacker] is Player)
                             _mainmap1.floatNumber(_map1.actors[attacker].tile.coords, "+" + _map1.actors[defender].exp + " Exp", Color.Gold);
-                        AddMessage((_map1.actors[defender] is Player ? "<red>" : "") + _map1.actors[defender].name + " was killed by " + _map1.actors[attacker].name + "  doing " + damage.ToString() + " points of damage.");
+                        _AddMessage((_map1.actors[defender] is Player ? "<red>" : "") + _map1.actors[defender].name + " was killed by " + _map1.actors[attacker].name + "  doing " + damage.ToString() + " points of damage.");
                         if (_map1.actors[defender] is Player) _PlaySoundEffect(4); //SoundEffect damage
                     }
                     else
                     {
                         _mainmap1.HandleEvent(true, Events.AnimateActor, defender, Activity.Hit);
                         //_mainmap2.HandleEvent(true, Events.AnimateActor, defender, Activity.Hit);
-                        AddMessage((_map1.actors[defender] is Player ? "<red>" : "") + _map1.actors[defender].name + " was hit by " + _map1.actors[attacker].name + " for " + damage.ToString() + " points of damage.");
+                        _AddMessage((_map1.actors[defender] is Player ? "<red>" : "") + _map1.actors[defender].name + " was hit by " + _map1.actors[attacker].name + " for " + damage.ToString() + " points of damage.");
                         if (_map1.actors[defender] is Player) _PlaySoundEffect(4); //SoundEffect damage
                     }
                 }
@@ -171,7 +171,7 @@ namespace Gruppe22
                         if (actor is Player)
                         {
                             _mainmap1.floatNumber(target, damage.ToString(), Color.DarkRed);
-                            RemoveHealth();
+                            _RemoveHealth();
                         }
                         else
                         {
@@ -181,14 +181,14 @@ namespace Gruppe22
                         {
                             _mainmap1.HandleEvent(true, Events.AnimateActor, actor.id, Activity.Die);
                             //_mainmap2.HandleEvent(true, Events.AnimateActor, actor.id, Activity.Die);
-                            AddMessage((actor is Player ? "<red>" : "") + actor.name + " was killed by a trap  doing " + damage.ToString() + " points of damage.");
+                            _AddMessage((actor is Player ? "<red>" : "") + actor.name + " was killed by a trap  doing " + damage.ToString() + " points of damage.");
                             if (actor is Player) _PlaySoundEffect(4); //SoundEffect damage
                         }
                         else
                         {
                             _mainmap1.HandleEvent(true, Events.AnimateActor, actor.id, Activity.Hit);
                             //_mainmap2.HandleEvent(true, Events.AnimateActor, actor.id, Activity.Hit);
-                            AddMessage((actor is Player ? "<red>" : "") + actor.name + " was hit for " + damage.ToString() + " points of damage by a trap.");
+                            _AddMessage((actor is Player ? "<red>" : "") + actor.name + " was hit for " + damage.ToString() + " points of damage by a trap.");
                             if (actor is Player) _PlaySoundEffect(4); //SoundEffect damage
                         }
                     }
@@ -310,7 +310,7 @@ namespace Gruppe22
                     //_mainmap2.resetActors();
                     _minimap1.MoveCamera(_map1.actors[0].tile.coords);
 
-                    AddMessage("You entered room number " + data[0].ToString().Substring(4, 1) + ".");
+                    _AddMessage("You entered room number " + data[0].ToString().Substring(4, 1) + ".");
                     File.WriteAllText("GameData", data[0].ToString() + Environment.NewLine + _deadcounter.ToString());
 
                     _backMusic = Content.Load<Song>(_map1.music); // Todo: *.mp3
@@ -330,7 +330,7 @@ namespace Gruppe22
                             if (_map1.actors[FinishedID].tile.enabled)
                             {
                                 ((ActorTile)_map1.actors[FinishedID].tile).enabled = false;
-                                AddMessage(_map1.actors[FinishedID].name + " is dead.");
+                                _AddMessage(_map1.actors[FinishedID].name + " is dead.");
                                 ((ActorTile)_map1.actors[FinishedID].tile).DropItems();
                                 if (_map1.actors[FinishedID].gold > 0)
                                 {
@@ -346,8 +346,8 @@ namespace Gruppe22
                         }
                         else
                         {
-                            AddMessage("<red>You are dead.");
-                            RemoveHealth();
+                            _AddMessage("<red>You are dead.");
+                            _RemoveHealth();
                             ShowEndGame();
                         }
                     }
@@ -373,7 +373,7 @@ namespace Gruppe22
                         while (_map1[target.x, target.y].hasTreasure)
                         {
                             _PlaySoundEffect(2); //SoundEffect pick items
-                            AddMessage(((id == 0) ? "You found " : _map1.actors[id].name + " found ") + _map1[target.x, target.y].firstItem.item.name + " .");
+                            _AddMessage(((id == 0) ? "You found " : _map1.actors[id].name + " found ") + _map1[target.x, target.y].firstItem.item.name + " .");
                             if (id == 0)
                                 _mainmap1.floatNumber(target, "Found " + _map1[target.x, target.y].firstItem.item.name, Color.DarkGreen);
                             _map1[target.x, target.y].firstItem.item.Pickup(_map1.actors[id]);
@@ -419,7 +419,7 @@ namespace Gruppe22
                                 File.Copy(file, "checkpoint" + m.Value + ".xml");
                             }
 
-                            AddMessage("Checkpoint reached (" + _deadcounter.ToString() + " lives remaining)");
+                            _AddMessage("Checkpoint reached (" + _deadcounter.ToString() + " lives remaining)");
                             _mainmap1.HandleEvent(true, Events.Player1, 1);
                         }
 
@@ -482,7 +482,7 @@ namespace Gruppe22
                                 if (actor is Player)
                                 {
                                     _mainmap1.floatNumber(actor.tile.coords, damage.ToString(), Color.DarkRed);
-                                    RemoveHealth();
+                                    _RemoveHealth();
                                 }
                             }
                         }
