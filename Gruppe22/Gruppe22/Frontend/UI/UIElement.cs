@@ -113,7 +113,7 @@ namespace Gruppe22
             get { return false; }
         }
 
-        public bool focus
+        public virtual bool focus
         {
             get
             {

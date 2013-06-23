@@ -33,6 +33,7 @@ namespace Gruppe22
             set
             {
                 _text = value;
+                _cursor = 0;
             }
         }
 
@@ -170,6 +171,7 @@ namespace Gruppe22
 , _displayRect.Top - textheight - 3 + 3 + line), color);
 
         }
+
         public override void Draw(GameTime gameTime)
         {
             if (_visible)
@@ -227,7 +229,7 @@ namespace Gruppe22
             _canEdit = canEdit;
             _font = _content.Load<SpriteFont>("SmallFont");
             _background = _content.Load<Texture2D>("Minimap");
-            _textWidth = ((int)(_font.MeasureString("W").X) + 1) * inputWidth;
+            _textWidth = (inputWidth > -1) ? (((int)(_font.MeasureString("W").X) + 1) * inputWidth) : ((int)_displayRect.Width - (int)_font.MeasureString(_label).X - 20);
 
         }
     }

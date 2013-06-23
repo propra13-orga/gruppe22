@@ -82,7 +82,8 @@ namespace Gruppe22
         ShowAbilities,
         AddDragItem,
         Dialogue, 
-        Pause
+        Pause,
+        Chat
 
     }
     public enum Buttons
@@ -98,7 +99,10 @@ namespace Gruppe22
         Load,
         LAN,
         Credits,
-        Quit
+        Quit,
+        StartServer,
+        Connect,
+        Cancel
     }
     public enum GameStatus
     {

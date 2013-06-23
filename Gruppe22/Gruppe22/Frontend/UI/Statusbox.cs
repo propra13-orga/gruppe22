@@ -20,7 +20,6 @@ namespace Gruppe22
         private int _numLines = 0;
         private int _lineHeight = 0;
         private Texture2D _arrows = null;
-        private Keys _lastKey = Keys.None;
         private bool _hasBorder = true;
         private bool _center = false;
         private List<Color> _color = null;
@@ -32,7 +31,7 @@ namespace Gruppe22
         /// Append a new line of text to the status box; word wrap if necessary
         /// </summary>
         /// <param name="text"></param>
-        public void AddLine(string text, object color = null)
+        public override void AddLine(string text, object color = null)
         {
             if (color == null) { color = new Color(); color = Color.White; }
             string remains = "";
@@ -114,8 +113,8 @@ namespace Gruppe22
             }
             if (_numLines < _text.Count)
             {
-                _spriteBatch.Draw(_arrows, new Rectangle(_displayRect.Right - 35, _displayRect.Top + 5, 28, 28), new Rectangle(32, 0, 28, 28), Color.White);
-                _spriteBatch.Draw(_arrows, new Rectangle(_displayRect.Right - 35, _displayRect.Bottom - 35, 28, 28), new Rectangle(0, 0, 28, 28), Color.White);
+                _spriteBatch.Draw(_arrows, new Rectangle(_displayRect.Right - 22, _displayRect.Top + 2, 20, 20), new Rectangle(32, 0, 28, 28), Color.White);
+                _spriteBatch.Draw(_arrows, new Rectangle(_displayRect.Right - 22, _displayRect.Bottom - 22, 20, 20), new Rectangle(0, 0, 28, 28), Color.White);
             }
             _spriteBatch.End();
             _spriteBatch.GraphicsDevice.RasterizerState.ScissorTestEnable = false;
@@ -126,7 +125,7 @@ namespace Gruppe22
         }
 
 
-        public override  bool OnMouseDown(int button)
+        public override bool OnMouseDown(int button)
         {
             if ((new Rectangle(_displayRect.Right - 35, _displayRect.Top + 5, 28, 28).Contains(Mouse.GetState().X, Mouse.GetState().Y)) && (_startPos > 0))
             {
@@ -174,65 +173,35 @@ namespace Gruppe22
         public override bool OnKeyDown(Keys k)
         {
             int temp = _startPos;
-
-            switch (k)
+            if (_focus)
             {
-                case Keys.PageUp:
-                    if ((_lastKey != Keys.PageUp))
-                    {
+                switch (k)
+                {
+                    case Keys.PageUp:
                         temp = _startPos - 10;
-                        _lastKey = Keys.PageUp;
-
-                    }
-                    break;
-                case Keys.PageDown:
-                    if ((_lastKey != Keys.PageDown))
-                    {
+                        break;
+                    case Keys.PageDown:
                         temp = _startPos + 10;
-                        _lastKey = Keys.PageDown;
-
-                    }
-                    break;
-                case Keys.Home:
-                    if ((_lastKey != Keys.Home))
-                    {
+                        break;
+                    case Keys.Home:
                         temp = 0;
-                        _lastKey = Keys.Home;
-
-                    }
-                    break;
-                case Keys.End:
-                    if ((_lastKey != Keys.End))
-                    {
+                        break;
+                    case Keys.End:
                         temp = _text.Count - _numLines;
-                        _lastKey = Keys.End;
-                    }
-                    break;
-                case Keys.Down:
-                    if ((_lastKey != Keys.Down))
-                    {
-                        _lastKey = Keys.Down;
+                        break;
+                    case Keys.Down:
                         temp = _startPos + 1;
-                    }
-                    break;
-                case Keys.Up:
-                    if ((_lastKey != Keys.Up))
-                    {
-                        _lastKey = Keys.Up;
+                        break;
+                    case Keys.Up:
                         temp = _startPos - 1;
-
-                    }
-                    break;
-                default:
-                    _lastKey = Keys.A;
-                    break;
+                        break;
+                }
+                if (temp < 0) temp = 0;
+                if (temp > _text.Count - 1) temp = _text.Count - 1;
+                _startPos = temp;
+                if (temp != _startPos) return true;
             }
-
-
-            if (temp < 0) temp = 0;
-            if (temp > _text.Count - 1) temp = _text.Count - 1;
-            _startPos = temp;
-            return true;
+            return false;
         }
         #endregion
 

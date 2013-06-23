@@ -8,6 +8,18 @@ using Microsoft.Xna.Framework;
 
 namespace Gruppe22
 {
+
+    public enum PacketTypes
+    {
+        LOGIN,
+        MOVE,
+        UPDATEMAP,
+        REDUCEHEALTH,
+        ADDITEM,
+        REMOVEITEM,
+        TOGGLETILE
+    }
+
     public class NetPlayer
     {
 
@@ -15,9 +27,66 @@ namespace Gruppe22
         private NetClient _client;
         private Dictionary<short, ClientData> _clients;
         private NetConnectionStatus _lastStatus;
-        private GameWin _parent;
+        private IHandleEvent _parent;
+        private string _server;
+        private string _playername;
 
-        protected override void Update(GameTime gameTime)
+        public string server
+        {
+            get
+            {
+                return _server;
+            }
+            set
+            {
+                _server = value;
+                NetOutgoingMessage outmsg = _client.CreateMessage();
+                outmsg.Write((byte)PacketTypes.LOGIN);
+                outmsg.Write(_playername);
+
+                            _client.Connect(_server, 666,outmsg);
+
+            }
+        }
+
+
+        public string playername{
+            get
+            {
+                return _playername;
+            }
+            set
+            {
+                _playername = value;
+            }
+    }
+        public void Start()
+        {
+            if (_client == null)
+            {
+                _parent.HandleEvent(false, Events.ShowMessage, "Starting client...");
+                _client = new NetClient(_config);
+                _client.Start();
+                _parent.HandleEvent(false, Events.ShowMessage, "Client started on " + _client.Port + " @ " + _client.Socket.LocalEndPoint);
+            }
+            else
+            {
+                _parent.HandleEvent(false, Events.ShowMessage, "Already running - stopping first");
+                Stop();
+                Start();
+            }
+        }
+
+        public void Stop()
+        {
+            if (_client != null)
+            {
+                _client.Shutdown("Goodbye!");
+                _client = null;
+            }
+        }
+
+        public void Update(GameTime gameTime)
         {
 
             if (_client != null)
@@ -150,19 +219,14 @@ namespace Gruppe22
             }
         }
 
-        public NetPlayer(GameWin parent)
+        public NetPlayer(IHandleEvent parent)
         {
             //Netzwerk vorbereiten und configurieren
             _config = new NetPeerConfiguration("DungeonCrawler");
             _config.EnableMessageType(NetIncomingMessageType.DiscoveryResponse);
-            _config.Port = 666;
-            _config.LocalAddress = System.Net.IPAddress.Loopback;
-            _client = new NetClient(_config);
-            _client.Start();
-            //Todo: _output in die obere linke ecke an unser system anpassen
-            parent.HandleEvent(false, Events.ShowMessage, "Client started on " + _client.Port + " @ " + _client.Socket.LocalEndPoint);
-
+            _parent = parent;
             _clients = new Dictionary<short, ClientData>();
+            Start();
         }
 
 
