@@ -17,7 +17,7 @@ namespace Gruppe22
         private NetConnectionStatus _lastStatus;
         private GameWin _parent;
 
-        protected override void Update(GameTime gameTime)
+        protected void Update(GameTime gameTime)
         {
 
             if (_client != null)
