@@ -60,7 +60,9 @@ namespace Gruppe22.Backend
             }
             set
             {
-                _crop = value;
+
+                if (value == null) _crop = Coords.Zero;
+                else _crop = value;
             }
         }
 
@@ -72,7 +74,8 @@ namespace Gruppe22.Backend
             }
             set
             {
-                _offset = value;
+                if (value == null) _offset = Coords.Zero;
+                else _offset = value;
             }
         }
 
@@ -96,7 +99,6 @@ namespace Gruppe22.Backend
             else _crop = crop;
             if (offset == null) _offset = Coords.Zero;
             else _offset = offset;
-            _offset = offset;
         }
     }
 

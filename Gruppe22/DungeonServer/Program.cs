@@ -334,6 +334,9 @@ namespace DungeonServer
 
             Console.WriteLine("Press any key to exit.");
             Console.ReadLine();
+            Console.CursorVisible = false;
+            Console.CursorTop = 0;
+            Console.CursorLeft = 0;
         }
         #endregion
 
