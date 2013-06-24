@@ -5,12 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 
-namespace Gruppe22
+namespace Gruppe22.Backend
 {
     class TriggerTile : Tile
     {
         private int _countdown = -1;
-        private Coords _affectedTile = Coords.Zero;
+        private Backend.Coords _affectedTile = Backend.Coords.Zero;
         private string _explanationDisabled = "";
         private string _explanationEnabled = "";
         private bool _enabled = true;
@@ -36,7 +36,7 @@ namespace Gruppe22
         }
 
 
-        public Coords affectedTile
+        public Backend.Coords affectedTile
         {
             get
             {
@@ -173,11 +173,11 @@ namespace Gruppe22
             }
         }
 
-        public TriggerTile(object parent, Coords affected = null, int countdown = -1, string explanationEnabled = "", string explanationDisabled = "", bool enabled = true, int repeat = -1, bool alwaysShowEnabled = true, bool alwaysShowDisabled = false, string tileImage = "", bool reactToEnemies = false, bool reactToObjects = false, int reactToItem = -1)
+        public TriggerTile(object parent, Backend.Coords affected = null, int countdown = -1, string explanationEnabled = "", string explanationDisabled = "", bool enabled = true, int repeat = -1, bool alwaysShowEnabled = true, bool alwaysShowDisabled = false, string tileImage = "", bool reactToEnemies = false, bool reactToObjects = false, int reactToItem = -1)
             : base(parent)
         {
             _countdown = countdown;
-            if (affected != null) _affectedTile = affected; else _affectedTile = new Coords(-1, -1);
+            if (affected != null) _affectedTile = affected; else _affectedTile = new Backend.Coords(-1, -1);
             _explanationDisabled = explanationDisabled;
             _explanationEnabled = explanationEnabled;
             _enabled = enabled;

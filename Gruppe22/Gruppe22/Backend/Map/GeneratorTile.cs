@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Gruppe22
+namespace Gruppe22.Backend
 {
     class GeneratorTile : FloorTile
     {
@@ -55,7 +55,7 @@ namespace Gruppe22
         /// <summary>
         /// An empty constructor (setting default values)
         /// </summary>
-        public GeneratorTile(object parent, Coords coords, bool canEnter, Random r)
+        public GeneratorTile(object parent, Backend.Coords coords, bool canEnter, Random r)
             : base(parent)
         {
             if (coords != null)

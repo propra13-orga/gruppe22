@@ -7,9 +7,9 @@ using System.Xml;
 
 namespace Gruppe22
 {
-    public class ProjectileTile : Tile
+    public class ProjectileTile : Backend.Tile
     {
-        private Direction _direction = Direction.None;
+        private Backend.Direction _direction = Backend.Direction.None;
         private uint _id = 0;
 
         public uint id
@@ -23,7 +23,7 @@ namespace Gruppe22
                 _id = value;
             }
         }
-        public ProjectileTile(FloorTile parent, Direction dir, uint id = 0)
+        public ProjectileTile(Backend.FloorTile parent, Backend.Direction dir, uint id = 0)
             : base(parent)
         {
             _direction = dir;
@@ -32,25 +32,25 @@ namespace Gruppe22
 
         public void NextTile(bool doMove = false)
         {
-            Map map = (Map)((FloorTile)_parent).parent;
-            FloorTile target = map.TileByCoords(Map.DirectionTile(coords, _direction));
+            Backend.Map map = (Backend.Map)((Backend.FloorTile)_parent).parent;
+            Backend.FloorTile target = map.TileByCoords(Backend.Map.DirectionTile(coords, _direction));
             if (target.coords.x == -1)
             {
-                ((IHandleEvent)parent).HandleEvent(false, Events.ExplodeProjectile, this, coords, null);
+                ((Backend.IHandleEvent)parent).HandleEvent(false, Backend.Events.ExplodeProjectile, this, coords, null);
                 return;
             }
             if (doMove)
             {
 
-                
-                ((FloorTile)_parent).Remove(this);
+
+                ((Backend.FloorTile)_parent).Remove(this);
 
                 target.Add(this);
-                target = map.TileByCoords(Map.DirectionTile(coords, _direction));
+                target = map.TileByCoords(Backend.Map.DirectionTile(coords, _direction));
 
                 if (target.coords.x == -1)
                 {
-                    ((IHandleEvent)parent).HandleEvent(false, Events.ExplodeProjectile, this, coords, null);
+                    ((Backend.IHandleEvent)parent).HandleEvent(false, Backend.Events.ExplodeProjectile, this, coords, null);
                     return;
                 }
 
@@ -61,11 +61,11 @@ namespace Gruppe22
 
     )
             {
-                ((IHandleEvent)parent).HandleEvent(false, Events.MoveProjectile, this, target.coords);
+                ((Backend.IHandleEvent)parent).HandleEvent(false, Backend.Events.MoveProjectile, this, target.coords);
             }
             else
             {
-                ((IHandleEvent)parent).HandleEvent(false, Events.ExplodeProjectile, this, target.coords, map.TileByCoords(Map.DirectionTile(coords, _direction)).firstActor);
+                ((Backend.IHandleEvent)parent).HandleEvent(false, Backend.Events.ExplodeProjectile, this, target.coords, map.TileByCoords(Backend.Map.DirectionTile(coords, _direction)).firstActor);
             }
         }
 

@@ -6,20 +6,20 @@ using Microsoft.Xna.Framework;
 using System.Text.RegularExpressions;
 using Microsoft.Xna.Framework.Content;
 
-namespace Gruppe22
+namespace Gruppe22.Backend
 {
     public class Exit
     {
-        private Coords _from;
-        private Coords _to;
+        private Backend.Coords _from;
+        private Backend.Coords _to;
         private string _fromRoom;
         private string _toRoom;
-        public Coords from
+        public Backend.Coords from
         {
             get { return _from; }
         }
 
-        public Coords to
+        public Backend.Coords to
         {
             get { return _to; }
         }
@@ -27,7 +27,7 @@ namespace Gruppe22
 
         public string toRoom { get { return _toRoom; } }
 
-        public Exit(Coords from, string fromRoom, Coords to = null, string toRoom = "")
+        public Exit(Coords from, string fromRoom, Backend.Coords to = null, string toRoom = "")
         {
             _from = from;
             _fromRoom = fromRoom;
@@ -317,7 +317,7 @@ namespace Gruppe22
         /// </summary>
         /// <param name="item"></param>
         /// <param name="from"></param>
-        public void AddActor(Item item, Coords from)
+        public void AddActor(Item item, Backend.Coords from)
         {
 
         }
@@ -330,13 +330,13 @@ namespace Gruppe22
                 {
                     this[x, coords.y - i].visible = true;
                     this[x, coords.y + i].visible = true;
-                    // System.Diagnostics.Debug.WriteLine(new Coords(x, coords.y - radius).ToString() + " - " + new Coords(x, coords.y + radius).ToString());
+                    // System.Diagnostics.Debug.WriteLine(new Backend.Coords(x, coords.y - radius).ToString() + " - " + new Backend.Coords(x, coords.y + radius).ToString());
                 }
                 for (int y = Math.Max(0, coords.y - radius); y <= Math.Min(coords.y + radius, _height); ++y)
                 {
                     this[coords.x - i, y].visible = true;
                     this[coords.x + i, y].visible = true;
-                    //   System.Diagnostics.Debug.WriteLine(new Coords(coords.x - radius, y).ToString() + " - " + new Coords(coords.x + radius, y).ToString());
+                    //   System.Diagnostics.Debug.WriteLine(new Backend.Coords(coords.x - radius, y).ToString() + " - " + new Backend.Coords(coords.x + radius, y).ToString());
                 }
             }
 
@@ -350,8 +350,8 @@ namespace Gruppe22
         /// <param name="dir"></param>
         public void MoveActor(Actor actor, Direction dir)
         {
-            Coords source = actor.tile.coords;
-            Coords target = DirectionTile(actor.tile.coords, dir);
+            Backend.Coords source = actor.tile.coords;
+            Backend.Coords target = DirectionTile(actor.tile.coords, dir);
 
             // Remove ActorTile from current tile
             ((FloorTile)actor.tile.parent).Remove(actor.tile);
@@ -372,7 +372,7 @@ namespace Gruppe22
         /// </summary>
         /// <param name="actor"></param>
         /// <param name="to"></param>
-        public void AddItem(Item item, Coords to)
+        public void AddItem(Item item, Backend.Coords to)
         {
             // Create ItemTile (if non existant)
             // or: Remove ItemTile from current tile
@@ -385,7 +385,7 @@ namespace Gruppe22
         /// <param name="item">item to move</param>
         /// <param name="from">square from which to move item</param>
         /// <param name="dir">Direction to move to</param>
-        public void MoveItem(Item item, Coords from, Direction dir)
+        public void MoveItem(Item item, Backend.Coords from, Direction dir)
         {
             // or: Remove ItemTile from current tile specified by coords
             // Add ItemTile to new Tile
@@ -401,7 +401,7 @@ namespace Gruppe22
         /// <param name="includeNPC"></param>
         /// <param name="includeEnemy"></param>
         /// <returns></returns>
-        public Coords ClosestEnemy(Coords coords, int radius = 4, bool includePlayer = true, bool includeNPC = true, bool includeEnemy = true)
+        public Backend.Coords ClosestEnemy(Coords coords, int radius = 4, bool includePlayer = true, bool includeNPC = true, bool includeEnemy = true)
         {
             for (int distance = 0; distance <= radius; ++distance)
             {
@@ -413,7 +413,7 @@ namespace Gruppe22
                         && ((x != coords.x) || (distance != 0)))
                     {
                         //System.Diagnostics.Debug.WriteLine(coords.x + "/" + coords.y + "->" + x + "/" + (coords.y - distance).ToString() + " = " + (this[x, coords.y - distance].hasPlayer ? "Player" : "Enemy"));
-                        return new Coords(x, coords.y - distance);
+                        return new Backend.Coords(x, coords.y - distance);
                     }
                     if ((((includePlayer && this[x, coords.y + distance].hasPlayer))
                         //                    ||((includeNPC&&this[coords.x-distance,y].hasNPC))
@@ -422,7 +422,7 @@ namespace Gruppe22
                     {
                         // System.Diagnostics.Debug.WriteLine(coords.x + "/" + coords.y + "->" + x + "/" + (coords.y + distance).ToString() + " = " + (this[x, coords.y + distance].hasPlayer ? "Player" : "Enemy"));
 
-                        return new Coords(x, coords.y + distance);
+                        return new Backend.Coords(x, coords.y + distance);
                     }
                 }
                 for (int y = Math.Max(coords.y - distance, 0); y <= Math.Min(coords.y + distance, _height); ++y)
@@ -434,7 +434,7 @@ namespace Gruppe22
                     {
                         //   System.Diagnostics.Debug.WriteLine(coords.x + "/" + coords.y + "->" + (coords.x - distance) + "/" + y.ToString() + " = " + (this[coords.x - distance, y].hasPlayer ? "Player" : "Enemy"));
 
-                        return new Coords(coords.x - distance, y);
+                        return new Backend.Coords(coords.x - distance, y);
                     }
                     if ((((includePlayer && this[coords.x + distance, y].hasPlayer))
                         //                    ||((includeNPC&&this[coords.x-distance,y].hasNPC))
@@ -443,14 +443,14 @@ namespace Gruppe22
                     {
                         //  System.Diagnostics.Debug.WriteLine(coords.x + "/" + coords.y + "->" + (coords.x + distance) + "/" + y.ToString() + " = " + (this[coords.x + distance, y].hasPlayer ? "Player" : "Enemy"));
 
-                        return new Coords(coords.x + distance, y);
+                        return new Backend.Coords(coords.x + distance, y);
                     }
                 }
             }
-            return new Coords(-1, -1);
+            return new Backend.Coords(-1, -1);
         }
 
-        public void PathTo(Coords from, Coords to, out List<Coords> result, ref SortedSet<Coords> visited, int maxlength = 20, string indent = "")
+        public void PathTo(Coords from, Backend.Coords to, out List<Coords> result, ref SortedSet<Coords> visited, int maxlength = 20, string indent = "")
         {
             result = null;
             if (visited == null)
@@ -474,7 +474,7 @@ namespace Gruppe22
                 int count = 0;
                 while (count < 4)
                 {
-                    Coords tmp = Map.DirectionTile(from, dir);
+                    Backend.Coords tmp = Map.DirectionTile(from, dir);
 
 
                     if ((this[tmp.x, tmp.y].canEnter) && (!visited.Contains(tmp)))
@@ -526,7 +526,7 @@ namespace Gruppe22
             return;
         }
 
-        public Coords GetCheckpointCoords()
+        public Backend.Coords GetCheckpointCoords()
         {
             foreach (List<FloorTile> ltiles in _tiles)
                 foreach (FloorTile tile in ltiles)
@@ -624,7 +624,7 @@ namespace Gruppe22
                 switch (eventID)
                 {
                     default:
-                        ((IHandleEvent)_parent).HandleEvent(false, eventID, data);
+                        ((Backend.IHandleEvent)_parent).HandleEvent(false, eventID, data);
                         break;
                 }
             }
@@ -635,7 +635,7 @@ namespace Gruppe22
         /// </summary>
         /// <param name="filename">The filename to read from</param>
         /// <param name="player">The starting position on the loaded map</param>
-        public void Load(string filename, Coords player = null)
+        public void Load(string filename, Backend.Coords player = null)
         {
             Regex re = new Regex(@"\d+");
             Match m = re.Match(filename);
@@ -645,7 +645,7 @@ namespace Gruppe22
 
             if (player == null)
             {
-                player = new Coords(1, 1);
+                player = new Backend.Coords(1, 1);
             }
             if (_actors.Count > 0)
             {
@@ -692,7 +692,7 @@ namespace Gruppe22
                 _tiles.Add(new List<FloorTile>());
                 for (int col = 0; col < _width; ++col)
                 {
-                    _tiles[row].Add(new FloorTile(this, new Coords(col, row)));
+                    _tiles[row].Add(new FloorTile(this, new Backend.Coords(col, row)));
                 }
             }
 
@@ -809,7 +809,7 @@ namespace Gruppe22
                                     case "TeleportTile":
 
 
-                                        TeleportTile transporter = new TeleportTile(tile, xmlr.GetAttribute("nextRoom"), new Coords(Int32.Parse(xmlr.GetAttribute("nextX")), Int32.Parse(xmlr.GetAttribute("nextY"))));
+                                        TeleportTile transporter = new TeleportTile(tile, xmlr.GetAttribute("nextRoom"), new Backend.Coords(Int32.Parse(xmlr.GetAttribute("nextX")), Int32.Parse(xmlr.GetAttribute("nextY"))));
                                         if (xmlr.GetAttribute("hidden") != null)
                                         { transporter.hidden = Boolean.Parse(xmlr.GetAttribute("hidden")); }
                                         if (xmlr.GetAttribute("enabled") != null)
@@ -823,7 +823,7 @@ namespace Gruppe22
                                         break;
 
                                     case "TriggerTile":
-                                        Coords target = new Coords(-1, -1);
+                                        Backend.Coords target = new Backend.Coords(-1, -1);
                                         if (xmlr.GetAttribute("affectX") != null) target.x = Int32.Parse(xmlr.GetAttribute("affectX"));
 
                                         if (xmlr.GetAttribute("affectY") != null) target.y = Int32.Parse(xmlr.GetAttribute("affectY"));
@@ -987,7 +987,7 @@ namespace Gruppe22
             _actors = new List<Actor>();
             _items = new List<Item>();
             _blankTile = new FloorTile(this);
-            _blankTile.coords = new Coords(-1, -1);
+            _blankTile.coords = new Backend.Coords(-1, -1);
             _blankTile.Add(new GapTile(_blankTile));
             _tiles = new List<List<FloorTile>>();
             _exits = new List<Exit>();
@@ -998,7 +998,7 @@ namespace Gruppe22
         /// Constructor for using a previously saved map
         /// </summary>
         /// <param name="filename"></param>
-        public Map(ContentManager content, object parent, string filename = "", Coords playerPos = null)
+        public Map(ContentManager content, object parent, string filename = "", Backend.Coords playerPos = null)
             : this(content)
         {
             _parent = parent;
@@ -1026,7 +1026,7 @@ namespace Gruppe22
         #endregion
 
         #region Static Helpers
-        public static Direction WhichWayIs(Coords from, Coords to, bool DirectOnly = false)
+        public static Direction WhichWayIs(Coords from, Backend.Coords to, bool DirectOnly = false)
         {
             if (from.x < to.x)
             {
@@ -1121,33 +1121,33 @@ namespace Gruppe22
             return Direction.None;
         }
 
-        public static Coords DirectionTile(Coords start, Direction dir)
+        public static Backend.Coords DirectionTile(Coords start, Direction dir)
         {
             switch (dir)
             {
                 case Direction.Left:
-                    return new Coords(start.x - 1, start.y);
+                    return new Backend.Coords(start.x - 1, start.y);
 
                 case Direction.Right:
-                    return new Coords(start.x + 1, start.y);
+                    return new Backend.Coords(start.x + 1, start.y);
 
                 case Direction.Down:
-                    return new Coords(start.x, start.y + 1);
+                    return new Backend.Coords(start.x, start.y + 1);
 
                 case Direction.Up:
-                    return new Coords(start.x, start.y - 1);
+                    return new Backend.Coords(start.x, start.y - 1);
 
                 case Direction.DownLeft:
-                    return new Coords(start.x - 1, start.y + 1);
+                    return new Backend.Coords(start.x - 1, start.y + 1);
 
                 case Direction.UpRight:
-                    return new Coords(start.x + 1, start.y - 1);
+                    return new Backend.Coords(start.x + 1, start.y - 1);
 
                 case Direction.DownRight:
-                    return new Coords(start.x + 1, start.y + 1);
+                    return new Backend.Coords(start.x + 1, start.y + 1);
 
                 case Direction.UpLeft:
-                    return new Coords(start.x - 1, start.y - 1);
+                    return new Backend.Coords(start.x - 1, start.y - 1);
             }
             return start;
         }

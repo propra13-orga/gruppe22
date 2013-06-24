@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Xml;
 
-namespace Gruppe22
+namespace Gruppe22.Backend
 {
     public class TargetTile : Tile
     {

@@ -9,12 +9,12 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Media;
 
-namespace Gruppe22
+namespace Gruppe22.Backend
 {
     /// <summary>
     /// Handle game logic
     /// </summary>
-    public class GameLogic : GameWin
+    public class GameLogic : Client.GameWin
     {
         #region Overriden MonoGame default methods
         /// <summary>
@@ -100,8 +100,8 @@ namespace Gruppe22
                     }
                     if (_map1.actors[defender].isDead)
                     {
-                        _mainmap1.HandleEvent(true, Events.AnimateActor, defender, Activity.Die);
-                        //_mainmap2.HandleEvent(true, Events.AnimateActor, defender, Activity.Die);
+                        _mainmap1.HandleEvent(true, Backend.Events.AnimateActor, defender, Backend.Activity.Die);
+                        //_mainmap2.HandleEvent(true, Backend.Events.AnimateActor, defender, Activity.Die);
                         _map1.actors[attacker].exp += _map1.actors[defender].exp;
                         if (_map1.actors[attacker].exp > _map1.actors[attacker].expNeeded)
                         {
@@ -121,8 +121,8 @@ namespace Gruppe22
                     }
                     else
                     {
-                        _mainmap1.HandleEvent(true, Events.AnimateActor, defender, Activity.Hit);
-                        //_mainmap2.HandleEvent(true, Events.AnimateActor, defender, Activity.Hit);
+                        _mainmap1.HandleEvent(true, Backend.Events.AnimateActor, defender, Backend.Activity.Hit);
+                        //_mainmap2.HandleEvent(true, Backend.Events.AnimateActor, defender, Activity.Hit);
                         _AddMessage((_map1.actors[defender] is Player ? "<red>" : "") + _map1.actors[defender].name + " was hit by " + _map1.actors[attacker].name + " for " + damage.ToString() + " points of damage.");
                         if (_map1.actors[defender] is Player) _PlaySoundEffect(4); //SoundEffect damage
                     }
@@ -179,15 +179,15 @@ namespace Gruppe22
                         };
                         if (actor.isDead)
                         {
-                            _mainmap1.HandleEvent(true, Events.AnimateActor, actor.id, Activity.Die);
-                            //_mainmap2.HandleEvent(true, Events.AnimateActor, actor.id, Activity.Die);
+                            _mainmap1.HandleEvent(true, Backend.Events.AnimateActor, actor.id, Activity.Die);
+                            //_mainmap2.HandleEvent(true, Backend.Events.AnimateActor, actor.id, Activity.Die);
                             _AddMessage((actor is Player ? "<red>" : "") + actor.name + " was killed by a trap  doing " + damage.ToString() + " points of damage.");
                             if (actor is Player) _PlaySoundEffect(4); //SoundEffect damage
                         }
                         else
                         {
-                            _mainmap1.HandleEvent(true, Events.AnimateActor, actor.id, Activity.Hit);
-                            //_mainmap2.HandleEvent(true, Events.AnimateActor, actor.id, Activity.Hit);
+                            _mainmap1.HandleEvent(true, Backend.Events.AnimateActor, actor.id, Activity.Hit);
+                            //_mainmap2.HandleEvent(true, Backend.Events.AnimateActor, actor.id, Activity.Hit);
                             _AddMessage((actor is Player ? "<red>" : "") + actor.name + " was hit for " + damage.ToString() + " points of damage by a trap.");
                             if (actor is Player) _PlaySoundEffect(4); //SoundEffect damage
                         }
@@ -212,17 +212,17 @@ namespace Gruppe22
 
             switch (eventID)
             {
-                case Events.ActivateAbility:
+                case Backend.Events.ActivateAbility:
                     {
                         Actor actor = (Actor)data[0];
                         int id = (int)data[1];
                         if (id < 0)
                         {
                             actor.Items(-id).UseItem();
-                            HandleEvent(false, Events.ShowMessage, "You used " + actor.Items(-id).name);
+                            HandleEvent(false, Backend.Events.ShowMessage, "You used " + actor.Items(-id).name);
                             if (actor.Items(-id).destroyed)
                             {
-                                _toolbar.HandleEvent(true, Events.AddDragItem, id);
+                                _toolbar.HandleEvent(true, Backend.Events.AddDragItem, id);
                             }
                         }
                         else
@@ -272,8 +272,8 @@ namespace Gruppe22
                     }
                     break;
 
-                case Events.LoadFromCheckPoint:
-                    _status = GameStatus.NoRedraw;
+                case Backend.Events.LoadFromCheckPoint:
+                    _status = Backend.GameStatus.NoRedraw;
                     _deadcounter--;
                     string lastCheck = File.ReadAllText("CheckPoint");
                     while (Directory.GetFiles(".", "savedroom*.xml").Length > 0)
@@ -294,13 +294,13 @@ namespace Gruppe22
                     _mana.actor = _map1.actors[0];
                     _health.actor = _map1.actors[0];
                     _toolbar.actor = _map1.actors[0];
-                    _status = GameStatus.Paused;
-                    HandleEvent(true, Events.ContinueGame);
+                    _status = Backend.GameStatus.Paused;
+                    HandleEvent(true, Backend.Events.ContinueGame);
                     break;
 
-                case Events.ChangeMap: // Load another map
+                case Backend.Events.ChangeMap: // Load another map
                     _PlaySoundEffect(0); //SoundEffect change map
-                    _status = GameStatus.NoRedraw; // prevent redraw (which would crash the game!)
+                    _status = Backend.GameStatus.NoRedraw; // prevent redraw (which would crash the game!)
                     _map1.Save("savedroom" + _map1.id + ".xml");
                     if (File.Exists("saved" + (string)data[0]))
                         _map1.Load("saved" + (string)data[0], (Coords)data[1]);
@@ -317,10 +317,10 @@ namespace Gruppe22
                     MediaPlayer.Play(_backMusic);
                     MediaPlayer.IsRepeating = true;
                     MediaPlayer.Volume = (float)0.3;
-                    _status = GameStatus.Running;
+                    _status = Backend.GameStatus.Running;
                     break;
 
-                case Events.FinishedAnimation:
+                case Backend.Events.FinishedAnimation:
                     int FinishedID = (int)data[0];
                     Activity FinishedActivity = (Activity)data[1];
                     if (FinishedActivity == Activity.Die)
@@ -337,7 +337,7 @@ namespace Gruppe22
 
                                     ItemTile tile = new ItemTile(((FloorTile)(_map1.actors[FinishedID].tile.parent)));
 
-                                    Item item = new Item(Content, tile, ItemType.Gold, "", null, _map1.actors[FinishedID].gold);
+                                    Backend.Item item = new Backend.Item(Content, tile, Backend.ItemType.Gold, "", null, _map1.actors[FinishedID].gold);
                                     item.value = _map1.actors[FinishedID].gold;
                                     tile.item = item;
                                     ((FloorTile)(_map1.actors[FinishedID].tile.parent)).Add(tile);
@@ -353,9 +353,9 @@ namespace Gruppe22
                     }
                     break;
 
-                case Events.TrapActivate:
+                case Backend.Events.TrapActivate:
                     {
-                        Coords coords = (Coords)data[0];
+                        Backend.Coords coords = (Coords)data[0];
                         if (((_map1[coords].hasEnemy) || (_map1[coords].hasPlayer)) && (!_map1[coords].firstActor.isDead))
                         {
                             _TrapDamage(coords);
@@ -363,11 +363,11 @@ namespace Gruppe22
                     }
                     break;
 
-                case Events.TileEntered:
+                case Backend.Events.TileEntered:
                     {
                         int id = (int)data[0];
                         Direction dir = (Direction)data[1];
-                        Coords target = _map1.actors[id].tile.coords;
+                        Backend.Coords target = _map1.actors[id].tile.coords;
 
                         // Pickup any items
                         while (_map1[target.x, target.y].hasTreasure)
@@ -382,7 +382,7 @@ namespace Gruppe22
                         // Apply teleporter (move to next room)
                         if ((id == 0) && (_map1[target.x, target.y].hasTeleport))
                         {
-                            HandleEvent(true, Events.ChangeMap, ((TeleportTile)_map1[target.x, target.y].overlay[0]).nextRoom, ((TeleportTile)_map1[target.x, target.y].overlay[0]).nextPlayerPos);
+                            HandleEvent(true, Backend.Events.ChangeMap, ((TeleportTile)_map1[target.x, target.y].overlay[0]).nextRoom, ((TeleportTile)_map1[target.x, target.y].overlay[0]).nextPlayerPos);
 
                         }
 
@@ -420,14 +420,14 @@ namespace Gruppe22
                             }
 
                             _AddMessage("Checkpoint reached (" + _deadcounter.ToString() + " lives remaining)");
-                            _mainmap1.HandleEvent(true, Events.Player1, 1);
+                            _mainmap1.HandleEvent(true, Backend.Events.Player1, 1);
                         }
 
                         // Trigger floor switches
                         if ((_map1[_map1.actors[id].tile.coords.x, _map1.actors[id].tile.coords.y].hasTarget) && (id == 0))
                         {
-                            _mainmap1.HandleEvent(true, Events.AnimateActor, id, Activity.Talk);
-                            //_mainmap2.HandleEvent(true, Events.AnimateActor, id, Activity.Talk);
+                            _mainmap1.HandleEvent(true, Backend.Events.AnimateActor, id, Activity.Talk);
+                            //_mainmap2.HandleEvent(true, Backend.Events.AnimateActor, id, Activity.Talk);
 
                             ShowEndGame("You have successfully found the hidden treasure. Can you do it again?", "Congratulations!");
                         }
@@ -440,27 +440,27 @@ namespace Gruppe22
                     break;
 
 
-                case Events.Attack:
+                case Backend.Events.Attack:
                     {
                         int id = (int)data[0];
                         Direction dir = (Direction)data[1];
-                        Coords target = Map.DirectionTile(_map1.actors[id].tile.coords, dir);
+                        Backend.Coords target = Map.DirectionTile(_map1.actors[id].tile.coords, dir);
 
                         if (_map1.CanMove(_map1.actors[id].tile.coords, dir))
                         {
-                            _mainmap1.HandleEvent(true, Events.AnimateActor, id, Activity.Attack, false, dir, true);
+                            _mainmap1.HandleEvent(true, Backend.Events.AnimateActor, id, Activity.Attack, false, dir, true);
                             _CombatDamage(id, _map1[target.x, target.y].firstActor.id);
                         }
 
 
                         /*
-                         *                                 _mainmap1.HandleEvent(null, Events.AnimateActor, _map1.firstActorID(target.x, target.y), Activity.Die, false, Map.WhichWayIs(_map1.actors[id].tile.coords, target));
+                         *                                 _mainmap1.HandleEvent(null, Backend.Events.AnimateActor, _map1.firstActorID(target.x, target.y), Activity.Die, false, Map.WhichWayIs(_map1.actors[id].tile.coords, target));
                                     AddMessage((_map1.actors[id] is Player ? "<green>You" : _map1.actors[id].name) + " killed " + (_map1.actors[_map1.firstActorID(target.x, target.y)] is Player ? "you" : _map1.actors[_map1.firstActorID(target.x, target.y)].name) + " doing " + _map1.actors[id].damage.ToString() + " points of damage.");
 
                                 }
                                 else
                                 {
-                                    _mainmap1.HandleEvent(null, Events.AnimateActor, _map1.firstActorID(target.x, target.y), Activity.Hit, false, Map.WhichWayIs(_map1.actors[id].tile.coords, target));
+                                    _mainmap1.HandleEvent(null, Backend.Events.AnimateActor, _map1.firstActorID(target.x, target.y), Activity.Hit, false, Map.WhichWayIs(_map1.actors[id].tile.coords, target));
                                     AddMessage(((_map1.actors[_map1.firstActorID(target.x, target.y)] is Player) ? "<red>" : "") + (_map1.actors[id] is Player ? "<green>You" : _map1.actors[id].name) + " attacked " + (_map1.actors[_map1.firstActorID(target.x, target.y)] is Player ? "you" : _map1.actors[_map1.firstActorID(target.x, target.y)].name));
                                     AddMessage(((_map1.actors[_map1.firstActorID(target.x, target.y)] is Player) ? "<red>" : "") + "The attack caused " + (_map1[target.x, target.y].firstActor.armor - _map1.actors[id].damage).ToString() + " points of damage (" + _map1.actors[id].damage.ToString() + " attack strength - " + _map1[target.x, target.y].firstActor.armor + " defense)");
                                 }
@@ -469,7 +469,7 @@ namespace Gruppe22
                     }
                     break;
 
-                case Events.ExplodeProjectile:
+                case Backend.Events.ExplodeProjectile:
                     {
                         _map1[((ProjectileTile)data[0]).coords].Remove((ProjectileTile)data[0]);
                         if (data[2] != null)
@@ -490,7 +490,7 @@ namespace Gruppe22
                     }
                     break;
 
-                case Events.MoveProjectile:
+                case Backend.Events.MoveProjectile:
                     if (data[0] == null)
                     {
                         uint id = _mainmap1.AddProjectile(((FloorTile)data[1]).coords, (Direction)data[2], new ProjectileTile((FloorTile)data[1], (Direction)data[2]));
@@ -504,19 +504,19 @@ namespace Gruppe22
                     }
                     break;
 
-                case Events.FinishedProjectileMove:
+                case Backend.Events.FinishedProjectileMove:
                     ((ProjectileTile)data[0]).NextTile(true);
                     break;
 
-                case Events.Shop:
+                case Backend.Events.Shop:
                     ShowShopWindow(_map1.actors[0], (Actor)data[0]);
                     break;
 
-                case Events.Dialogue:
+                case Backend.Events.Dialogue:
                     ShowMessage();
                     break;
 
-                case Events.MoveActor:
+                case Backend.Events.MoveActor:
                     {
                         int id = (int)data[0];
                         Direction dir = (Direction)data[1];
@@ -528,7 +528,7 @@ namespace Gruppe22
                                 if (((FloorTile)_map1.actors[id].tile.parent).trap.status == TrapState.Disabled)
                                     ((FloorTile)_map1.actors[id].tile.parent).trap.status = TrapState.NoDisplay;
                             }
-                            Coords target = Map.DirectionTile(_map1.actors[id].tile.coords, dir);
+                            Backend.Coords target = Map.DirectionTile(_map1.actors[id].tile.coords, dir);
 
                             _mainmap1.ChangeDir(id, dir); // Look into different direction
 
@@ -540,7 +540,7 @@ namespace Gruppe22
                             if (((a is Enemy || a is Player) && !(_map1.actors[id] is NPC))
                                 && ((a.id != id) && (!a.isDead)))
                             {
-                                HandleEvent(true, Events.Attack, id, dir);
+                                HandleEvent(true, Backend.Events.Attack, id, dir);
                                 _map1.actors[id].locked = true;
 
                             }
@@ -565,8 +565,8 @@ namespace Gruppe22
                                         _minimap1.MoveCamera(_map1.actors[id].tile.coords);
                                     _map1.actors[id].locked = true;
 
-                                    _mainmap1.HandleEvent(true, Events.MoveActor, id, _map1.actors[id].tile.coords);
-                                    //_mainmap2.HandleEvent(true, Events.MoveActor, id, _map1.actors[id].tile.coords);
+                                    _mainmap1.HandleEvent(true, Backend.Events.MoveActor, id, _map1.actors[id].tile.coords);
+                                    //_mainmap2.HandleEvent(true, Backend.Events.MoveActor, id, _map1.actors[id].tile.coords);
 
 
                                 }
@@ -657,8 +657,8 @@ namespace Gruppe22
             {
                 To += 1;
             }
-            Coords CoordsFrom = rooms[From].SuggestExit(exit);
-            Coords CoordsTo = rooms[To].SuggestExit(Map.OppositeDirection(exit));
+            Backend.Coords CoordsFrom = rooms[From].SuggestExit(exit);
+            Backend.Coords CoordsTo = rooms[To].SuggestExit(Map.OppositeDirection(exit));
             //  System.Diagnostics.Debug.WriteLine(exit.ToString() + ": Level " + rooms[From].level.ToString() + ": " + From + " to " + To + " (" + roomsPerRow.ToString() + ")");
 
             if ((CoordsFrom.x != -1) && (CoordsFrom.y != -1) && (CoordsTo.x != -1) && (CoordsTo.y != -1))
@@ -746,12 +746,12 @@ namespace Gruppe22
                         message = "If this were a real dungeon, someone might have a quest for you...";
                         break;
                 }
-            _status = GameStatus.Paused;
-            Window _messagebox = new Window(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width) / 2.0f) - 300, (int)(GraphicsDevice.Viewport.Height / 2.0f) - 100, 600, 200));
-            Statusbox stat = new Statusbox(_messagebox, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width) / 2.0f) - 300 + 10, (int)(GraphicsDevice.Viewport.Height / 2.0f) - 70, 590, 110), false, true);
+            _status = Backend.GameStatus.Paused;
+            Client.Window _messagebox = new Client.Window(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width) / 2.0f) - 300, (int)(GraphicsDevice.Viewport.Height / 2.0f) - 100, 600, 200));
+            Client.Statusbox stat = new Client.Statusbox(_messagebox, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width) / 2.0f) - 300 + 10, (int)(GraphicsDevice.Viewport.Height / 2.0f) - 70, 590, 110), false, true);
             stat.AddLine(message);
             _messagebox.AddChild(stat);
-            _messagebox.AddChild(new Button(_messagebox, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width) / 2.0f) - 65, (int)(GraphicsDevice.Viewport.Height / 2.0f) + 30, 130, 40), "Goodbye!", (int)Buttons.Close));
+            _messagebox.AddChild(new Client.Button(_messagebox, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width) / 2.0f) - 65, (int)(GraphicsDevice.Viewport.Height / 2.0f) + 30, 130, 40), "Goodbye!", (int)Buttons.Close));
             //  _mainMenu.AddChild(new ProgressBar(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) + 80, 300, 30), ProgressStyle.Block,100,2));
 
             _interfaceElements.Add(_messagebox);
@@ -867,8 +867,8 @@ namespace Gruppe22
                     {
                         entrance = r.Next(prevTotal) + prevLevelStart;
                     };
-                    Coords entranceCoords = rooms[entrance].FindRoomForStairs;
-                    Coords exitCoords = rooms[exit].FindRoomForStairs;
+                    Backend.Coords entranceCoords = rooms[entrance].FindRoomForStairs;
+                    Backend.Coords exitCoords = rooms[exit].FindRoomForStairs;
                     rooms[exit].AddStairs(exitCoords, entrance + 1, entranceCoords, true);
                     rooms[entrance].AddStairs(entranceCoords, exit + 1, exitCoords, false);
                     rooms[exit].AddShop();
@@ -888,7 +888,7 @@ namespace Gruppe22
                     {
                         exit = r.Next(totalRooms) + LevelStart;
                     };
-                    Coords targetCoords = rooms[exit].FindRoomForStairs;
+                    Backend.Coords targetCoords = rooms[exit].FindRoomForStairs;
                     rooms[exit].AddTarget(targetCoords);
                 }
 

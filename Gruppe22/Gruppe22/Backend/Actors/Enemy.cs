@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework.Content;
 
-namespace Gruppe22
+namespace Gruppe22.Backend
 {
     public class Enemy : Actor
     {
@@ -181,7 +181,7 @@ namespace Gruppe22
             _gold = _random.Next(10 + _level / 10) * _level;
             if (level > 10)
             {
-                Item item = new Item(_content, this, ItemType.Key, "Key to level " + (level % 10).ToString(), null, 0, level);
+                Item item = new Item(_content, this, Backend.ItemType.Key, "Key to level " + (level % 10).ToString(), null, 0, level);
                 _inventory.Add(item);
                 item.owner = this;
             }

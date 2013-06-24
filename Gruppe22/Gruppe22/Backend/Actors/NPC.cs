@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework.Content;
 
-namespace Gruppe22
+namespace Gruppe22.Backend
 {
     public class NPC : Actor
     {
@@ -53,8 +53,8 @@ namespace Gruppe22
         /// </summary>
         public void Interact()
         {
-            if (_hasShop) ((IHandleEvent)_tile.parent).HandleEvent(false, Events.Shop, this);
-            if (_hasDialogue) ((IHandleEvent)_tile.parent).HandleEvent(false, Events.Dialogue, this);
+            if (_hasShop) ((Backend.IHandleEvent)_tile.parent).HandleEvent(false, Backend.Events.Shop, this);
+            if (_hasDialogue) ((Backend.IHandleEvent)_tile.parent).HandleEvent(false, Backend.Events.Dialogue, this);
         }
 
         /// <summary>

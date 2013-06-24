@@ -7,7 +7,7 @@ using System.Xml;
 using System.Xml.Schema;
 using Microsoft.Xna.Framework;
 
-namespace Gruppe22
+namespace Gruppe22.Backend
 {
     public class FloorTile : Tile, IDisposable
     {
@@ -21,7 +21,7 @@ namespace Gruppe22
         /// <summary>
         /// The Position of the tile
         /// </summary>
-        protected Coords _coords = null;
+        protected Backend.Coords _coords = null;
 
         /// <summary>
         /// Whether field is visible on the minimap
@@ -159,7 +159,7 @@ namespace Gruppe22
             }
         }
 
-        public new Coords coords
+        public new Backend.Coords coords
         {
             get
             {
@@ -233,7 +233,7 @@ namespace Gruppe22
                     if (_overlay[i] is WallTile) return (_overlay[i] as WallTile).type;
                 }
 
-                return WallType.Normal;
+                return Backend.WallType.Normal;
             }
         }
 
@@ -542,7 +542,7 @@ namespace Gruppe22
         /// <summary>
         /// A constructor adding a walltile to the overlay if the contructed tile is impassable
         /// </summary>
-        public FloorTile(object parent, Coords coords = null, bool canEnter = true)
+        public FloorTile(object parent, Backend.Coords coords = null, bool canEnter = true)
             : this(parent)
         {
             if (coords != null)

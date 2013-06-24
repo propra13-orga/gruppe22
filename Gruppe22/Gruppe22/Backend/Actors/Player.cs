@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework.Content;
 
-namespace Gruppe22
+namespace Gruppe22.Backend
 {
     public class Player : Actor
     {

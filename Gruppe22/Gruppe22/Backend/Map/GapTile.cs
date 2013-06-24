@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 
-namespace Gruppe22
+namespace Gruppe22.Backend
 {
     class GapTile : Tile
     {

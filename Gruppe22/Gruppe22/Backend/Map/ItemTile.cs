@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Xml;
 
-namespace Gruppe22
+namespace Gruppe22.Backend
 {
     public class ItemTile : Tile
     {
@@ -23,7 +23,7 @@ namespace Gruppe22
                 if (item != null)
                     return _item.itemType;
                 else
-                    return ItemType.Potion;
+                    return Backend.ItemType.Potion;
             }
         }
 

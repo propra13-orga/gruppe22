@@ -6,7 +6,7 @@ using System.Xml.Schema;
 using System.Xml.Serialization;
 using Microsoft.Xna.Framework;
 
-namespace Gruppe22
+namespace Gruppe22.Backend
 {
 
     public enum TileType
@@ -25,7 +25,7 @@ namespace Gruppe22
     /// <summary>
     /// An abstract class representing a generic tile (i.e. blank floor)
     /// </summary>
-    public abstract class Tile : IHandleEvent
+    public abstract class Tile : Backend.IHandleEvent
     {
         #region Private Fields
 
@@ -34,7 +34,7 @@ namespace Gruppe22
 
         #region Public Fields
 
-        public Coords coords
+        public Backend.Coords coords
         {
             get
             {
@@ -97,7 +97,7 @@ namespace Gruppe22
         public virtual void HandleEvent(bool DownStream, Events eventID, params object[] data)
         {
             if (!DownStream)
-                ((IHandleEvent)_parent).HandleEvent(DownStream, eventID, data);
+                ((Backend.IHandleEvent)_parent).HandleEvent(DownStream, eventID, data);
         }
     }
 }

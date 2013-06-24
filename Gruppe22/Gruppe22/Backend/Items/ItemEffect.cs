@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Gruppe22
+namespace Gruppe22.Backend
 {
     public enum ItemProperty
     {

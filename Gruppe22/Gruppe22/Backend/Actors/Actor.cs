@@ -6,7 +6,7 @@ using System.Text;
 using System.Xml;
 using Microsoft.Xna.Framework.Content;
 
-namespace Gruppe22
+namespace Gruppe22.Backend
 {
     public enum ActorType
     {
@@ -632,11 +632,11 @@ namespace Gruppe22
             if (amount > _armor)
             {
                 _armor = amount;
-                _tile.HandleEvent(false, Events.ShowMessage, ((_actorType == ActorType.Player) ? "You equip  " : (_name + " equips ")) + " new armor.");
+                _tile.HandleEvent(false, Backend.Events.ShowMessage, ((_actorType == ActorType.Player) ? "You equip  " : (_name + " equips ")) + " new armor.");
             }
             else
             {
-                _tile.HandleEvent(false, Events.ShowMessage, ((_actorType == ActorType.Player) ? "You put " : (_name + " puts ")) + " the armor away.");
+                _tile.HandleEvent(false, Backend.Events.ShowMessage, ((_actorType == ActorType.Player) ? "You put " : (_name + " puts ")) + " the armor away.");
             }
         }
 
@@ -649,11 +649,11 @@ namespace Gruppe22
             int temp = Math.Max(amount, _maxhealth - _health - amount);
             if (temp > 0)
             {
-                _tile.HandleEvent(false, Events.ShowMessage, ((_actorType == ActorType.Player) ? "You regain " : (_name + " regains ")) + temp.ToString() + " hitpoints.");
+                _tile.HandleEvent(false, Backend.Events.ShowMessage, ((_actorType == ActorType.Player) ? "You regain " : (_name + " regains ")) + temp.ToString() + " hitpoints.");
             }
             else
             {
-                _tile.HandleEvent(false, Events.ShowMessage, ((_actorType == ActorType.Player) ? "You put " : (_name + " puts ")) + " puts the potion away.");
+                _tile.HandleEvent(false, Backend.Events.ShowMessage, ((_actorType == ActorType.Player) ? "You put " : (_name + " puts ")) + " puts the potion away.");
             }
             _health = Math.Min(_health + amount, _maxhealth);
         }
@@ -667,11 +667,11 @@ namespace Gruppe22
             if (amount > _damage)
             {
                 _damage = amount;
-                _tile.HandleEvent(false, Events.ShowMessage, ((_actorType == ActorType.Player) ? "You equip " : (_name + " equips ")) + " a new weapon.");
+                _tile.HandleEvent(false, Backend.Events.ShowMessage, ((_actorType == ActorType.Player) ? "You equip " : (_name + " equips ")) + " a new weapon.");
             }
             else
             {
-                _tile.HandleEvent(false, Events.ShowMessage, ((_actorType == ActorType.Player) ? "You put " : (_name + " puts ")) + " the weapon away.");
+                _tile.HandleEvent(false, Backend.Events.ShowMessage, ((_actorType == ActorType.Player) ? "You put " : (_name + " puts ")) + " the weapon away.");
 
             }
         }
@@ -785,7 +785,7 @@ namespace Gruppe22
         {
             for (int i = 0; i < _inventory.Count; ++i)
             {
-                if ((_inventory[i].itemType == ItemType.Key) && (_inventory[i].level == 10 + level)) return true;
+                if ((_inventory[i].itemType == Backend.ItemType.Key) && (_inventory[i].level == 10 + level)) return true;
             }
             return false;
         }

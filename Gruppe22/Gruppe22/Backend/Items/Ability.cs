@@ -7,7 +7,7 @@ using System.Xml;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 
-namespace Gruppe22
+namespace Gruppe22.Backend
 {
     [Flags]
     public enum AbilityTarget
@@ -48,7 +48,7 @@ namespace Gruppe22
         private AbilityTarget _target;
         private AbilityElement _element;
         private int _improveOver = -1;
-        private VisibleObject _icon = null;
+        private ImageData _icon = null;
         private string _name = "";
         private string _description = "";
 
@@ -86,7 +86,7 @@ namespace Gruppe22
             }
         }
 
-        public VisibleObject icon { get { if (_icon == null)GetIcon(); return _icon; } set { _icon = value; } }
+        public ImageData icon { get { if (_icon == null)GetIcon(); return _icon; } set { _icon = value; } }
         public string name
         {
             get
@@ -162,15 +162,15 @@ namespace Gruppe22
             xmlw.WriteStartElement("Ability");
             if (_icon != null)
             {
-                xmlw.WriteAttributeString("iconfile", Convert.ToString(_icon.src));
-                xmlw.WriteAttributeString("iconoffsetX", Convert.ToString(_icon.offsetX));
-                xmlw.WriteAttributeString("iconoffsetY", Convert.ToString(_icon.offsetY));
-                xmlw.WriteAttributeString("iconcropX", Convert.ToString(_icon.cropX));
-                xmlw.WriteAttributeString("iconcropY", Convert.ToString(_icon.cropY));
-                xmlw.WriteAttributeString("clipRectX", Convert.ToString(_icon.clipRect.X));
-                xmlw.WriteAttributeString("clipRectY", Convert.ToString(_icon.clipRect.Y));
-                xmlw.WriteAttributeString("clipRectW", Convert.ToString(_icon.clipRect.Width));
-                xmlw.WriteAttributeString("clipRectH", Convert.ToString(_icon.clipRect.Height));
+                xmlw.WriteAttributeString("iconfile", Convert.ToString(_icon.name));
+                xmlw.WriteAttributeString("iconoffsetX", Convert.ToString(_icon.offset.x));
+                xmlw.WriteAttributeString("iconoffsetY", Convert.ToString(_icon.offset.y));
+                xmlw.WriteAttributeString("iconcropX", Convert.ToString(_icon.crop.x));
+                xmlw.WriteAttributeString("iconcropY", Convert.ToString(_icon.crop.y));
+                xmlw.WriteAttributeString("clipRectX", Convert.ToString(_icon.rect.X));
+                xmlw.WriteAttributeString("clipRectY", Convert.ToString(_icon.rect.Y));
+                xmlw.WriteAttributeString("clipRectW", Convert.ToString(_icon.rect.Width));
+                xmlw.WriteAttributeString("clipRectH", Convert.ToString(_icon.rect.Height));
             }
             xmlw.WriteAttributeString("name", Convert.ToString(name));
             xmlw.WriteAttributeString("description", Convert.ToString(_description));
@@ -187,17 +187,23 @@ namespace Gruppe22
             xmlw.WriteEndElement();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="reader"></param>
         public void Load(XmlReader reader)
         {
             _name = reader.GetAttribute("name");
-            _icon = new VisibleObject(_content, reader.GetAttribute("iconfile"), new Rectangle(Convert.ToInt32(reader.GetAttribute("clipRectX")),
+            _icon = new ImageData(
+                reader.GetAttribute("iconfile"), 
+                new Rectangle(Convert.ToInt32(reader.GetAttribute("clipRectX")),
                 Convert.ToInt32(reader.GetAttribute("clipRectY")),
                 Convert.ToInt32(reader.GetAttribute("clipRectW")),
-                Convert.ToInt32(reader.GetAttribute("clipRectH"))));
-            _icon.offsetX = Convert.ToInt32(reader.GetAttribute("iconoffsetX"));
-            _icon.offsetY = Convert.ToInt32(reader.GetAttribute("iconoffsetY"));
-            _icon.cropX = Convert.ToInt32(reader.GetAttribute("iconcropX"));
-            _icon.cropY = Convert.ToInt32(reader.GetAttribute("iconcropY"));
+                Convert.ToInt32(reader.GetAttribute("clipRectH"))),
+                new Coords(Convert.ToInt32(reader.GetAttribute("iconoffsetX")),
+                Convert.ToInt32(reader.GetAttribute("iconoffsetY"))),
+                new Coords(Convert.ToInt32(reader.GetAttribute("iconcropX")),
+                Convert.ToInt32(reader.GetAttribute("iconcropY"))));
             _description = reader.GetAttribute("description");
             _cost = Convert.ToInt32(reader.GetAttribute("cost"));
             _intensity = Convert.ToInt32(reader.GetAttribute("intensity"));
@@ -300,43 +306,43 @@ namespace Gruppe22
             switch (element)
             {
                 case AbilityElement.Teleport:
-                    _icon = new VisibleObject(_content, "items", new Rectangle(160, 735, 32, 32));
+                    _icon = new ImageData("items", new Rectangle(160, 735, 32, 32), new Coords(0,0), new Coords(0,0));
                     break;
 
                 case AbilityElement.Stun:
-                    _icon = new VisibleObject(_content, "items", new Rectangle(160, 768, 32, 32));
+                    _icon = new ImageData("items", new Rectangle(160, 768, 32, 32), new Coords(0, 0), new Coords(0, 0));
                     break;
 
                 case AbilityElement.Scare:
-                    _icon = new VisibleObject(_content, "items", new Rectangle(160, 864, 32, 32));
+                    _icon = new ImageData("items", new Rectangle(160, 864, 32, 32), new Coords(0, 0), new Coords(0, 0));
                     break;
 
                 case AbilityElement.Morph:
-                    _icon = new VisibleObject(_content, "items", new Rectangle(128, 767, 32, 32));
+                    _icon = new ImageData("items", new Rectangle(128, 767, 32, 32), new Coords(0, 0), new Coords(0, 0));
                     break;
 
                 case AbilityElement.ManaReg:
-                    _icon = new VisibleObject(_content, "items", new Rectangle(160, 800, 32, 32));
+                    _icon = new ImageData("items", new Rectangle(160, 800, 32, 32), new Coords(0, 0), new Coords(0, 0));
                     break;
 
                 case AbilityElement.Ice:
-                    _icon = new VisibleObject(_content, "items", new Rectangle(160, 863, 32, 32));
+                    _icon = new ImageData("items", new Rectangle(160, 863, 32, 32), new Coords(0, 0), new Coords(0, 0));
                     break;
 
                 case AbilityElement.HealthReg:
-                    _icon = new VisibleObject(_content, "items", new Rectangle(160, 704, 32, 32));
+                    _icon = new ImageData("items", new Rectangle(160, 704, 32, 32), new Coords(0, 0), new Coords(0, 0));
                     break;
 
                 case AbilityElement.Health:
-                    _icon = new VisibleObject(_content, "items", new Rectangle(160, 704, 32, 32));
+                    _icon = new ImageData("items", new Rectangle(160, 704, 32, 32), new Coords(0, 0), new Coords(0, 0));
                     break;
 
                 case AbilityElement.Fire:
-                    _icon = new VisibleObject(_content, "items", new Rectangle(160, 834, 32, 32));
+                    _icon = new ImageData("items", new Rectangle(160, 834, 32, 32), new Coords(0, 0), new Coords(0, 0));
                     break;
 
                 case AbilityElement.Charm:
-                    _icon = new VisibleObject(_content, "items", new Rectangle(128, 736, 32, 32));
+                    _icon = new ImageData("items", new Rectangle(128, 736, 32, 32), new Coords(0, 0), new Coords(0, 0));
                     break;
             }
         }

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Xml;
 
-namespace Gruppe22
+namespace Gruppe22.Backend
 {
     public class WallTile : Tile
     {
@@ -12,7 +12,7 @@ namespace Gruppe22
         private bool _illusionVisible = false;
         private int _health = -1;
         private bool _enabled = true;
-        public WallType _type = WallType.Normal;
+        public WallType _type = Backend.WallType.Normal;
 
         public int health
         {
@@ -95,15 +95,15 @@ namespace Gruppe22
         {
             if (r.Next(100) > 80)
             {
-                _type = WallType.Deco1;
+                _type = Backend.WallType.Deco1;
             }
             if (r.Next(100) > 80)
             {
-                _type = WallType.Deco3;
+                _type = Backend.WallType.Deco3;
             }
             if (r.Next(100) > 80)
             {
-                _type = WallType.Deco2;
+                _type = Backend.WallType.Deco2;
             }
         }
         public override void Save(XmlWriter xmlw)
@@ -112,7 +112,7 @@ namespace Gruppe22
             if (_illusion) xmlw.WriteAttributeString("Illusion", _illusion.ToString());
             if (_illusionVisible) xmlw.WriteAttributeString("Illusionvisible", _illusionVisible.ToString());
             if (_health > -1) xmlw.WriteAttributeString("Health", _health.ToString());
-            if (_type != WallType.Normal) xmlw.WriteAttributeString("Type", _type.ToString());
+            if (_type != Backend.WallType.Normal) xmlw.WriteAttributeString("Type", _type.ToString());
             if (!_enabled) xmlw.WriteAttributeString("Enabled", _enabled.ToString());
             xmlw.WriteEndElement();
         }

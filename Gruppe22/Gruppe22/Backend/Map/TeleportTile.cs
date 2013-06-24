@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework;
 using System.Xml;
 using System.Xml.Schema;
 
-namespace Gruppe22
+namespace Gruppe22.Backend
 {
     public class TeleportTile : Tile
     {
@@ -18,7 +18,7 @@ namespace Gruppe22
         /// <summary>
         /// Spawn position for the next room
         /// </summary>
-        private Coords _nextPlayerPos;
+        private Backend.Coords _nextPlayerPos;
 
         private bool _hidden = false;
         private bool _enabled = true;
@@ -39,7 +39,7 @@ namespace Gruppe22
             }
         }
 
-        public Coords nextPlayerPos
+        public Backend.Coords nextPlayerPos
         {
             get
             {
@@ -99,7 +99,7 @@ namespace Gruppe22
         }
 
 
-        public TeleportTile(object parent, string nextXml, Coords pos, bool isTeleport = false, bool isHidden = false, bool isEnabled = true, bool isUp=false)
+        public TeleportTile(object parent, string nextXml, Backend.Coords pos, bool isTeleport = false, bool isHidden = false, bool isEnabled = true, bool isUp=false)
             : base(parent)
         {
             _nextRoom = nextXml;

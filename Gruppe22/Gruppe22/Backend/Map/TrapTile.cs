@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Xml;
 
-namespace Gruppe22
+namespace Gruppe22.Backend
 {
     /// <summary>
     /// Different types of traps
@@ -183,7 +183,7 @@ namespace Gruppe22
                     if (_state == TrapState.Off)
                     {
                         _state = TrapState.On;
-                        ((FloorTile)_parent).HandleEvent(false, Events.TrapActivate, coords);
+                        ((FloorTile)_parent).HandleEvent(false, Backend.Events.TrapActivate, coords);
                     }
                     else _state = TrapState.Off;
                 }

@@ -6,8 +6,92 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 
-namespace Gruppe22
+namespace Gruppe22.Backend
 {
+
+    public enum Activity
+    {
+        Walk = 0,
+        Talk,
+        Attack,
+        Hit,
+        Die,
+        Special
+    }
+
+    public class ImageData
+    {
+        private Rectangle _rect;
+        private Coords _crop;
+        private Coords _offset;
+        private string _name;
+
+        public Rectangle rect
+        {
+            get
+            {
+                return _rect;
+            }
+            set
+            {
+                _rect = value;
+            }
+        }
+
+
+        public Coords crop
+        {
+            get
+            {
+                return _crop;
+            }
+            set
+            {
+                _crop = value;
+            }
+        }
+
+        public Coords offset
+        {
+            get
+            {
+                return _offset;
+            }
+            set
+            {
+                _offset = value;
+            }
+        }
+
+        public string name
+        {
+            get
+            {
+                return _name;
+            }
+            set
+            {
+                _name = value;
+            }
+        }
+
+        public ImageData(string src, Rectangle rect, Coords crop = null, Coords offset = null)
+        {
+            _rect = rect;
+            _name = src;
+            if (crop == null) _crop = Coords.Zero;
+            else _crop = crop;
+            if (offset == null) _offset = Coords.Zero;
+            else _offset = offset;
+            _offset = offset;
+        }
+    }
+
+    public interface IHandleEvent
+    {
+        void HandleEvent(bool DownStream, Backend.Events eventID, params object[] data);
+    }
+
     /// <summary>
     /// Enumeration of eight ways of movement
     /// </summary>
@@ -30,7 +114,15 @@ namespace Gruppe22
 
         None = 0
     }
-
+    public enum WallType
+    {
+        Normal = 0,
+        OpenDoor = 1,
+        ClosedDoor = 2,
+        Deco1 = 3,
+        Deco2 = 4,
+        Deco3 = 5
+    }
 
     /// <summary>
     /// A direction to which the random generator may move
@@ -81,7 +173,7 @@ namespace Gruppe22
         ShowMenu,
         ShowAbilities,
         AddDragItem,
-        Dialogue, 
+        Dialogue,
         Pause,
         Chat
 
@@ -168,7 +260,7 @@ namespace Gruppe22
         }
         public override bool Equals(object obj)
         {
-            if (obj is Coords)
+            if (obj is Backend.Coords)
             {
                 return ((((Coords)obj).x == _x) && (((Coords)obj).y == _y));
             }
@@ -214,19 +306,19 @@ namespace Gruppe22
         }
 
 
-        public static Coords operator +(Coords c1, Coords c2)
+        public static Coords operator +(Coords c1, Backend.Coords c2)
         {
-            return new Coords(c1.x + c2.x, c1.y + c2.y);
+            return new Backend.Coords(c1.x + c2.x, c1.y + c2.y);
         }
 
-        public static bool operator !=(Coords c1, Coords c2)
+        public static bool operator !=(Coords c1, Backend.Coords c2)
         {
             if ((object)c1 == null) return ((object)c2 != null);
             if ((object)c2 == null) return true;
             return ((c1.x != c2.x) || (c1.y != c2.y));
         }
 
-        public static bool operator ==(Coords c1, Coords c2)
+        public static bool operator ==(Coords c1, Backend.Coords c2)
         {
             if ((object)c1 == null) return ((object)c2 == null);
             if ((object)c2 == null) return false;
@@ -237,7 +329,7 @@ namespace Gruppe22
         {
             get
             {
-                return new Coords(0, 0);
+                return new Backend.Coords(0, 0);
             }
         }
 
@@ -275,7 +367,7 @@ namespace Gruppe22
     /// <summary>
     /// A path through the maze
     /// </summary>
-    public class Path : Coords
+    public class Path : Backend.Coords
     {
         #region Private Fields
         /// <summary>

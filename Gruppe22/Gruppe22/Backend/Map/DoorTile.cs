@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 
-namespace Gruppe22
+namespace Gruppe22.Backend
 {
     public class DoorTile : WallTile
     {
@@ -39,8 +39,8 @@ namespace Gruppe22
         {
             get
             {
-                if (_open) return WallType.OpenDoor;
-                else return WallType.ClosedDoor;
+                if (_open) return Backend.WallType.OpenDoor;
+                else return Backend.WallType.ClosedDoor;
             }
         }
         public override void Save(XmlWriter xmlw)

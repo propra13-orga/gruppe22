@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Xml;
 using Microsoft.Xna.Framework.Content;
 
-namespace Gruppe22
+namespace Gruppe22.Backend
 {
     public class Generator : Map
     {
@@ -104,7 +104,7 @@ namespace Gruppe22
         }
 
 
-        public Coords FindRoomForStairs
+        public Backend.Coords FindRoomForStairs
         {
             get
             {
@@ -126,11 +126,11 @@ namespace Gruppe22
                         }
                     }
                 }
-                return new Coords(x, y);
+                return new Backend.Coords(x, y);
             }
         }
 
-        public void AddStairs(Coords srcCoords, int targetRoom, Coords targetCoords, bool up)
+        public void AddStairs(Coords srcCoords, int targetRoom, Backend.Coords targetCoords, bool up)
         {
 
             for (int y = -1; y < 2; ++y)
@@ -187,7 +187,7 @@ namespace Gruppe22
         {
             if (pos == null)
             {
-                pos = new Coords(1, 1);
+                pos = new Backend.Coords(1, 1);
             }
             Player player = new Player(_content, 100, 0, 30);
             ActorTile playerTile = new ActorTile(_tiles[pos.y][pos.x], player);
@@ -333,7 +333,7 @@ namespace Gruppe22
                 }
             }
 
-            Coords pos = new Coords(2 + r.Next(_width - 4), 2 + r.Next(_height - 4));
+            Backend.Coords pos = new Backend.Coords(2 + r.Next(_width - 4), 2 + r.Next(_height - 4));
             for (int x = -1; x < 2; ++x)
             {
                 for (int y = -1; y < 2; ++y)
@@ -498,23 +498,23 @@ namespace Gruppe22
                 {
                     case Direction.Down:
                         _tiles[_height - 1][x].Remove(TileType.Wall);
-                        _tiles[_height - 1][x].Add(new TeleportTile(_tiles[_height - 1][x], "room" + (roomID + 1).ToString() + ".xml", new Coords(x, 0)));
-                        _exits.Add(new Exit(new Coords(x, _height - 1), "room" + (roomID).ToString() + ".xml", new Coords(x, 0), "room" + (roomID + 1).ToString() + ".xml"));
+                        _tiles[_height - 1][x].Add(new TeleportTile(_tiles[_height - 1][x], "room" + (roomID + 1).ToString() + ".xml", new Backend.Coords(x, 0)));
+                        _exits.Add(new Exit(new Backend.Coords(x, _height - 1), "room" + (roomID).ToString() + ".xml", new Backend.Coords(x, 0), "room" + (roomID + 1).ToString() + ".xml"));
                         break;
                     case Direction.Up:
                         _tiles[0][x].Remove(TileType.Wall);
-                        _tiles[0][x].Add(new TeleportTile(_tiles[0][x], "room" + (roomID + 1).ToString() + ".xml", new Coords(x, y)));
-                        _exits.Add(new Exit(new Coords(x, 0), "room" + (roomID).ToString() + ".xml", new Coords(x, y), "room" + (roomID + 1).ToString() + ".xml"));
+                        _tiles[0][x].Add(new TeleportTile(_tiles[0][x], "room" + (roomID + 1).ToString() + ".xml", new Backend.Coords(x, y)));
+                        _exits.Add(new Exit(new Backend.Coords(x, 0), "room" + (roomID).ToString() + ".xml", new Backend.Coords(x, y), "room" + (roomID + 1).ToString() + ".xml"));
                         break;
                     case Direction.Right:
                         _tiles[y][_width - 1].Remove(TileType.Wall);
-                        _tiles[y][_width - 1].Add(new TeleportTile(_tiles[y][_width - 1], "room" + (roomID + 1).ToString() + ".xml", new Coords(0, y)));
-                        _exits.Add(new Exit(new Coords(_width - 1, y), "room" + (roomID).ToString() + ".xml", new Coords(0, y), "room" + (roomID + 1).ToString() + ".xml"));
+                        _tiles[y][_width - 1].Add(new TeleportTile(_tiles[y][_width - 1], "room" + (roomID + 1).ToString() + ".xml", new Backend.Coords(0, y)));
+                        _exits.Add(new Exit(new Backend.Coords(_width - 1, y), "room" + (roomID).ToString() + ".xml", new Backend.Coords(0, y), "room" + (roomID + 1).ToString() + ".xml"));
                         break;
                     case Direction.Left:
                         _tiles[y][0].Remove(TileType.Wall);
-                        _tiles[y][0].Add(new TeleportTile(_tiles[y][0], (roomID + 1).ToString() + ".xml", new Coords(x, y)));
-                        _exits.Add(new Exit(new Coords(0, y), (roomID).ToString() + ".xml", new Coords(x, y), "room" + (roomID + 1).ToString() + ".xml"));
+                        _tiles[y][0].Add(new TeleportTile(_tiles[y][0], (roomID + 1).ToString() + ".xml", new Backend.Coords(x, y)));
+                        _exits.Add(new Exit(new Backend.Coords(0, y), (roomID).ToString() + ".xml", new Backend.Coords(x, y), "room" + (roomID + 1).ToString() + ".xml"));
                         break;
                 }
             }
@@ -526,50 +526,50 @@ namespace Gruppe22
         /// </summary>
         /// <param name="dir">Wall on which exit should be placed</param>
         /// <returns>Coordinates of the exit</returns>
-        public Coords SuggestExit(Direction dir)
+        public Backend.Coords SuggestExit(Direction dir)
         {
             switch (dir)
             {
                 case Direction.UpLeft:
-                    return new Coords(0, 0);
+                    return new Backend.Coords(0, 0);
 
                 case Direction.UpRight:
-                    return new Coords(_width - 1, 0);
+                    return new Backend.Coords(_width - 1, 0);
 
                 case Direction.DownLeft:
-                    return new Coords(0, _height - 1);
+                    return new Backend.Coords(0, _height - 1);
 
                 case Direction.DownRight:
-                    return new Coords(_width - 1, _height - 1);
+                    return new Backend.Coords(_width - 1, _height - 1);
 
                 case Direction.Up:
                     {
-                        Coords tmp = new Coords(1 + r.Next((_width - 1) / 2) * 2, 0);
+                        Backend.Coords tmp = new Backend.Coords(1 + r.Next((_width - 1) / 2) * 2, 0);
                         _tiles[1][tmp.x].overlay.Clear();
                         return tmp;
                     }
 
                 case Direction.Down:
                     {
-                        Coords tmp = new Coords(1 + r.Next((_width - 1) / 2) * 2, _height - 1);
+                        Backend.Coords tmp = new Backend.Coords(1 + r.Next((_width - 1) / 2) * 2, _height - 1);
                         _tiles[tmp.y - 1][tmp.x].overlay.Clear();
                         return tmp;
                     }
 
                 case Direction.Left:
                     {
-                        Coords tmp = new Coords(0, 1 + r.Next((_height - 1) / 2) * 2);
+                        Backend.Coords tmp = new Backend.Coords(0, 1 + r.Next((_height - 1) / 2) * 2);
                         _tiles[tmp.y][1].overlay.Clear();
                         return tmp;
                     }
                 case Direction.Right:
                     {
-                        Coords tmp = new Coords(_width - 1, 1 + r.Next((_height - 1) / 2) * 2);
+                        Backend.Coords tmp = new Backend.Coords(_width - 1, 1 + r.Next((_height - 1) / 2) * 2);
                         _tiles[tmp.y][tmp.x - 1].overlay.Clear();
                         return tmp;
                     }
             }
-            return Coords.Zero;
+            return Backend.Coords.Zero;
         }
 
         /// <summary>
@@ -578,7 +578,7 @@ namespace Gruppe22
         /// <param name="from">Coordinates in this room</param>
         /// <param name="Room">Uinque ID of target room</param>
         /// <param name="to">Coordinates in target room</param>
-        public void ConnectTo(Coords from, int Room, Coords to, bool isTeleport = false)
+        public void ConnectTo(Coords from, int Room, Backend.Coords to, bool isTeleport = false)
         {
             // TODO: Umgebung "freisprengen", insb. in Diagonalen
             _tiles[from.y][from.x].overlay.Clear();
@@ -786,7 +786,7 @@ namespace Gruppe22
                 _tiles.Add(new List<GeneratorTile>());
                 for (int col = 0; col < _width; col++)
                 {
-                    _tiles[row].Add(new GeneratorTile(this, new Coords(col, row),
+                    _tiles[row].Add(new GeneratorTile(this, new Backend.Coords(col, row),
 
                         (row % 2 == 1)
                         && (col % 2 == 1), r)
@@ -978,7 +978,7 @@ namespace Gruppe22
                 switch (c)
                 {
                     case '#':
-                        _tiles[row].Add(new GeneratorTile(this, new Coords(col, row), true, r));
+                        _tiles[row].Add(new GeneratorTile(this, new Backend.Coords(col, row), true, r));
                         col += 1;
                         break;
                     case '\n':
@@ -990,21 +990,21 @@ namespace Gruppe22
                         break;
                     case 'S':
 
-                        _tiles[row].Add(new GeneratorTile(this, new Coords(col, row), false, r));
+                        _tiles[row].Add(new GeneratorTile(this, new Backend.Coords(col, row), false, r));
 
                         if (roomID != 1)
                         {
-                            _tiles[row][col].Add(new TeleportTile(_tiles[row][col], "room" + (roomID - 1).ToString() + ".xml", new Coords(col, row)));
-                            _exits.Add(new Exit(new Coords(col, row), "room" + (roomID).ToString() + ".xml", new Coords(col, row), "room" + (roomID - 1).ToString() + ".xml"));
+                            _tiles[row][col].Add(new TeleportTile(_tiles[row][col], "room" + (roomID - 1).ToString() + ".xml", new Backend.Coords(col, row)));
+                            _exits.Add(new Exit(new Backend.Coords(col, row), "room" + (roomID).ToString() + ".xml", new Backend.Coords(col, row), "room" + (roomID - 1).ToString() + ".xml"));
                         }
                         else
                         {
-                            AddPlayer(new Coords(col, row));
+                            AddPlayer(new Backend.Coords(col, row));
                         }
                         col += 1;
                         break;
                     case 'G':
-                        _tiles[row].Add(new GeneratorTile(this, new Coords(col, row), false, r));
+                        _tiles[row].Add(new GeneratorTile(this, new Backend.Coords(col, row), false, r));
 
                         if (roomID == MaxRoom)
                         {
@@ -1013,13 +1013,13 @@ namespace Gruppe22
                         }
                         else
                         {
-                            _tiles[row][col].Add(new TeleportTile(_tiles[row][col], "room" + (roomID + 1).ToString() + ".xml", new Coords(col, row)));
-                            _exits.Add(new Exit(new Coords(col, row), "room" + (roomID).ToString() + ".xml", new Coords(col, row), "room" + (roomID + 1).ToString() + ".xml"));
+                            _tiles[row][col].Add(new TeleportTile(_tiles[row][col], "room" + (roomID + 1).ToString() + ".xml", new Backend.Coords(col, row)));
+                            _exits.Add(new Exit(new Backend.Coords(col, row), "room" + (roomID).ToString() + ".xml", new Backend.Coords(col, row), "room" + (roomID + 1).ToString() + ".xml"));
                         }
                         col += 1;
                         break;
                     case 'F':
-                        _tiles[row].Add(new GeneratorTile(this, new Coords(col, row), false, r));
+                        _tiles[row].Add(new GeneratorTile(this, new Backend.Coords(col, row), false, r));
 
                         Enemy enemy = new Enemy(_content, -1, -1, -1, -1, "", r);
                         ActorTile enemyTile = new ActorTile(_tiles[row][col], enemy);
@@ -1029,7 +1029,7 @@ namespace Gruppe22
                         col += 1;
                         break;
                     default:
-                        _tiles[row].Add(new GeneratorTile(this, new Coords(col, row), false, r));
+                        _tiles[row].Add(new GeneratorTile(this, new Backend.Coords(col, row), false, r));
                         col += 1;
                         break;
                 }
@@ -1044,7 +1044,7 @@ namespace Gruppe22
             {
                 while (_tiles[i].Count < maxcol)
                 {
-                    _tiles[i].Add(new GeneratorTile(this, new Coords(_tiles[i].Count + 1, i), false, r));
+                    _tiles[i].Add(new GeneratorTile(this, new Backend.Coords(_tiles[i].Count + 1, i), false, r));
                 }
             }
             return true;
@@ -1317,7 +1317,7 @@ namespace Gruppe22
         /// </summary>
         /// <param name="width">The width of the map</param>
         /// <param name="height">The height of the map</param>
-        public Generator(ContentManager content, object parent = null, int width = 10, int height = 10, bool generate = false, Coords playerPos = null, int roomNr = 1, int maxRoom = 3, Random rnd = null, string dungeonname = "", int level = 0, bool hasShop = false, bool hasNPC = false, bool hasBoss = false)
+        public Generator(ContentManager content, object parent = null, int width = 10, int height = 10, bool generate = false, Backend.Coords playerPos = null, int roomNr = 1, int maxRoom = 3, Random rnd = null, string dungeonname = "", int level = 0, bool hasShop = false, bool hasNPC = false, bool hasBoss = false)
             : base(content)
         {
             if (rnd == null) r = new Random(); else r = rnd;
@@ -1331,7 +1331,7 @@ namespace Gruppe22
                 _tiles.Add(new List<GeneratorTile>());
                 for (int x = 0; x < width; ++x)
                 {
-                    _tiles[y].Add(new GeneratorTile(this, new Coords(x, y), true, r));
+                    _tiles[y].Add(new GeneratorTile(this, new Backend.Coords(x, y), true, r));
                 }
             }
             if (generate)

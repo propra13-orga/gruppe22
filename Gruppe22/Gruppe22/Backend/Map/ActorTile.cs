@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
 
-namespace Gruppe22
+namespace Gruppe22.Backend
 {
     public class ActorTile : Tile
     {
@@ -87,7 +87,7 @@ namespace Gruppe22
             {
 
                 Direction dir = Direction.None;
-                Coords closestEnemy = map.ClosestEnemy(coords, actor.viewRange, !(actor is NPC) && (actor.aggro) && (!actor.friendly), !(actor is NPC) && !(actor.aggro) && (!actor.friendly), (actor.friendly) || actor.crazy);
+                Backend.Coords closestEnemy = map.ClosestEnemy(coords, actor.viewRange, !(actor is NPC) && (actor.aggro) && (!actor.friendly), !(actor is NPC) && !(actor.aggro) && (!actor.friendly), (actor.friendly) || actor.crazy);
 
                 if (closestEnemy.x > -1) // There is an enemy close by
                 {
@@ -180,7 +180,7 @@ namespace Gruppe22
 
                 if ((dir != Direction.None) && ((!map.TileByCoords(Map.DirectionTile(coords, dir)).hasTeleport) || (map.TileByCoords(Map.DirectionTile(coords, dir)).hasPlayer)))
                 {
-                    ((IHandleEvent)parent).HandleEvent(false, Events.MoveActor, actor.id, dir);
+                    ((Backend.IHandleEvent)parent).HandleEvent(false, Backend.Events.MoveActor, actor.id, dir);
                     //System.Diagnostics.Debug.WriteLine("#####" + dir + "######");
                 }
             }
