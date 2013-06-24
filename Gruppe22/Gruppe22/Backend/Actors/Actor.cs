@@ -659,9 +659,9 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// 
+        /// TODO: Versstehe ich nicht was die genau tut
         /// </summary>
-        /// <param name="amount"></param>
+        /// <param name="amount">TODO: vo allem was ist das?</param>
         public void AddStrength(int amount)
         {
             if (amount > _damage)
@@ -677,9 +677,9 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// 
+        /// Savemethode. Speichert die NPC-Daten im writer.
         /// </summary>
-        /// <param name="writer"></param>
+        /// <param name="writer">Writer für die Kartendatei.</param>
         public void Save(XmlWriter writer)
         {
             switch (_actorType)
@@ -781,6 +781,11 @@ namespace Gruppe22.Backend
             writer.WriteEndElement();
         }
 
+        /// <summary>
+        /// Methode gibt an ob der Spieler den SChlüssel für Level level schon aufgehoben hat.
+        /// </summary>
+        /// <param name="level">Level.</param>
+        /// <returns>True wenn Schlüssel aufgenommen wurde, sonst false.</returns>
         public bool HasKey(int level)
         {
             for (int i = 0; i < _inventory.Count; ++i)
@@ -791,9 +796,9 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// 
+        /// Klont alle Actor-Eigenschaften von a.
         /// </summary>
-        /// <param name="a"></param>
+        /// <param name="a">Das Actor-Objekt von dem die Eigenschaften übernommen werden sollen.</param>
         public void copyFrom(Actor a)
         {
             _actorType = a.actorType;
@@ -1120,7 +1125,7 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Constructor
+        /// Konstruktor.
         /// </summary>
         /// <param name="content"></param>
         /// <param name="actorType">Player, NPC or Enemy</param>

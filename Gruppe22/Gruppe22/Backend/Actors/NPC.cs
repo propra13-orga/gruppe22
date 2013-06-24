@@ -3,15 +3,27 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework.Content;
-
+//NPC Entwicklerdoku fertig!
 namespace Gruppe22.Backend
 {
     public class NPC : Actor
     {
+        /// <summary>
+        /// Markiert ob der NPC ein Shop ist.
+        /// </summary>
         private bool _hasShop = true;
+        /// <summary>
+        /// Ist true falls ein NPC ein Dialog (sprechen) besitzt.
+        /// </summary>
         private bool _hasDialogue = false;
+        /// <summary>
+        /// Verhältnis des NPC's zum Spieler. Bei 0 ist es neutral, negative Werte stellen ein schlechtes Verhältnis dar und positive ein gutes. Dabei haben vom Betrag größere Zahlen eine größere Auswirkung.
+        /// </summary>
         private int _love = 0;
 
+        /// <summary>
+        /// Öffentliche Eigenschaft zu _hasShop.
+        /// </summary>
         public bool hasShop
         {
             get
@@ -24,6 +36,9 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// Öffentliche Eigenschaft zu _hasDialogue.
+        /// </summary>
         public bool hasDialogue
         {
             get
@@ -36,6 +51,9 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// Öffentlcie Eigenschaft zu _love.
+        /// </summary>
         public int love
         {
             get
@@ -49,7 +67,8 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// 
+        /// Interaktion des NPC. Aktion öffne Schop bzw. Dialog.
+        /// Funktionsweise uber Eventaufruf.
         /// </summary>
         public void Interact()
         {
@@ -58,8 +77,17 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Constructor
+        /// Konstruktor. Initiallisierung der Grafikverweise.
         /// </summary>
+        /// <param name="content">Resoursenverwaltung.</param>
+        /// <param name="health">Lebenspunkte, Standardwert ist 10.</param>
+        /// <param name="armor">Rüstung, Standardwert ist 0.</param>
+        /// <param name="damage">Schaden, Standardwert ist 0.</param>
+        /// <param name="maxHealth">Maximale Lebenspunkte, Standardwert ist 10.</param>
+        /// <param name="name">Name des NPCs.</param>
+        /// <param name="r">Randomobjekt für die Basisklasse.</param>
+        /// <param name="_level">NPC aus dem Level _level.</param>
+        /// <param name="shop">Legt fest ob der NPC ein Shop ist.</param>
         public NPC(ContentManager content, int health = 10, int armor = 0, int damage = 0, int maxHealth = 10, string name = "", Random r = null, int _level = 1, bool shop = false)
             : base(content, ActorType.NPC, health, armor, damage, maxHealth, name, r)
         {
