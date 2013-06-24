@@ -46,45 +46,47 @@ namespace Gruppe22.Client
                 {
                     case Keys.Back:
                         if ((_text.Length + 1 > _cursor) && (_cursor > 0))
+                        {
                             _text = _text.Remove(_cursor - 1, 1);
-                        _cursor -= 1;
+                            _cursor -= 1;
+                        }
                         return true;
-                        
+
                     case Keys.Delete:
-                        if (_text.Length+1 > _cursor + 1)
+                        if (_text.Length + 1 > _cursor + 1)
                             _text = _text.Remove(_cursor, 1);
                         return true;
-                        
+
                     case Keys.Space:
                         _text = _text.Insert(_cursor, " ");
                         return true;
-                        
+
                     case Keys.Insert:
                         _overwrite = !_overwrite;
                         return true;
-                        
+
                     case Keys.Enter:
                         base.OnKeyDown(Microsoft.Xna.Framework.Input.Keys.Tab);
                         return true;
-                        
+
                     case Keys.Left:
                         if (_cursor > 0)
                             _cursor -= 1;
                         return true;
-                        
+
                     case Keys.Right:
                         if (_cursor < _text.Length)
                             _cursor += 1;
                         return true;
-                        
+
                     case Keys.Home:
                         _cursor = 0;
                         return true;
-                        
+
                     case Keys.End:
                         _cursor = _text.Length - 1;
                         return true;
-                        
+
                     default:
                         if (k.ToString().Length == 1)
                         {
@@ -96,7 +98,7 @@ namespace Gruppe22.Client
                             return true;
                         }
                         break;
-                        
+
                 }
             }
             return false;

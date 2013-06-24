@@ -169,14 +169,16 @@ namespace Gruppe22.Client
                     }
                     ++icon;
                 }
-            }
-            if (_totalPages > 1)
-            {
-                _spriteBatch.Draw(_arrows, new Rectangle(_displayRect.Right - 35, _displayRect.Top + 5, 22, 22), new Rectangle(32, 0, 28, 28), Color.White);
-                _spriteBatch.Draw(_arrows, new Rectangle(_displayRect.Right - 35, _displayRect.Bottom - 35, 22, 22), new Rectangle(0, 0, 28, 28), Color.White);
+
+                if (_totalPages > 1)
+                {
+                    _spriteBatch.Draw(_arrows, new Rectangle(_displayRect.Right - 35, _displayRect.Top + 5, 22, 22), new Rectangle(32, 0, 28, 28), Color.White);
+                    _spriteBatch.Draw(_arrows, new Rectangle(_displayRect.Right - 35, _displayRect.Bottom - 35, 22, 22), new Rectangle(0, 0, 28, 28), Color.White);
+                }
+                _spriteBatch.End();
+
             }
 
-            _spriteBatch.End();
         }
 
 
