@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using Lidgren.Network;
 using System.Net;
 using System.Threading;
+using Gruppe22.Backend;
+
 
 namespace DungeonServer
 {
@@ -25,10 +27,12 @@ namespace DungeonServer
         /// Server object provided by Lidgren
         /// </summary>
         private static NetServer _server;
+        private static string _servername = "Crawler 2000";
         /// <summary>
         /// A List of CLients and their respective data
         /// </summary>
         private static Dictionary<IPEndPoint, ClientData> _clients;
+        private static List<string> discoveredBy;
         /// <summary>
         /// A thread to separate user interface and network activity
         /// </summary>
@@ -91,12 +95,15 @@ namespace DungeonServer
                         Log(message.ReadString(), ConsoleColor.Red);
                         break;
                     case NetIncomingMessageType.DiscoveryRequest:
-                        //Ein Client will connecten -> Erlauben und antworten
-                        //Wir senden hiermit den Servernamen, welcher jetzt Statisch ist (normal sollte man diesen einstellen können)
-                        response = server.CreateMessage("Cool Game Server");
-                        server.SendDiscoveryResponse(response, message.SenderEndpoint);
 
-                        Log(message.SenderEndpoint + " has discovered the server!");
+                        response = server.CreateMessage(_servername);
+
+                        server.SendDiscoveryResponse(response, message.SenderEndpoint);
+                        if (!discoveredBy.Contains(message.SenderEndpoint.Address.ToString()))
+                        {
+                            Log(message.SenderEndpoint + " has discovered the server!");
+                            discoveredBy.Add(message.SenderEndpoint.Address.ToString());
+                        }
                         break;
                     case NetIncomingMessageType.ConnectionApproval:
                         //Clients die Connecten wollen dies erlauben
@@ -119,10 +126,10 @@ namespace DungeonServer
                                 break;
 
                             response = server.CreateMessage();
-                            response.Write((byte)0x01); //0x01: Ein Client hat disconnected
+                            response.Write((byte)PacketType.Disconnect);
                             response.Write(_clients[message.SenderEndpoint].ID); //ID mitteilen
                             SendMessageToAll(response, NetDeliveryMethod.ReliableUnordered, message.SenderEndpoint);
-                            Log("Sent 0x01 to all except " + _clients[message.SenderEndpoint].ID, ConsoleColor.Cyan);
+                            Log("Sent Disconnect to all except " + _clients[message.SenderEndpoint].ID, ConsoleColor.Cyan);
                             //Allen anderen dies mitteilen
 
                             _clients.Remove(message.SenderEndpoint);
@@ -137,19 +144,19 @@ namespace DungeonServer
                             _clients.Add(message.SenderEndpoint, newClient);
                             Console.WriteLine("Created client with id '" + newClient.ID + "'!");
                             response = server.CreateMessage();
-                            response.Write((byte)0x02); //0x02: Clientinformation um neuen Clienten seine ID mitzuteilen
+                            response.Write((byte)PacketType.Connect); //0x02: Clientinformation um neuen Clienten seine ID mitzuteilen
                             response.Write(newClient.ID);
                             response.Write((short)_clients.Count); //Anzahl aktueller Clients senden
                             server.SendMessage(response, message.SenderConnection, NetDeliveryMethod.ReliableUnordered);
-                            Log("Sent 0x02 to " + newClient.ID, ConsoleColor.Cyan);
+                            Log("Sent Connect to " + newClient.ID, ConsoleColor.Cyan);
 
                             //Nun alle aktiven Clients informieren, dass ein neuer Client connected ist
                             response = server.CreateMessage();
-                            response.Write((byte)0x00); //0x00: Neuer Client connected
+                            response.Write((byte)PacketType.UpdateClients); //0x00: Neuer Client connected
                             response.Write(newClient.ID); //Seine ID mitteilen
                             // response.Write(newClient.Position);
                             SendMessageToAll(response, NetDeliveryMethod.ReliableUnordered, message.SenderEndpoint);
-                            Log("Sent 0x00 to all", ConsoleColor.Cyan);
+                            Log("Sent UpdateClients to all", ConsoleColor.Cyan);
 
                             Log(message.SenderEndpoint + " connected!");
                         }
@@ -169,11 +176,25 @@ namespace DungeonServer
         /// <param name="message"></param>
         private static void ProcessMessage(byte id, NetIncomingMessage message)
         {
+            short senderID = _clients[message.SenderEndpoint].ID;
             NetOutgoingMessage response;
-            switch (id)
+            switch ((PacketType)id)
             {
-                case 0x0: //0x0 steht für Positions-Informationen eines Clienten
-                    short senderID = _clients[message.SenderEndpoint].ID;
+
+
+
+                case PacketType.Chat:
+                    response = _server.CreateMessage();
+                    response.Write((byte)PacketType.Chat); //0x10: Positionsänderung eines Clients
+                    response.Write(senderID); //Dessen ID
+                    response.Write(message.ReadString());
+                    SendMessageToAll(response, NetDeliveryMethod.Unreliable, message.SenderEndpoint);
+                    break;
+
+
+
+
+                case PacketType.Move: //0x0 steht für Positions-Informationen eines Clienten
                     //  Vector2 _position = message.ReadVector2();
                     //_clients[message.SenderEndpoint].Position = _position;
                     //  Vector2 _direction = message.ReadVector2();
@@ -188,7 +209,7 @@ namespace DungeonServer
                     //    response.Write(_clients[message.SenderEndpoint].Speed);
                     SendMessageToAll(response, NetDeliveryMethod.Unreliable, message.SenderEndpoint);
                     break;
-                case 0x1:
+                case PacketType.UpdateClients:
                     //Client fordert eine komplette Liste aller Clients mit deren ID und Position
                     List<ClientData> clients =
                         (from client in _clients
@@ -198,7 +219,7 @@ namespace DungeonServer
                     foreach (ClientData client in clients)
                     {
                         response = _server.CreateMessage();
-                        response.Write((byte)0x11);
+                        response.Write((byte)PacketType.UpdateClients);
                         response.Write(client.ID);
                         //     response.Write(client.Position);
                         //     response.Write(client.Direction);
@@ -206,7 +227,7 @@ namespace DungeonServer
                         _server.SendMessage(response, _clients[message.SenderEndpoint].Connection,
                                             NetDeliveryMethod.ReliableUnordered);
                     }
-                    Log("Sent 0x11 to " + _clients[message.SenderEndpoint].ID, ConsoleColor.Cyan);
+                    Log("Sent UpdateClients to " + _clients[message.SenderEndpoint].ID, ConsoleColor.Cyan);
                     break;
             }
         }
@@ -262,7 +283,11 @@ namespace DungeonServer
             Log("Setting up server ...");
 
             _clients = new Dictionary<IPEndPoint, ClientData>();
-
+            discoveredBy = new List<string>();
+            if (args.Length > 0)
+            {
+                _servername = args[0];
+            }
             try
             {
                 _config = new NetPeerConfiguration("DungeonCrawler");
@@ -286,8 +311,8 @@ namespace DungeonServer
                 _serverThread = new Thread(WorkMessages);
                 _serverThread.Start(_server);
                 IPAddress mask;
-                Log("Server started successfully on " + NetUtility.GetMyAddress(out mask).ToString()+ " ("+_server.UPnP.GetExternalIP()+")");
-                
+                Log("Server started successfully on " + NetUtility.GetMyAddress(out mask).ToString() + " (" + _server.UPnP.GetExternalIP() + ")");
+
                 while (!error)
                 {
                     WaitForInput();

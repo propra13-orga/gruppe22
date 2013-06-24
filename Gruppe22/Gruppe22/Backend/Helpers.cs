@@ -19,6 +19,19 @@ namespace Gruppe22.Backend
         Special
     }
 
+    public enum PacketType
+    {
+        Connect,
+        Disconnect,
+        Move,
+        UpdateMap,
+        AddItem,
+        RemoveItem,
+        ToggleItem,
+        ChangeStats,
+        UpdateClients,
+        Chat
+    }
     public class ImageData
     {
         private Rectangle _rect;
