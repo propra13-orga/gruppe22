@@ -51,7 +51,7 @@ namespace Gruppe22.Client
                     {
                         Backend.Item item = _actor.Items(-_actor.quickList[i]);
                         if (item != null)
-                            _functions[i] = new GridElement(_actor.quickList[i], item.name, item.icon, false, true, 0);
+                            _functions[i] = new GridElement(_actor.quickList[i], item.name, item.icon, _content, false, true, 0);
                         else
                             _functions[i] = new GridElement(0, "Function " + i.ToString() + " (" + i.ToString() + ")", new VisibleObject(_content, "items", new Rectangle(160, 704, 32, 32)), false, false, 0);
                     }
@@ -59,7 +59,7 @@ namespace Gruppe22.Client
                     {
                         if (_actor.quickList[i] > 0)
                         {
-                            _functions[i] = new GridElement(_actor.quickList[i], _actor.abilities[_actor.quickList[i]].name, _actor.abilities[_actor.quickList[i]].icon, false, true, 0);
+                            _functions[i] = new GridElement(_actor.quickList[i], _actor.abilities[_actor.quickList[i]].name, _actor.abilities[_actor.quickList[i]].icon, _content,false, true, 0);
                         }
                         else
                         {
@@ -483,7 +483,7 @@ namespace Gruppe22.Client
                 {
                     Backend.Item item = _actor.Items(-_actor.quickList[i]);
                     if (item != null)
-                        _functions.Add(new GridElement(_actor.quickList[i], item.name, item.icon, false, true, 0));
+                        _functions.Add(new GridElement(_actor.quickList[i], item.name, item.icon, _content, false, true, 0));
                     else
                         _functions.Add(new GridElement(0, "Function " + i.ToString() + " (" + i.ToString() + ")", new VisibleObject(_content, "items", new Rectangle(160, 704, 32, 32)), false, false, 0));
                 }
@@ -494,7 +494,7 @@ namespace Gruppe22.Client
                         int icon = _actor.quickList[i] - 1;
                         string text = _actor.abilities[icon].name + "\n Strength:" + _actor.abilities[icon].intensity + "\n Cooldown:" + _actor.abilities[icon].cooldown + "\n Cost: " + _actor.abilities[icon].cost + "MP" + ((_actor.abilities[icon].duration > 1) ? ("\n Duration:" + _actor.abilities[icon].duration) : "");
 
-                        _functions.Add(new GridElement(_actor.quickList[i], text, _actor.abilities[_actor.quickList[i] - 1].icon, false, true, 0));
+                        _functions.Add(new GridElement(_actor.quickList[i], text, _actor.abilities[_actor.quickList[i] - 1].icon, _content, false, true, 0));
                     }
                     else
                     {

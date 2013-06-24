@@ -11,7 +11,7 @@ using Microsoft.Xna.Framework.Input;
 namespace Gruppe22.Client
 {
 
-    public class GridElement:Backend.IHandleEvent
+    public class GridElement
     {
         private int _id = 0;
         private string _tooltip = "";

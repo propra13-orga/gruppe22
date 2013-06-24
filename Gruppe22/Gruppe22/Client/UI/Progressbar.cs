@@ -39,7 +39,7 @@ namespace Gruppe22.Client
     /// <summary>
     /// A progress bar
     /// </summary>
-    public class ProgressBar : UIElement
+    public class ProgressBar : UIElement, Backend.IHandleEvent
     {
         #region Private Fields
         /// <summary>

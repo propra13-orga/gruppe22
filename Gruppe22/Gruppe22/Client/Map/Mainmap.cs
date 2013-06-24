@@ -1268,7 +1268,7 @@ namespace Gruppe22.Client
                     {
                         foreach (Backend.Item item in (_map[x, y].items))
                         {
-                            _spriteBatch.Draw(item.icon.texture, new Rectangle(_map2screen(x, y).x + item.icon.offset.x + 32, _map2screen(x, y).y + 16 + item.icon.offset.y,
+                            _spriteBatch.Draw(TextureFromData.Convert(item.icon,_content), new Rectangle(_map2screen(x, y).x + item.icon.offset.x + 32, _map2screen(x, y).y + 16 + item.icon.offset.y,
                                 item.icon.rect.Width - item.icon.crop.x, item.icon.rect.Height - item.icon.crop.y), item.icon.rect, ((y == (int)_highlightedTile.y) && (x == (int)_highlightedTile.x)) ? Color.Red : Color.White);
                         }
 

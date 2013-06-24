@@ -232,7 +232,7 @@ namespace Gruppe22.Client
             y = 0;
             for (int i = _top1; i < Math.Min(_seller.inventory.Count, _rows); ++i)
             {
-                _spriteBatch.Draw(_seller.inventory[i].icon.texture, new Rectangle(_displayRect.Left + 6, 45 + _displayRect.Top + y * (_height + 3) + 3, 32, 32), _seller.inventory[i].icon.clipRect, Color.White);
+                _spriteBatch.Draw(TextureFromData.Convert(_seller.inventory[i].icon, _content), new Rectangle(_displayRect.Left + 6, 45 + _displayRect.Top + y * (_height + 3) + 3, 32, 32), _seller.inventory[i].icon.rect, Color.White);
                 string output = _seller.inventory[i].name;
                 if (output.Length > 12)
                 {
@@ -248,7 +248,7 @@ namespace Gruppe22.Client
             y = 0;
             for (int i = _top2; i < Math.Min(_buyer.inventory.Count, _rows); ++i)
             {
-                _spriteBatch.Draw(_buyer.inventory[i].icon.texture, new Rectangle(_displayRect.Left + 9 + _displayRect.Width / 2, 45 + _displayRect.Top + y * (_height + 3) + 3, 32, 32), _buyer.inventory[i].icon.clipRect, Color.White);
+                _spriteBatch.Draw(TextureFromData.Convert(_buyer.inventory[i].icon, _content), new Rectangle(_displayRect.Left + 9 + _displayRect.Width / 2, 45 + _displayRect.Top + y * (_height + 3) + 3, 32, 32), _buyer.inventory[i].icon.rect, Color.White);
                 string output = _buyer.inventory[i].name;
                 if (output.Length > 12)
                 {
