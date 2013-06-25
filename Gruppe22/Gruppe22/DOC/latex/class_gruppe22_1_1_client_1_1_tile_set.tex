@@ -1,0 +1,256 @@
+\hypertarget{class_gruppe22_1_1_client_1_1_tile_set}{\section{Gruppe22.\-Client.\-Tile\-Set Klassenreferenz}
+\label{class_gruppe22_1_1_client_1_1_tile_set}\index{Gruppe22.\-Client.\-Tile\-Set@{Gruppe22.\-Client.\-Tile\-Set}}
+}
+Klassendiagramm für Gruppe22.\-Client.\-Tile\-Set\-:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{class_gruppe22_1_1_client_1_1_tile_set}
+\end{center}
+\end{figure}
+\subsection*{Öffentliche Methoden}
+\begin{DoxyCompactItemize}
+\item 
+System.\-Xml.\-Schema.\-Xml\-Schema \hyperlink{class_gruppe22_1_1_client_1_1_tile_set_a63b3c173c6c2ba51ee5c42d7c4c2d57f}{Get\-Schema} ()
+\begin{DoxyCompactList}\small\item\em Useless function required by I\-Xml\-Serializable \end{DoxyCompactList}\item 
+virtual void \hyperlink{class_gruppe22_1_1_client_1_1_tile_set_a7395745bf6ef4bf3374d4221cb86689f}{Read\-Xml} (System.\-Xml.\-Xml\-Reader reader)
+\begin{DoxyCompactList}\small\item\em Load object from X\-M\-L-\/file \end{DoxyCompactList}\item 
+virtual void \hyperlink{class_gruppe22_1_1_client_1_1_tile_set_a8c56d016cdc86ee439db9dc80f963017}{Add} (string \hyperlink{class_gruppe22_1_1_client_1_1_tile_set_afce49a3941b2d4a360990f9847282da1}{filename}, int id, Rectangle cut\-Out, int cols=1, int rows=1, bool dir=false)
+\item 
+virtual void \hyperlink{class_gruppe22_1_1_client_1_1_tile_set_aee5a346f67239555aabd55180b29c10f}{Save} (string \hyperlink{class_gruppe22_1_1_client_1_1_tile_set_afce49a3941b2d4a360990f9847282da1}{filename}=\char`\"{}bla.\-xml\char`\"{})
+\item 
+virtual void \hyperlink{class_gruppe22_1_1_client_1_1_tile_set_a9dd72fa07af2de21ab5c68e9d63c83f2}{Load} (string \hyperlink{class_gruppe22_1_1_client_1_1_tile_set_afce49a3941b2d4a360990f9847282da1}{filename}=\char`\"{}bla.\-xml\char`\"{})
+\item 
+virtual void \hyperlink{class_gruppe22_1_1_client_1_1_tile_set_a4a27a9d327257a79db59b2681daaa0c7}{Write\-Xml} (System.\-Xml.\-Xml\-Writer writer)
+\begin{DoxyCompactList}\small\item\em Dump object to X\-M\-L-\/file \end{DoxyCompactList}\item 
+\hyperlink{class_gruppe22_1_1_client_1_1_tile_set_ae752a75f57d5ddc17287c94df2c117e3}{Tile\-Set} ()
+\begin{DoxyCompactList}\small\item\em Necessary Constructor for serialization; avoid otherwise (!) \end{DoxyCompactList}\item 
+\hyperlink{class_gruppe22_1_1_client_1_1_tile_set_ae70a20fdd5b77a5e0b60308768c37a7e}{Tile\-Set} (Content\-Manager content, int \hyperlink{class_gruppe22_1_1_client_1_1_tile_set_aff0371f9e4071f24de16612c2066ad5b}{width}, int \hyperlink{class_gruppe22_1_1_client_1_1_tile_set_a12343c861014c3631e1a40dfeef20312}{height}, string file\-Name=\char`\"{}\char`\"{})
+\end{DoxyCompactItemize}
+\subsection*{Geschützte Attribute}
+\begin{DoxyCompactItemize}
+\item 
+string \hyperlink{class_gruppe22_1_1_client_1_1_tile_set_a8dcf979a6db589877617e61d8cf83c00}{\-\_\-file\-Name} = \char`\"{}\char`\"{}
+\item 
+List$<$ \hyperlink{class_gruppe22_1_1_client_1_1_tile_object}{Tile\-Object} $>$ \hyperlink{class_gruppe22_1_1_client_1_1_tile_set_a332828d2999a514c32a3c24d2d7d48f6}{\-\_\-textures}
+\item 
+int \hyperlink{class_gruppe22_1_1_client_1_1_tile_set_a4e36d9c553edb1cee5cf05bea5740d84}{\-\_\-width} = 0
+\item 
+int \hyperlink{class_gruppe22_1_1_client_1_1_tile_set_aa46be5438fd81b9c53c872896a841ef8}{\-\_\-height} = 0
+\item 
+Content\-Manager \hyperlink{class_gruppe22_1_1_client_1_1_tile_set_af9c1d1df067b48ed6701e75295377044}{\-\_\-content} = null
+\end{DoxyCompactItemize}
+\subsection*{Propertys}
+\begin{DoxyCompactItemize}
+\item 
+string \hyperlink{class_gruppe22_1_1_client_1_1_tile_set_afce49a3941b2d4a360990f9847282da1}{filename}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\hyperlink{class_gruppe22_1_1_client_1_1_tile_object}{Tile\-Object} \hyperlink{class_gruppe22_1_1_client_1_1_tile_set_a5182218935ec1904b9160d37b8ece9c2}{this\mbox{[}int i\mbox{]}}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+int \hyperlink{class_gruppe22_1_1_client_1_1_tile_set_aff0371f9e4071f24de16612c2066ad5b}{width}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Width of elements in the tileset \end{DoxyCompactList}\item 
+int \hyperlink{class_gruppe22_1_1_client_1_1_tile_set_a12343c861014c3631e1a40dfeef20312}{height}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Height of elements in the tileset \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Beschreibung der Konstruktoren und Destruktoren}
+\hypertarget{class_gruppe22_1_1_client_1_1_tile_set_ae752a75f57d5ddc17287c94df2c117e3}{\index{Gruppe22\-::\-Client\-::\-Tile\-Set@{Gruppe22\-::\-Client\-::\-Tile\-Set}!Tile\-Set@{Tile\-Set}}
+\index{Tile\-Set@{Tile\-Set}!Gruppe22::Client::TileSet@{Gruppe22\-::\-Client\-::\-Tile\-Set}}
+\subsubsection[{Tile\-Set}]{\setlength{\rightskip}{0pt plus 5cm}Gruppe22.\-Client.\-Tile\-Set.\-Tile\-Set (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{class_gruppe22_1_1_client_1_1_tile_set_ae752a75f57d5ddc17287c94df2c117e3}
+
+
+Necessary Constructor for serialization; avoid otherwise (!) 
+
+\hypertarget{class_gruppe22_1_1_client_1_1_tile_set_ae70a20fdd5b77a5e0b60308768c37a7e}{\index{Gruppe22\-::\-Client\-::\-Tile\-Set@{Gruppe22\-::\-Client\-::\-Tile\-Set}!Tile\-Set@{Tile\-Set}}
+\index{Tile\-Set@{Tile\-Set}!Gruppe22::Client::TileSet@{Gruppe22\-::\-Client\-::\-Tile\-Set}}
+\subsubsection[{Tile\-Set}]{\setlength{\rightskip}{0pt plus 5cm}Gruppe22.\-Client.\-Tile\-Set.\-Tile\-Set (
+\begin{DoxyParamCaption}
+\item[{Content\-Manager}]{content, }
+\item[{int}]{width, }
+\item[{int}]{height, }
+\item[{string}]{file\-Name = {\ttfamily \char`\"{}\char`\"{}}}
+\end{DoxyParamCaption}
+)}}\label{class_gruppe22_1_1_client_1_1_tile_set_ae70a20fdd5b77a5e0b60308768c37a7e}
+
+
+\subsection{Dokumentation der Elementfunktionen}
+\hypertarget{class_gruppe22_1_1_client_1_1_tile_set_a8c56d016cdc86ee439db9dc80f963017}{\index{Gruppe22\-::\-Client\-::\-Tile\-Set@{Gruppe22\-::\-Client\-::\-Tile\-Set}!Add@{Add}}
+\index{Add@{Add}!Gruppe22::Client::TileSet@{Gruppe22\-::\-Client\-::\-Tile\-Set}}
+\subsubsection[{Add}]{\setlength{\rightskip}{0pt plus 5cm}virtual void Gruppe22.\-Client.\-Tile\-Set.\-Add (
+\begin{DoxyParamCaption}
+\item[{string}]{filename, }
+\item[{int}]{id, }
+\item[{Rectangle}]{cut\-Out, }
+\item[{int}]{cols = {\ttfamily 1}, }
+\item[{int}]{rows = {\ttfamily 1}, }
+\item[{bool}]{dir = {\ttfamily false}}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{class_gruppe22_1_1_client_1_1_tile_set_a8c56d016cdc86ee439db9dc80f963017}
+
+
+
+
+
+\begin{DoxyParams}{Parameter}
+{\em filename} & \\
+\hline
+{\em id} & \\
+\hline
+{\em cut\-Out} & \\
+\hline
+\end{DoxyParams}
+\hypertarget{class_gruppe22_1_1_client_1_1_tile_set_a63b3c173c6c2ba51ee5c42d7c4c2d57f}{\index{Gruppe22\-::\-Client\-::\-Tile\-Set@{Gruppe22\-::\-Client\-::\-Tile\-Set}!Get\-Schema@{Get\-Schema}}
+\index{Get\-Schema@{Get\-Schema}!Gruppe22::Client::TileSet@{Gruppe22\-::\-Client\-::\-Tile\-Set}}
+\subsubsection[{Get\-Schema}]{\setlength{\rightskip}{0pt plus 5cm}System.\-Xml.\-Schema.\-Xml\-Schema Gruppe22.\-Client.\-Tile\-Set.\-Get\-Schema (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{class_gruppe22_1_1_client_1_1_tile_set_a63b3c173c6c2ba51ee5c42d7c4c2d57f}
+
+
+Useless function required by I\-Xml\-Serializable 
+
+\begin{DoxyReturn}{Rückgabe}
+Null (always)
+\end{DoxyReturn}
+\hypertarget{class_gruppe22_1_1_client_1_1_tile_set_a9dd72fa07af2de21ab5c68e9d63c83f2}{\index{Gruppe22\-::\-Client\-::\-Tile\-Set@{Gruppe22\-::\-Client\-::\-Tile\-Set}!Load@{Load}}
+\index{Load@{Load}!Gruppe22::Client::TileSet@{Gruppe22\-::\-Client\-::\-Tile\-Set}}
+\subsubsection[{Load}]{\setlength{\rightskip}{0pt plus 5cm}virtual void Gruppe22.\-Client.\-Tile\-Set.\-Load (
+\begin{DoxyParamCaption}
+\item[{string}]{filename = {\ttfamily \char`\"{}bla.xml\char`\"{}}}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{class_gruppe22_1_1_client_1_1_tile_set_a9dd72fa07af2de21ab5c68e9d63c83f2}
+
+
+
+
+
+\begin{DoxyParams}{Parameter}
+{\em filename} & \\
+\hline
+\end{DoxyParams}
+
+
+Erneute Implementation in \hyperlink{class_gruppe22_1_1_client_1_1_actor_view_af94fec8c50c0919b4c762df7c681db4b}{Gruppe22.\-Client.\-Actor\-View} und \hyperlink{class_gruppe22_1_1_client_1_1_wall_tiles_a3d27e943af070ad84e8764e96b5dbb0b}{Gruppe22.\-Client.\-Wall\-Tiles}.
+
+\hypertarget{class_gruppe22_1_1_client_1_1_tile_set_a7395745bf6ef4bf3374d4221cb86689f}{\index{Gruppe22\-::\-Client\-::\-Tile\-Set@{Gruppe22\-::\-Client\-::\-Tile\-Set}!Read\-Xml@{Read\-Xml}}
+\index{Read\-Xml@{Read\-Xml}!Gruppe22::Client::TileSet@{Gruppe22\-::\-Client\-::\-Tile\-Set}}
+\subsubsection[{Read\-Xml}]{\setlength{\rightskip}{0pt plus 5cm}virtual void Gruppe22.\-Client.\-Tile\-Set.\-Read\-Xml (
+\begin{DoxyParamCaption}
+\item[{System.\-Xml.\-Xml\-Reader}]{reader}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{class_gruppe22_1_1_client_1_1_tile_set_a7395745bf6ef4bf3374d4221cb86689f}
+
+
+Load object from X\-M\-L-\/file 
+
+
+\begin{DoxyParams}{Parameter}
+{\em reader} & Load object from X\-M\-L-\/stream\\
+\hline
+\end{DoxyParams}
+
+
+Erneute Implementation in \hyperlink{class_gruppe22_1_1_client_1_1_actor_view_a1b068bd49a64ea380d700155ec9bda5e}{Gruppe22.\-Client.\-Actor\-View} und \hyperlink{class_gruppe22_1_1_client_1_1_wall_tiles_a35922f5c31bb32c29a727d9187e2f85c}{Gruppe22.\-Client.\-Wall\-Tiles}.
+
+\hypertarget{class_gruppe22_1_1_client_1_1_tile_set_aee5a346f67239555aabd55180b29c10f}{\index{Gruppe22\-::\-Client\-::\-Tile\-Set@{Gruppe22\-::\-Client\-::\-Tile\-Set}!Save@{Save}}
+\index{Save@{Save}!Gruppe22::Client::TileSet@{Gruppe22\-::\-Client\-::\-Tile\-Set}}
+\subsubsection[{Save}]{\setlength{\rightskip}{0pt plus 5cm}virtual void Gruppe22.\-Client.\-Tile\-Set.\-Save (
+\begin{DoxyParamCaption}
+\item[{string}]{filename = {\ttfamily \char`\"{}bla.xml\char`\"{}}}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{class_gruppe22_1_1_client_1_1_tile_set_aee5a346f67239555aabd55180b29c10f}
+
+
+
+
+
+\begin{DoxyParams}{Parameter}
+{\em filename} & \\
+\hline
+\end{DoxyParams}
+
+
+Erneute Implementation in \hyperlink{class_gruppe22_1_1_client_1_1_actor_view_a18566b8e88b63aa9901be779ebde09ab}{Gruppe22.\-Client.\-Actor\-View} und \hyperlink{class_gruppe22_1_1_client_1_1_wall_tiles_a77d2b127517f1909887add1f1a0349fd}{Gruppe22.\-Client.\-Wall\-Tiles}.
+
+\hypertarget{class_gruppe22_1_1_client_1_1_tile_set_a4a27a9d327257a79db59b2681daaa0c7}{\index{Gruppe22\-::\-Client\-::\-Tile\-Set@{Gruppe22\-::\-Client\-::\-Tile\-Set}!Write\-Xml@{Write\-Xml}}
+\index{Write\-Xml@{Write\-Xml}!Gruppe22::Client::TileSet@{Gruppe22\-::\-Client\-::\-Tile\-Set}}
+\subsubsection[{Write\-Xml}]{\setlength{\rightskip}{0pt plus 5cm}virtual void Gruppe22.\-Client.\-Tile\-Set.\-Write\-Xml (
+\begin{DoxyParamCaption}
+\item[{System.\-Xml.\-Xml\-Writer}]{writer}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{class_gruppe22_1_1_client_1_1_tile_set_a4a27a9d327257a79db59b2681daaa0c7}
+
+
+Dump object to X\-M\-L-\/file 
+
+
+\begin{DoxyParams}{Parameter}
+{\em writer} & Write object to X\-M\-L-\/stream\\
+\hline
+\end{DoxyParams}
+
+
+Erneute Implementation in \hyperlink{class_gruppe22_1_1_client_1_1_actor_view_af04d89d3988da620d7b092055f64b37b}{Gruppe22.\-Client.\-Actor\-View} und \hyperlink{class_gruppe22_1_1_client_1_1_wall_tiles_a1298b94da55c6c2d82306396bef59cb1}{Gruppe22.\-Client.\-Wall\-Tiles}.
+
+
+
+\subsection{Dokumentation der Datenelemente}
+\hypertarget{class_gruppe22_1_1_client_1_1_tile_set_af9c1d1df067b48ed6701e75295377044}{\index{Gruppe22\-::\-Client\-::\-Tile\-Set@{Gruppe22\-::\-Client\-::\-Tile\-Set}!\-\_\-content@{\-\_\-content}}
+\index{\-\_\-content@{\-\_\-content}!Gruppe22::Client::TileSet@{Gruppe22\-::\-Client\-::\-Tile\-Set}}
+\subsubsection[{\-\_\-content}]{\setlength{\rightskip}{0pt plus 5cm}Content\-Manager Gruppe22.\-Client.\-Tile\-Set.\-\_\-content = null\hspace{0.3cm}{\ttfamily [protected]}}}\label{class_gruppe22_1_1_client_1_1_tile_set_af9c1d1df067b48ed6701e75295377044}
+\hypertarget{class_gruppe22_1_1_client_1_1_tile_set_a8dcf979a6db589877617e61d8cf83c00}{\index{Gruppe22\-::\-Client\-::\-Tile\-Set@{Gruppe22\-::\-Client\-::\-Tile\-Set}!\-\_\-file\-Name@{\-\_\-file\-Name}}
+\index{\-\_\-file\-Name@{\-\_\-file\-Name}!Gruppe22::Client::TileSet@{Gruppe22\-::\-Client\-::\-Tile\-Set}}
+\subsubsection[{\-\_\-file\-Name}]{\setlength{\rightskip}{0pt plus 5cm}string Gruppe22.\-Client.\-Tile\-Set.\-\_\-file\-Name = \char`\"{}\char`\"{}\hspace{0.3cm}{\ttfamily [protected]}}}\label{class_gruppe22_1_1_client_1_1_tile_set_a8dcf979a6db589877617e61d8cf83c00}
+\hypertarget{class_gruppe22_1_1_client_1_1_tile_set_aa46be5438fd81b9c53c872896a841ef8}{\index{Gruppe22\-::\-Client\-::\-Tile\-Set@{Gruppe22\-::\-Client\-::\-Tile\-Set}!\-\_\-height@{\-\_\-height}}
+\index{\-\_\-height@{\-\_\-height}!Gruppe22::Client::TileSet@{Gruppe22\-::\-Client\-::\-Tile\-Set}}
+\subsubsection[{\-\_\-height}]{\setlength{\rightskip}{0pt plus 5cm}int Gruppe22.\-Client.\-Tile\-Set.\-\_\-height = 0\hspace{0.3cm}{\ttfamily [protected]}}}\label{class_gruppe22_1_1_client_1_1_tile_set_aa46be5438fd81b9c53c872896a841ef8}
+\hypertarget{class_gruppe22_1_1_client_1_1_tile_set_a332828d2999a514c32a3c24d2d7d48f6}{\index{Gruppe22\-::\-Client\-::\-Tile\-Set@{Gruppe22\-::\-Client\-::\-Tile\-Set}!\-\_\-textures@{\-\_\-textures}}
+\index{\-\_\-textures@{\-\_\-textures}!Gruppe22::Client::TileSet@{Gruppe22\-::\-Client\-::\-Tile\-Set}}
+\subsubsection[{\-\_\-textures}]{\setlength{\rightskip}{0pt plus 5cm}List$<${\bf Tile\-Object}$>$ Gruppe22.\-Client.\-Tile\-Set.\-\_\-textures\hspace{0.3cm}{\ttfamily [protected]}}}\label{class_gruppe22_1_1_client_1_1_tile_set_a332828d2999a514c32a3c24d2d7d48f6}
+\hypertarget{class_gruppe22_1_1_client_1_1_tile_set_a4e36d9c553edb1cee5cf05bea5740d84}{\index{Gruppe22\-::\-Client\-::\-Tile\-Set@{Gruppe22\-::\-Client\-::\-Tile\-Set}!\-\_\-width@{\-\_\-width}}
+\index{\-\_\-width@{\-\_\-width}!Gruppe22::Client::TileSet@{Gruppe22\-::\-Client\-::\-Tile\-Set}}
+\subsubsection[{\-\_\-width}]{\setlength{\rightskip}{0pt plus 5cm}int Gruppe22.\-Client.\-Tile\-Set.\-\_\-width = 0\hspace{0.3cm}{\ttfamily [protected]}}}\label{class_gruppe22_1_1_client_1_1_tile_set_a4e36d9c553edb1cee5cf05bea5740d84}
+
+
+\subsection{Dokumentation der Propertys}
+\hypertarget{class_gruppe22_1_1_client_1_1_tile_set_afce49a3941b2d4a360990f9847282da1}{\index{Gruppe22\-::\-Client\-::\-Tile\-Set@{Gruppe22\-::\-Client\-::\-Tile\-Set}!filename@{filename}}
+\index{filename@{filename}!Gruppe22::Client::TileSet@{Gruppe22\-::\-Client\-::\-Tile\-Set}}
+\subsubsection[{filename}]{\setlength{\rightskip}{0pt plus 5cm}string Gruppe22.\-Client.\-Tile\-Set.\-filename\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}}\label{class_gruppe22_1_1_client_1_1_tile_set_afce49a3941b2d4a360990f9847282da1}
+\hypertarget{class_gruppe22_1_1_client_1_1_tile_set_a12343c861014c3631e1a40dfeef20312}{\index{Gruppe22\-::\-Client\-::\-Tile\-Set@{Gruppe22\-::\-Client\-::\-Tile\-Set}!height@{height}}
+\index{height@{height}!Gruppe22::Client::TileSet@{Gruppe22\-::\-Client\-::\-Tile\-Set}}
+\subsubsection[{height}]{\setlength{\rightskip}{0pt plus 5cm}int Gruppe22.\-Client.\-Tile\-Set.\-height\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}}\label{class_gruppe22_1_1_client_1_1_tile_set_a12343c861014c3631e1a40dfeef20312}
+
+
+Height of elements in the tileset 
+
+\hypertarget{class_gruppe22_1_1_client_1_1_tile_set_a5182218935ec1904b9160d37b8ece9c2}{\index{Gruppe22\-::\-Client\-::\-Tile\-Set@{Gruppe22\-::\-Client\-::\-Tile\-Set}!this\mbox{[}int i\mbox{]}@{this[int i]}}
+\index{this\mbox{[}int i\mbox{]}@{this[int i]}!Gruppe22::Client::TileSet@{Gruppe22\-::\-Client\-::\-Tile\-Set}}
+\subsubsection[{this[int i]}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Tile\-Object} Gruppe22.\-Client.\-Tile\-Set.\-this\mbox{[}int i\mbox{]}\hspace{0.3cm}{\ttfamily [get]}}}\label{class_gruppe22_1_1_client_1_1_tile_set_a5182218935ec1904b9160d37b8ece9c2}
+
+
+
+
+
+\begin{DoxyParams}{Parameter}
+{\em i} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Rückgabe}
+
+\end{DoxyReturn}
+\hypertarget{class_gruppe22_1_1_client_1_1_tile_set_aff0371f9e4071f24de16612c2066ad5b}{\index{Gruppe22\-::\-Client\-::\-Tile\-Set@{Gruppe22\-::\-Client\-::\-Tile\-Set}!width@{width}}
+\index{width@{width}!Gruppe22::Client::TileSet@{Gruppe22\-::\-Client\-::\-Tile\-Set}}
+\subsubsection[{width}]{\setlength{\rightskip}{0pt plus 5cm}int Gruppe22.\-Client.\-Tile\-Set.\-width\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}}\label{class_gruppe22_1_1_client_1_1_tile_set_aff0371f9e4071f24de16612c2066ad5b}
+
+
+Width of elements in the tileset 
+
+
+
+Die Dokumentation für diese Klasse wurde erzeugt aufgrund der Datei\-:\begin{DoxyCompactItemize}
+\item 
+C\-:/\-Users/beursken/\-Documents/\-Git\-Hub/gruppe22/\-Gruppe22/\-Gruppe22/\-Client/\-Map/\hyperlink{_tileset_8cs}{Tileset.\-cs}\end{DoxyCompactItemize}

@@ -1,0 +1,361 @@
+\hypertarget{class_gruppe22_1_1_backend_1_1_floor_tile}{\section{Gruppe22.\-Backend.\-Floor\-Tile Klassenreferenz}
+\label{class_gruppe22_1_1_backend_1_1_floor_tile}\index{Gruppe22.\-Backend.\-Floor\-Tile@{Gruppe22.\-Backend.\-Floor\-Tile}}
+}
+Klassendiagramm für Gruppe22.\-Backend.\-Floor\-Tile\-:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=4.000000cm]{class_gruppe22_1_1_backend_1_1_floor_tile}
+\end{center}
+\end{figure}
+\subsection*{Öffentliche Methoden}
+\begin{DoxyCompactItemize}
+\item 
+override void \hyperlink{class_gruppe22_1_1_backend_1_1_floor_tile_ae3d0627204d49dabc8180fd0bdd22803}{Update} (Game\-Time game\-Time)
+\begin{DoxyCompactList}\small\item\em Refresh tiles which do something (traps, enemies, N\-P\-Cs) \end{DoxyCompactList}\item 
+void \hyperlink{class_gruppe22_1_1_backend_1_1_floor_tile_aa181d883ef238dfca1615db12ab80606}{Remove} (\hyperlink{namespace_gruppe22_1_1_backend_a5956dac270a0deefca1d578d210550e2}{Tile\-Type} type)
+\begin{DoxyCompactList}\small\item\em Remove all tiles of a specified type from overlay \end{DoxyCompactList}\item 
+void \hyperlink{class_gruppe22_1_1_backend_1_1_floor_tile_a153d21fb6b8e240d822370e0c20d6ce5}{Add} (\hyperlink{class_gruppe22_1_1_backend_1_1_tile}{Tile} tile, bool update=false)
+\begin{DoxyCompactList}\small\item\em Add specified tile to overlay \end{DoxyCompactList}\item 
+void \hyperlink{class_gruppe22_1_1_backend_1_1_floor_tile_a6533275079b634b5fadc5cd0d1ba927f}{Remove} (\hyperlink{class_gruppe22_1_1_backend_1_1_tile}{Tile} tile)
+\begin{DoxyCompactList}\small\item\em Remove specified tile from overlay \end{DoxyCompactList}\item 
+\hyperlink{class_gruppe22_1_1_backend_1_1_floor_tile_a828c82cc335a8c8416861a11b0d70f65}{Floor\-Tile} (object \hyperlink{class_gruppe22_1_1_backend_1_1_tile_abc12933c70eb3a2ebbb2fde9f45c2632}{parent})
+\begin{DoxyCompactList}\small\item\em A empty constructor \end{DoxyCompactList}\item 
+\hyperlink{class_gruppe22_1_1_backend_1_1_floor_tile_ae90ab35dfdebf892a27d545d1fef32c0}{Floor\-Tile} (object \hyperlink{class_gruppe22_1_1_backend_1_1_tile_abc12933c70eb3a2ebbb2fde9f45c2632}{parent}, \hyperlink{class_gruppe22_1_1_backend_1_1_coords}{Backend.\-Coords} \hyperlink{class_gruppe22_1_1_backend_1_1_floor_tile_a222af0c5d8ea6b7d24d04a384f71d70b}{coords}=null, bool \hyperlink{class_gruppe22_1_1_backend_1_1_floor_tile_a07516e27f9669dd9e852cf42a1a94635}{can\-Enter}=true)
+\begin{DoxyCompactList}\small\item\em A constructor adding a walltile to the overlay if the contructed tile is impassable \end{DoxyCompactList}\item 
+override void \hyperlink{class_gruppe22_1_1_backend_1_1_floor_tile_a4a096b8d6ff25557bd807751268987f2}{Save} (Xml\-Writer xmlw)
+\begin{DoxyCompactList}\small\item\em Save the Floortile and every tile in it's overlay \end{DoxyCompactList}\item 
+void \hyperlink{class_gruppe22_1_1_backend_1_1_floor_tile_a37dbc28f0467127f30aaddf709975c70}{Dispose} ()
+\begin{DoxyCompactList}\small\item\em Clean up \hyperlink{class_gruppe22_1_1_backend_1_1_tile}{Tile} \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Geschützte Attribute}
+\begin{DoxyCompactItemize}
+\item 
+List$<$ \hyperlink{class_gruppe22_1_1_backend_1_1_tile}{Tile} $>$ \hyperlink{class_gruppe22_1_1_backend_1_1_floor_tile_ac860f59975d901d76d45681acf9d61f4}{\-\_\-overlay}
+\begin{DoxyCompactList}\small\item\em Fields displayed (and checked) on top of the current field \end{DoxyCompactList}\item 
+\hyperlink{class_gruppe22_1_1_backend_1_1_coords}{Backend.\-Coords} \hyperlink{class_gruppe22_1_1_backend_1_1_floor_tile_a192eaa6b557b27ddebe7a16ea38d13e5}{\-\_\-coords} = null
+\begin{DoxyCompactList}\small\item\em The Position of the tile \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Propertys}
+\begin{DoxyCompactItemize}
+\item 
+List$<$ \hyperlink{class_gruppe22_1_1_backend_1_1_tile}{Tile} $>$ \hyperlink{class_gruppe22_1_1_backend_1_1_floor_tile_a8ce0005a15cfaf89ec382a84ef908c8f}{overlay}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+List$<$ \hyperlink{class_gruppe22_1_1_backend_1_1_actor}{Actor} $>$ \hyperlink{class_gruppe22_1_1_backend_1_1_floor_tile_a7e345b719614f87d9473c10afe55cb61}{actors}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+List$<$ \hyperlink{class_gruppe22_1_1_backend_1_1_item}{Item} $>$ \hyperlink{class_gruppe22_1_1_backend_1_1_floor_tile_a9ffbcbcaade0609f83172fa271e33563}{items}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+\hyperlink{class_gruppe22_1_1_backend_1_1_trap_tile}{Trap\-Tile} \hyperlink{class_gruppe22_1_1_backend_1_1_floor_tile_a1f5554db761650899c2fdd571ceff000}{trap}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+\hyperlink{class_gruppe22_1_1_backend_1_1_checkpoint_tile}{Checkpoint\-Tile} \hyperlink{class_gruppe22_1_1_backend_1_1_floor_tile_a1a86ae2cd1bcf068a31649d51c5bb49a}{checkpoint}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+\hyperlink{class_gruppe22_1_1_backend_1_1_teleport_tile}{Teleport\-Tile} \hyperlink{class_gruppe22_1_1_backend_1_1_floor_tile_a9276aed0713002718a978669f237b106}{teleport}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+\hyperlink{class_gruppe22_1_1_backend_1_1_actor}{Actor} \hyperlink{class_gruppe22_1_1_backend_1_1_floor_tile_ae61e1f6a710ca100e86c94f6150b233e}{first\-Actor}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+\hyperlink{class_gruppe22_1_1_backend_1_1_reserved_tile}{Reserved\-Tile} \hyperlink{class_gruppe22_1_1_backend_1_1_floor_tile_a8929f5ce72b9deb76b2babb69e08c308}{reserved}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+\hyperlink{class_gruppe22_1_1_backend_1_1_door_tile}{Door\-Tile} \hyperlink{class_gruppe22_1_1_backend_1_1_floor_tile_a42b9b51aaeb0118ee2cc1ae5f0d4d29f}{door}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+\hyperlink{class_gruppe22_1_1_backend_1_1_item_tile}{Item\-Tile} \hyperlink{class_gruppe22_1_1_backend_1_1_floor_tile_af1b9c44771c17dd815b3386d66a09329}{first\-Item}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+new \hyperlink{class_gruppe22_1_1_backend_1_1_coords}{Backend.\-Coords} \hyperlink{class_gruppe22_1_1_backend_1_1_floor_tile_a222af0c5d8ea6b7d24d04a384f71d70b}{coords}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+bool \hyperlink{class_gruppe22_1_1_backend_1_1_floor_tile_a4dc2e696b9103c702ebbf5a8f898f99d}{has\-Checkpoint}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Determine whether tile has a checkpoint on it \end{DoxyCompactList}\item 
+bool \hyperlink{class_gruppe22_1_1_backend_1_1_floor_tile_a07516e27f9669dd9e852cf42a1a94635}{can\-Enter}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Determine whether tile can be entered \end{DoxyCompactList}\item 
+bool \hyperlink{class_gruppe22_1_1_backend_1_1_floor_tile_ad5e7dcc45afdb6acf6eca5510ae38049}{has\-Wall}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Determine whether tile has a wall on it \end{DoxyCompactList}\item 
+\hyperlink{namespace_gruppe22_1_1_backend_ab19de7e2856537f39fbd380beea6ddba}{Wall\-Type} \hyperlink{class_gruppe22_1_1_backend_1_1_floor_tile_af235974bebb657c12a310521c1e8293d}{wall\-Type}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+bool \hyperlink{class_gruppe22_1_1_backend_1_1_floor_tile_ab92743f9c2bebd18192a91d7a1c2c194}{has\-Door}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Determine whether tile has a door on it \end{DoxyCompactList}\item 
+int \hyperlink{class_gruppe22_1_1_backend_1_1_floor_tile_aba100c4046831211768aeddb2851f6b2}{floor\-Style}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Determine whether tile has a special floor style (empty space, fire, water, road, grass, rocks, etc.) \end{DoxyCompactList}\item 
+bool \hyperlink{class_gruppe22_1_1_backend_1_1_floor_tile_a13d1616f29393cef6bebe40c140902e2}{has\-Player}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Determine whether a player is standing on the current tile \end{DoxyCompactList}\item 
+bool \hyperlink{class_gruppe22_1_1_backend_1_1_floor_tile_a48a520d5f87a7f53f967d332458137b2}{has\-N\-P\-C}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Determine whether an enemy is standing on the current tile \end{DoxyCompactList}\item 
+bool \hyperlink{class_gruppe22_1_1_backend_1_1_floor_tile_afe86d0c8424017818f04e2b0688e5c75}{has\-Enemy}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Determine whether an enemy is standing on the current tile \end{DoxyCompactList}\item 
+bool \hyperlink{class_gruppe22_1_1_backend_1_1_floor_tile_a477120ecb285df256f1761cd1774bf16}{has\-Teleport}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Determine whether the current tile contains a teleporter \end{DoxyCompactList}\item 
+bool \hyperlink{class_gruppe22_1_1_backend_1_1_floor_tile_a6d2ae9e7cbc9de3a2c39ddd0fbf2cee6}{has\-Trap}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Determine whether the current tile has a trap on it \end{DoxyCompactList}\item 
+bool \hyperlink{class_gruppe22_1_1_backend_1_1_floor_tile_aa62f725bbf60ab19f680d56bef8d7848}{has\-Treasure}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Determine whether there is a treasure on the current tile \end{DoxyCompactList}\item 
+bool \hyperlink{class_gruppe22_1_1_backend_1_1_floor_tile_a285da5ca4d7d6a6af58fff71c1156a91}{visible}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+bool \hyperlink{class_gruppe22_1_1_backend_1_1_floor_tile_af31534372c3138a5e67ce531adead203}{has\-Target}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Determine whether the current tile is the 'end' of the game \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Beschreibung der Konstruktoren und Destruktoren}
+\hypertarget{class_gruppe22_1_1_backend_1_1_floor_tile_a828c82cc335a8c8416861a11b0d70f65}{\index{Gruppe22\-::\-Backend\-::\-Floor\-Tile@{Gruppe22\-::\-Backend\-::\-Floor\-Tile}!Floor\-Tile@{Floor\-Tile}}
+\index{Floor\-Tile@{Floor\-Tile}!Gruppe22::Backend::FloorTile@{Gruppe22\-::\-Backend\-::\-Floor\-Tile}}
+\subsubsection[{Floor\-Tile}]{\setlength{\rightskip}{0pt plus 5cm}Gruppe22.\-Backend.\-Floor\-Tile.\-Floor\-Tile (
+\begin{DoxyParamCaption}
+\item[{object}]{parent}
+\end{DoxyParamCaption}
+)}}\label{class_gruppe22_1_1_backend_1_1_floor_tile_a828c82cc335a8c8416861a11b0d70f65}
+
+
+A empty constructor 
+
+\hypertarget{class_gruppe22_1_1_backend_1_1_floor_tile_ae90ab35dfdebf892a27d545d1fef32c0}{\index{Gruppe22\-::\-Backend\-::\-Floor\-Tile@{Gruppe22\-::\-Backend\-::\-Floor\-Tile}!Floor\-Tile@{Floor\-Tile}}
+\index{Floor\-Tile@{Floor\-Tile}!Gruppe22::Backend::FloorTile@{Gruppe22\-::\-Backend\-::\-Floor\-Tile}}
+\subsubsection[{Floor\-Tile}]{\setlength{\rightskip}{0pt plus 5cm}Gruppe22.\-Backend.\-Floor\-Tile.\-Floor\-Tile (
+\begin{DoxyParamCaption}
+\item[{object}]{parent, }
+\item[{{\bf Backend.\-Coords}}]{coords = {\ttfamily null}, }
+\item[{bool}]{can\-Enter = {\ttfamily true}}
+\end{DoxyParamCaption}
+)}}\label{class_gruppe22_1_1_backend_1_1_floor_tile_ae90ab35dfdebf892a27d545d1fef32c0}
+
+
+A constructor adding a walltile to the overlay if the contructed tile is impassable 
+
+
+
+\subsection{Dokumentation der Elementfunktionen}
+\hypertarget{class_gruppe22_1_1_backend_1_1_floor_tile_a153d21fb6b8e240d822370e0c20d6ce5}{\index{Gruppe22\-::\-Backend\-::\-Floor\-Tile@{Gruppe22\-::\-Backend\-::\-Floor\-Tile}!Add@{Add}}
+\index{Add@{Add}!Gruppe22::Backend::FloorTile@{Gruppe22\-::\-Backend\-::\-Floor\-Tile}}
+\subsubsection[{Add}]{\setlength{\rightskip}{0pt plus 5cm}void Gruppe22.\-Backend.\-Floor\-Tile.\-Add (
+\begin{DoxyParamCaption}
+\item[{{\bf Tile}}]{tile, }
+\item[{bool}]{update = {\ttfamily false}}
+\end{DoxyParamCaption}
+)}}\label{class_gruppe22_1_1_backend_1_1_floor_tile_a153d21fb6b8e240d822370e0c20d6ce5}
+
+
+Add specified tile to overlay 
+
+
+\begin{DoxyParams}{Parameter}
+{\em tile} & \\
+\hline
+\end{DoxyParams}
+\hypertarget{class_gruppe22_1_1_backend_1_1_floor_tile_a37dbc28f0467127f30aaddf709975c70}{\index{Gruppe22\-::\-Backend\-::\-Floor\-Tile@{Gruppe22\-::\-Backend\-::\-Floor\-Tile}!Dispose@{Dispose}}
+\index{Dispose@{Dispose}!Gruppe22::Backend::FloorTile@{Gruppe22\-::\-Backend\-::\-Floor\-Tile}}
+\subsubsection[{Dispose}]{\setlength{\rightskip}{0pt plus 5cm}void Gruppe22.\-Backend.\-Floor\-Tile.\-Dispose (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{class_gruppe22_1_1_backend_1_1_floor_tile_a37dbc28f0467127f30aaddf709975c70}
+
+
+Clean up \hyperlink{class_gruppe22_1_1_backend_1_1_tile}{Tile} 
+
+\hypertarget{class_gruppe22_1_1_backend_1_1_floor_tile_aa181d883ef238dfca1615db12ab80606}{\index{Gruppe22\-::\-Backend\-::\-Floor\-Tile@{Gruppe22\-::\-Backend\-::\-Floor\-Tile}!Remove@{Remove}}
+\index{Remove@{Remove}!Gruppe22::Backend::FloorTile@{Gruppe22\-::\-Backend\-::\-Floor\-Tile}}
+\subsubsection[{Remove}]{\setlength{\rightskip}{0pt plus 5cm}void Gruppe22.\-Backend.\-Floor\-Tile.\-Remove (
+\begin{DoxyParamCaption}
+\item[{{\bf Tile\-Type}}]{type}
+\end{DoxyParamCaption}
+)}}\label{class_gruppe22_1_1_backend_1_1_floor_tile_aa181d883ef238dfca1615db12ab80606}
+
+
+Remove all tiles of a specified type from overlay 
+
+
+\begin{DoxyParams}{Parameter}
+{\em type} & \\
+\hline
+\end{DoxyParams}
+\hypertarget{class_gruppe22_1_1_backend_1_1_floor_tile_a6533275079b634b5fadc5cd0d1ba927f}{\index{Gruppe22\-::\-Backend\-::\-Floor\-Tile@{Gruppe22\-::\-Backend\-::\-Floor\-Tile}!Remove@{Remove}}
+\index{Remove@{Remove}!Gruppe22::Backend::FloorTile@{Gruppe22\-::\-Backend\-::\-Floor\-Tile}}
+\subsubsection[{Remove}]{\setlength{\rightskip}{0pt plus 5cm}void Gruppe22.\-Backend.\-Floor\-Tile.\-Remove (
+\begin{DoxyParamCaption}
+\item[{{\bf Tile}}]{tile}
+\end{DoxyParamCaption}
+)}}\label{class_gruppe22_1_1_backend_1_1_floor_tile_a6533275079b634b5fadc5cd0d1ba927f}
+
+
+Remove specified tile from overlay 
+
+
+\begin{DoxyParams}{Parameter}
+{\em tile} & \\
+\hline
+\end{DoxyParams}
+\hypertarget{class_gruppe22_1_1_backend_1_1_floor_tile_a4a096b8d6ff25557bd807751268987f2}{\index{Gruppe22\-::\-Backend\-::\-Floor\-Tile@{Gruppe22\-::\-Backend\-::\-Floor\-Tile}!Save@{Save}}
+\index{Save@{Save}!Gruppe22::Backend::FloorTile@{Gruppe22\-::\-Backend\-::\-Floor\-Tile}}
+\subsubsection[{Save}]{\setlength{\rightskip}{0pt plus 5cm}override void Gruppe22.\-Backend.\-Floor\-Tile.\-Save (
+\begin{DoxyParamCaption}
+\item[{Xml\-Writer}]{xmlw}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{class_gruppe22_1_1_backend_1_1_floor_tile_a4a096b8d6ff25557bd807751268987f2}
+
+
+Save the Floortile and every tile in it's overlay 
+
+
+
+Erneute Implementation von \hyperlink{class_gruppe22_1_1_backend_1_1_tile_a109ab3e77ffca9d44c95a711af3491dc}{Gruppe22.\-Backend.\-Tile}.
+
+\hypertarget{class_gruppe22_1_1_backend_1_1_floor_tile_ae3d0627204d49dabc8180fd0bdd22803}{\index{Gruppe22\-::\-Backend\-::\-Floor\-Tile@{Gruppe22\-::\-Backend\-::\-Floor\-Tile}!Update@{Update}}
+\index{Update@{Update}!Gruppe22::Backend::FloorTile@{Gruppe22\-::\-Backend\-::\-Floor\-Tile}}
+\subsubsection[{Update}]{\setlength{\rightskip}{0pt plus 5cm}override void Gruppe22.\-Backend.\-Floor\-Tile.\-Update (
+\begin{DoxyParamCaption}
+\item[{Game\-Time}]{game\-Time}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{class_gruppe22_1_1_backend_1_1_floor_tile_ae3d0627204d49dabc8180fd0bdd22803}
+
+
+Refresh tiles which do something (traps, enemies, N\-P\-Cs) 
+
+
+\begin{DoxyParams}{Parameter}
+{\em game\-Time} & \\
+\hline
+\end{DoxyParams}
+
+
+Erneute Implementation von \hyperlink{class_gruppe22_1_1_backend_1_1_tile_a0810154a52f859e852497e3717998e47}{Gruppe22.\-Backend.\-Tile}.
+
+
+
+\subsection{Dokumentation der Datenelemente}
+\hypertarget{class_gruppe22_1_1_backend_1_1_floor_tile_a192eaa6b557b27ddebe7a16ea38d13e5}{\index{Gruppe22\-::\-Backend\-::\-Floor\-Tile@{Gruppe22\-::\-Backend\-::\-Floor\-Tile}!\-\_\-coords@{\-\_\-coords}}
+\index{\-\_\-coords@{\-\_\-coords}!Gruppe22::Backend::FloorTile@{Gruppe22\-::\-Backend\-::\-Floor\-Tile}}
+\subsubsection[{\-\_\-coords}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Backend.\-Coords} Gruppe22.\-Backend.\-Floor\-Tile.\-\_\-coords = null\hspace{0.3cm}{\ttfamily [protected]}}}\label{class_gruppe22_1_1_backend_1_1_floor_tile_a192eaa6b557b27ddebe7a16ea38d13e5}
+
+
+The Position of the tile 
+
+\hypertarget{class_gruppe22_1_1_backend_1_1_floor_tile_ac860f59975d901d76d45681acf9d61f4}{\index{Gruppe22\-::\-Backend\-::\-Floor\-Tile@{Gruppe22\-::\-Backend\-::\-Floor\-Tile}!\-\_\-overlay@{\-\_\-overlay}}
+\index{\-\_\-overlay@{\-\_\-overlay}!Gruppe22::Backend::FloorTile@{Gruppe22\-::\-Backend\-::\-Floor\-Tile}}
+\subsubsection[{\-\_\-overlay}]{\setlength{\rightskip}{0pt plus 5cm}List$<${\bf Tile}$>$ Gruppe22.\-Backend.\-Floor\-Tile.\-\_\-overlay\hspace{0.3cm}{\ttfamily [protected]}}}\label{class_gruppe22_1_1_backend_1_1_floor_tile_ac860f59975d901d76d45681acf9d61f4}
+
+
+Fields displayed (and checked) on top of the current field 
+
+
+
+\subsection{Dokumentation der Propertys}
+\hypertarget{class_gruppe22_1_1_backend_1_1_floor_tile_a7e345b719614f87d9473c10afe55cb61}{\index{Gruppe22\-::\-Backend\-::\-Floor\-Tile@{Gruppe22\-::\-Backend\-::\-Floor\-Tile}!actors@{actors}}
+\index{actors@{actors}!Gruppe22::Backend::FloorTile@{Gruppe22\-::\-Backend\-::\-Floor\-Tile}}
+\subsubsection[{actors}]{\setlength{\rightskip}{0pt plus 5cm}List$<${\bf Actor}$>$ Gruppe22.\-Backend.\-Floor\-Tile.\-actors\hspace{0.3cm}{\ttfamily [get]}}}\label{class_gruppe22_1_1_backend_1_1_floor_tile_a7e345b719614f87d9473c10afe55cb61}
+\hypertarget{class_gruppe22_1_1_backend_1_1_floor_tile_a07516e27f9669dd9e852cf42a1a94635}{\index{Gruppe22\-::\-Backend\-::\-Floor\-Tile@{Gruppe22\-::\-Backend\-::\-Floor\-Tile}!can\-Enter@{can\-Enter}}
+\index{can\-Enter@{can\-Enter}!Gruppe22::Backend::FloorTile@{Gruppe22\-::\-Backend\-::\-Floor\-Tile}}
+\subsubsection[{can\-Enter}]{\setlength{\rightskip}{0pt plus 5cm}bool Gruppe22.\-Backend.\-Floor\-Tile.\-can\-Enter\hspace{0.3cm}{\ttfamily [get]}}}\label{class_gruppe22_1_1_backend_1_1_floor_tile_a07516e27f9669dd9e852cf42a1a94635}
+
+
+Determine whether tile can be entered 
+
+\hypertarget{class_gruppe22_1_1_backend_1_1_floor_tile_a1a86ae2cd1bcf068a31649d51c5bb49a}{\index{Gruppe22\-::\-Backend\-::\-Floor\-Tile@{Gruppe22\-::\-Backend\-::\-Floor\-Tile}!checkpoint@{checkpoint}}
+\index{checkpoint@{checkpoint}!Gruppe22::Backend::FloorTile@{Gruppe22\-::\-Backend\-::\-Floor\-Tile}}
+\subsubsection[{checkpoint}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Checkpoint\-Tile} Gruppe22.\-Backend.\-Floor\-Tile.\-checkpoint\hspace{0.3cm}{\ttfamily [get]}}}\label{class_gruppe22_1_1_backend_1_1_floor_tile_a1a86ae2cd1bcf068a31649d51c5bb49a}
+\hypertarget{class_gruppe22_1_1_backend_1_1_floor_tile_a222af0c5d8ea6b7d24d04a384f71d70b}{\index{Gruppe22\-::\-Backend\-::\-Floor\-Tile@{Gruppe22\-::\-Backend\-::\-Floor\-Tile}!coords@{coords}}
+\index{coords@{coords}!Gruppe22::Backend::FloorTile@{Gruppe22\-::\-Backend\-::\-Floor\-Tile}}
+\subsubsection[{coords}]{\setlength{\rightskip}{0pt plus 5cm}new {\bf Backend.\-Coords} Gruppe22.\-Backend.\-Floor\-Tile.\-coords\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}}\label{class_gruppe22_1_1_backend_1_1_floor_tile_a222af0c5d8ea6b7d24d04a384f71d70b}
+\hypertarget{class_gruppe22_1_1_backend_1_1_floor_tile_a42b9b51aaeb0118ee2cc1ae5f0d4d29f}{\index{Gruppe22\-::\-Backend\-::\-Floor\-Tile@{Gruppe22\-::\-Backend\-::\-Floor\-Tile}!door@{door}}
+\index{door@{door}!Gruppe22::Backend::FloorTile@{Gruppe22\-::\-Backend\-::\-Floor\-Tile}}
+\subsubsection[{door}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Door\-Tile} Gruppe22.\-Backend.\-Floor\-Tile.\-door\hspace{0.3cm}{\ttfamily [get]}}}\label{class_gruppe22_1_1_backend_1_1_floor_tile_a42b9b51aaeb0118ee2cc1ae5f0d4d29f}
+\hypertarget{class_gruppe22_1_1_backend_1_1_floor_tile_ae61e1f6a710ca100e86c94f6150b233e}{\index{Gruppe22\-::\-Backend\-::\-Floor\-Tile@{Gruppe22\-::\-Backend\-::\-Floor\-Tile}!first\-Actor@{first\-Actor}}
+\index{first\-Actor@{first\-Actor}!Gruppe22::Backend::FloorTile@{Gruppe22\-::\-Backend\-::\-Floor\-Tile}}
+\subsubsection[{first\-Actor}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Actor} Gruppe22.\-Backend.\-Floor\-Tile.\-first\-Actor\hspace{0.3cm}{\ttfamily [get]}}}\label{class_gruppe22_1_1_backend_1_1_floor_tile_ae61e1f6a710ca100e86c94f6150b233e}
+\hypertarget{class_gruppe22_1_1_backend_1_1_floor_tile_af1b9c44771c17dd815b3386d66a09329}{\index{Gruppe22\-::\-Backend\-::\-Floor\-Tile@{Gruppe22\-::\-Backend\-::\-Floor\-Tile}!first\-Item@{first\-Item}}
+\index{first\-Item@{first\-Item}!Gruppe22::Backend::FloorTile@{Gruppe22\-::\-Backend\-::\-Floor\-Tile}}
+\subsubsection[{first\-Item}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Item\-Tile} Gruppe22.\-Backend.\-Floor\-Tile.\-first\-Item\hspace{0.3cm}{\ttfamily [get]}}}\label{class_gruppe22_1_1_backend_1_1_floor_tile_af1b9c44771c17dd815b3386d66a09329}
+\hypertarget{class_gruppe22_1_1_backend_1_1_floor_tile_aba100c4046831211768aeddb2851f6b2}{\index{Gruppe22\-::\-Backend\-::\-Floor\-Tile@{Gruppe22\-::\-Backend\-::\-Floor\-Tile}!floor\-Style@{floor\-Style}}
+\index{floor\-Style@{floor\-Style}!Gruppe22::Backend::FloorTile@{Gruppe22\-::\-Backend\-::\-Floor\-Tile}}
+\subsubsection[{floor\-Style}]{\setlength{\rightskip}{0pt plus 5cm}int Gruppe22.\-Backend.\-Floor\-Tile.\-floor\-Style\hspace{0.3cm}{\ttfamily [get]}}}\label{class_gruppe22_1_1_backend_1_1_floor_tile_aba100c4046831211768aeddb2851f6b2}
+
+
+Determine whether tile has a special floor style (empty space, fire, water, road, grass, rocks, etc.) 
+
+\hypertarget{class_gruppe22_1_1_backend_1_1_floor_tile_a4dc2e696b9103c702ebbf5a8f898f99d}{\index{Gruppe22\-::\-Backend\-::\-Floor\-Tile@{Gruppe22\-::\-Backend\-::\-Floor\-Tile}!has\-Checkpoint@{has\-Checkpoint}}
+\index{has\-Checkpoint@{has\-Checkpoint}!Gruppe22::Backend::FloorTile@{Gruppe22\-::\-Backend\-::\-Floor\-Tile}}
+\subsubsection[{has\-Checkpoint}]{\setlength{\rightskip}{0pt plus 5cm}bool Gruppe22.\-Backend.\-Floor\-Tile.\-has\-Checkpoint\hspace{0.3cm}{\ttfamily [get]}}}\label{class_gruppe22_1_1_backend_1_1_floor_tile_a4dc2e696b9103c702ebbf5a8f898f99d}
+
+
+Determine whether tile has a checkpoint on it 
+
+\hypertarget{class_gruppe22_1_1_backend_1_1_floor_tile_ab92743f9c2bebd18192a91d7a1c2c194}{\index{Gruppe22\-::\-Backend\-::\-Floor\-Tile@{Gruppe22\-::\-Backend\-::\-Floor\-Tile}!has\-Door@{has\-Door}}
+\index{has\-Door@{has\-Door}!Gruppe22::Backend::FloorTile@{Gruppe22\-::\-Backend\-::\-Floor\-Tile}}
+\subsubsection[{has\-Door}]{\setlength{\rightskip}{0pt plus 5cm}bool Gruppe22.\-Backend.\-Floor\-Tile.\-has\-Door\hspace{0.3cm}{\ttfamily [get]}}}\label{class_gruppe22_1_1_backend_1_1_floor_tile_ab92743f9c2bebd18192a91d7a1c2c194}
+
+
+Determine whether tile has a door on it 
+
+\hypertarget{class_gruppe22_1_1_backend_1_1_floor_tile_afe86d0c8424017818f04e2b0688e5c75}{\index{Gruppe22\-::\-Backend\-::\-Floor\-Tile@{Gruppe22\-::\-Backend\-::\-Floor\-Tile}!has\-Enemy@{has\-Enemy}}
+\index{has\-Enemy@{has\-Enemy}!Gruppe22::Backend::FloorTile@{Gruppe22\-::\-Backend\-::\-Floor\-Tile}}
+\subsubsection[{has\-Enemy}]{\setlength{\rightskip}{0pt plus 5cm}bool Gruppe22.\-Backend.\-Floor\-Tile.\-has\-Enemy\hspace{0.3cm}{\ttfamily [get]}}}\label{class_gruppe22_1_1_backend_1_1_floor_tile_afe86d0c8424017818f04e2b0688e5c75}
+
+
+Determine whether an enemy is standing on the current tile 
+
+\hypertarget{class_gruppe22_1_1_backend_1_1_floor_tile_a48a520d5f87a7f53f967d332458137b2}{\index{Gruppe22\-::\-Backend\-::\-Floor\-Tile@{Gruppe22\-::\-Backend\-::\-Floor\-Tile}!has\-N\-P\-C@{has\-N\-P\-C}}
+\index{has\-N\-P\-C@{has\-N\-P\-C}!Gruppe22::Backend::FloorTile@{Gruppe22\-::\-Backend\-::\-Floor\-Tile}}
+\subsubsection[{has\-N\-P\-C}]{\setlength{\rightskip}{0pt plus 5cm}bool Gruppe22.\-Backend.\-Floor\-Tile.\-has\-N\-P\-C\hspace{0.3cm}{\ttfamily [get]}}}\label{class_gruppe22_1_1_backend_1_1_floor_tile_a48a520d5f87a7f53f967d332458137b2}
+
+
+Determine whether an enemy is standing on the current tile 
+
+\hypertarget{class_gruppe22_1_1_backend_1_1_floor_tile_a13d1616f29393cef6bebe40c140902e2}{\index{Gruppe22\-::\-Backend\-::\-Floor\-Tile@{Gruppe22\-::\-Backend\-::\-Floor\-Tile}!has\-Player@{has\-Player}}
+\index{has\-Player@{has\-Player}!Gruppe22::Backend::FloorTile@{Gruppe22\-::\-Backend\-::\-Floor\-Tile}}
+\subsubsection[{has\-Player}]{\setlength{\rightskip}{0pt plus 5cm}bool Gruppe22.\-Backend.\-Floor\-Tile.\-has\-Player\hspace{0.3cm}{\ttfamily [get]}}}\label{class_gruppe22_1_1_backend_1_1_floor_tile_a13d1616f29393cef6bebe40c140902e2}
+
+
+Determine whether a player is standing on the current tile 
+
+\hypertarget{class_gruppe22_1_1_backend_1_1_floor_tile_af31534372c3138a5e67ce531adead203}{\index{Gruppe22\-::\-Backend\-::\-Floor\-Tile@{Gruppe22\-::\-Backend\-::\-Floor\-Tile}!has\-Target@{has\-Target}}
+\index{has\-Target@{has\-Target}!Gruppe22::Backend::FloorTile@{Gruppe22\-::\-Backend\-::\-Floor\-Tile}}
+\subsubsection[{has\-Target}]{\setlength{\rightskip}{0pt plus 5cm}bool Gruppe22.\-Backend.\-Floor\-Tile.\-has\-Target\hspace{0.3cm}{\ttfamily [get]}}}\label{class_gruppe22_1_1_backend_1_1_floor_tile_af31534372c3138a5e67ce531adead203}
+
+
+Determine whether the current tile is the 'end' of the game 
+
+\hypertarget{class_gruppe22_1_1_backend_1_1_floor_tile_a477120ecb285df256f1761cd1774bf16}{\index{Gruppe22\-::\-Backend\-::\-Floor\-Tile@{Gruppe22\-::\-Backend\-::\-Floor\-Tile}!has\-Teleport@{has\-Teleport}}
+\index{has\-Teleport@{has\-Teleport}!Gruppe22::Backend::FloorTile@{Gruppe22\-::\-Backend\-::\-Floor\-Tile}}
+\subsubsection[{has\-Teleport}]{\setlength{\rightskip}{0pt plus 5cm}bool Gruppe22.\-Backend.\-Floor\-Tile.\-has\-Teleport\hspace{0.3cm}{\ttfamily [get]}}}\label{class_gruppe22_1_1_backend_1_1_floor_tile_a477120ecb285df256f1761cd1774bf16}
+
+
+Determine whether the current tile contains a teleporter 
+
+\hypertarget{class_gruppe22_1_1_backend_1_1_floor_tile_a6d2ae9e7cbc9de3a2c39ddd0fbf2cee6}{\index{Gruppe22\-::\-Backend\-::\-Floor\-Tile@{Gruppe22\-::\-Backend\-::\-Floor\-Tile}!has\-Trap@{has\-Trap}}
+\index{has\-Trap@{has\-Trap}!Gruppe22::Backend::FloorTile@{Gruppe22\-::\-Backend\-::\-Floor\-Tile}}
+\subsubsection[{has\-Trap}]{\setlength{\rightskip}{0pt plus 5cm}bool Gruppe22.\-Backend.\-Floor\-Tile.\-has\-Trap\hspace{0.3cm}{\ttfamily [get]}}}\label{class_gruppe22_1_1_backend_1_1_floor_tile_a6d2ae9e7cbc9de3a2c39ddd0fbf2cee6}
+
+
+Determine whether the current tile has a trap on it 
+
+\hypertarget{class_gruppe22_1_1_backend_1_1_floor_tile_aa62f725bbf60ab19f680d56bef8d7848}{\index{Gruppe22\-::\-Backend\-::\-Floor\-Tile@{Gruppe22\-::\-Backend\-::\-Floor\-Tile}!has\-Treasure@{has\-Treasure}}
+\index{has\-Treasure@{has\-Treasure}!Gruppe22::Backend::FloorTile@{Gruppe22\-::\-Backend\-::\-Floor\-Tile}}
+\subsubsection[{has\-Treasure}]{\setlength{\rightskip}{0pt plus 5cm}bool Gruppe22.\-Backend.\-Floor\-Tile.\-has\-Treasure\hspace{0.3cm}{\ttfamily [get]}}}\label{class_gruppe22_1_1_backend_1_1_floor_tile_aa62f725bbf60ab19f680d56bef8d7848}
+
+
+Determine whether there is a treasure on the current tile 
+
+\hypertarget{class_gruppe22_1_1_backend_1_1_floor_tile_ad5e7dcc45afdb6acf6eca5510ae38049}{\index{Gruppe22\-::\-Backend\-::\-Floor\-Tile@{Gruppe22\-::\-Backend\-::\-Floor\-Tile}!has\-Wall@{has\-Wall}}
+\index{has\-Wall@{has\-Wall}!Gruppe22::Backend::FloorTile@{Gruppe22\-::\-Backend\-::\-Floor\-Tile}}
+\subsubsection[{has\-Wall}]{\setlength{\rightskip}{0pt plus 5cm}bool Gruppe22.\-Backend.\-Floor\-Tile.\-has\-Wall\hspace{0.3cm}{\ttfamily [get]}}}\label{class_gruppe22_1_1_backend_1_1_floor_tile_ad5e7dcc45afdb6acf6eca5510ae38049}
+
+
+Determine whether tile has a wall on it 
+
+\hypertarget{class_gruppe22_1_1_backend_1_1_floor_tile_a9ffbcbcaade0609f83172fa271e33563}{\index{Gruppe22\-::\-Backend\-::\-Floor\-Tile@{Gruppe22\-::\-Backend\-::\-Floor\-Tile}!items@{items}}
+\index{items@{items}!Gruppe22::Backend::FloorTile@{Gruppe22\-::\-Backend\-::\-Floor\-Tile}}
+\subsubsection[{items}]{\setlength{\rightskip}{0pt plus 5cm}List$<${\bf Item}$>$ Gruppe22.\-Backend.\-Floor\-Tile.\-items\hspace{0.3cm}{\ttfamily [get]}}}\label{class_gruppe22_1_1_backend_1_1_floor_tile_a9ffbcbcaade0609f83172fa271e33563}
+\hypertarget{class_gruppe22_1_1_backend_1_1_floor_tile_a8ce0005a15cfaf89ec382a84ef908c8f}{\index{Gruppe22\-::\-Backend\-::\-Floor\-Tile@{Gruppe22\-::\-Backend\-::\-Floor\-Tile}!overlay@{overlay}}
+\index{overlay@{overlay}!Gruppe22::Backend::FloorTile@{Gruppe22\-::\-Backend\-::\-Floor\-Tile}}
+\subsubsection[{overlay}]{\setlength{\rightskip}{0pt plus 5cm}List$<${\bf Tile}$>$ Gruppe22.\-Backend.\-Floor\-Tile.\-overlay\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}}\label{class_gruppe22_1_1_backend_1_1_floor_tile_a8ce0005a15cfaf89ec382a84ef908c8f}
+\hypertarget{class_gruppe22_1_1_backend_1_1_floor_tile_a8929f5ce72b9deb76b2babb69e08c308}{\index{Gruppe22\-::\-Backend\-::\-Floor\-Tile@{Gruppe22\-::\-Backend\-::\-Floor\-Tile}!reserved@{reserved}}
+\index{reserved@{reserved}!Gruppe22::Backend::FloorTile@{Gruppe22\-::\-Backend\-::\-Floor\-Tile}}
+\subsubsection[{reserved}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Reserved\-Tile} Gruppe22.\-Backend.\-Floor\-Tile.\-reserved\hspace{0.3cm}{\ttfamily [get]}}}\label{class_gruppe22_1_1_backend_1_1_floor_tile_a8929f5ce72b9deb76b2babb69e08c308}
+\hypertarget{class_gruppe22_1_1_backend_1_1_floor_tile_a9276aed0713002718a978669f237b106}{\index{Gruppe22\-::\-Backend\-::\-Floor\-Tile@{Gruppe22\-::\-Backend\-::\-Floor\-Tile}!teleport@{teleport}}
+\index{teleport@{teleport}!Gruppe22::Backend::FloorTile@{Gruppe22\-::\-Backend\-::\-Floor\-Tile}}
+\subsubsection[{teleport}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Teleport\-Tile} Gruppe22.\-Backend.\-Floor\-Tile.\-teleport\hspace{0.3cm}{\ttfamily [get]}}}\label{class_gruppe22_1_1_backend_1_1_floor_tile_a9276aed0713002718a978669f237b106}
+\hypertarget{class_gruppe22_1_1_backend_1_1_floor_tile_a1f5554db761650899c2fdd571ceff000}{\index{Gruppe22\-::\-Backend\-::\-Floor\-Tile@{Gruppe22\-::\-Backend\-::\-Floor\-Tile}!trap@{trap}}
+\index{trap@{trap}!Gruppe22::Backend::FloorTile@{Gruppe22\-::\-Backend\-::\-Floor\-Tile}}
+\subsubsection[{trap}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Trap\-Tile} Gruppe22.\-Backend.\-Floor\-Tile.\-trap\hspace{0.3cm}{\ttfamily [get]}}}\label{class_gruppe22_1_1_backend_1_1_floor_tile_a1f5554db761650899c2fdd571ceff000}
+\hypertarget{class_gruppe22_1_1_backend_1_1_floor_tile_a285da5ca4d7d6a6af58fff71c1156a91}{\index{Gruppe22\-::\-Backend\-::\-Floor\-Tile@{Gruppe22\-::\-Backend\-::\-Floor\-Tile}!visible@{visible}}
+\index{visible@{visible}!Gruppe22::Backend::FloorTile@{Gruppe22\-::\-Backend\-::\-Floor\-Tile}}
+\subsubsection[{visible}]{\setlength{\rightskip}{0pt plus 5cm}bool Gruppe22.\-Backend.\-Floor\-Tile.\-visible\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}}\label{class_gruppe22_1_1_backend_1_1_floor_tile_a285da5ca4d7d6a6af58fff71c1156a91}
+\hypertarget{class_gruppe22_1_1_backend_1_1_floor_tile_af235974bebb657c12a310521c1e8293d}{\index{Gruppe22\-::\-Backend\-::\-Floor\-Tile@{Gruppe22\-::\-Backend\-::\-Floor\-Tile}!wall\-Type@{wall\-Type}}
+\index{wall\-Type@{wall\-Type}!Gruppe22::Backend::FloorTile@{Gruppe22\-::\-Backend\-::\-Floor\-Tile}}
+\subsubsection[{wall\-Type}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Wall\-Type} Gruppe22.\-Backend.\-Floor\-Tile.\-wall\-Type\hspace{0.3cm}{\ttfamily [get]}}}\label{class_gruppe22_1_1_backend_1_1_floor_tile_af235974bebb657c12a310521c1e8293d}
+
+
+Die Dokumentation für diese Klasse wurde erzeugt aufgrund der Datei\-:\begin{DoxyCompactItemize}
+\item 
+C\-:/\-Users/beursken/\-Documents/\-Git\-Hub/gruppe22/\-Gruppe22/\-Gruppe22/\-Backend/\-Map/\hyperlink{_floor_tile_8cs}{Floor\-Tile.\-cs}\end{DoxyCompactItemize}

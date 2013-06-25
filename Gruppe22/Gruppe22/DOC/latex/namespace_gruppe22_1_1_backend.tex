@@ -1,0 +1,797 @@
+\hypertarget{namespace_gruppe22_1_1_backend}{\section{Paket Gruppe22.\-Backend}
+\label{namespace_gruppe22_1_1_backend}\index{Gruppe22.\-Backend@{Gruppe22.\-Backend}}
+}
+\subsection*{Klassen}
+\begin{DoxyCompactItemize}
+\item 
+class \hyperlink{class_gruppe22_1_1_backend_1_1_actor}{Actor}
+\item 
+class \hyperlink{class_gruppe22_1_1_backend_1_1_enemy}{Enemy}
+\item 
+class \hyperlink{class_gruppe22_1_1_backend_1_1_n_p_c}{N\-P\-C}
+\item 
+class \hyperlink{class_gruppe22_1_1_backend_1_1_player}{Player}
+\item 
+class \hyperlink{class_gruppe22_1_1_backend_1_1_game_logic}{Game\-Logic}
+\begin{DoxyCompactList}\small\item\em Handle game logic \end{DoxyCompactList}\item 
+class \hyperlink{class_gruppe22_1_1_backend_1_1_image_data}{Image\-Data}
+\item 
+interface \hyperlink{interface_gruppe22_1_1_backend_1_1_i_handle_event}{I\-Handle\-Event}
+\item 
+class \hyperlink{class_gruppe22_1_1_backend_1_1_coords}{Coords}
+\begin{DoxyCompactList}\small\item\em A two dimensional coordinate \end{DoxyCompactList}\item 
+class \hyperlink{class_gruppe22_1_1_backend_1_1_path}{Path}
+\begin{DoxyCompactList}\small\item\em A path through the maze \end{DoxyCompactList}\item 
+class \hyperlink{class_gruppe22_1_1_backend_1_1_ability}{Ability}
+\item 
+class \hyperlink{class_gruppe22_1_1_backend_1_1_item}{Item}
+\item 
+class \hyperlink{class_gruppe22_1_1_backend_1_1_item_effect}{Item\-Effect}
+\begin{DoxyCompactList}\small\item\em Effect of an item on a certain character statistic \end{DoxyCompactList}\item 
+class \hyperlink{class_gruppe22_1_1_backend_1_1_actor_tile}{Actor\-Tile}
+\item 
+class \hyperlink{class_gruppe22_1_1_backend_1_1_bomb_tile}{Bomb\-Tile}
+\item 
+class \hyperlink{class_gruppe22_1_1_backend_1_1_checkpoint_tile}{Checkpoint\-Tile}
+\item 
+class \hyperlink{class_gruppe22_1_1_backend_1_1_door_tile}{Door\-Tile}
+\item 
+class \hyperlink{class_gruppe22_1_1_backend_1_1_floor_tile}{Floor\-Tile}
+\item 
+class \hyperlink{class_gruppe22_1_1_backend_1_1_gap_tile}{Gap\-Tile}
+\item 
+class \hyperlink{class_gruppe22_1_1_backend_1_1_generator}{Generator}
+\item 
+class \hyperlink{class_gruppe22_1_1_backend_1_1_generator_tile}{Generator\-Tile}
+\item 
+class \hyperlink{class_gruppe22_1_1_backend_1_1_item_tile}{Item\-Tile}
+\item 
+class \hyperlink{class_gruppe22_1_1_backend_1_1_exit}{Exit}
+\item 
+class \hyperlink{class_gruppe22_1_1_backend_1_1_map}{Map}
+\item 
+class \hyperlink{class_gruppe22_1_1_backend_1_1_movable_tile}{Movable\-Tile}
+\item 
+class \hyperlink{class_gruppe22_1_1_backend_1_1_reserved_tile}{Reserved\-Tile}
+\item 
+class \hyperlink{class_gruppe22_1_1_backend_1_1_switch_tile}{Switch\-Tile}
+\item 
+class \hyperlink{class_gruppe22_1_1_backend_1_1_target_tile}{Target\-Tile}
+\item 
+class \hyperlink{class_gruppe22_1_1_backend_1_1_teleport_tile}{Teleport\-Tile}
+\item 
+class \hyperlink{class_gruppe22_1_1_backend_1_1_tile}{Tile}
+\begin{DoxyCompactList}\small\item\em An abstract class representing a generic tile (i.\-e. blank floor) \end{DoxyCompactList}\item 
+class \hyperlink{class_gruppe22_1_1_backend_1_1_trap_tile}{Trap\-Tile}
+\begin{DoxyCompactList}\small\item\em A tile containing a trap \end{DoxyCompactList}\item 
+class \hyperlink{class_gruppe22_1_1_backend_1_1_trigger_tile}{Trigger\-Tile}
+\item 
+class \hyperlink{class_gruppe22_1_1_backend_1_1_wall_tile}{Wall\-Tile}
+\end{DoxyCompactItemize}
+\subsection*{Aufzählungen}
+\begin{DoxyCompactItemize}
+\item 
+enum \hyperlink{namespace_gruppe22_1_1_backend_a56d8f7bd1b5ba29d421c27a959523af3}{Actor\-Type} \{ \hyperlink{namespace_gruppe22_1_1_backend_a56d8f7bd1b5ba29d421c27a959523af3a636da1d35e805b00eae0fcd8333f9234}{Actor\-Type.\-Player} = 0, 
+\hyperlink{namespace_gruppe22_1_1_backend_a56d8f7bd1b5ba29d421c27a959523af3a2bda99597da06a11feafd8760b68aec6}{Actor\-Type.\-N\-P\-C} = 1, 
+\hyperlink{namespace_gruppe22_1_1_backend_a56d8f7bd1b5ba29d421c27a959523af3a8c6d21187fb58b7a079d70030686b33e}{Actor\-Type.\-Enemy} = 2
+ \}
+\item 
+enum \hyperlink{namespace_gruppe22_1_1_backend_aaa25d27da5307e9abb21f9f09b528f67}{Activity} \{ \\*
+\hyperlink{namespace_gruppe22_1_1_backend_aaa25d27da5307e9abb21f9f09b528f67a7a16a854f32231a8df9326136b09ee62}{Activity.\-Walk} = 0, 
+\hyperlink{namespace_gruppe22_1_1_backend_aaa25d27da5307e9abb21f9f09b528f67ad7663fa42334fe2bdff69b245bf44c7e}{Activity.\-Talk}, 
+\hyperlink{namespace_gruppe22_1_1_backend_aaa25d27da5307e9abb21f9f09b528f67adcfafcb4323b102c7e204555d313ba0a}{Activity.\-Attack}, 
+\hyperlink{namespace_gruppe22_1_1_backend_aaa25d27da5307e9abb21f9f09b528f67aebfe5e1791db03c4cd6ab95801e0977d}{Activity.\-Hit}, 
+\\*
+\hyperlink{namespace_gruppe22_1_1_backend_aaa25d27da5307e9abb21f9f09b528f67a952f8d52fbca6da722e72d520acd6edd}{Activity.\-Die}, 
+\hyperlink{namespace_gruppe22_1_1_backend_aaa25d27da5307e9abb21f9f09b528f67ab4c2b550635fe54fd29f2b64dfaca55d}{Activity.\-Special}
+ \}
+\item 
+enum \hyperlink{namespace_gruppe22_1_1_backend_a05a2787d555181519f14c35500a51400}{Packet\-Type} \{ \\*
+\hyperlink{namespace_gruppe22_1_1_backend_a05a2787d555181519f14c35500a51400a49ab28040dfa07f53544970c6d147e1e}{Packet\-Type.\-Connect}, 
+\hyperlink{namespace_gruppe22_1_1_backend_a05a2787d555181519f14c35500a51400a42ae25231906c83927831e0ef7c317ac}{Packet\-Type.\-Disconnect}, 
+\hyperlink{namespace_gruppe22_1_1_backend_a05a2787d555181519f14c35500a51400a6bc362dbf494c61ea117fe3c71ca48a5}{Packet\-Type.\-Move}, 
+\hyperlink{namespace_gruppe22_1_1_backend_a05a2787d555181519f14c35500a51400afa523b08ec3e0b1d496fe7703f63da2d}{Packet\-Type.\-Update\-Map}, 
+\\*
+\hyperlink{namespace_gruppe22_1_1_backend_a05a2787d555181519f14c35500a51400a55c0010271ffa56800e55196d9acd283}{Packet\-Type.\-Add\-Item}, 
+\hyperlink{namespace_gruppe22_1_1_backend_a05a2787d555181519f14c35500a51400a038adad55773d5dd88815c53430a943c}{Packet\-Type.\-Remove\-Item}, 
+\hyperlink{namespace_gruppe22_1_1_backend_a05a2787d555181519f14c35500a51400af2310c7c0271b38d9a7c4ce48fd23166}{Packet\-Type.\-Toggle\-Item}, 
+\hyperlink{namespace_gruppe22_1_1_backend_a05a2787d555181519f14c35500a51400a446de5a768114f00ae120604fd5f8143}{Packet\-Type.\-Change\-Stats}, 
+\\*
+\hyperlink{namespace_gruppe22_1_1_backend_a05a2787d555181519f14c35500a51400a4187dfb502a44dfad637a96698ddd19d}{Packet\-Type.\-Update\-Clients}, 
+\hyperlink{namespace_gruppe22_1_1_backend_a05a2787d555181519f14c35500a51400a55dcdf017b51fc96f7b5f9d63013b95d}{Packet\-Type.\-Chat}
+ \}
+\item 
+enum \hyperlink{namespace_gruppe22_1_1_backend_a2d53d5d14b8ea0951ba6971e5da1ebf5}{Direction} \{ \\*
+\hyperlink{namespace_gruppe22_1_1_backend_a2d53d5d14b8ea0951ba6971e5da1ebf5a258f49887ef8d14ac268c92b02503aaa}{Direction.\-Up} = 1, 
+\hyperlink{namespace_gruppe22_1_1_backend_a2d53d5d14b8ea0951ba6971e5da1ebf5a92b09c7c48c520c3c55e497875da437c}{Direction.\-Right} = 2, 
+\hyperlink{namespace_gruppe22_1_1_backend_a2d53d5d14b8ea0951ba6971e5da1ebf5a08a38277b0309070706f6652eeae9a53}{Direction.\-Down} = 4, 
+\hyperlink{namespace_gruppe22_1_1_backend_a2d53d5d14b8ea0951ba6971e5da1ebf5a945d5e233cf7d6240f6b783b36a374ff}{Direction.\-Left} = 8, 
+\\*
+\hyperlink{namespace_gruppe22_1_1_backend_a2d53d5d14b8ea0951ba6971e5da1ebf5acd7f4772075da1452f8cd3648265b2c1}{Direction.\-Down\-Left} = 16, 
+\hyperlink{namespace_gruppe22_1_1_backend_a2d53d5d14b8ea0951ba6971e5da1ebf5aee94ab0297ae02df64791255d0a3551e}{Direction.\-Up\-Right} = 32, 
+\hyperlink{namespace_gruppe22_1_1_backend_a2d53d5d14b8ea0951ba6971e5da1ebf5a18f1e5e66255e9d07ec2944fec962090}{Direction.\-Down\-Right} = 64, 
+\hyperlink{namespace_gruppe22_1_1_backend_a2d53d5d14b8ea0951ba6971e5da1ebf5a2b6ba04836dfad0c42bae644fcfaf890}{Direction.\-Up\-Left} = 128, 
+\\*
+\hyperlink{namespace_gruppe22_1_1_backend_a2d53d5d14b8ea0951ba6971e5da1ebf5a6adf97f83acf6453d4a6a4b1070f3754}{Direction.\-None} = 0
+ \}
+\begin{DoxyCompactList}\small\item\em Enumeration of eight ways of movement \end{DoxyCompactList}\item 
+enum \hyperlink{namespace_gruppe22_1_1_backend_ab19de7e2856537f39fbd380beea6ddba}{Wall\-Type} \{ \\*
+\hyperlink{namespace_gruppe22_1_1_backend_ab19de7e2856537f39fbd380beea6ddbaa960b44c579bc2f6818d2daaf9e4c16f0}{Wall\-Type.\-Normal} = 0, 
+\hyperlink{namespace_gruppe22_1_1_backend_ab19de7e2856537f39fbd380beea6ddbaa2a39ae68459c1376d004b2fd790adcee}{Wall\-Type.\-Open\-Door} = 1, 
+\hyperlink{namespace_gruppe22_1_1_backend_ab19de7e2856537f39fbd380beea6ddbaa9b1667934b038c7ee331485dfa30d8a3}{Wall\-Type.\-Closed\-Door} = 2, 
+\hyperlink{namespace_gruppe22_1_1_backend_ab19de7e2856537f39fbd380beea6ddbaa701389ddd32037e473017df249063047}{Wall\-Type.\-Deco1} = 3, 
+\\*
+\hyperlink{namespace_gruppe22_1_1_backend_ab19de7e2856537f39fbd380beea6ddbaa2ec021329dfcdd0dfbd4870d122f0183}{Wall\-Type.\-Deco2} = 4, 
+\hyperlink{namespace_gruppe22_1_1_backend_ab19de7e2856537f39fbd380beea6ddbaa30aef1eeb4692d6bd21bc20b98674fe0}{Wall\-Type.\-Deco3} = 5
+ \}
+\item 
+enum \hyperlink{namespace_gruppe22_1_1_backend_a74373668761d179b11ba50e5980a8674}{Connection} \{ \\*
+\hyperlink{namespace_gruppe22_1_1_backend_a74373668761d179b11ba50e5980a8674a6adf97f83acf6453d4a6a4b1070f3754}{Connection.\-None} = 0, 
+\hyperlink{namespace_gruppe22_1_1_backend_a74373668761d179b11ba50e5980a8674a258f49887ef8d14ac268c92b02503aaa}{Connection.\-Up} = 1, 
+\hyperlink{namespace_gruppe22_1_1_backend_a74373668761d179b11ba50e5980a8674a08a38277b0309070706f6652eeae9a53}{Connection.\-Down} = 2, 
+\hyperlink{namespace_gruppe22_1_1_backend_a74373668761d179b11ba50e5980a8674a92b09c7c48c520c3c55e497875da437c}{Connection.\-Right} = 3, 
+\\*
+\hyperlink{namespace_gruppe22_1_1_backend_a74373668761d179b11ba50e5980a8674a945d5e233cf7d6240f6b783b36a374ff}{Connection.\-Left} = 4, 
+\hyperlink{namespace_gruppe22_1_1_backend_a74373668761d179b11ba50e5980a8674a4bbb8f967da6d1a610596d7257179c2b}{Connection.\-Invalid} = 5
+ \}
+\begin{DoxyCompactList}\small\item\em A direction to which the random generator may move \end{DoxyCompactList}\item 
+enum \hyperlink{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73}{Events} \{ \\*
+\hyperlink{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73a5d3313060b4af773c4a9625ad9eee948}{Events.\-Continue\-Game} = 0, 
+\hyperlink{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73a9f82518d468b9fee614fcc92f76bb163}{Events.\-Shop}, 
+\hyperlink{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73af0f29c4900d44c9e32d203ca799163e1}{Events.\-End\-Game}, 
+\hyperlink{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73a6f613d2ca9badf5cd7fa6ca4078b81cb}{Events.\-Toggle\-Button}, 
+\\*
+\hyperlink{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73a19d56a097bf3d2c1e2407b28afc76c0a}{Events.\-Hide\-Notification}, 
+\hyperlink{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73a7172cb821ed7a1f0c9c17a3132ef54bd}{Events.\-Move\-Actor}, 
+\hyperlink{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73aee08e9af3756988e590473fb1a0f665a}{Events.\-Change\-Map}, 
+\hyperlink{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73a97b2cc22dd548d5f75b838a78d22c2f3}{Events.\-New\-Map}, 
+\\*
+\hyperlink{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73a3e4d8672287eb4ed915169dc93b0c728}{Events.\-Reset\-Game}, 
+\hyperlink{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73a8f7f4c1ce7a4f933663d10543562b096}{Events.\-About}, 
+\hyperlink{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73a24d62fd7e5af465ca4ca8ea3f52f84b0}{Events.\-Animate\-Actor}, 
+\hyperlink{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73a2c5ebdc686f2a3c7b5418530be453cde}{Events.\-Finished\-Animation}, 
+\\*
+\hyperlink{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73a7784f68c858baf6399ab8d2c195543d6}{Events.\-Show\-Message}, 
+\hyperlink{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73aa77da55027d2fa0d53b7aa0b161daca7}{Events.\-Player1}, 
+\hyperlink{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73a35e6584330a7de7edeb92b4bf44b1aad}{Events.\-Player2}, 
+\hyperlink{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73aeec89088ee408b80387155272b113256}{Events.\-Network}, 
+\\*
+\hyperlink{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73af4f70727dc34561dfde1a3c529b6205c}{Events.\-Settings}, 
+\hyperlink{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73a509820290d57f333403f490dde7316f4}{Events.\-Local}, 
+\hyperlink{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73a1d59b567d57ca91246c45d7d8bcfbc28}{Events.\-L\-A\-N}, 
+\hyperlink{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73ad93e5cf9cf1a7d3483d6b97b78d7487a}{Events.\-Fetch\-File}, 
+\\*
+\hyperlink{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73a890ccbec96e69385d150aadadc109e09}{Events.\-Tile\-Entered}, 
+\hyperlink{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73adcfafcb4323b102c7e204555d313ba0a}{Events.\-Attack}, 
+\hyperlink{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73acd5ef6b09b3024d1c3986d5777e9f0ba}{Events.\-Trap\-Activate}, 
+\hyperlink{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73aa33b9b2c0c274ab214d3925846cd4188}{Events.\-Request\-Focus}, 
+\\*
+\hyperlink{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73ac3970d2a0dae60a62425b8859a816943}{Events.\-Load\-From\-Check\-Point}, 
+\hyperlink{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73a063c2c97b99f1d49661b9247ccf473c0}{Events.\-Explode\-Projectile}, 
+\hyperlink{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73af87a1d7c74f84b7c5db9354630b93ae5}{Events.\-Move\-Projectile}, 
+\hyperlink{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73ae4ddf487e41faf3b2020ba2410b6f45e}{Events.\-Finished\-Projectile\-Move}, 
+\\*
+\hyperlink{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73ae03f8ec4be7da41e6af04d73ba49a22d}{Events.\-Button\-Pressed}, 
+\hyperlink{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73a1ad11dccf912cf59f0872e492d817ab7}{Events.\-Activate\-Ability}, 
+\hyperlink{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73a34a326dde76da7fea521807f73d3c98a}{Events.\-Show\-Character}, 
+\hyperlink{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73a5e035f78e07eda1a93846b8ea0e9589b}{Events.\-Show\-Inventory}, 
+\\*
+\hyperlink{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73a05abf9bfeac5bd935c4411884c7d15fe}{Events.\-Show\-Menu}, 
+\hyperlink{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73a4ae05257cbbaa9af91ccbf7bbb05c17d}{Events.\-Show\-Abilities}, 
+\hyperlink{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73af9dff5d2874b6558f2756da94fbb4450}{Events.\-Add\-Drag\-Item}, 
+\hyperlink{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73a359928afdf6c973ee869e1698023a812}{Events.\-Dialogue}, 
+\\*
+\hyperlink{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73a105b296a83f9c105355403f3332af50f}{Events.\-Pause}, 
+\hyperlink{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73a55dcdf017b51fc96f7b5f9d63013b95d}{Events.\-Chat}
+ \}
+\item 
+enum \hyperlink{namespace_gruppe22_1_1_backend_a83e3e49539223e78e12c1cc09c5aa5b8}{Buttons} \{ \\*
+\hyperlink{namespace_gruppe22_1_1_backend_a83e3e49539223e78e12c1cc09c5aa5b8ad3d2e617335f08df83599665eef8a418}{Buttons.\-Close}, 
+\hyperlink{namespace_gruppe22_1_1_backend_a83e3e49539223e78e12c1cc09c5aa5b8a2f0fa9ef3e22860ad13a81365d193dc4}{Buttons.\-Two\-Players}, 
+\hyperlink{namespace_gruppe22_1_1_backend_a83e3e49539223e78e12c1cc09c5aa5b8abaa1d5d7c2a65312fdc5577125de257a}{Buttons.\-Single\-Player}, 
+\hyperlink{namespace_gruppe22_1_1_backend_a83e3e49539223e78e12c1cc09c5aa5b8af4f70727dc34561dfde1a3c529b6205c}{Buttons.\-Settings}, 
+\\*
+\hyperlink{namespace_gruppe22_1_1_backend_a83e3e49539223e78e12c1cc09c5aa5b8a51cfbcff36da74a9fc47f3a5140f99f2}{Buttons.\-Restart}, 
+\hyperlink{namespace_gruppe22_1_1_backend_a83e3e49539223e78e12c1cc09c5aa5b8a526d688f37a86d3c3f27d0c5016eb71d}{Buttons.\-Reset}, 
+\hyperlink{namespace_gruppe22_1_1_backend_a83e3e49539223e78e12c1cc09c5aa5b8a97b2cc22dd548d5f75b838a78d22c2f3}{Buttons.\-New\-Map}, 
+\hyperlink{namespace_gruppe22_1_1_backend_a83e3e49539223e78e12c1cc09c5aa5b8a509820290d57f333403f490dde7316f4}{Buttons.\-Local}, 
+\\*
+\hyperlink{namespace_gruppe22_1_1_backend_a83e3e49539223e78e12c1cc09c5aa5b8af19dbf2edb3a0bd74b0524d960ff21eb}{Buttons.\-Load}, 
+\hyperlink{namespace_gruppe22_1_1_backend_a83e3e49539223e78e12c1cc09c5aa5b8a1d59b567d57ca91246c45d7d8bcfbc28}{Buttons.\-L\-A\-N}, 
+\hyperlink{namespace_gruppe22_1_1_backend_a83e3e49539223e78e12c1cc09c5aa5b8a948a2e3548aaf7f9941a3192fa607d51}{Buttons.\-Credits}, 
+\hyperlink{namespace_gruppe22_1_1_backend_a83e3e49539223e78e12c1cc09c5aa5b8a0d82790b0612935992bd564a17ce37d6}{Buttons.\-Quit}, 
+\\*
+\hyperlink{namespace_gruppe22_1_1_backend_a83e3e49539223e78e12c1cc09c5aa5b8acd66df31d5cae6f603fc30c5927a8841}{Buttons.\-Start\-Server}, 
+\hyperlink{namespace_gruppe22_1_1_backend_a83e3e49539223e78e12c1cc09c5aa5b8a49ab28040dfa07f53544970c6d147e1e}{Buttons.\-Connect}, 
+\hyperlink{namespace_gruppe22_1_1_backend_a83e3e49539223e78e12c1cc09c5aa5b8aea4788705e6873b424c65e91c2846b19}{Buttons.\-Cancel}
+ \}
+\item 
+enum \hyperlink{namespace_gruppe22_1_1_backend_ad81bf4712f53c2ad4194343b6b0c73d2}{Game\-Status} \{ \\*
+\hyperlink{namespace_gruppe22_1_1_backend_ad81bf4712f53c2ad4194343b6b0c73d2a5bda814c4aedb126839228f1a3d92f09}{Game\-Status.\-Running}, 
+\hyperlink{namespace_gruppe22_1_1_backend_ad81bf4712f53c2ad4194343b6b0c73d2a7c753481922b31b68d11923c00f0269a}{Game\-Status.\-No\-Redraw}, 
+\hyperlink{namespace_gruppe22_1_1_backend_ad81bf4712f53c2ad4194343b6b0c73d2ae99180abf47a8b3a856e0bcb2656990a}{Game\-Status.\-Paused}, 
+\hyperlink{namespace_gruppe22_1_1_backend_ad81bf4712f53c2ad4194343b6b0c73d2ae1bd40e26deea8a053a5c26e1e2bf575}{Game\-Status.\-Fetching\-Data}, 
+\\*
+\hyperlink{namespace_gruppe22_1_1_backend_ad81bf4712f53c2ad4194343b6b0c73d2a8f347bc7cebca9fa6d97e70c6bc29eb3}{Game\-Status.\-Game\-Over}, 
+\hyperlink{namespace_gruppe22_1_1_backend_ad81bf4712f53c2ad4194343b6b0c73d2a16bfbf9c462762cf1cba4134ec53c504}{Game\-Status.\-Loading}
+ \}
+\item 
+enum \hyperlink{namespace_gruppe22_1_1_backend_a76255be55e4f31a7f4380aa4570b7531}{Ability\-Target} \{ \\*
+\hyperlink{namespace_gruppe22_1_1_backend_a76255be55e4f31a7f4380aa4570b7531a6adf97f83acf6453d4a6a4b1070f3754}{Ability\-Target.\-None} = 0, 
+\hyperlink{namespace_gruppe22_1_1_backend_a76255be55e4f31a7f4380aa4570b7531ae6eb77b6edb5a7aa5ddff07dd6d4f7b1}{Ability\-Target.\-Missile} = 1, 
+\hyperlink{namespace_gruppe22_1_1_backend_a76255be55e4f31a7f4380aa4570b7531aad6e7652b1bdfb38783486c2c3d5e806}{Ability\-Target.\-Self} = 2, 
+\hyperlink{namespace_gruppe22_1_1_backend_a76255be55e4f31a7f4380aa4570b7531a6ed3cf13906dc93a2f205a19e122c640}{Ability\-Target.\-Aura} = 4, 
+\\*
+\hyperlink{namespace_gruppe22_1_1_backend_a76255be55e4f31a7f4380aa4570b7531a7d74f3b92b19da5e606d737d339a9679}{Ability\-Target.\-Item} = 8, 
+\hyperlink{namespace_gruppe22_1_1_backend_a76255be55e4f31a7f4380aa4570b7531a46f3ea056caa3126b91f3f70beea068c}{Ability\-Target.\-Map} = 16, 
+\hyperlink{namespace_gruppe22_1_1_backend_a76255be55e4f31a7f4380aa4570b7531adbaa996612e29808794416e923ada282}{Ability\-Target.\-Explode} = 32
+ \}
+\item 
+enum \hyperlink{namespace_gruppe22_1_1_backend_a313ed67a4abf2c938a5930323a3d6f49}{Ability\-Element} \{ \\*
+\hyperlink{namespace_gruppe22_1_1_backend_a313ed67a4abf2c938a5930323a3d6f49a6adf97f83acf6453d4a6a4b1070f3754}{Ability\-Element.\-None} = 0, 
+\hyperlink{namespace_gruppe22_1_1_backend_a313ed67a4abf2c938a5930323a3d6f49abd2b7e5f85a6ea65065c4ebc6d7c95bb}{Ability\-Element.\-Fire} = 1, 
+\hyperlink{namespace_gruppe22_1_1_backend_a313ed67a4abf2c938a5930323a3d6f49a583d6a9fe10d672474e2cdca476113b7}{Ability\-Element.\-Ice} = 2, 
+\hyperlink{namespace_gruppe22_1_1_backend_a313ed67a4abf2c938a5930323a3d6f49a605669cab962bf944d99ce89cf9e58d9}{Ability\-Element.\-Health} = 4, 
+\\*
+\hyperlink{namespace_gruppe22_1_1_backend_a313ed67a4abf2c938a5930323a3d6f49a9281e27551328053c34a18315c3edaa2}{Ability\-Element.\-Mana\-Reg} = 8, 
+\hyperlink{namespace_gruppe22_1_1_backend_a313ed67a4abf2c938a5930323a3d6f49a9fa0e669a5cd23b2962384e30610d9c5}{Ability\-Element.\-Health\-Reg} = 16, 
+\hyperlink{namespace_gruppe22_1_1_backend_a313ed67a4abf2c938a5930323a3d6f49a27e9c0d7972e999a5bbe094c4cede584}{Ability\-Element.\-Stun} = 32, 
+\hyperlink{namespace_gruppe22_1_1_backend_a313ed67a4abf2c938a5930323a3d6f49a054fc7866c93a2496fd9048c493e6aed}{Ability\-Element.\-Teleport} = 64, 
+\\*
+\hyperlink{namespace_gruppe22_1_1_backend_a313ed67a4abf2c938a5930323a3d6f49aab58c3d23f25832de807772cb54f5627}{Ability\-Element.\-Morph} = 128, 
+\hyperlink{namespace_gruppe22_1_1_backend_a313ed67a4abf2c938a5930323a3d6f49a32ce041007058889bd9ccb8b22ade877}{Ability\-Element.\-Charm} = 256, 
+\hyperlink{namespace_gruppe22_1_1_backend_a313ed67a4abf2c938a5930323a3d6f49aea94a9b257a33c4113c40f3211eff432}{Ability\-Element.\-Scare} = 512
+ \}
+\item 
+enum \hyperlink{namespace_gruppe22_1_1_backend_ad9b2305e9d47cf46b34e082657cc5504}{Item\-Type} \{ \\*
+\hyperlink{namespace_gruppe22_1_1_backend_ad9b2305e9d47cf46b34e082657cc5504ac77a8030f463c2c14aebd6452fc9f0a8}{Item\-Type.\-Armor} = 0, 
+\hyperlink{namespace_gruppe22_1_1_backend_ad9b2305e9d47cf46b34e082657cc5504af7f5d540f521d6d642502a9d459e7b16}{Item\-Type.\-Potion} = 1, 
+\hyperlink{namespace_gruppe22_1_1_backend_ad9b2305e9d47cf46b34e082657cc5504a18c83669920215a818638ad0e5421e4b}{Item\-Type.\-Weapon} = 2, 
+\hyperlink{namespace_gruppe22_1_1_backend_ad9b2305e9d47cf46b34e082657cc5504a9768feb3fdb1f267b06093bc572952dd}{Item\-Type.\-Gold} = 3, 
+\\*
+\hyperlink{namespace_gruppe22_1_1_backend_ad9b2305e9d47cf46b34e082657cc5504a897356954c2cd3d41b221e3f24f99bba}{Item\-Type.\-Key} = 4, 
+\hyperlink{namespace_gruppe22_1_1_backend_ad9b2305e9d47cf46b34e082657cc5504a3b0649c72650c313a357338dcdfb64ec}{Item\-Type.\-Note} = 5, 
+\hyperlink{namespace_gruppe22_1_1_backend_ad9b2305e9d47cf46b34e082657cc5504a2cbd779a6d41d9715d259a5d7e8bb93d}{Item\-Type.\-Cloak} = 6, 
+\hyperlink{namespace_gruppe22_1_1_backend_ad9b2305e9d47cf46b34e082657cc5504a48fce5d02f6935e50f256d5dedac4437}{Item\-Type.\-Bow} = 7, 
+\\*
+\hyperlink{namespace_gruppe22_1_1_backend_ad9b2305e9d47cf46b34e082657cc5504a8f7f93630c366dc55aec88eb8e9640d0}{Item\-Type.\-Staff} = 8, 
+\hyperlink{namespace_gruppe22_1_1_backend_ad9b2305e9d47cf46b34e082657cc5504ad4db177c94738b72bf9ce61e988ab1f1}{Item\-Type.\-Ring} = 9
+ \}
+\item 
+enum \hyperlink{namespace_gruppe22_1_1_backend_a0bab4fb79b71059941f85a901606a7df}{Item\-Property} \{ \\*
+\hyperlink{namespace_gruppe22_1_1_backend_a0bab4fb79b71059941f85a901606a7dfafcebb8bec493a6678a2758580bee43f9}{Item\-Property.\-Evade} = 0, 
+\hyperlink{namespace_gruppe22_1_1_backend_a0bab4fb79b71059941f85a901606a7dfae1e4c8c9ccd9fc39c391da4bcd093fb2}{Item\-Property.\-Block} = 1, 
+\hyperlink{namespace_gruppe22_1_1_backend_a0bab4fb79b71059941f85a901606a7dfa6a6fd59376f4a9f27ed4a8fbc4042ad8}{Item\-Property.\-Penetrate} = 2, 
+\hyperlink{namespace_gruppe22_1_1_backend_a0bab4fb79b71059941f85a901606a7dfa3d25243594fafa7b27523a4ab8c2c175}{Item\-Property.\-Reduce\-Damage} = 3, 
+\\*
+\hyperlink{namespace_gruppe22_1_1_backend_a0bab4fb79b71059941f85a901606a7dfa01dc2c0b0a5b72f35bfbe2a358b82c27}{Item\-Property.\-Max\-Health} = 4, 
+\hyperlink{namespace_gruppe22_1_1_backend_a0bab4fb79b71059941f85a901606a7dfa6ccce9386ceaed69f434d6d71809bde6}{Item\-Property.\-Max\-Mana} = 5, 
+\hyperlink{namespace_gruppe22_1_1_backend_a0bab4fb79b71059941f85a901606a7dfa02fcc64668dd1b6a85e60ac9797f2dc7}{Item\-Property.\-Mana} = 6, 
+\hyperlink{namespace_gruppe22_1_1_backend_a0bab4fb79b71059941f85a901606a7dfa605669cab962bf944d99ce89cf9e58d9}{Item\-Property.\-Health} = 7, 
+\\*
+\hyperlink{namespace_gruppe22_1_1_backend_a0bab4fb79b71059941f85a901606a7dfa8fda0a3035dab05823cf6ea23e79f088}{Item\-Property.\-Mana\-Regen} = 8, 
+\hyperlink{namespace_gruppe22_1_1_backend_a0bab4fb79b71059941f85a901606a7dfadef4dfd65e3aafc65b9e391a2447e700}{Item\-Property.\-Health\-Regen} = 9, 
+\hyperlink{namespace_gruppe22_1_1_backend_a0bab4fb79b71059941f85a901606a7dfa5bf90ec70de4955a98a0552dc23584ca}{Item\-Property.\-Steal\-Health} = 10, 
+\hyperlink{namespace_gruppe22_1_1_backend_a0bab4fb79b71059941f85a901606a7dfa185be12b8bf4ffd59c2321e3a1e6636c}{Item\-Property.\-Steal\-Mana} = 11, 
+\\*
+\hyperlink{namespace_gruppe22_1_1_backend_a0bab4fb79b71059941f85a901606a7dfa84b81529b730f6e96082d2ce171dcca9}{Item\-Property.\-Fire\-Damage} = 12, 
+\hyperlink{namespace_gruppe22_1_1_backend_a0bab4fb79b71059941f85a901606a7dfa36403fc0d6133beec3e08fe610e081ac}{Item\-Property.\-Ice\-Damage} = 13, 
+\hyperlink{namespace_gruppe22_1_1_backend_a0bab4fb79b71059941f85a901606a7dfad8fe3ba17103b087964638f10e8f2970}{Item\-Property.\-Fire\-Protect} = 14, 
+\hyperlink{namespace_gruppe22_1_1_backend_a0bab4fb79b71059941f85a901606a7dfa189e09922d5275a21480d80e23e3aa87}{Item\-Property.\-Ice\-Protect} = 15, 
+\\*
+\hyperlink{namespace_gruppe22_1_1_backend_a0bab4fb79b71059941f85a901606a7dfa280ea2e83cd07ef62c4c179faf4b76d9}{Item\-Property.\-Destroy\-Weapon} = 16, 
+\hyperlink{namespace_gruppe22_1_1_backend_a0bab4fb79b71059941f85a901606a7dfa85eab3e098bf4624f6a3978ed9d0d36b}{Item\-Property.\-Destroy\-Armor} = 17, 
+\hyperlink{namespace_gruppe22_1_1_backend_a0bab4fb79b71059941f85a901606a7dfa4d868e8df67bd5b7d286d14b02b3df89}{Item\-Property.\-Resist} = 18, 
+\hyperlink{namespace_gruppe22_1_1_backend_a0bab4fb79b71059941f85a901606a7dfab9f24e83531326204197015b2f43a93f}{Item\-Property.\-Damage} = 19, 
+\\*
+\hyperlink{namespace_gruppe22_1_1_backend_a0bab4fb79b71059941f85a901606a7dfabbb93ef26e3c101ff11cdd21cab08a94}{Item\-Property.\-Null} = -\/1
+ \}
+\item 
+enum \hyperlink{namespace_gruppe22_1_1_backend_a5956dac270a0deefca1d578d210550e2}{Tile\-Type} \{ \\*
+\hyperlink{namespace_gruppe22_1_1_backend_a5956dac270a0deefca1d578d210550e2ace2c8aed9c2fa0cfbed56cbda4d8bf07}{Tile\-Type.\-Empty} = 0, 
+\hyperlink{namespace_gruppe22_1_1_backend_a5956dac270a0deefca1d578d210550e2a94e8a499539d1a472f3b5dbbb85508c0}{Tile\-Type.\-Wall}, 
+\hyperlink{namespace_gruppe22_1_1_backend_a5956dac270a0deefca1d578d210550e2a8b9038a4896d530d239f4af3bbb30357}{Tile\-Type.\-Trap}, 
+\hyperlink{namespace_gruppe22_1_1_backend_a5956dac270a0deefca1d578d210550e2a8c6d21187fb58b7a079d70030686b33e}{Tile\-Type.\-Enemy}, 
+\\*
+\hyperlink{namespace_gruppe22_1_1_backend_a5956dac270a0deefca1d578d210550e2aa6122a65eaa676f700ae68d393054a37}{Tile\-Type.\-Start}, 
+\hyperlink{namespace_gruppe22_1_1_backend_a5956dac270a0deefca1d578d210550e2ac41a31890959544c6523af684561abe5}{Tile\-Type.\-Target}, 
+\hyperlink{namespace_gruppe22_1_1_backend_a5956dac270a0deefca1d578d210550e2ad0888defea7cf0dea03c15fa2d396a9a}{Tile\-Type.\-Teleporter}, 
+\hyperlink{namespace_gruppe22_1_1_backend_a5956dac270a0deefca1d578d210550e2a7d74f3b92b19da5e606d737d339a9679}{Tile\-Type.\-Item}, 
+\\*
+\hyperlink{namespace_gruppe22_1_1_backend_a5956dac270a0deefca1d578d210550e2aef41311079c448d0beb06ec07db0bf8c}{Tile\-Type.\-Checkpoint}
+ \}
+\item 
+enum \hyperlink{namespace_gruppe22_1_1_backend_a7cb5b89ab1a55788a8025add98954b53}{Trap\-Type} \{ \hyperlink{namespace_gruppe22_1_1_backend_a7cb5b89ab1a55788a8025add98954b53a6adf97f83acf6453d4a6a4b1070f3754}{Trap\-Type.\-None} = 0, 
+\hyperlink{namespace_gruppe22_1_1_backend_a7cb5b89ab1a55788a8025add98954b53a8b7b3a611d06cd195b13292422231cbe}{Trap\-Type.\-Changing} = 1, 
+\hyperlink{namespace_gruppe22_1_1_backend_a7cb5b89ab1a55788a8025add98954b53acc1bffc6d562264a1578c9e28563e45b}{Trap\-Type.\-Only\-Once} = 2, 
+\hyperlink{namespace_gruppe22_1_1_backend_a7cb5b89ab1a55788a8025add98954b53a7acdf85c69cc3c5305456a293524386e}{Trap\-Type.\-Hidden} = 4
+ \}
+\begin{DoxyCompactList}\small\item\em Different types of traps \end{DoxyCompactList}\item 
+enum \hyperlink{namespace_gruppe22_1_1_backend_a3441a72488409f943181b735fcab76eb}{Trap\-State} \{ \\*
+\hyperlink{namespace_gruppe22_1_1_backend_a3441a72488409f943181b735fcab76ebaaefbd0597f1bc2493bbc18898243513b}{Trap\-State.\-Destroyed} = 0, 
+\hyperlink{namespace_gruppe22_1_1_backend_a3441a72488409f943181b735fcab76eba521c36a31c2762741cf0f8890cbe05e3}{Trap\-State.\-On} = 1, 
+\hyperlink{namespace_gruppe22_1_1_backend_a3441a72488409f943181b735fcab76ebad15305d7a4e34e02489c74a5ef542f36}{Trap\-State.\-Off} = 2, 
+\hyperlink{namespace_gruppe22_1_1_backend_a3441a72488409f943181b735fcab76ebab9f5c797ebbf55adccdd8539a65a0241}{Trap\-State.\-Disabled} = 3, 
+\\*
+\hyperlink{namespace_gruppe22_1_1_backend_a3441a72488409f943181b735fcab76eba28b652e57d2da6b7c939166be21efd9a}{Trap\-State.\-No\-Display} = 5
+ \}
+\begin{DoxyCompactList}\small\item\em Determines the State of a trap \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Dokumentation der Aufzählungstypen}
+\hypertarget{namespace_gruppe22_1_1_backend_a313ed67a4abf2c938a5930323a3d6f49}{\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Ability\-Element@{Ability\-Element}}
+\index{Ability\-Element@{Ability\-Element}!Gruppe22::Backend@{Gruppe22\-::\-Backend}}
+\subsubsection[{Ability\-Element}]{\setlength{\rightskip}{0pt plus 5cm}enum {\bf Gruppe22.\-Backend.\-Ability\-Element}}}\label{namespace_gruppe22_1_1_backend_a313ed67a4abf2c938a5930323a3d6f49}
+\begin{Desc}
+\item[Aufzählungswerte]\par
+\begin{description}
+\index{None@{None}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!None@{None}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a313ed67a4abf2c938a5930323a3d6f49a6adf97f83acf6453d4a6a4b1070f3754}{None}\label{namespace_gruppe22_1_1_backend_a313ed67a4abf2c938a5930323a3d6f49a6adf97f83acf6453d4a6a4b1070f3754}
+}]\index{Fire@{Fire}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Fire@{Fire}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a313ed67a4abf2c938a5930323a3d6f49abd2b7e5f85a6ea65065c4ebc6d7c95bb}{Fire}\label{namespace_gruppe22_1_1_backend_a313ed67a4abf2c938a5930323a3d6f49abd2b7e5f85a6ea65065c4ebc6d7c95bb}
+}]\index{Ice@{Ice}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Ice@{Ice}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a313ed67a4abf2c938a5930323a3d6f49a583d6a9fe10d672474e2cdca476113b7}{Ice}\label{namespace_gruppe22_1_1_backend_a313ed67a4abf2c938a5930323a3d6f49a583d6a9fe10d672474e2cdca476113b7}
+}]\index{Health@{Health}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Health@{Health}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a313ed67a4abf2c938a5930323a3d6f49a605669cab962bf944d99ce89cf9e58d9}{Health}\label{namespace_gruppe22_1_1_backend_a313ed67a4abf2c938a5930323a3d6f49a605669cab962bf944d99ce89cf9e58d9}
+}]\index{Mana\-Reg@{Mana\-Reg}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Mana\-Reg@{Mana\-Reg}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a313ed67a4abf2c938a5930323a3d6f49a9281e27551328053c34a18315c3edaa2}{Mana\-Reg}\label{namespace_gruppe22_1_1_backend_a313ed67a4abf2c938a5930323a3d6f49a9281e27551328053c34a18315c3edaa2}
+}]\index{Health\-Reg@{Health\-Reg}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Health\-Reg@{Health\-Reg}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a313ed67a4abf2c938a5930323a3d6f49a9fa0e669a5cd23b2962384e30610d9c5}{Health\-Reg}\label{namespace_gruppe22_1_1_backend_a313ed67a4abf2c938a5930323a3d6f49a9fa0e669a5cd23b2962384e30610d9c5}
+}]\index{Stun@{Stun}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Stun@{Stun}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a313ed67a4abf2c938a5930323a3d6f49a27e9c0d7972e999a5bbe094c4cede584}{Stun}\label{namespace_gruppe22_1_1_backend_a313ed67a4abf2c938a5930323a3d6f49a27e9c0d7972e999a5bbe094c4cede584}
+}]\index{Teleport@{Teleport}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Teleport@{Teleport}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a313ed67a4abf2c938a5930323a3d6f49a054fc7866c93a2496fd9048c493e6aed}{Teleport}\label{namespace_gruppe22_1_1_backend_a313ed67a4abf2c938a5930323a3d6f49a054fc7866c93a2496fd9048c493e6aed}
+}]\index{Morph@{Morph}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Morph@{Morph}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a313ed67a4abf2c938a5930323a3d6f49aab58c3d23f25832de807772cb54f5627}{Morph}\label{namespace_gruppe22_1_1_backend_a313ed67a4abf2c938a5930323a3d6f49aab58c3d23f25832de807772cb54f5627}
+}]\index{Charm@{Charm}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Charm@{Charm}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a313ed67a4abf2c938a5930323a3d6f49a32ce041007058889bd9ccb8b22ade877}{Charm}\label{namespace_gruppe22_1_1_backend_a313ed67a4abf2c938a5930323a3d6f49a32ce041007058889bd9ccb8b22ade877}
+}]\index{Scare@{Scare}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Scare@{Scare}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a313ed67a4abf2c938a5930323a3d6f49aea94a9b257a33c4113c40f3211eff432}{Scare}\label{namespace_gruppe22_1_1_backend_a313ed67a4abf2c938a5930323a3d6f49aea94a9b257a33c4113c40f3211eff432}
+}]\end{description}
+\end{Desc}
+\hypertarget{namespace_gruppe22_1_1_backend_a76255be55e4f31a7f4380aa4570b7531}{\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Ability\-Target@{Ability\-Target}}
+\index{Ability\-Target@{Ability\-Target}!Gruppe22::Backend@{Gruppe22\-::\-Backend}}
+\subsubsection[{Ability\-Target}]{\setlength{\rightskip}{0pt plus 5cm}enum {\bf Gruppe22.\-Backend.\-Ability\-Target}}}\label{namespace_gruppe22_1_1_backend_a76255be55e4f31a7f4380aa4570b7531}
+\begin{Desc}
+\item[Aufzählungswerte]\par
+\begin{description}
+\index{None@{None}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!None@{None}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a76255be55e4f31a7f4380aa4570b7531a6adf97f83acf6453d4a6a4b1070f3754}{None}\label{namespace_gruppe22_1_1_backend_a76255be55e4f31a7f4380aa4570b7531a6adf97f83acf6453d4a6a4b1070f3754}
+}]\index{Missile@{Missile}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Missile@{Missile}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a76255be55e4f31a7f4380aa4570b7531ae6eb77b6edb5a7aa5ddff07dd6d4f7b1}{Missile}\label{namespace_gruppe22_1_1_backend_a76255be55e4f31a7f4380aa4570b7531ae6eb77b6edb5a7aa5ddff07dd6d4f7b1}
+}]\index{Self@{Self}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Self@{Self}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a76255be55e4f31a7f4380aa4570b7531aad6e7652b1bdfb38783486c2c3d5e806}{Self}\label{namespace_gruppe22_1_1_backend_a76255be55e4f31a7f4380aa4570b7531aad6e7652b1bdfb38783486c2c3d5e806}
+}]\index{Aura@{Aura}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Aura@{Aura}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a76255be55e4f31a7f4380aa4570b7531a6ed3cf13906dc93a2f205a19e122c640}{Aura}\label{namespace_gruppe22_1_1_backend_a76255be55e4f31a7f4380aa4570b7531a6ed3cf13906dc93a2f205a19e122c640}
+}]\index{Item@{Item}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Item@{Item}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a76255be55e4f31a7f4380aa4570b7531a7d74f3b92b19da5e606d737d339a9679}{Item}\label{namespace_gruppe22_1_1_backend_a76255be55e4f31a7f4380aa4570b7531a7d74f3b92b19da5e606d737d339a9679}
+}]\index{Map@{Map}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Map@{Map}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a76255be55e4f31a7f4380aa4570b7531a46f3ea056caa3126b91f3f70beea068c}{Map}\label{namespace_gruppe22_1_1_backend_a76255be55e4f31a7f4380aa4570b7531a46f3ea056caa3126b91f3f70beea068c}
+}]\index{Explode@{Explode}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Explode@{Explode}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a76255be55e4f31a7f4380aa4570b7531adbaa996612e29808794416e923ada282}{Explode}\label{namespace_gruppe22_1_1_backend_a76255be55e4f31a7f4380aa4570b7531adbaa996612e29808794416e923ada282}
+}]\end{description}
+\end{Desc}
+\hypertarget{namespace_gruppe22_1_1_backend_aaa25d27da5307e9abb21f9f09b528f67}{\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Activity@{Activity}}
+\index{Activity@{Activity}!Gruppe22::Backend@{Gruppe22\-::\-Backend}}
+\subsubsection[{Activity}]{\setlength{\rightskip}{0pt plus 5cm}enum {\bf Gruppe22.\-Backend.\-Activity}}}\label{namespace_gruppe22_1_1_backend_aaa25d27da5307e9abb21f9f09b528f67}
+\begin{Desc}
+\item[Aufzählungswerte]\par
+\begin{description}
+\index{Walk@{Walk}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Walk@{Walk}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_aaa25d27da5307e9abb21f9f09b528f67a7a16a854f32231a8df9326136b09ee62}{Walk}\label{namespace_gruppe22_1_1_backend_aaa25d27da5307e9abb21f9f09b528f67a7a16a854f32231a8df9326136b09ee62}
+}]\index{Talk@{Talk}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Talk@{Talk}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_aaa25d27da5307e9abb21f9f09b528f67ad7663fa42334fe2bdff69b245bf44c7e}{Talk}\label{namespace_gruppe22_1_1_backend_aaa25d27da5307e9abb21f9f09b528f67ad7663fa42334fe2bdff69b245bf44c7e}
+}]\index{Attack@{Attack}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Attack@{Attack}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_aaa25d27da5307e9abb21f9f09b528f67adcfafcb4323b102c7e204555d313ba0a}{Attack}\label{namespace_gruppe22_1_1_backend_aaa25d27da5307e9abb21f9f09b528f67adcfafcb4323b102c7e204555d313ba0a}
+}]\index{Hit@{Hit}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Hit@{Hit}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_aaa25d27da5307e9abb21f9f09b528f67aebfe5e1791db03c4cd6ab95801e0977d}{Hit}\label{namespace_gruppe22_1_1_backend_aaa25d27da5307e9abb21f9f09b528f67aebfe5e1791db03c4cd6ab95801e0977d}
+}]\index{Die@{Die}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Die@{Die}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_aaa25d27da5307e9abb21f9f09b528f67a952f8d52fbca6da722e72d520acd6edd}{Die}\label{namespace_gruppe22_1_1_backend_aaa25d27da5307e9abb21f9f09b528f67a952f8d52fbca6da722e72d520acd6edd}
+}]\index{Special@{Special}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Special@{Special}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_aaa25d27da5307e9abb21f9f09b528f67ab4c2b550635fe54fd29f2b64dfaca55d}{Special}\label{namespace_gruppe22_1_1_backend_aaa25d27da5307e9abb21f9f09b528f67ab4c2b550635fe54fd29f2b64dfaca55d}
+}]\end{description}
+\end{Desc}
+\hypertarget{namespace_gruppe22_1_1_backend_a56d8f7bd1b5ba29d421c27a959523af3}{\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Actor\-Type@{Actor\-Type}}
+\index{Actor\-Type@{Actor\-Type}!Gruppe22::Backend@{Gruppe22\-::\-Backend}}
+\subsubsection[{Actor\-Type}]{\setlength{\rightskip}{0pt plus 5cm}enum {\bf Gruppe22.\-Backend.\-Actor\-Type}}}\label{namespace_gruppe22_1_1_backend_a56d8f7bd1b5ba29d421c27a959523af3}
+\begin{Desc}
+\item[Aufzählungswerte]\par
+\begin{description}
+\index{Player@{Player}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Player@{Player}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a56d8f7bd1b5ba29d421c27a959523af3a636da1d35e805b00eae0fcd8333f9234}{Player}\label{namespace_gruppe22_1_1_backend_a56d8f7bd1b5ba29d421c27a959523af3a636da1d35e805b00eae0fcd8333f9234}
+}]\index{N\-P\-C@{N\-P\-C}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!N\-P\-C@{N\-P\-C}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a56d8f7bd1b5ba29d421c27a959523af3a2bda99597da06a11feafd8760b68aec6}{N\-P\-C}\label{namespace_gruppe22_1_1_backend_a56d8f7bd1b5ba29d421c27a959523af3a2bda99597da06a11feafd8760b68aec6}
+}]\index{Enemy@{Enemy}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Enemy@{Enemy}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a56d8f7bd1b5ba29d421c27a959523af3a8c6d21187fb58b7a079d70030686b33e}{Enemy}\label{namespace_gruppe22_1_1_backend_a56d8f7bd1b5ba29d421c27a959523af3a8c6d21187fb58b7a079d70030686b33e}
+}]\end{description}
+\end{Desc}
+\hypertarget{namespace_gruppe22_1_1_backend_a83e3e49539223e78e12c1cc09c5aa5b8}{\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Buttons@{Buttons}}
+\index{Buttons@{Buttons}!Gruppe22::Backend@{Gruppe22\-::\-Backend}}
+\subsubsection[{Buttons}]{\setlength{\rightskip}{0pt plus 5cm}enum {\bf Gruppe22.\-Backend.\-Buttons}}}\label{namespace_gruppe22_1_1_backend_a83e3e49539223e78e12c1cc09c5aa5b8}
+\begin{Desc}
+\item[Aufzählungswerte]\par
+\begin{description}
+\index{Close@{Close}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Close@{Close}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a83e3e49539223e78e12c1cc09c5aa5b8ad3d2e617335f08df83599665eef8a418}{Close}\label{namespace_gruppe22_1_1_backend_a83e3e49539223e78e12c1cc09c5aa5b8ad3d2e617335f08df83599665eef8a418}
+}]\index{Two\-Players@{Two\-Players}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Two\-Players@{Two\-Players}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a83e3e49539223e78e12c1cc09c5aa5b8a2f0fa9ef3e22860ad13a81365d193dc4}{Two\-Players}\label{namespace_gruppe22_1_1_backend_a83e3e49539223e78e12c1cc09c5aa5b8a2f0fa9ef3e22860ad13a81365d193dc4}
+}]\index{Single\-Player@{Single\-Player}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Single\-Player@{Single\-Player}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a83e3e49539223e78e12c1cc09c5aa5b8abaa1d5d7c2a65312fdc5577125de257a}{Single\-Player}\label{namespace_gruppe22_1_1_backend_a83e3e49539223e78e12c1cc09c5aa5b8abaa1d5d7c2a65312fdc5577125de257a}
+}]\index{Settings@{Settings}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Settings@{Settings}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a83e3e49539223e78e12c1cc09c5aa5b8af4f70727dc34561dfde1a3c529b6205c}{Settings}\label{namespace_gruppe22_1_1_backend_a83e3e49539223e78e12c1cc09c5aa5b8af4f70727dc34561dfde1a3c529b6205c}
+}]\index{Restart@{Restart}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Restart@{Restart}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a83e3e49539223e78e12c1cc09c5aa5b8a51cfbcff36da74a9fc47f3a5140f99f2}{Restart}\label{namespace_gruppe22_1_1_backend_a83e3e49539223e78e12c1cc09c5aa5b8a51cfbcff36da74a9fc47f3a5140f99f2}
+}]\index{Reset@{Reset}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Reset@{Reset}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a83e3e49539223e78e12c1cc09c5aa5b8a526d688f37a86d3c3f27d0c5016eb71d}{Reset}\label{namespace_gruppe22_1_1_backend_a83e3e49539223e78e12c1cc09c5aa5b8a526d688f37a86d3c3f27d0c5016eb71d}
+}]\index{New\-Map@{New\-Map}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!New\-Map@{New\-Map}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a83e3e49539223e78e12c1cc09c5aa5b8a97b2cc22dd548d5f75b838a78d22c2f3}{New\-Map}\label{namespace_gruppe22_1_1_backend_a83e3e49539223e78e12c1cc09c5aa5b8a97b2cc22dd548d5f75b838a78d22c2f3}
+}]\index{Local@{Local}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Local@{Local}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a83e3e49539223e78e12c1cc09c5aa5b8a509820290d57f333403f490dde7316f4}{Local}\label{namespace_gruppe22_1_1_backend_a83e3e49539223e78e12c1cc09c5aa5b8a509820290d57f333403f490dde7316f4}
+}]\index{Load@{Load}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Load@{Load}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a83e3e49539223e78e12c1cc09c5aa5b8af19dbf2edb3a0bd74b0524d960ff21eb}{Load}\label{namespace_gruppe22_1_1_backend_a83e3e49539223e78e12c1cc09c5aa5b8af19dbf2edb3a0bd74b0524d960ff21eb}
+}]\index{L\-A\-N@{L\-A\-N}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!L\-A\-N@{L\-A\-N}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a83e3e49539223e78e12c1cc09c5aa5b8a1d59b567d57ca91246c45d7d8bcfbc28}{L\-A\-N}\label{namespace_gruppe22_1_1_backend_a83e3e49539223e78e12c1cc09c5aa5b8a1d59b567d57ca91246c45d7d8bcfbc28}
+}]\index{Credits@{Credits}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Credits@{Credits}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a83e3e49539223e78e12c1cc09c5aa5b8a948a2e3548aaf7f9941a3192fa607d51}{Credits}\label{namespace_gruppe22_1_1_backend_a83e3e49539223e78e12c1cc09c5aa5b8a948a2e3548aaf7f9941a3192fa607d51}
+}]\index{Quit@{Quit}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Quit@{Quit}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a83e3e49539223e78e12c1cc09c5aa5b8a0d82790b0612935992bd564a17ce37d6}{Quit}\label{namespace_gruppe22_1_1_backend_a83e3e49539223e78e12c1cc09c5aa5b8a0d82790b0612935992bd564a17ce37d6}
+}]\index{Start\-Server@{Start\-Server}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Start\-Server@{Start\-Server}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a83e3e49539223e78e12c1cc09c5aa5b8acd66df31d5cae6f603fc30c5927a8841}{Start\-Server}\label{namespace_gruppe22_1_1_backend_a83e3e49539223e78e12c1cc09c5aa5b8acd66df31d5cae6f603fc30c5927a8841}
+}]\index{Connect@{Connect}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Connect@{Connect}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a83e3e49539223e78e12c1cc09c5aa5b8a49ab28040dfa07f53544970c6d147e1e}{Connect}\label{namespace_gruppe22_1_1_backend_a83e3e49539223e78e12c1cc09c5aa5b8a49ab28040dfa07f53544970c6d147e1e}
+}]\index{Cancel@{Cancel}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Cancel@{Cancel}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a83e3e49539223e78e12c1cc09c5aa5b8aea4788705e6873b424c65e91c2846b19}{Cancel}\label{namespace_gruppe22_1_1_backend_a83e3e49539223e78e12c1cc09c5aa5b8aea4788705e6873b424c65e91c2846b19}
+}]\end{description}
+\end{Desc}
+\hypertarget{namespace_gruppe22_1_1_backend_a74373668761d179b11ba50e5980a8674}{\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Connection@{Connection}}
+\index{Connection@{Connection}!Gruppe22::Backend@{Gruppe22\-::\-Backend}}
+\subsubsection[{Connection}]{\setlength{\rightskip}{0pt plus 5cm}enum {\bf Gruppe22.\-Backend.\-Connection}}}\label{namespace_gruppe22_1_1_backend_a74373668761d179b11ba50e5980a8674}
+
+
+A direction to which the random generator may move 
+
+\begin{Desc}
+\item[Aufzählungswerte]\par
+\begin{description}
+\index{None@{None}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!None@{None}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a74373668761d179b11ba50e5980a8674a6adf97f83acf6453d4a6a4b1070f3754}{None}\label{namespace_gruppe22_1_1_backend_a74373668761d179b11ba50e5980a8674a6adf97f83acf6453d4a6a4b1070f3754}
+}]\index{Up@{Up}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Up@{Up}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a74373668761d179b11ba50e5980a8674a258f49887ef8d14ac268c92b02503aaa}{Up}\label{namespace_gruppe22_1_1_backend_a74373668761d179b11ba50e5980a8674a258f49887ef8d14ac268c92b02503aaa}
+}]\index{Down@{Down}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Down@{Down}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a74373668761d179b11ba50e5980a8674a08a38277b0309070706f6652eeae9a53}{Down}\label{namespace_gruppe22_1_1_backend_a74373668761d179b11ba50e5980a8674a08a38277b0309070706f6652eeae9a53}
+}]\index{Right@{Right}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Right@{Right}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a74373668761d179b11ba50e5980a8674a92b09c7c48c520c3c55e497875da437c}{Right}\label{namespace_gruppe22_1_1_backend_a74373668761d179b11ba50e5980a8674a92b09c7c48c520c3c55e497875da437c}
+}]\index{Left@{Left}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Left@{Left}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a74373668761d179b11ba50e5980a8674a945d5e233cf7d6240f6b783b36a374ff}{Left}\label{namespace_gruppe22_1_1_backend_a74373668761d179b11ba50e5980a8674a945d5e233cf7d6240f6b783b36a374ff}
+}]\index{Invalid@{Invalid}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Invalid@{Invalid}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a74373668761d179b11ba50e5980a8674a4bbb8f967da6d1a610596d7257179c2b}{Invalid}\label{namespace_gruppe22_1_1_backend_a74373668761d179b11ba50e5980a8674a4bbb8f967da6d1a610596d7257179c2b}
+}]\end{description}
+\end{Desc}
+\hypertarget{namespace_gruppe22_1_1_backend_a2d53d5d14b8ea0951ba6971e5da1ebf5}{\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Direction@{Direction}}
+\index{Direction@{Direction}!Gruppe22::Backend@{Gruppe22\-::\-Backend}}
+\subsubsection[{Direction}]{\setlength{\rightskip}{0pt plus 5cm}enum {\bf Gruppe22.\-Backend.\-Direction}}}\label{namespace_gruppe22_1_1_backend_a2d53d5d14b8ea0951ba6971e5da1ebf5}
+
+
+Enumeration of eight ways of movement 
+
+\begin{Desc}
+\item[Aufzählungswerte]\par
+\begin{description}
+\index{Up@{Up}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Up@{Up}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a2d53d5d14b8ea0951ba6971e5da1ebf5a258f49887ef8d14ac268c92b02503aaa}{Up}\label{namespace_gruppe22_1_1_backend_a2d53d5d14b8ea0951ba6971e5da1ebf5a258f49887ef8d14ac268c92b02503aaa}
+}]\index{Right@{Right}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Right@{Right}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a2d53d5d14b8ea0951ba6971e5da1ebf5a92b09c7c48c520c3c55e497875da437c}{Right}\label{namespace_gruppe22_1_1_backend_a2d53d5d14b8ea0951ba6971e5da1ebf5a92b09c7c48c520c3c55e497875da437c}
+}]\index{Down@{Down}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Down@{Down}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a2d53d5d14b8ea0951ba6971e5da1ebf5a08a38277b0309070706f6652eeae9a53}{Down}\label{namespace_gruppe22_1_1_backend_a2d53d5d14b8ea0951ba6971e5da1ebf5a08a38277b0309070706f6652eeae9a53}
+}]\index{Left@{Left}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Left@{Left}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a2d53d5d14b8ea0951ba6971e5da1ebf5a945d5e233cf7d6240f6b783b36a374ff}{Left}\label{namespace_gruppe22_1_1_backend_a2d53d5d14b8ea0951ba6971e5da1ebf5a945d5e233cf7d6240f6b783b36a374ff}
+}]\index{Down\-Left@{Down\-Left}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Down\-Left@{Down\-Left}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a2d53d5d14b8ea0951ba6971e5da1ebf5acd7f4772075da1452f8cd3648265b2c1}{Down\-Left}\label{namespace_gruppe22_1_1_backend_a2d53d5d14b8ea0951ba6971e5da1ebf5acd7f4772075da1452f8cd3648265b2c1}
+}]\index{Up\-Right@{Up\-Right}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Up\-Right@{Up\-Right}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a2d53d5d14b8ea0951ba6971e5da1ebf5aee94ab0297ae02df64791255d0a3551e}{Up\-Right}\label{namespace_gruppe22_1_1_backend_a2d53d5d14b8ea0951ba6971e5da1ebf5aee94ab0297ae02df64791255d0a3551e}
+}]\index{Down\-Right@{Down\-Right}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Down\-Right@{Down\-Right}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a2d53d5d14b8ea0951ba6971e5da1ebf5a18f1e5e66255e9d07ec2944fec962090}{Down\-Right}\label{namespace_gruppe22_1_1_backend_a2d53d5d14b8ea0951ba6971e5da1ebf5a18f1e5e66255e9d07ec2944fec962090}
+}]\index{Up\-Left@{Up\-Left}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Up\-Left@{Up\-Left}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a2d53d5d14b8ea0951ba6971e5da1ebf5a2b6ba04836dfad0c42bae644fcfaf890}{Up\-Left}\label{namespace_gruppe22_1_1_backend_a2d53d5d14b8ea0951ba6971e5da1ebf5a2b6ba04836dfad0c42bae644fcfaf890}
+}]\index{None@{None}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!None@{None}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a2d53d5d14b8ea0951ba6971e5da1ebf5a6adf97f83acf6453d4a6a4b1070f3754}{None}\label{namespace_gruppe22_1_1_backend_a2d53d5d14b8ea0951ba6971e5da1ebf5a6adf97f83acf6453d4a6a4b1070f3754}
+}]\end{description}
+\end{Desc}
+\hypertarget{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73}{\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Events@{Events}}
+\index{Events@{Events}!Gruppe22::Backend@{Gruppe22\-::\-Backend}}
+\subsubsection[{Events}]{\setlength{\rightskip}{0pt plus 5cm}enum {\bf Gruppe22.\-Backend.\-Events}}}\label{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73}
+\begin{Desc}
+\item[Aufzählungswerte]\par
+\begin{description}
+\index{Continue\-Game@{Continue\-Game}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Continue\-Game@{Continue\-Game}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73a5d3313060b4af773c4a9625ad9eee948}{Continue\-Game}\label{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73a5d3313060b4af773c4a9625ad9eee948}
+}]\index{Shop@{Shop}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Shop@{Shop}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73a9f82518d468b9fee614fcc92f76bb163}{Shop}\label{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73a9f82518d468b9fee614fcc92f76bb163}
+}]\index{End\-Game@{End\-Game}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!End\-Game@{End\-Game}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73af0f29c4900d44c9e32d203ca799163e1}{End\-Game}\label{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73af0f29c4900d44c9e32d203ca799163e1}
+}]\index{Toggle\-Button@{Toggle\-Button}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Toggle\-Button@{Toggle\-Button}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73a6f613d2ca9badf5cd7fa6ca4078b81cb}{Toggle\-Button}\label{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73a6f613d2ca9badf5cd7fa6ca4078b81cb}
+}]\index{Hide\-Notification@{Hide\-Notification}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Hide\-Notification@{Hide\-Notification}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73a19d56a097bf3d2c1e2407b28afc76c0a}{Hide\-Notification}\label{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73a19d56a097bf3d2c1e2407b28afc76c0a}
+}]\index{Move\-Actor@{Move\-Actor}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Move\-Actor@{Move\-Actor}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73a7172cb821ed7a1f0c9c17a3132ef54bd}{Move\-Actor}\label{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73a7172cb821ed7a1f0c9c17a3132ef54bd}
+}]\index{Change\-Map@{Change\-Map}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Change\-Map@{Change\-Map}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73aee08e9af3756988e590473fb1a0f665a}{Change\-Map}\label{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73aee08e9af3756988e590473fb1a0f665a}
+}]\index{New\-Map@{New\-Map}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!New\-Map@{New\-Map}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73a97b2cc22dd548d5f75b838a78d22c2f3}{New\-Map}\label{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73a97b2cc22dd548d5f75b838a78d22c2f3}
+}]\index{Reset\-Game@{Reset\-Game}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Reset\-Game@{Reset\-Game}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73a3e4d8672287eb4ed915169dc93b0c728}{Reset\-Game}\label{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73a3e4d8672287eb4ed915169dc93b0c728}
+}]\index{About@{About}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!About@{About}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73a8f7f4c1ce7a4f933663d10543562b096}{About}\label{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73a8f7f4c1ce7a4f933663d10543562b096}
+}]\index{Animate\-Actor@{Animate\-Actor}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Animate\-Actor@{Animate\-Actor}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73a24d62fd7e5af465ca4ca8ea3f52f84b0}{Animate\-Actor}\label{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73a24d62fd7e5af465ca4ca8ea3f52f84b0}
+}]\index{Finished\-Animation@{Finished\-Animation}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Finished\-Animation@{Finished\-Animation}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73a2c5ebdc686f2a3c7b5418530be453cde}{Finished\-Animation}\label{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73a2c5ebdc686f2a3c7b5418530be453cde}
+}]\index{Show\-Message@{Show\-Message}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Show\-Message@{Show\-Message}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73a7784f68c858baf6399ab8d2c195543d6}{Show\-Message}\label{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73a7784f68c858baf6399ab8d2c195543d6}
+}]\index{Player1@{Player1}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Player1@{Player1}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73aa77da55027d2fa0d53b7aa0b161daca7}{Player1}\label{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73aa77da55027d2fa0d53b7aa0b161daca7}
+}]\index{Player2@{Player2}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Player2@{Player2}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73a35e6584330a7de7edeb92b4bf44b1aad}{Player2}\label{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73a35e6584330a7de7edeb92b4bf44b1aad}
+}]\index{Network@{Network}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Network@{Network}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73aeec89088ee408b80387155272b113256}{Network}\label{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73aeec89088ee408b80387155272b113256}
+}]\index{Settings@{Settings}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Settings@{Settings}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73af4f70727dc34561dfde1a3c529b6205c}{Settings}\label{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73af4f70727dc34561dfde1a3c529b6205c}
+}]\index{Local@{Local}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Local@{Local}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73a509820290d57f333403f490dde7316f4}{Local}\label{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73a509820290d57f333403f490dde7316f4}
+}]\index{L\-A\-N@{L\-A\-N}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!L\-A\-N@{L\-A\-N}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73a1d59b567d57ca91246c45d7d8bcfbc28}{L\-A\-N}\label{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73a1d59b567d57ca91246c45d7d8bcfbc28}
+}]\index{Fetch\-File@{Fetch\-File}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Fetch\-File@{Fetch\-File}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73ad93e5cf9cf1a7d3483d6b97b78d7487a}{Fetch\-File}\label{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73ad93e5cf9cf1a7d3483d6b97b78d7487a}
+}]\index{Tile\-Entered@{Tile\-Entered}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Tile\-Entered@{Tile\-Entered}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73a890ccbec96e69385d150aadadc109e09}{Tile\-Entered}\label{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73a890ccbec96e69385d150aadadc109e09}
+}]\index{Attack@{Attack}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Attack@{Attack}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73adcfafcb4323b102c7e204555d313ba0a}{Attack}\label{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73adcfafcb4323b102c7e204555d313ba0a}
+}]\index{Trap\-Activate@{Trap\-Activate}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Trap\-Activate@{Trap\-Activate}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73acd5ef6b09b3024d1c3986d5777e9f0ba}{Trap\-Activate}\label{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73acd5ef6b09b3024d1c3986d5777e9f0ba}
+}]\index{Request\-Focus@{Request\-Focus}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Request\-Focus@{Request\-Focus}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73aa33b9b2c0c274ab214d3925846cd4188}{Request\-Focus}\label{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73aa33b9b2c0c274ab214d3925846cd4188}
+}]\index{Load\-From\-Check\-Point@{Load\-From\-Check\-Point}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Load\-From\-Check\-Point@{Load\-From\-Check\-Point}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73ac3970d2a0dae60a62425b8859a816943}{Load\-From\-Check\-Point}\label{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73ac3970d2a0dae60a62425b8859a816943}
+}]\index{Explode\-Projectile@{Explode\-Projectile}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Explode\-Projectile@{Explode\-Projectile}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73a063c2c97b99f1d49661b9247ccf473c0}{Explode\-Projectile}\label{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73a063c2c97b99f1d49661b9247ccf473c0}
+}]\index{Move\-Projectile@{Move\-Projectile}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Move\-Projectile@{Move\-Projectile}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73af87a1d7c74f84b7c5db9354630b93ae5}{Move\-Projectile}\label{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73af87a1d7c74f84b7c5db9354630b93ae5}
+}]\index{Finished\-Projectile\-Move@{Finished\-Projectile\-Move}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Finished\-Projectile\-Move@{Finished\-Projectile\-Move}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73ae4ddf487e41faf3b2020ba2410b6f45e}{Finished\-Projectile\-Move}\label{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73ae4ddf487e41faf3b2020ba2410b6f45e}
+}]\index{Button\-Pressed@{Button\-Pressed}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Button\-Pressed@{Button\-Pressed}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73ae03f8ec4be7da41e6af04d73ba49a22d}{Button\-Pressed}\label{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73ae03f8ec4be7da41e6af04d73ba49a22d}
+}]\index{Activate\-Ability@{Activate\-Ability}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Activate\-Ability@{Activate\-Ability}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73a1ad11dccf912cf59f0872e492d817ab7}{Activate\-Ability}\label{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73a1ad11dccf912cf59f0872e492d817ab7}
+}]\index{Show\-Character@{Show\-Character}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Show\-Character@{Show\-Character}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73a34a326dde76da7fea521807f73d3c98a}{Show\-Character}\label{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73a34a326dde76da7fea521807f73d3c98a}
+}]\index{Show\-Inventory@{Show\-Inventory}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Show\-Inventory@{Show\-Inventory}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73a5e035f78e07eda1a93846b8ea0e9589b}{Show\-Inventory}\label{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73a5e035f78e07eda1a93846b8ea0e9589b}
+}]\index{Show\-Menu@{Show\-Menu}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Show\-Menu@{Show\-Menu}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73a05abf9bfeac5bd935c4411884c7d15fe}{Show\-Menu}\label{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73a05abf9bfeac5bd935c4411884c7d15fe}
+}]\index{Show\-Abilities@{Show\-Abilities}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Show\-Abilities@{Show\-Abilities}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73a4ae05257cbbaa9af91ccbf7bbb05c17d}{Show\-Abilities}\label{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73a4ae05257cbbaa9af91ccbf7bbb05c17d}
+}]\index{Add\-Drag\-Item@{Add\-Drag\-Item}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Add\-Drag\-Item@{Add\-Drag\-Item}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73af9dff5d2874b6558f2756da94fbb4450}{Add\-Drag\-Item}\label{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73af9dff5d2874b6558f2756da94fbb4450}
+}]\index{Dialogue@{Dialogue}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Dialogue@{Dialogue}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73a359928afdf6c973ee869e1698023a812}{Dialogue}\label{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73a359928afdf6c973ee869e1698023a812}
+}]\index{Pause@{Pause}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Pause@{Pause}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73a105b296a83f9c105355403f3332af50f}{Pause}\label{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73a105b296a83f9c105355403f3332af50f}
+}]\index{Chat@{Chat}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Chat@{Chat}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73a55dcdf017b51fc96f7b5f9d63013b95d}{Chat}\label{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73a55dcdf017b51fc96f7b5f9d63013b95d}
+}]\end{description}
+\end{Desc}
+\hypertarget{namespace_gruppe22_1_1_backend_ad81bf4712f53c2ad4194343b6b0c73d2}{\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Game\-Status@{Game\-Status}}
+\index{Game\-Status@{Game\-Status}!Gruppe22::Backend@{Gruppe22\-::\-Backend}}
+\subsubsection[{Game\-Status}]{\setlength{\rightskip}{0pt plus 5cm}enum {\bf Gruppe22.\-Backend.\-Game\-Status}}}\label{namespace_gruppe22_1_1_backend_ad81bf4712f53c2ad4194343b6b0c73d2}
+\begin{Desc}
+\item[Aufzählungswerte]\par
+\begin{description}
+\index{Running@{Running}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Running@{Running}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_ad81bf4712f53c2ad4194343b6b0c73d2a5bda814c4aedb126839228f1a3d92f09}{Running}\label{namespace_gruppe22_1_1_backend_ad81bf4712f53c2ad4194343b6b0c73d2a5bda814c4aedb126839228f1a3d92f09}
+}]\index{No\-Redraw@{No\-Redraw}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!No\-Redraw@{No\-Redraw}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_ad81bf4712f53c2ad4194343b6b0c73d2a7c753481922b31b68d11923c00f0269a}{No\-Redraw}\label{namespace_gruppe22_1_1_backend_ad81bf4712f53c2ad4194343b6b0c73d2a7c753481922b31b68d11923c00f0269a}
+}]\index{Paused@{Paused}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Paused@{Paused}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_ad81bf4712f53c2ad4194343b6b0c73d2ae99180abf47a8b3a856e0bcb2656990a}{Paused}\label{namespace_gruppe22_1_1_backend_ad81bf4712f53c2ad4194343b6b0c73d2ae99180abf47a8b3a856e0bcb2656990a}
+}]\index{Fetching\-Data@{Fetching\-Data}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Fetching\-Data@{Fetching\-Data}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_ad81bf4712f53c2ad4194343b6b0c73d2ae1bd40e26deea8a053a5c26e1e2bf575}{Fetching\-Data}\label{namespace_gruppe22_1_1_backend_ad81bf4712f53c2ad4194343b6b0c73d2ae1bd40e26deea8a053a5c26e1e2bf575}
+}]\index{Game\-Over@{Game\-Over}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Game\-Over@{Game\-Over}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_ad81bf4712f53c2ad4194343b6b0c73d2a8f347bc7cebca9fa6d97e70c6bc29eb3}{Game\-Over}\label{namespace_gruppe22_1_1_backend_ad81bf4712f53c2ad4194343b6b0c73d2a8f347bc7cebca9fa6d97e70c6bc29eb3}
+}]\index{Loading@{Loading}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Loading@{Loading}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_ad81bf4712f53c2ad4194343b6b0c73d2a16bfbf9c462762cf1cba4134ec53c504}{Loading}\label{namespace_gruppe22_1_1_backend_ad81bf4712f53c2ad4194343b6b0c73d2a16bfbf9c462762cf1cba4134ec53c504}
+}]\end{description}
+\end{Desc}
+\hypertarget{namespace_gruppe22_1_1_backend_a0bab4fb79b71059941f85a901606a7df}{\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Item\-Property@{Item\-Property}}
+\index{Item\-Property@{Item\-Property}!Gruppe22::Backend@{Gruppe22\-::\-Backend}}
+\subsubsection[{Item\-Property}]{\setlength{\rightskip}{0pt plus 5cm}enum {\bf Gruppe22.\-Backend.\-Item\-Property}}}\label{namespace_gruppe22_1_1_backend_a0bab4fb79b71059941f85a901606a7df}
+\begin{Desc}
+\item[Aufzählungswerte]\par
+\begin{description}
+\index{Evade@{Evade}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Evade@{Evade}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a0bab4fb79b71059941f85a901606a7dfafcebb8bec493a6678a2758580bee43f9}{Evade}\label{namespace_gruppe22_1_1_backend_a0bab4fb79b71059941f85a901606a7dfafcebb8bec493a6678a2758580bee43f9}
+}]\index{Block@{Block}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Block@{Block}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a0bab4fb79b71059941f85a901606a7dfae1e4c8c9ccd9fc39c391da4bcd093fb2}{Block}\label{namespace_gruppe22_1_1_backend_a0bab4fb79b71059941f85a901606a7dfae1e4c8c9ccd9fc39c391da4bcd093fb2}
+}]\index{Penetrate@{Penetrate}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Penetrate@{Penetrate}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a0bab4fb79b71059941f85a901606a7dfa6a6fd59376f4a9f27ed4a8fbc4042ad8}{Penetrate}\label{namespace_gruppe22_1_1_backend_a0bab4fb79b71059941f85a901606a7dfa6a6fd59376f4a9f27ed4a8fbc4042ad8}
+}]\index{Reduce\-Damage@{Reduce\-Damage}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Reduce\-Damage@{Reduce\-Damage}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a0bab4fb79b71059941f85a901606a7dfa3d25243594fafa7b27523a4ab8c2c175}{Reduce\-Damage}\label{namespace_gruppe22_1_1_backend_a0bab4fb79b71059941f85a901606a7dfa3d25243594fafa7b27523a4ab8c2c175}
+}]\index{Max\-Health@{Max\-Health}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Max\-Health@{Max\-Health}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a0bab4fb79b71059941f85a901606a7dfa01dc2c0b0a5b72f35bfbe2a358b82c27}{Max\-Health}\label{namespace_gruppe22_1_1_backend_a0bab4fb79b71059941f85a901606a7dfa01dc2c0b0a5b72f35bfbe2a358b82c27}
+}]\index{Max\-Mana@{Max\-Mana}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Max\-Mana@{Max\-Mana}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a0bab4fb79b71059941f85a901606a7dfa6ccce9386ceaed69f434d6d71809bde6}{Max\-Mana}\label{namespace_gruppe22_1_1_backend_a0bab4fb79b71059941f85a901606a7dfa6ccce9386ceaed69f434d6d71809bde6}
+}]\index{Mana@{Mana}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Mana@{Mana}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a0bab4fb79b71059941f85a901606a7dfa02fcc64668dd1b6a85e60ac9797f2dc7}{Mana}\label{namespace_gruppe22_1_1_backend_a0bab4fb79b71059941f85a901606a7dfa02fcc64668dd1b6a85e60ac9797f2dc7}
+}]\index{Health@{Health}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Health@{Health}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a0bab4fb79b71059941f85a901606a7dfa605669cab962bf944d99ce89cf9e58d9}{Health}\label{namespace_gruppe22_1_1_backend_a0bab4fb79b71059941f85a901606a7dfa605669cab962bf944d99ce89cf9e58d9}
+}]\index{Mana\-Regen@{Mana\-Regen}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Mana\-Regen@{Mana\-Regen}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a0bab4fb79b71059941f85a901606a7dfa8fda0a3035dab05823cf6ea23e79f088}{Mana\-Regen}\label{namespace_gruppe22_1_1_backend_a0bab4fb79b71059941f85a901606a7dfa8fda0a3035dab05823cf6ea23e79f088}
+}]\index{Health\-Regen@{Health\-Regen}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Health\-Regen@{Health\-Regen}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a0bab4fb79b71059941f85a901606a7dfadef4dfd65e3aafc65b9e391a2447e700}{Health\-Regen}\label{namespace_gruppe22_1_1_backend_a0bab4fb79b71059941f85a901606a7dfadef4dfd65e3aafc65b9e391a2447e700}
+}]\index{Steal\-Health@{Steal\-Health}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Steal\-Health@{Steal\-Health}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a0bab4fb79b71059941f85a901606a7dfa5bf90ec70de4955a98a0552dc23584ca}{Steal\-Health}\label{namespace_gruppe22_1_1_backend_a0bab4fb79b71059941f85a901606a7dfa5bf90ec70de4955a98a0552dc23584ca}
+}]\index{Steal\-Mana@{Steal\-Mana}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Steal\-Mana@{Steal\-Mana}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a0bab4fb79b71059941f85a901606a7dfa185be12b8bf4ffd59c2321e3a1e6636c}{Steal\-Mana}\label{namespace_gruppe22_1_1_backend_a0bab4fb79b71059941f85a901606a7dfa185be12b8bf4ffd59c2321e3a1e6636c}
+}]\index{Fire\-Damage@{Fire\-Damage}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Fire\-Damage@{Fire\-Damage}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a0bab4fb79b71059941f85a901606a7dfa84b81529b730f6e96082d2ce171dcca9}{Fire\-Damage}\label{namespace_gruppe22_1_1_backend_a0bab4fb79b71059941f85a901606a7dfa84b81529b730f6e96082d2ce171dcca9}
+}]\index{Ice\-Damage@{Ice\-Damage}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Ice\-Damage@{Ice\-Damage}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a0bab4fb79b71059941f85a901606a7dfa36403fc0d6133beec3e08fe610e081ac}{Ice\-Damage}\label{namespace_gruppe22_1_1_backend_a0bab4fb79b71059941f85a901606a7dfa36403fc0d6133beec3e08fe610e081ac}
+}]\index{Fire\-Protect@{Fire\-Protect}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Fire\-Protect@{Fire\-Protect}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a0bab4fb79b71059941f85a901606a7dfad8fe3ba17103b087964638f10e8f2970}{Fire\-Protect}\label{namespace_gruppe22_1_1_backend_a0bab4fb79b71059941f85a901606a7dfad8fe3ba17103b087964638f10e8f2970}
+}]\index{Ice\-Protect@{Ice\-Protect}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Ice\-Protect@{Ice\-Protect}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a0bab4fb79b71059941f85a901606a7dfa189e09922d5275a21480d80e23e3aa87}{Ice\-Protect}\label{namespace_gruppe22_1_1_backend_a0bab4fb79b71059941f85a901606a7dfa189e09922d5275a21480d80e23e3aa87}
+}]\index{Destroy\-Weapon@{Destroy\-Weapon}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Destroy\-Weapon@{Destroy\-Weapon}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a0bab4fb79b71059941f85a901606a7dfa280ea2e83cd07ef62c4c179faf4b76d9}{Destroy\-Weapon}\label{namespace_gruppe22_1_1_backend_a0bab4fb79b71059941f85a901606a7dfa280ea2e83cd07ef62c4c179faf4b76d9}
+}]\index{Destroy\-Armor@{Destroy\-Armor}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Destroy\-Armor@{Destroy\-Armor}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a0bab4fb79b71059941f85a901606a7dfa85eab3e098bf4624f6a3978ed9d0d36b}{Destroy\-Armor}\label{namespace_gruppe22_1_1_backend_a0bab4fb79b71059941f85a901606a7dfa85eab3e098bf4624f6a3978ed9d0d36b}
+}]\index{Resist@{Resist}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Resist@{Resist}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a0bab4fb79b71059941f85a901606a7dfa4d868e8df67bd5b7d286d14b02b3df89}{Resist}\label{namespace_gruppe22_1_1_backend_a0bab4fb79b71059941f85a901606a7dfa4d868e8df67bd5b7d286d14b02b3df89}
+}]\index{Damage@{Damage}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Damage@{Damage}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a0bab4fb79b71059941f85a901606a7dfab9f24e83531326204197015b2f43a93f}{Damage}\label{namespace_gruppe22_1_1_backend_a0bab4fb79b71059941f85a901606a7dfab9f24e83531326204197015b2f43a93f}
+}]\index{Null@{Null}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Null@{Null}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a0bab4fb79b71059941f85a901606a7dfabbb93ef26e3c101ff11cdd21cab08a94}{Null}\label{namespace_gruppe22_1_1_backend_a0bab4fb79b71059941f85a901606a7dfabbb93ef26e3c101ff11cdd21cab08a94}
+}]\end{description}
+\end{Desc}
+\hypertarget{namespace_gruppe22_1_1_backend_ad9b2305e9d47cf46b34e082657cc5504}{\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Item\-Type@{Item\-Type}}
+\index{Item\-Type@{Item\-Type}!Gruppe22::Backend@{Gruppe22\-::\-Backend}}
+\subsubsection[{Item\-Type}]{\setlength{\rightskip}{0pt plus 5cm}enum {\bf Gruppe22.\-Backend.\-Item\-Type}}}\label{namespace_gruppe22_1_1_backend_ad9b2305e9d47cf46b34e082657cc5504}
+\begin{Desc}
+\item[Aufzählungswerte]\par
+\begin{description}
+\index{Armor@{Armor}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Armor@{Armor}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_ad9b2305e9d47cf46b34e082657cc5504ac77a8030f463c2c14aebd6452fc9f0a8}{Armor}\label{namespace_gruppe22_1_1_backend_ad9b2305e9d47cf46b34e082657cc5504ac77a8030f463c2c14aebd6452fc9f0a8}
+}]\index{Potion@{Potion}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Potion@{Potion}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_ad9b2305e9d47cf46b34e082657cc5504af7f5d540f521d6d642502a9d459e7b16}{Potion}\label{namespace_gruppe22_1_1_backend_ad9b2305e9d47cf46b34e082657cc5504af7f5d540f521d6d642502a9d459e7b16}
+}]\index{Weapon@{Weapon}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Weapon@{Weapon}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_ad9b2305e9d47cf46b34e082657cc5504a18c83669920215a818638ad0e5421e4b}{Weapon}\label{namespace_gruppe22_1_1_backend_ad9b2305e9d47cf46b34e082657cc5504a18c83669920215a818638ad0e5421e4b}
+}]\index{Gold@{Gold}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Gold@{Gold}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_ad9b2305e9d47cf46b34e082657cc5504a9768feb3fdb1f267b06093bc572952dd}{Gold}\label{namespace_gruppe22_1_1_backend_ad9b2305e9d47cf46b34e082657cc5504a9768feb3fdb1f267b06093bc572952dd}
+}]\index{Key@{Key}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Key@{Key}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_ad9b2305e9d47cf46b34e082657cc5504a897356954c2cd3d41b221e3f24f99bba}{Key}\label{namespace_gruppe22_1_1_backend_ad9b2305e9d47cf46b34e082657cc5504a897356954c2cd3d41b221e3f24f99bba}
+}]\index{Note@{Note}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Note@{Note}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_ad9b2305e9d47cf46b34e082657cc5504a3b0649c72650c313a357338dcdfb64ec}{Note}\label{namespace_gruppe22_1_1_backend_ad9b2305e9d47cf46b34e082657cc5504a3b0649c72650c313a357338dcdfb64ec}
+}]\index{Cloak@{Cloak}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Cloak@{Cloak}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_ad9b2305e9d47cf46b34e082657cc5504a2cbd779a6d41d9715d259a5d7e8bb93d}{Cloak}\label{namespace_gruppe22_1_1_backend_ad9b2305e9d47cf46b34e082657cc5504a2cbd779a6d41d9715d259a5d7e8bb93d}
+}]\index{Bow@{Bow}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Bow@{Bow}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_ad9b2305e9d47cf46b34e082657cc5504a48fce5d02f6935e50f256d5dedac4437}{Bow}\label{namespace_gruppe22_1_1_backend_ad9b2305e9d47cf46b34e082657cc5504a48fce5d02f6935e50f256d5dedac4437}
+}]\index{Staff@{Staff}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Staff@{Staff}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_ad9b2305e9d47cf46b34e082657cc5504a8f7f93630c366dc55aec88eb8e9640d0}{Staff}\label{namespace_gruppe22_1_1_backend_ad9b2305e9d47cf46b34e082657cc5504a8f7f93630c366dc55aec88eb8e9640d0}
+}]\index{Ring@{Ring}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Ring@{Ring}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_ad9b2305e9d47cf46b34e082657cc5504ad4db177c94738b72bf9ce61e988ab1f1}{Ring}\label{namespace_gruppe22_1_1_backend_ad9b2305e9d47cf46b34e082657cc5504ad4db177c94738b72bf9ce61e988ab1f1}
+}]\end{description}
+\end{Desc}
+\hypertarget{namespace_gruppe22_1_1_backend_a05a2787d555181519f14c35500a51400}{\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Packet\-Type@{Packet\-Type}}
+\index{Packet\-Type@{Packet\-Type}!Gruppe22::Backend@{Gruppe22\-::\-Backend}}
+\subsubsection[{Packet\-Type}]{\setlength{\rightskip}{0pt plus 5cm}enum {\bf Gruppe22.\-Backend.\-Packet\-Type}}}\label{namespace_gruppe22_1_1_backend_a05a2787d555181519f14c35500a51400}
+\begin{Desc}
+\item[Aufzählungswerte]\par
+\begin{description}
+\index{Connect@{Connect}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Connect@{Connect}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a05a2787d555181519f14c35500a51400a49ab28040dfa07f53544970c6d147e1e}{Connect}\label{namespace_gruppe22_1_1_backend_a05a2787d555181519f14c35500a51400a49ab28040dfa07f53544970c6d147e1e}
+}]\index{Disconnect@{Disconnect}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Disconnect@{Disconnect}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a05a2787d555181519f14c35500a51400a42ae25231906c83927831e0ef7c317ac}{Disconnect}\label{namespace_gruppe22_1_1_backend_a05a2787d555181519f14c35500a51400a42ae25231906c83927831e0ef7c317ac}
+}]\index{Move@{Move}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Move@{Move}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a05a2787d555181519f14c35500a51400a6bc362dbf494c61ea117fe3c71ca48a5}{Move}\label{namespace_gruppe22_1_1_backend_a05a2787d555181519f14c35500a51400a6bc362dbf494c61ea117fe3c71ca48a5}
+}]\index{Update\-Map@{Update\-Map}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Update\-Map@{Update\-Map}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a05a2787d555181519f14c35500a51400afa523b08ec3e0b1d496fe7703f63da2d}{Update\-Map}\label{namespace_gruppe22_1_1_backend_a05a2787d555181519f14c35500a51400afa523b08ec3e0b1d496fe7703f63da2d}
+}]\index{Add\-Item@{Add\-Item}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Add\-Item@{Add\-Item}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a05a2787d555181519f14c35500a51400a55c0010271ffa56800e55196d9acd283}{Add\-Item}\label{namespace_gruppe22_1_1_backend_a05a2787d555181519f14c35500a51400a55c0010271ffa56800e55196d9acd283}
+}]\index{Remove\-Item@{Remove\-Item}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Remove\-Item@{Remove\-Item}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a05a2787d555181519f14c35500a51400a038adad55773d5dd88815c53430a943c}{Remove\-Item}\label{namespace_gruppe22_1_1_backend_a05a2787d555181519f14c35500a51400a038adad55773d5dd88815c53430a943c}
+}]\index{Toggle\-Item@{Toggle\-Item}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Toggle\-Item@{Toggle\-Item}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a05a2787d555181519f14c35500a51400af2310c7c0271b38d9a7c4ce48fd23166}{Toggle\-Item}\label{namespace_gruppe22_1_1_backend_a05a2787d555181519f14c35500a51400af2310c7c0271b38d9a7c4ce48fd23166}
+}]\index{Change\-Stats@{Change\-Stats}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Change\-Stats@{Change\-Stats}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a05a2787d555181519f14c35500a51400a446de5a768114f00ae120604fd5f8143}{Change\-Stats}\label{namespace_gruppe22_1_1_backend_a05a2787d555181519f14c35500a51400a446de5a768114f00ae120604fd5f8143}
+}]\index{Update\-Clients@{Update\-Clients}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Update\-Clients@{Update\-Clients}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a05a2787d555181519f14c35500a51400a4187dfb502a44dfad637a96698ddd19d}{Update\-Clients}\label{namespace_gruppe22_1_1_backend_a05a2787d555181519f14c35500a51400a4187dfb502a44dfad637a96698ddd19d}
+}]\index{Chat@{Chat}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Chat@{Chat}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a05a2787d555181519f14c35500a51400a55dcdf017b51fc96f7b5f9d63013b95d}{Chat}\label{namespace_gruppe22_1_1_backend_a05a2787d555181519f14c35500a51400a55dcdf017b51fc96f7b5f9d63013b95d}
+}]\end{description}
+\end{Desc}
+\hypertarget{namespace_gruppe22_1_1_backend_a5956dac270a0deefca1d578d210550e2}{\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Tile\-Type@{Tile\-Type}}
+\index{Tile\-Type@{Tile\-Type}!Gruppe22::Backend@{Gruppe22\-::\-Backend}}
+\subsubsection[{Tile\-Type}]{\setlength{\rightskip}{0pt plus 5cm}enum {\bf Gruppe22.\-Backend.\-Tile\-Type}}}\label{namespace_gruppe22_1_1_backend_a5956dac270a0deefca1d578d210550e2}
+\begin{Desc}
+\item[Aufzählungswerte]\par
+\begin{description}
+\index{Empty@{Empty}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Empty@{Empty}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a5956dac270a0deefca1d578d210550e2ace2c8aed9c2fa0cfbed56cbda4d8bf07}{Empty}\label{namespace_gruppe22_1_1_backend_a5956dac270a0deefca1d578d210550e2ace2c8aed9c2fa0cfbed56cbda4d8bf07}
+}]\index{Wall@{Wall}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Wall@{Wall}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a5956dac270a0deefca1d578d210550e2a94e8a499539d1a472f3b5dbbb85508c0}{Wall}\label{namespace_gruppe22_1_1_backend_a5956dac270a0deefca1d578d210550e2a94e8a499539d1a472f3b5dbbb85508c0}
+}]\index{Trap@{Trap}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Trap@{Trap}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a5956dac270a0deefca1d578d210550e2a8b9038a4896d530d239f4af3bbb30357}{Trap}\label{namespace_gruppe22_1_1_backend_a5956dac270a0deefca1d578d210550e2a8b9038a4896d530d239f4af3bbb30357}
+}]\index{Enemy@{Enemy}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Enemy@{Enemy}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a5956dac270a0deefca1d578d210550e2a8c6d21187fb58b7a079d70030686b33e}{Enemy}\label{namespace_gruppe22_1_1_backend_a5956dac270a0deefca1d578d210550e2a8c6d21187fb58b7a079d70030686b33e}
+}]\index{Start@{Start}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Start@{Start}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a5956dac270a0deefca1d578d210550e2aa6122a65eaa676f700ae68d393054a37}{Start}\label{namespace_gruppe22_1_1_backend_a5956dac270a0deefca1d578d210550e2aa6122a65eaa676f700ae68d393054a37}
+}]\index{Target@{Target}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Target@{Target}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a5956dac270a0deefca1d578d210550e2ac41a31890959544c6523af684561abe5}{Target}\label{namespace_gruppe22_1_1_backend_a5956dac270a0deefca1d578d210550e2ac41a31890959544c6523af684561abe5}
+}]\index{Teleporter@{Teleporter}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Teleporter@{Teleporter}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a5956dac270a0deefca1d578d210550e2ad0888defea7cf0dea03c15fa2d396a9a}{Teleporter}\label{namespace_gruppe22_1_1_backend_a5956dac270a0deefca1d578d210550e2ad0888defea7cf0dea03c15fa2d396a9a}
+}]\index{Item@{Item}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Item@{Item}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a5956dac270a0deefca1d578d210550e2a7d74f3b92b19da5e606d737d339a9679}{Item}\label{namespace_gruppe22_1_1_backend_a5956dac270a0deefca1d578d210550e2a7d74f3b92b19da5e606d737d339a9679}
+}]\index{Checkpoint@{Checkpoint}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Checkpoint@{Checkpoint}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a5956dac270a0deefca1d578d210550e2aef41311079c448d0beb06ec07db0bf8c}{Checkpoint}\label{namespace_gruppe22_1_1_backend_a5956dac270a0deefca1d578d210550e2aef41311079c448d0beb06ec07db0bf8c}
+}]\end{description}
+\end{Desc}
+\hypertarget{namespace_gruppe22_1_1_backend_a3441a72488409f943181b735fcab76eb}{\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Trap\-State@{Trap\-State}}
+\index{Trap\-State@{Trap\-State}!Gruppe22::Backend@{Gruppe22\-::\-Backend}}
+\subsubsection[{Trap\-State}]{\setlength{\rightskip}{0pt plus 5cm}enum {\bf Gruppe22.\-Backend.\-Trap\-State}}}\label{namespace_gruppe22_1_1_backend_a3441a72488409f943181b735fcab76eb}
+
+
+Determines the State of a trap 
+
+\begin{Desc}
+\item[Aufzählungswerte]\par
+\begin{description}
+\index{Destroyed@{Destroyed}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Destroyed@{Destroyed}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a3441a72488409f943181b735fcab76ebaaefbd0597f1bc2493bbc18898243513b}{Destroyed}\label{namespace_gruppe22_1_1_backend_a3441a72488409f943181b735fcab76ebaaefbd0597f1bc2493bbc18898243513b}
+}]Trap is destroyed and will not be re-\/enabled \index{On@{On}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!On@{On}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a3441a72488409f943181b735fcab76eba521c36a31c2762741cf0f8890cbe05e3}{On}\label{namespace_gruppe22_1_1_backend_a3441a72488409f943181b735fcab76eba521c36a31c2762741cf0f8890cbe05e3}
+}]Trap is enabled and doing damage \index{Off@{Off}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Off@{Off}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a3441a72488409f943181b735fcab76ebad15305d7a4e34e02489c74a5ef542f36}{Off}\label{namespace_gruppe22_1_1_backend_a3441a72488409f943181b735fcab76ebad15305d7a4e34e02489c74a5ef542f36}
+}]Trap is enabled, but not doing damage \index{Disabled@{Disabled}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Disabled@{Disabled}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a3441a72488409f943181b735fcab76ebab9f5c797ebbf55adccdd8539a65a0241}{Disabled}\label{namespace_gruppe22_1_1_backend_a3441a72488409f943181b735fcab76ebab9f5c797ebbf55adccdd8539a65a0241}
+}]Trap is disabled and can only be re-\/enabled manually \index{No\-Display@{No\-Display}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!No\-Display@{No\-Display}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a3441a72488409f943181b735fcab76eba28b652e57d2da6b7c939166be21efd9a}{No\-Display}\label{namespace_gruppe22_1_1_backend_a3441a72488409f943181b735fcab76eba28b652e57d2da6b7c939166be21efd9a}
+}]\end{description}
+\end{Desc}
+\hypertarget{namespace_gruppe22_1_1_backend_a7cb5b89ab1a55788a8025add98954b53}{\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Trap\-Type@{Trap\-Type}}
+\index{Trap\-Type@{Trap\-Type}!Gruppe22::Backend@{Gruppe22\-::\-Backend}}
+\subsubsection[{Trap\-Type}]{\setlength{\rightskip}{0pt plus 5cm}enum {\bf Gruppe22.\-Backend.\-Trap\-Type}}}\label{namespace_gruppe22_1_1_backend_a7cb5b89ab1a55788a8025add98954b53}
+
+
+Different types of traps 
+
+\begin{Desc}
+\item[Aufzählungswerte]\par
+\begin{description}
+\index{None@{None}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!None@{None}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a7cb5b89ab1a55788a8025add98954b53a6adf97f83acf6453d4a6a4b1070f3754}{None}\label{namespace_gruppe22_1_1_backend_a7cb5b89ab1a55788a8025add98954b53a6adf97f83acf6453d4a6a4b1070f3754}
+}]\index{Changing@{Changing}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Changing@{Changing}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a7cb5b89ab1a55788a8025add98954b53a8b7b3a611d06cd195b13292422231cbe}{Changing}\label{namespace_gruppe22_1_1_backend_a7cb5b89ab1a55788a8025add98954b53a8b7b3a611d06cd195b13292422231cbe}
+}]\index{Only\-Once@{Only\-Once}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Only\-Once@{Only\-Once}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a7cb5b89ab1a55788a8025add98954b53acc1bffc6d562264a1578c9e28563e45b}{Only\-Once}\label{namespace_gruppe22_1_1_backend_a7cb5b89ab1a55788a8025add98954b53acc1bffc6d562264a1578c9e28563e45b}
+}]Trap only damages once, becomes disabled otherwiste \index{Hidden@{Hidden}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Hidden@{Hidden}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_a7cb5b89ab1a55788a8025add98954b53a7acdf85c69cc3c5305456a293524386e}{Hidden}\label{namespace_gruppe22_1_1_backend_a7cb5b89ab1a55788a8025add98954b53a7acdf85c69cc3c5305456a293524386e}
+}]Invisible trap (sprung on first enter of field, then changing to Always) \end{description}
+\end{Desc}
+\hypertarget{namespace_gruppe22_1_1_backend_ab19de7e2856537f39fbd380beea6ddba}{\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Wall\-Type@{Wall\-Type}}
+\index{Wall\-Type@{Wall\-Type}!Gruppe22::Backend@{Gruppe22\-::\-Backend}}
+\subsubsection[{Wall\-Type}]{\setlength{\rightskip}{0pt plus 5cm}enum {\bf Gruppe22.\-Backend.\-Wall\-Type}}}\label{namespace_gruppe22_1_1_backend_ab19de7e2856537f39fbd380beea6ddba}
+\begin{Desc}
+\item[Aufzählungswerte]\par
+\begin{description}
+\index{Normal@{Normal}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Normal@{Normal}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_ab19de7e2856537f39fbd380beea6ddbaa960b44c579bc2f6818d2daaf9e4c16f0}{Normal}\label{namespace_gruppe22_1_1_backend_ab19de7e2856537f39fbd380beea6ddbaa960b44c579bc2f6818d2daaf9e4c16f0}
+}]\index{Open\-Door@{Open\-Door}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Open\-Door@{Open\-Door}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_ab19de7e2856537f39fbd380beea6ddbaa2a39ae68459c1376d004b2fd790adcee}{Open\-Door}\label{namespace_gruppe22_1_1_backend_ab19de7e2856537f39fbd380beea6ddbaa2a39ae68459c1376d004b2fd790adcee}
+}]\index{Closed\-Door@{Closed\-Door}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Closed\-Door@{Closed\-Door}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_ab19de7e2856537f39fbd380beea6ddbaa9b1667934b038c7ee331485dfa30d8a3}{Closed\-Door}\label{namespace_gruppe22_1_1_backend_ab19de7e2856537f39fbd380beea6ddbaa9b1667934b038c7ee331485dfa30d8a3}
+}]\index{Deco1@{Deco1}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Deco1@{Deco1}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_ab19de7e2856537f39fbd380beea6ddbaa701389ddd32037e473017df249063047}{Deco1}\label{namespace_gruppe22_1_1_backend_ab19de7e2856537f39fbd380beea6ddbaa701389ddd32037e473017df249063047}
+}]\index{Deco2@{Deco2}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Deco2@{Deco2}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_ab19de7e2856537f39fbd380beea6ddbaa2ec021329dfcdd0dfbd4870d122f0183}{Deco2}\label{namespace_gruppe22_1_1_backend_ab19de7e2856537f39fbd380beea6ddbaa2ec021329dfcdd0dfbd4870d122f0183}
+}]\index{Deco3@{Deco3}!Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}}\index{Gruppe22\-::\-Backend@{Gruppe22\-::\-Backend}!Deco3@{Deco3}}\item[{\em 
+\hypertarget{namespace_gruppe22_1_1_backend_ab19de7e2856537f39fbd380beea6ddbaa30aef1eeb4692d6bd21bc20b98674fe0}{Deco3}\label{namespace_gruppe22_1_1_backend_ab19de7e2856537f39fbd380beea6ddbaa30aef1eeb4692d6bd21bc20b98674fe0}
+}]\end{description}
+\end{Desc}

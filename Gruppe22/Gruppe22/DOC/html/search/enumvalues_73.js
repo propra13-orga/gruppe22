@@ -1,0 +1,22 @@
+var searchData=
+[
+  ['scare',['Scare',['../namespace_gruppe22_1_1_backend.html#a313ed67a4abf2c938a5930323a3d6f49aea94a9b257a33c4113c40f3211eff432',1,'Gruppe22::Backend']]],
+  ['self',['Self',['../namespace_gruppe22_1_1_backend.html#a76255be55e4f31a7f4380aa4570b7531aad6e7652b1bdfb38783486c2c3d5e806',1,'Gruppe22::Backend']]],
+  ['sell',['Sell',['../namespace_gruppe22_1_1_client.html#aa77a047521f040f259d376e46b648666a3068c5a98c003498f1fec0c489212e8b',1,'Gruppe22::Client']]],
+  ['settings',['Settings',['../namespace_gruppe22_1_1_backend.html#ab56df91bb0bdafa1ea978e552209ce73af4f70727dc34561dfde1a3c529b6205c',1,'Gruppe22.Backend.Settings()'],['../namespace_gruppe22_1_1_backend.html#a83e3e49539223e78e12c1cc09c5aa5b8af4f70727dc34561dfde1a3c529b6205c',1,'Gruppe22.Backend.Settings()']]],
+  ['shop',['Shop',['../namespace_gruppe22_1_1_backend.html#ab56df91bb0bdafa1ea978e552209ce73a9f82518d468b9fee614fcc92f76bb163',1,'Gruppe22::Backend']]],
+  ['showabilities',['ShowAbilities',['../namespace_gruppe22_1_1_backend.html#ab56df91bb0bdafa1ea978e552209ce73a4ae05257cbbaa9af91ccbf7bbb05c17d',1,'Gruppe22::Backend']]],
+  ['showcharacter',['ShowCharacter',['../namespace_gruppe22_1_1_backend.html#ab56df91bb0bdafa1ea978e552209ce73a34a326dde76da7fea521807f73d3c98a',1,'Gruppe22::Backend']]],
+  ['showinventory',['ShowInventory',['../namespace_gruppe22_1_1_backend.html#ab56df91bb0bdafa1ea978e552209ce73a5e035f78e07eda1a93846b8ea0e9589b',1,'Gruppe22::Backend']]],
+  ['showmenu',['ShowMenu',['../namespace_gruppe22_1_1_backend.html#ab56df91bb0bdafa1ea978e552209ce73a05abf9bfeac5bd935c4411884c7d15fe',1,'Gruppe22::Backend']]],
+  ['showmessage',['ShowMessage',['../namespace_gruppe22_1_1_backend.html#ab56df91bb0bdafa1ea978e552209ce73a7784f68c858baf6399ab8d2c195543d6',1,'Gruppe22::Backend']]],
+  ['singleplayer',['SinglePlayer',['../namespace_gruppe22_1_1_backend.html#a83e3e49539223e78e12c1cc09c5aa5b8abaa1d5d7c2a65312fdc5577125de257a',1,'Gruppe22::Backend']]],
+  ['special',['Special',['../namespace_gruppe22_1_1_backend.html#aaa25d27da5307e9abb21f9f09b528f67ab4c2b550635fe54fd29f2b64dfaca55d',1,'Gruppe22::Backend']]],
+  ['staff',['Staff',['../namespace_gruppe22_1_1_backend.html#ad9b2305e9d47cf46b34e082657cc5504a8f7f93630c366dc55aec88eb8e9640d0',1,'Gruppe22::Backend']]],
+  ['start',['Start',['../namespace_gruppe22_1_1_backend.html#a5956dac270a0deefca1d578d210550e2aa6122a65eaa676f700ae68d393054a37',1,'Gruppe22::Backend']]],
+  ['startserver',['StartServer',['../namespace_gruppe22_1_1_backend.html#a83e3e49539223e78e12c1cc09c5aa5b8acd66df31d5cae6f603fc30c5927a8841',1,'Gruppe22::Backend']]],
+  ['steal',['Steal',['../namespace_gruppe22_1_1_client.html#aa77a047521f040f259d376e46b648666adf2da70719acb96b4702c5abf1ffc993',1,'Gruppe22::Client']]],
+  ['stealhealth',['StealHealth',['../namespace_gruppe22_1_1_backend.html#a0bab4fb79b71059941f85a901606a7dfa5bf90ec70de4955a98a0552dc23584ca',1,'Gruppe22::Backend']]],
+  ['stealmana',['StealMana',['../namespace_gruppe22_1_1_backend.html#a0bab4fb79b71059941f85a901606a7dfa185be12b8bf4ffd59c2321e3a1e6636c',1,'Gruppe22::Backend']]],
+  ['stun',['Stun',['../namespace_gruppe22_1_1_backend.html#a313ed67a4abf2c938a5930323a3d6f49a27e9c0d7972e999a5bbe094c4cede584',1,'Gruppe22::Backend']]]
+];

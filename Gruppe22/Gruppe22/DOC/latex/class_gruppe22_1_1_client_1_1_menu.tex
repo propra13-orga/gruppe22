@@ -1,0 +1,121 @@
+\hypertarget{class_gruppe22_1_1_client_1_1_menu}{\section{Gruppe22.\-Client.\-Menu Klassenreferenz}
+\label{class_gruppe22_1_1_client_1_1_menu}\index{Gruppe22.\-Client.\-Menu@{Gruppe22.\-Client.\-Menu}}
+}
+Klassendiagramm für Gruppe22.\-Client.\-Menu\-:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.692308cm]{class_gruppe22_1_1_client_1_1_menu}
+\end{center}
+\end{figure}
+\subsection*{Öffentliche Methoden}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{class_gruppe22_1_1_client_1_1_menu_ad4acef65eca04e02d56b3360b1d2692b}{Add\-Line} (string text)
+\begin{DoxyCompactList}\small\item\em Append a new line of text to the list of Options \end{DoxyCompactList}\item 
+override void \hyperlink{class_gruppe22_1_1_client_1_1_menu_ab51c72e83507c3eb2652456e1951acc4}{Draw} (Game\-Time game\-Time)
+\begin{DoxyCompactList}\small\item\em This is called when the game should draw itself. \end{DoxyCompactList}\item 
+override void \hyperlink{class_gruppe22_1_1_client_1_1_menu_a4fdd1df14f4cffa4fc2d164d9bc468f3}{Move\-Content} (Vector2 difference, int \-\_\-last\-Check=0)
+\item 
+override void \hyperlink{class_gruppe22_1_1_client_1_1_menu_a699aecf4ccf96cbf17a19d8c56d2cfd8}{Scroll\-Wheel} (int Difference)
+\item 
+\hyperlink{class_gruppe22_1_1_client_1_1_menu_ab8b07183b7dea58a5560e8b44da3e807}{Menu} (\hyperlink{interface_gruppe22_1_1_backend_1_1_i_handle_event}{Backend.\-I\-Handle\-Event} parent, Sprite\-Batch sprite\-Batch, Content\-Manager content, Rectangle display\-Rect)
+\end{DoxyCompactItemize}
+\subsection*{Weitere Geerbte Elemente}
+
+
+\subsection{Beschreibung der Konstruktoren und Destruktoren}
+\hypertarget{class_gruppe22_1_1_client_1_1_menu_ab8b07183b7dea58a5560e8b44da3e807}{\index{Gruppe22\-::\-Client\-::\-Menu@{Gruppe22\-::\-Client\-::\-Menu}!Menu@{Menu}}
+\index{Menu@{Menu}!Gruppe22::Client::Menu@{Gruppe22\-::\-Client\-::\-Menu}}
+\subsubsection[{Menu}]{\setlength{\rightskip}{0pt plus 5cm}Gruppe22.\-Client.\-Menu.\-Menu (
+\begin{DoxyParamCaption}
+\item[{{\bf Backend.\-I\-Handle\-Event}}]{parent, }
+\item[{Sprite\-Batch}]{sprite\-Batch, }
+\item[{Content\-Manager}]{content, }
+\item[{Rectangle}]{display\-Rect}
+\end{DoxyParamCaption}
+)}}\label{class_gruppe22_1_1_client_1_1_menu_ab8b07183b7dea58a5560e8b44da3e807}
+
+
+\subsection{Dokumentation der Elementfunktionen}
+\hypertarget{class_gruppe22_1_1_client_1_1_menu_ad4acef65eca04e02d56b3360b1d2692b}{\index{Gruppe22\-::\-Client\-::\-Menu@{Gruppe22\-::\-Client\-::\-Menu}!Add\-Line@{Add\-Line}}
+\index{Add\-Line@{Add\-Line}!Gruppe22::Client::Menu@{Gruppe22\-::\-Client\-::\-Menu}}
+\subsubsection[{Add\-Line}]{\setlength{\rightskip}{0pt plus 5cm}void Gruppe22.\-Client.\-Menu.\-Add\-Line (
+\begin{DoxyParamCaption}
+\item[{string}]{text}
+\end{DoxyParamCaption}
+)}}\label{class_gruppe22_1_1_client_1_1_menu_ad4acef65eca04e02d56b3360b1d2692b}
+
+
+Append a new line of text to the list of Options 
+
+
+\begin{DoxyParams}{Parameter}
+{\em text} & \\
+\hline
+\end{DoxyParams}
+\hypertarget{class_gruppe22_1_1_client_1_1_menu_ab51c72e83507c3eb2652456e1951acc4}{\index{Gruppe22\-::\-Client\-::\-Menu@{Gruppe22\-::\-Client\-::\-Menu}!Draw@{Draw}}
+\index{Draw@{Draw}!Gruppe22::Client::Menu@{Gruppe22\-::\-Client\-::\-Menu}}
+\subsubsection[{Draw}]{\setlength{\rightskip}{0pt plus 5cm}override void Gruppe22.\-Client.\-Menu.\-Draw (
+\begin{DoxyParamCaption}
+\item[{Game\-Time}]{game\-Time}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{class_gruppe22_1_1_client_1_1_menu_ab51c72e83507c3eb2652456e1951acc4}
+
+
+This is called when the game should draw itself. 
+
+
+\begin{DoxyParams}{Parameter}
+{\em game\-Time} & Provides a snapshot of timing values.\\
+\hline
+\end{DoxyParams}
+
+
+Erneute Implementation von \hyperlink{class_gruppe22_1_1_client_1_1_u_i_element_ae68afcbd1db3540052d6b399022e56e7}{Gruppe22.\-Client.\-U\-I\-Element}.
+
+\hypertarget{class_gruppe22_1_1_client_1_1_menu_a4fdd1df14f4cffa4fc2d164d9bc468f3}{\index{Gruppe22\-::\-Client\-::\-Menu@{Gruppe22\-::\-Client\-::\-Menu}!Move\-Content@{Move\-Content}}
+\index{Move\-Content@{Move\-Content}!Gruppe22::Client::Menu@{Gruppe22\-::\-Client\-::\-Menu}}
+\subsubsection[{Move\-Content}]{\setlength{\rightskip}{0pt plus 5cm}override void Gruppe22.\-Client.\-Menu.\-Move\-Content (
+\begin{DoxyParamCaption}
+\item[{Vector2}]{difference, }
+\item[{int}]{\-\_\-last\-Check = {\ttfamily 0}}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{class_gruppe22_1_1_client_1_1_menu_a4fdd1df14f4cffa4fc2d164d9bc468f3}
+
+
+
+
+
+\begin{DoxyParams}{Parameter}
+{\em difference} & \\
+\hline
+\end{DoxyParams}
+
+
+Erneute Implementation von \hyperlink{class_gruppe22_1_1_client_1_1_u_i_element_aa089eaf82ae3a89724a45eb8860cb97b}{Gruppe22.\-Client.\-U\-I\-Element}.
+
+\hypertarget{class_gruppe22_1_1_client_1_1_menu_a699aecf4ccf96cbf17a19d8c56d2cfd8}{\index{Gruppe22\-::\-Client\-::\-Menu@{Gruppe22\-::\-Client\-::\-Menu}!Scroll\-Wheel@{Scroll\-Wheel}}
+\index{Scroll\-Wheel@{Scroll\-Wheel}!Gruppe22::Client::Menu@{Gruppe22\-::\-Client\-::\-Menu}}
+\subsubsection[{Scroll\-Wheel}]{\setlength{\rightskip}{0pt plus 5cm}override void Gruppe22.\-Client.\-Menu.\-Scroll\-Wheel (
+\begin{DoxyParamCaption}
+\item[{int}]{Difference}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{class_gruppe22_1_1_client_1_1_menu_a699aecf4ccf96cbf17a19d8c56d2cfd8}
+
+
+
+
+
+\begin{DoxyParams}{Parameter}
+{\em Difference} & \\
+\hline
+\end{DoxyParams}
+
+
+Erneute Implementation von \hyperlink{class_gruppe22_1_1_client_1_1_u_i_element_a691954dde0b9a1d39c064e86fea19bf5}{Gruppe22.\-Client.\-U\-I\-Element}.
+
+
+
+Die Dokumentation für diese Klasse wurde erzeugt aufgrund der Datei\-:\begin{DoxyCompactItemize}
+\item 
+C\-:/\-Users/beursken/\-Documents/\-Git\-Hub/gruppe22/\-Gruppe22/\-Gruppe22/\-Client/\-U\-I/\hyperlink{_menu_8cs}{Menu.\-cs}\end{DoxyCompactItemize}

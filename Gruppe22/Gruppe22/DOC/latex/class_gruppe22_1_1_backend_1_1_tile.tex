@@ -1,0 +1,119 @@
+\hypertarget{class_gruppe22_1_1_backend_1_1_tile}{\section{Gruppe22.\-Backend.\-Tile Klassenreferenz}
+\label{class_gruppe22_1_1_backend_1_1_tile}\index{Gruppe22.\-Backend.\-Tile@{Gruppe22.\-Backend.\-Tile}}
+}
+
+
+An abstract class representing a generic tile (i.\-e. blank floor)  
+
+
+Klassendiagramm für Gruppe22.\-Backend.\-Tile\-:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=12.000000cm]{class_gruppe22_1_1_backend_1_1_tile}
+\end{center}
+\end{figure}
+\subsection*{Öffentliche Methoden}
+\begin{DoxyCompactItemize}
+\item 
+virtual void \hyperlink{class_gruppe22_1_1_backend_1_1_tile_a0810154a52f859e852497e3717998e47}{Update} (Game\-Time game\-Time)
+\item 
+virtual void \hyperlink{class_gruppe22_1_1_backend_1_1_tile_a109ab3e77ffca9d44c95a711af3491dc}{Save} (Xml\-Writer xmlw)
+\begin{DoxyCompactList}\small\item\em Abstract method to save a tile in a X\-M\-L file \end{DoxyCompactList}\item 
+\hyperlink{class_gruppe22_1_1_backend_1_1_tile_aff91899925757cb0d274f3beaa51db79}{Tile} (object \hyperlink{class_gruppe22_1_1_backend_1_1_tile_abc12933c70eb3a2ebbb2fde9f45c2632}{parent})
+\begin{DoxyCompactList}\small\item\em An empty constructor (setting default values) \end{DoxyCompactList}\item 
+virtual void \hyperlink{class_gruppe22_1_1_backend_1_1_tile_a6bd5672c460c2e496dcaa483aa5e8438}{Handle\-Event} (bool Down\-Stream, \hyperlink{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73}{Events} event\-I\-D, params object\mbox{[}$\,$\mbox{]} data)
+\end{DoxyCompactItemize}
+\subsection*{Geschützte Attribute}
+\begin{DoxyCompactItemize}
+\item 
+object \hyperlink{class_gruppe22_1_1_backend_1_1_tile_aee3960c872a95f378086b1655caddbcb}{\-\_\-parent} = null
+\end{DoxyCompactItemize}
+\subsection*{Propertys}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_gruppe22_1_1_backend_1_1_coords}{Backend.\-Coords} \hyperlink{class_gruppe22_1_1_backend_1_1_tile_a0fd463d0eb3f37522d0e4ff6692b9fcd}{coords}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+object \hyperlink{class_gruppe22_1_1_backend_1_1_tile_abc12933c70eb3a2ebbb2fde9f45c2632}{parent}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\end{DoxyCompactItemize}
+
+
+\subsection{Ausführliche Beschreibung}
+An abstract class representing a generic tile (i.\-e. blank floor) 
+
+
+
+\subsection{Beschreibung der Konstruktoren und Destruktoren}
+\hypertarget{class_gruppe22_1_1_backend_1_1_tile_aff91899925757cb0d274f3beaa51db79}{\index{Gruppe22\-::\-Backend\-::\-Tile@{Gruppe22\-::\-Backend\-::\-Tile}!Tile@{Tile}}
+\index{Tile@{Tile}!Gruppe22::Backend::Tile@{Gruppe22\-::\-Backend\-::\-Tile}}
+\subsubsection[{Tile}]{\setlength{\rightskip}{0pt plus 5cm}Gruppe22.\-Backend.\-Tile.\-Tile (
+\begin{DoxyParamCaption}
+\item[{object}]{parent}
+\end{DoxyParamCaption}
+)}}\label{class_gruppe22_1_1_backend_1_1_tile_aff91899925757cb0d274f3beaa51db79}
+
+
+An empty constructor (setting default values) 
+
+
+
+\subsection{Dokumentation der Elementfunktionen}
+\hypertarget{class_gruppe22_1_1_backend_1_1_tile_a6bd5672c460c2e496dcaa483aa5e8438}{\index{Gruppe22\-::\-Backend\-::\-Tile@{Gruppe22\-::\-Backend\-::\-Tile}!Handle\-Event@{Handle\-Event}}
+\index{Handle\-Event@{Handle\-Event}!Gruppe22::Backend::Tile@{Gruppe22\-::\-Backend\-::\-Tile}}
+\subsubsection[{Handle\-Event}]{\setlength{\rightskip}{0pt plus 5cm}virtual void Gruppe22.\-Backend.\-Tile.\-Handle\-Event (
+\begin{DoxyParamCaption}
+\item[{bool}]{Down\-Stream, }
+\item[{{\bf Events}}]{event\-I\-D, }
+\item[{params object\mbox{[}$\,$\mbox{]}}]{data}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{class_gruppe22_1_1_backend_1_1_tile_a6bd5672c460c2e496dcaa483aa5e8438}
+\hypertarget{class_gruppe22_1_1_backend_1_1_tile_a109ab3e77ffca9d44c95a711af3491dc}{\index{Gruppe22\-::\-Backend\-::\-Tile@{Gruppe22\-::\-Backend\-::\-Tile}!Save@{Save}}
+\index{Save@{Save}!Gruppe22::Backend::Tile@{Gruppe22\-::\-Backend\-::\-Tile}}
+\subsubsection[{Save}]{\setlength{\rightskip}{0pt plus 5cm}virtual void Gruppe22.\-Backend.\-Tile.\-Save (
+\begin{DoxyParamCaption}
+\item[{Xml\-Writer}]{xmlw}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{class_gruppe22_1_1_backend_1_1_tile_a109ab3e77ffca9d44c95a711af3491dc}
+
+
+Abstract method to save a tile in a X\-M\-L file 
+
+
+\begin{DoxyParams}{Parameter}
+{\em xmlw} & the Xml\-Writer used for saving the file\\
+\hline
+\end{DoxyParams}
+
+
+Erneute Implementation in \hyperlink{class_gruppe22_1_1_backend_1_1_floor_tile_a4a096b8d6ff25557bd807751268987f2}{Gruppe22.\-Backend.\-Floor\-Tile}, \hyperlink{class_gruppe22_1_1_backend_1_1_trap_tile_a923a400fdf039c83ef4e6c3a42170b73}{Gruppe22.\-Backend.\-Trap\-Tile}, \hyperlink{class_gruppe22_1_1_backend_1_1_trigger_tile_a218716e27c1c692f05e0b538b30dcc59}{Gruppe22.\-Backend.\-Trigger\-Tile}, \hyperlink{class_gruppe22_1_1_backend_1_1_teleport_tile_a15a8abf308bcb1577fdea70a4959bf79}{Gruppe22.\-Backend.\-Teleport\-Tile}, \hyperlink{class_gruppe22_1_1_backend_1_1_wall_tile_affcf30d6a5d46d74c8c570bb83cf99f8}{Gruppe22.\-Backend.\-Wall\-Tile}, \hyperlink{class_gruppe22_1_1_backend_1_1_reserved_tile_a394fda5eebd1e5c853c904979bbe04ea}{Gruppe22.\-Backend.\-Reserved\-Tile}, \hyperlink{class_gruppe22_1_1_projectile_tile_ac04e7d0bab385f083a1d4dca56083f3d}{Gruppe22.\-Projectile\-Tile}, \hyperlink{class_gruppe22_1_1_backend_1_1_switch_tile_aa50a0cf7dde944e73b9b2640042e78d2}{Gruppe22.\-Backend.\-Switch\-Tile}, \hyperlink{class_gruppe22_1_1_backend_1_1_actor_tile_aad98091f10ca75642d211c1a837141e4}{Gruppe22.\-Backend.\-Actor\-Tile}, \hyperlink{class_gruppe22_1_1_backend_1_1_door_tile_a89bddd70828e64c6491d92a225db0474}{Gruppe22.\-Backend.\-Door\-Tile}, \hyperlink{class_gruppe22_1_1_backend_1_1_item_tile_a2e58e18ae35c42b311fcdaa1664ec505}{Gruppe22.\-Backend.\-Item\-Tile}, \hyperlink{class_gruppe22_1_1_backend_1_1_gap_tile_aeeed4e7d3d3d230ba20398bee17f4ed2}{Gruppe22.\-Backend.\-Gap\-Tile} und \hyperlink{class_gruppe22_1_1_backend_1_1_target_tile_a3bb3f1712e44d11503f5da8226cba9f6}{Gruppe22.\-Backend.\-Target\-Tile}.
+
+\hypertarget{class_gruppe22_1_1_backend_1_1_tile_a0810154a52f859e852497e3717998e47}{\index{Gruppe22\-::\-Backend\-::\-Tile@{Gruppe22\-::\-Backend\-::\-Tile}!Update@{Update}}
+\index{Update@{Update}!Gruppe22::Backend::Tile@{Gruppe22\-::\-Backend\-::\-Tile}}
+\subsubsection[{Update}]{\setlength{\rightskip}{0pt plus 5cm}virtual void Gruppe22.\-Backend.\-Tile.\-Update (
+\begin{DoxyParamCaption}
+\item[{Game\-Time}]{game\-Time}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{class_gruppe22_1_1_backend_1_1_tile_a0810154a52f859e852497e3717998e47}
+
+
+Erneute Implementation in \hyperlink{class_gruppe22_1_1_backend_1_1_floor_tile_ae3d0627204d49dabc8180fd0bdd22803}{Gruppe22.\-Backend.\-Floor\-Tile}.
+
+
+
+\subsection{Dokumentation der Datenelemente}
+\hypertarget{class_gruppe22_1_1_backend_1_1_tile_aee3960c872a95f378086b1655caddbcb}{\index{Gruppe22\-::\-Backend\-::\-Tile@{Gruppe22\-::\-Backend\-::\-Tile}!\-\_\-parent@{\-\_\-parent}}
+\index{\-\_\-parent@{\-\_\-parent}!Gruppe22::Backend::Tile@{Gruppe22\-::\-Backend\-::\-Tile}}
+\subsubsection[{\-\_\-parent}]{\setlength{\rightskip}{0pt plus 5cm}object Gruppe22.\-Backend.\-Tile.\-\_\-parent = null\hspace{0.3cm}{\ttfamily [protected]}}}\label{class_gruppe22_1_1_backend_1_1_tile_aee3960c872a95f378086b1655caddbcb}
+
+
+\subsection{Dokumentation der Propertys}
+\hypertarget{class_gruppe22_1_1_backend_1_1_tile_a0fd463d0eb3f37522d0e4ff6692b9fcd}{\index{Gruppe22\-::\-Backend\-::\-Tile@{Gruppe22\-::\-Backend\-::\-Tile}!coords@{coords}}
+\index{coords@{coords}!Gruppe22::Backend::Tile@{Gruppe22\-::\-Backend\-::\-Tile}}
+\subsubsection[{coords}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Backend.\-Coords} Gruppe22.\-Backend.\-Tile.\-coords\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}}\label{class_gruppe22_1_1_backend_1_1_tile_a0fd463d0eb3f37522d0e4ff6692b9fcd}
+\hypertarget{class_gruppe22_1_1_backend_1_1_tile_abc12933c70eb3a2ebbb2fde9f45c2632}{\index{Gruppe22\-::\-Backend\-::\-Tile@{Gruppe22\-::\-Backend\-::\-Tile}!parent@{parent}}
+\index{parent@{parent}!Gruppe22::Backend::Tile@{Gruppe22\-::\-Backend\-::\-Tile}}
+\subsubsection[{parent}]{\setlength{\rightskip}{0pt plus 5cm}object Gruppe22.\-Backend.\-Tile.\-parent\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}}\label{class_gruppe22_1_1_backend_1_1_tile_abc12933c70eb3a2ebbb2fde9f45c2632}
+
+
+Die Dokumentation für diese Klasse wurde erzeugt aufgrund der Datei\-:\begin{DoxyCompactItemize}
+\item 
+C\-:/\-Users/beursken/\-Documents/\-Git\-Hub/gruppe22/\-Gruppe22/\-Gruppe22/\-Backend/\-Map/\hyperlink{_tile_8cs}{Tile.\-cs}\end{DoxyCompactItemize}

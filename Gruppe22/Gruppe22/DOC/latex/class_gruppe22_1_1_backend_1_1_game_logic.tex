@@ -1,0 +1,166 @@
+\hypertarget{class_gruppe22_1_1_backend_1_1_game_logic}{\section{Gruppe22.\-Backend.\-Game\-Logic Klassenreferenz}
+\label{class_gruppe22_1_1_backend_1_1_game_logic}\index{Gruppe22.\-Backend.\-Game\-Logic@{Gruppe22.\-Backend.\-Game\-Logic}}
+}
+
+
+Handle game logic  
+
+
+Klassendiagramm für Gruppe22.\-Backend.\-Game\-Logic\-:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.589744cm]{class_gruppe22_1_1_backend_1_1_game_logic}
+\end{center}
+\end{figure}
+\subsection*{Öffentliche Methoden}
+\begin{DoxyCompactItemize}
+\item 
+override void \hyperlink{class_gruppe22_1_1_backend_1_1_game_logic_a44491c21e7048676d19f2e4dbfb2386c}{Handle\-Event} (bool Down\-Stream, \hyperlink{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73}{Events} event\-I\-D, params object\mbox{[}$\,$\mbox{]} data)
+\begin{DoxyCompactList}\small\item\em Handle events from U\-I\-Elements and/or backend objects \end{DoxyCompactList}\item 
+void \hyperlink{class_gruppe22_1_1_backend_1_1_game_logic_a1be5667d5db7294fad1da32721f195ca}{Connect\-Rooms} (List$<$ \hyperlink{class_gruppe22_1_1_backend_1_1_generator}{Generator} $>$ rooms=null, int From=0, \hyperlink{namespace_gruppe22_1_1_backend_a2d53d5d14b8ea0951ba6971e5da1ebf5}{Direction} exit=Direction.\-None, int rooms\-Per\-Row=0)
+\item 
+void \hyperlink{class_gruppe22_1_1_backend_1_1_game_logic_a352d3b5b0d7c02cb73938e0464ee941a}{Connect\-Recursive} (List$<$ \hyperlink{class_gruppe22_1_1_backend_1_1_generator}{Generator} $>$ rooms, int id, List$<$ int $>$ visited=null)
+\item 
+void \hyperlink{class_gruppe22_1_1_backend_1_1_game_logic_aae4a27768f44fa3ee079eeda9f418990}{Show\-Message} (string message=\char`\"{}\char`\"{})
+\begin{DoxyCompactList}\small\item\em A text displayed if the player died \end{DoxyCompactList}\item 
+void \hyperlink{class_gruppe22_1_1_backend_1_1_game_logic_acaa73fcd270f74efde215829988df8ee}{Generate\-Maps} ()
+\begin{DoxyCompactList}\small\item\em Generate three levels consisting of multiple rooms each and save them to xml files \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Geschützte Methoden}
+\begin{DoxyCompactItemize}
+\item 
+override void \hyperlink{class_gruppe22_1_1_backend_1_1_game_logic_afeba77d1e055f35a2abe58fcc849163d}{Initialize} ()
+\begin{DoxyCompactList}\small\item\em Set up the (non visible) objects of the game \end{DoxyCompactList}\item 
+void \hyperlink{class_gruppe22_1_1_backend_1_1_game_logic_a129959614d647372d87e8eb34e1c50a5}{\-\_\-\-Combat\-Damage} (int attacker, int defender)
+\begin{DoxyCompactList}\small\item\em methode to evaluate the damage in a combat between two actors \end{DoxyCompactList}\item 
+void \hyperlink{class_gruppe22_1_1_backend_1_1_game_logic_a7d29f64f2a93c336d262e017ef8d2f4b}{\-\_\-\-Trap\-Damage} (\hyperlink{class_gruppe22_1_1_backend_1_1_coords}{Coords} target)
+\begin{DoxyCompactList}\small\item\em methode to evaluate the damage a trap deals to an actor walking over it or stands on raising trap \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Weitere Geerbte Elemente}
+
+
+\subsection{Ausführliche Beschreibung}
+Handle game logic 
+
+
+
+\subsection{Dokumentation der Elementfunktionen}
+\hypertarget{class_gruppe22_1_1_backend_1_1_game_logic_a129959614d647372d87e8eb34e1c50a5}{\index{Gruppe22\-::\-Backend\-::\-Game\-Logic@{Gruppe22\-::\-Backend\-::\-Game\-Logic}!\-\_\-\-Combat\-Damage@{\-\_\-\-Combat\-Damage}}
+\index{\-\_\-\-Combat\-Damage@{\-\_\-\-Combat\-Damage}!Gruppe22::Backend::GameLogic@{Gruppe22\-::\-Backend\-::\-Game\-Logic}}
+\subsubsection[{\-\_\-\-Combat\-Damage}]{\setlength{\rightskip}{0pt plus 5cm}void Gruppe22.\-Backend.\-Game\-Logic.\-\_\-\-Combat\-Damage (
+\begin{DoxyParamCaption}
+\item[{int}]{attacker, }
+\item[{int}]{defender}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [protected]}}}\label{class_gruppe22_1_1_backend_1_1_game_logic_a129959614d647372d87e8eb34e1c50a5}
+
+
+methode to evaluate the damage in a combat between two actors 
+
+
+\begin{DoxyParams}{Parameter}
+{\em attacker} & the attacking actor\\
+\hline
+{\em defender} & the attacked actor\\
+\hline
+\end{DoxyParams}
+\hypertarget{class_gruppe22_1_1_backend_1_1_game_logic_a7d29f64f2a93c336d262e017ef8d2f4b}{\index{Gruppe22\-::\-Backend\-::\-Game\-Logic@{Gruppe22\-::\-Backend\-::\-Game\-Logic}!\-\_\-\-Trap\-Damage@{\-\_\-\-Trap\-Damage}}
+\index{\-\_\-\-Trap\-Damage@{\-\_\-\-Trap\-Damage}!Gruppe22::Backend::GameLogic@{Gruppe22\-::\-Backend\-::\-Game\-Logic}}
+\subsubsection[{\-\_\-\-Trap\-Damage}]{\setlength{\rightskip}{0pt plus 5cm}void Gruppe22.\-Backend.\-Game\-Logic.\-\_\-\-Trap\-Damage (
+\begin{DoxyParamCaption}
+\item[{{\bf Coords}}]{target}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [protected]}}}\label{class_gruppe22_1_1_backend_1_1_game_logic_a7d29f64f2a93c336d262e017ef8d2f4b}
+
+
+methode to evaluate the damage a trap deals to an actor walking over it or stands on raising trap 
+
+
+\begin{DoxyParams}{Parameter}
+{\em target} & \hyperlink{class_gruppe22_1_1_backend_1_1_coords}{Coords} of the actor which walked over the trap\\
+\hline
+\end{DoxyParams}
+\hypertarget{class_gruppe22_1_1_backend_1_1_game_logic_a352d3b5b0d7c02cb73938e0464ee941a}{\index{Gruppe22\-::\-Backend\-::\-Game\-Logic@{Gruppe22\-::\-Backend\-::\-Game\-Logic}!Connect\-Recursive@{Connect\-Recursive}}
+\index{Connect\-Recursive@{Connect\-Recursive}!Gruppe22::Backend::GameLogic@{Gruppe22\-::\-Backend\-::\-Game\-Logic}}
+\subsubsection[{Connect\-Recursive}]{\setlength{\rightskip}{0pt plus 5cm}void Gruppe22.\-Backend.\-Game\-Logic.\-Connect\-Recursive (
+\begin{DoxyParamCaption}
+\item[{List$<$ {\bf Generator} $>$}]{rooms, }
+\item[{int}]{id, }
+\item[{List$<$ int $>$}]{visited = {\ttfamily null}}
+\end{DoxyParamCaption}
+)}}\label{class_gruppe22_1_1_backend_1_1_game_logic_a352d3b5b0d7c02cb73938e0464ee941a}
+\hypertarget{class_gruppe22_1_1_backend_1_1_game_logic_a1be5667d5db7294fad1da32721f195ca}{\index{Gruppe22\-::\-Backend\-::\-Game\-Logic@{Gruppe22\-::\-Backend\-::\-Game\-Logic}!Connect\-Rooms@{Connect\-Rooms}}
+\index{Connect\-Rooms@{Connect\-Rooms}!Gruppe22::Backend::GameLogic@{Gruppe22\-::\-Backend\-::\-Game\-Logic}}
+\subsubsection[{Connect\-Rooms}]{\setlength{\rightskip}{0pt plus 5cm}void Gruppe22.\-Backend.\-Game\-Logic.\-Connect\-Rooms (
+\begin{DoxyParamCaption}
+\item[{List$<$ {\bf Generator} $>$}]{rooms = {\ttfamily null}, }
+\item[{int}]{From = {\ttfamily 0}, }
+\item[{{\bf Direction}}]{exit = {\ttfamily Direction.None}, }
+\item[{int}]{rooms\-Per\-Row = {\ttfamily 0}}
+\end{DoxyParamCaption}
+)}}\label{class_gruppe22_1_1_backend_1_1_game_logic_a1be5667d5db7294fad1da32721f195ca}
+\hypertarget{class_gruppe22_1_1_backend_1_1_game_logic_acaa73fcd270f74efde215829988df8ee}{\index{Gruppe22\-::\-Backend\-::\-Game\-Logic@{Gruppe22\-::\-Backend\-::\-Game\-Logic}!Generate\-Maps@{Generate\-Maps}}
+\index{Generate\-Maps@{Generate\-Maps}!Gruppe22::Backend::GameLogic@{Gruppe22\-::\-Backend\-::\-Game\-Logic}}
+\subsubsection[{Generate\-Maps}]{\setlength{\rightskip}{0pt plus 5cm}void Gruppe22.\-Backend.\-Game\-Logic.\-Generate\-Maps (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{class_gruppe22_1_1_backend_1_1_game_logic_acaa73fcd270f74efde215829988df8ee}
+
+
+Generate three levels consisting of multiple rooms each and save them to xml files 
+
+\hypertarget{class_gruppe22_1_1_backend_1_1_game_logic_a44491c21e7048676d19f2e4dbfb2386c}{\index{Gruppe22\-::\-Backend\-::\-Game\-Logic@{Gruppe22\-::\-Backend\-::\-Game\-Logic}!Handle\-Event@{Handle\-Event}}
+\index{Handle\-Event@{Handle\-Event}!Gruppe22::Backend::GameLogic@{Gruppe22\-::\-Backend\-::\-Game\-Logic}}
+\subsubsection[{Handle\-Event}]{\setlength{\rightskip}{0pt plus 5cm}override void Gruppe22.\-Backend.\-Game\-Logic.\-Handle\-Event (
+\begin{DoxyParamCaption}
+\item[{bool}]{Down\-Stream, }
+\item[{{\bf Events}}]{event\-I\-D, }
+\item[{params object\mbox{[}$\,$\mbox{]}}]{data}
+\end{DoxyParamCaption}
+)}}\label{class_gruppe22_1_1_backend_1_1_game_logic_a44491c21e7048676d19f2e4dbfb2386c}
+
+
+Handle events from U\-I\-Elements and/or backend objects 
+
+
+\begin{DoxyParams}{Parameter}
+{\em sender} & \\
+\hline
+{\em event\-I\-D} & \\
+\hline
+{\em data} & \\
+\hline
+\end{DoxyParams}
+\hypertarget{class_gruppe22_1_1_backend_1_1_game_logic_afeba77d1e055f35a2abe58fcc849163d}{\index{Gruppe22\-::\-Backend\-::\-Game\-Logic@{Gruppe22\-::\-Backend\-::\-Game\-Logic}!Initialize@{Initialize}}
+\index{Initialize@{Initialize}!Gruppe22::Backend::GameLogic@{Gruppe22\-::\-Backend\-::\-Game\-Logic}}
+\subsubsection[{Initialize}]{\setlength{\rightskip}{0pt plus 5cm}override void Gruppe22.\-Backend.\-Game\-Logic.\-Initialize (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [protected]}}}\label{class_gruppe22_1_1_backend_1_1_game_logic_afeba77d1e055f35a2abe58fcc849163d}
+
+
+Set up the (non visible) objects of the game 
+
+\hypertarget{class_gruppe22_1_1_backend_1_1_game_logic_aae4a27768f44fa3ee079eeda9f418990}{\index{Gruppe22\-::\-Backend\-::\-Game\-Logic@{Gruppe22\-::\-Backend\-::\-Game\-Logic}!Show\-Message@{Show\-Message}}
+\index{Show\-Message@{Show\-Message}!Gruppe22::Backend::GameLogic@{Gruppe22\-::\-Backend\-::\-Game\-Logic}}
+\subsubsection[{Show\-Message}]{\setlength{\rightskip}{0pt plus 5cm}void Gruppe22.\-Backend.\-Game\-Logic.\-Show\-Message (
+\begin{DoxyParamCaption}
+\item[{string}]{message = {\ttfamily \char`\"{}\char`\"{}}}
+\end{DoxyParamCaption}
+)}}\label{class_gruppe22_1_1_backend_1_1_game_logic_aae4a27768f44fa3ee079eeda9f418990}
+
+
+A text displayed if the player died 
+
+
+\begin{DoxyParams}{Parameter}
+{\em message} & \\
+\hline
+{\em title} & \\
+\hline
+\end{DoxyParams}
+
+
+Die Dokumentation für diese Klasse wurde erzeugt aufgrund der Datei\-:\begin{DoxyCompactItemize}
+\item 
+C\-:/\-Users/beursken/\-Documents/\-Git\-Hub/gruppe22/\-Gruppe22/\-Gruppe22/\-Backend/\hyperlink{_game_logic_8cs}{Game\-Logic.\-cs}\end{DoxyCompactItemize}

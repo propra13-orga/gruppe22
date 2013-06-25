@@ -1,0 +1,206 @@
+\hypertarget{class_gruppe22_1_1_client_1_1_text_input}{\section{Gruppe22.\-Client.\-Text\-Input Klassenreferenz}
+\label{class_gruppe22_1_1_client_1_1_text_input}\index{Gruppe22.\-Client.\-Text\-Input@{Gruppe22.\-Client.\-Text\-Input}}
+}
+Klassendiagramm für Gruppe22.\-Client.\-Text\-Input\-:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.589744cm]{class_gruppe22_1_1_client_1_1_text_input}
+\end{center}
+\end{figure}
+\subsection*{Öffentliche Methoden}
+\begin{DoxyCompactItemize}
+\item 
+override bool \hyperlink{class_gruppe22_1_1_client_1_1_text_input_aa1122f9fe72ced8d5673e20e279beff4}{On\-Key\-Down} (Microsoft.\-Xna.\-Framework.\-Input.\-Keys k)
+\item 
+override void \hyperlink{class_gruppe22_1_1_client_1_1_text_input_ac687504d29f26d40baefd69fb9537d92}{Handle\-Event} (bool Down\-Stream, \hyperlink{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73}{Backend.\-Events} event\-I\-D, params object\mbox{[}$\,$\mbox{]} data)
+\item 
+override void \hyperlink{class_gruppe22_1_1_client_1_1_text_input_a39d2aeb6a1bf78d643688d79d009c3ae}{Draw} (Game\-Time game\-Time)
+\item 
+override void \hyperlink{class_gruppe22_1_1_client_1_1_text_input_aeb12ff2ec36009368ef79b71eb39fa73}{Update} (Game\-Time game\-Time)
+\item 
+\hyperlink{class_gruppe22_1_1_client_1_1_text_input_aec93a57386f2255d76e0134241bcd1be}{Text\-Input} (\hyperlink{interface_gruppe22_1_1_backend_1_1_i_handle_event}{Backend.\-I\-Handle\-Event} parent, Sprite\-Batch sprite\-Batch, Content\-Manager content, Rectangle display\-Rect, string label, string \hyperlink{class_gruppe22_1_1_client_1_1_text_input_a795e9f3cdc6b089dc1cc864907b33f44}{text}, string tool\-Tip, int input\-Width, bool \hyperlink{class_gruppe22_1_1_client_1_1_text_input_ae512171e8f7caead8c28eb9327ccbf40}{can\-Edit})
+\end{DoxyCompactItemize}
+\subsection*{Geschützte Methoden}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{class_gruppe22_1_1_client_1_1_text_input_a607de727ce5b80faa8134c448ca4da62}{\-\_\-\-Display\-Tool\-Tip} ()
+\begin{DoxyCompactList}\small\item\em Append a new line of text to the status box; word wrap if necessary \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Geschützte Attribute}
+\begin{DoxyCompactItemize}
+\item 
+string \hyperlink{class_gruppe22_1_1_client_1_1_text_input_a725d60af4b5f21d1240f3aefb98a849e}{\-\_\-label} = \char`\"{}\char`\"{}
+\item 
+string \hyperlink{class_gruppe22_1_1_client_1_1_text_input_a829d2cea87b902b6a62cc3ac904e0592}{\-\_\-text} = \char`\"{}\char`\"{}
+\item 
+string \hyperlink{class_gruppe22_1_1_client_1_1_text_input_a53174a0caffcd22e7327967ceb3bc9a5}{\-\_\-tooltip} = \char`\"{}\char`\"{}
+\item 
+Sprite\-Font \hyperlink{class_gruppe22_1_1_client_1_1_text_input_afaa8c705ebedf4acf422f4de1b1f6f71}{\-\_\-font} = null
+\item 
+Texture2\-D \hyperlink{class_gruppe22_1_1_client_1_1_text_input_aad2ed3307a1e3dd8684a0aba48bfe55d}{\-\_\-background} = null
+\item 
+int \hyperlink{class_gruppe22_1_1_client_1_1_text_input_a9c383c0270cf48278e25aeb04afc54c2}{\-\_\-text\-Width} = 0
+\item 
+bool \hyperlink{class_gruppe22_1_1_client_1_1_text_input_a97938831e8ee83ad77e160ea51428505}{\-\_\-can\-Edit} = false
+\end{DoxyCompactItemize}
+\subsection*{Propertys}
+\begin{DoxyCompactItemize}
+\item 
+string \hyperlink{class_gruppe22_1_1_client_1_1_text_input_a795e9f3cdc6b089dc1cc864907b33f44}{text}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+override bool \hyperlink{class_gruppe22_1_1_client_1_1_text_input_ac50c924f3a99583da29fe82ff09c876e}{can\-Focus}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+bool \hyperlink{class_gruppe22_1_1_client_1_1_text_input_ae512171e8f7caead8c28eb9327ccbf40}{can\-Edit}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\end{DoxyCompactItemize}
+
+
+\subsection{Beschreibung der Konstruktoren und Destruktoren}
+\hypertarget{class_gruppe22_1_1_client_1_1_text_input_aec93a57386f2255d76e0134241bcd1be}{\index{Gruppe22\-::\-Client\-::\-Text\-Input@{Gruppe22\-::\-Client\-::\-Text\-Input}!Text\-Input@{Text\-Input}}
+\index{Text\-Input@{Text\-Input}!Gruppe22::Client::TextInput@{Gruppe22\-::\-Client\-::\-Text\-Input}}
+\subsubsection[{Text\-Input}]{\setlength{\rightskip}{0pt plus 5cm}Gruppe22.\-Client.\-Text\-Input.\-Text\-Input (
+\begin{DoxyParamCaption}
+\item[{{\bf Backend.\-I\-Handle\-Event}}]{parent, }
+\item[{Sprite\-Batch}]{sprite\-Batch, }
+\item[{Content\-Manager}]{content, }
+\item[{Rectangle}]{display\-Rect, }
+\item[{string}]{label, }
+\item[{string}]{text, }
+\item[{string}]{tool\-Tip, }
+\item[{int}]{input\-Width, }
+\item[{bool}]{can\-Edit}
+\end{DoxyParamCaption}
+)}}\label{class_gruppe22_1_1_client_1_1_text_input_aec93a57386f2255d76e0134241bcd1be}
+
+
+
+
+
+\begin{DoxyParams}{Parameter}
+{\em parent} & \\
+\hline
+{\em sprite\-Batch} & \\
+\hline
+{\em content} & \\
+\hline
+{\em display\-Rect} & \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Dokumentation der Elementfunktionen}
+\hypertarget{class_gruppe22_1_1_client_1_1_text_input_a607de727ce5b80faa8134c448ca4da62}{\index{Gruppe22\-::\-Client\-::\-Text\-Input@{Gruppe22\-::\-Client\-::\-Text\-Input}!\-\_\-\-Display\-Tool\-Tip@{\-\_\-\-Display\-Tool\-Tip}}
+\index{\-\_\-\-Display\-Tool\-Tip@{\-\_\-\-Display\-Tool\-Tip}!Gruppe22::Client::TextInput@{Gruppe22\-::\-Client\-::\-Text\-Input}}
+\subsubsection[{\-\_\-\-Display\-Tool\-Tip}]{\setlength{\rightskip}{0pt plus 5cm}void Gruppe22.\-Client.\-Text\-Input.\-\_\-\-Display\-Tool\-Tip (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [protected]}}}\label{class_gruppe22_1_1_client_1_1_text_input_a607de727ce5b80faa8134c448ca4da62}
+
+
+Append a new line of text to the status box; word wrap if necessary 
+
+
+\begin{DoxyParams}{Parameter}
+{\em text} & \\
+\hline
+\end{DoxyParams}
+\hypertarget{class_gruppe22_1_1_client_1_1_text_input_a39d2aeb6a1bf78d643688d79d009c3ae}{\index{Gruppe22\-::\-Client\-::\-Text\-Input@{Gruppe22\-::\-Client\-::\-Text\-Input}!Draw@{Draw}}
+\index{Draw@{Draw}!Gruppe22::Client::TextInput@{Gruppe22\-::\-Client\-::\-Text\-Input}}
+\subsubsection[{Draw}]{\setlength{\rightskip}{0pt plus 5cm}override void Gruppe22.\-Client.\-Text\-Input.\-Draw (
+\begin{DoxyParamCaption}
+\item[{Game\-Time}]{game\-Time}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{class_gruppe22_1_1_client_1_1_text_input_a39d2aeb6a1bf78d643688d79d009c3ae}
+
+
+
+
+
+\begin{DoxyParams}{Parameter}
+{\em game\-Time} & \\
+\hline
+\end{DoxyParams}
+
+
+Erneute Implementation von \hyperlink{class_gruppe22_1_1_client_1_1_u_i_element_ae68afcbd1db3540052d6b399022e56e7}{Gruppe22.\-Client.\-U\-I\-Element}.
+
+\hypertarget{class_gruppe22_1_1_client_1_1_text_input_ac687504d29f26d40baefd69fb9537d92}{\index{Gruppe22\-::\-Client\-::\-Text\-Input@{Gruppe22\-::\-Client\-::\-Text\-Input}!Handle\-Event@{Handle\-Event}}
+\index{Handle\-Event@{Handle\-Event}!Gruppe22::Client::TextInput@{Gruppe22\-::\-Client\-::\-Text\-Input}}
+\subsubsection[{Handle\-Event}]{\setlength{\rightskip}{0pt plus 5cm}override void Gruppe22.\-Client.\-Text\-Input.\-Handle\-Event (
+\begin{DoxyParamCaption}
+\item[{bool}]{Down\-Stream, }
+\item[{{\bf Backend.\-Events}}]{event\-I\-D, }
+\item[{params object\mbox{[}$\,$\mbox{]}}]{data}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{class_gruppe22_1_1_client_1_1_text_input_ac687504d29f26d40baefd69fb9537d92}
+
+
+Erneute Implementation von \hyperlink{class_gruppe22_1_1_client_1_1_u_i_element_ad06a1ce6c1705a1c7aa91756f368a517}{Gruppe22.\-Client.\-U\-I\-Element}.
+
+\hypertarget{class_gruppe22_1_1_client_1_1_text_input_aa1122f9fe72ced8d5673e20e279beff4}{\index{Gruppe22\-::\-Client\-::\-Text\-Input@{Gruppe22\-::\-Client\-::\-Text\-Input}!On\-Key\-Down@{On\-Key\-Down}}
+\index{On\-Key\-Down@{On\-Key\-Down}!Gruppe22::Client::TextInput@{Gruppe22\-::\-Client\-::\-Text\-Input}}
+\subsubsection[{On\-Key\-Down}]{\setlength{\rightskip}{0pt plus 5cm}override bool Gruppe22.\-Client.\-Text\-Input.\-On\-Key\-Down (
+\begin{DoxyParamCaption}
+\item[{Microsoft.\-Xna.\-Framework.\-Input.\-Keys}]{k}
+\end{DoxyParamCaption}
+)}}\label{class_gruppe22_1_1_client_1_1_text_input_aa1122f9fe72ced8d5673e20e279beff4}
+\hypertarget{class_gruppe22_1_1_client_1_1_text_input_aeb12ff2ec36009368ef79b71eb39fa73}{\index{Gruppe22\-::\-Client\-::\-Text\-Input@{Gruppe22\-::\-Client\-::\-Text\-Input}!Update@{Update}}
+\index{Update@{Update}!Gruppe22::Client::TextInput@{Gruppe22\-::\-Client\-::\-Text\-Input}}
+\subsubsection[{Update}]{\setlength{\rightskip}{0pt plus 5cm}override void Gruppe22.\-Client.\-Text\-Input.\-Update (
+\begin{DoxyParamCaption}
+\item[{Game\-Time}]{game\-Time}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{class_gruppe22_1_1_client_1_1_text_input_aeb12ff2ec36009368ef79b71eb39fa73}
+
+
+
+
+
+\begin{DoxyParams}{Parameter}
+{\em game\-Time} & \\
+\hline
+\end{DoxyParams}
+
+
+Erneute Implementation von \hyperlink{class_gruppe22_1_1_client_1_1_u_i_element_a456bc763b6ed6ab441bb0ae96b6f4f8b}{Gruppe22.\-Client.\-U\-I\-Element}.
+
+
+
+\subsection{Dokumentation der Datenelemente}
+\hypertarget{class_gruppe22_1_1_client_1_1_text_input_aad2ed3307a1e3dd8684a0aba48bfe55d}{\index{Gruppe22\-::\-Client\-::\-Text\-Input@{Gruppe22\-::\-Client\-::\-Text\-Input}!\-\_\-background@{\-\_\-background}}
+\index{\-\_\-background@{\-\_\-background}!Gruppe22::Client::TextInput@{Gruppe22\-::\-Client\-::\-Text\-Input}}
+\subsubsection[{\-\_\-background}]{\setlength{\rightskip}{0pt plus 5cm}Texture2\-D Gruppe22.\-Client.\-Text\-Input.\-\_\-background = null\hspace{0.3cm}{\ttfamily [protected]}}}\label{class_gruppe22_1_1_client_1_1_text_input_aad2ed3307a1e3dd8684a0aba48bfe55d}
+\hypertarget{class_gruppe22_1_1_client_1_1_text_input_a97938831e8ee83ad77e160ea51428505}{\index{Gruppe22\-::\-Client\-::\-Text\-Input@{Gruppe22\-::\-Client\-::\-Text\-Input}!\-\_\-can\-Edit@{\-\_\-can\-Edit}}
+\index{\-\_\-can\-Edit@{\-\_\-can\-Edit}!Gruppe22::Client::TextInput@{Gruppe22\-::\-Client\-::\-Text\-Input}}
+\subsubsection[{\-\_\-can\-Edit}]{\setlength{\rightskip}{0pt plus 5cm}bool Gruppe22.\-Client.\-Text\-Input.\-\_\-can\-Edit = false\hspace{0.3cm}{\ttfamily [protected]}}}\label{class_gruppe22_1_1_client_1_1_text_input_a97938831e8ee83ad77e160ea51428505}
+\hypertarget{class_gruppe22_1_1_client_1_1_text_input_afaa8c705ebedf4acf422f4de1b1f6f71}{\index{Gruppe22\-::\-Client\-::\-Text\-Input@{Gruppe22\-::\-Client\-::\-Text\-Input}!\-\_\-font@{\-\_\-font}}
+\index{\-\_\-font@{\-\_\-font}!Gruppe22::Client::TextInput@{Gruppe22\-::\-Client\-::\-Text\-Input}}
+\subsubsection[{\-\_\-font}]{\setlength{\rightskip}{0pt plus 5cm}Sprite\-Font Gruppe22.\-Client.\-Text\-Input.\-\_\-font = null\hspace{0.3cm}{\ttfamily [protected]}}}\label{class_gruppe22_1_1_client_1_1_text_input_afaa8c705ebedf4acf422f4de1b1f6f71}
+\hypertarget{class_gruppe22_1_1_client_1_1_text_input_a725d60af4b5f21d1240f3aefb98a849e}{\index{Gruppe22\-::\-Client\-::\-Text\-Input@{Gruppe22\-::\-Client\-::\-Text\-Input}!\-\_\-label@{\-\_\-label}}
+\index{\-\_\-label@{\-\_\-label}!Gruppe22::Client::TextInput@{Gruppe22\-::\-Client\-::\-Text\-Input}}
+\subsubsection[{\-\_\-label}]{\setlength{\rightskip}{0pt plus 5cm}string Gruppe22.\-Client.\-Text\-Input.\-\_\-label = \char`\"{}\char`\"{}\hspace{0.3cm}{\ttfamily [protected]}}}\label{class_gruppe22_1_1_client_1_1_text_input_a725d60af4b5f21d1240f3aefb98a849e}
+\hypertarget{class_gruppe22_1_1_client_1_1_text_input_a829d2cea87b902b6a62cc3ac904e0592}{\index{Gruppe22\-::\-Client\-::\-Text\-Input@{Gruppe22\-::\-Client\-::\-Text\-Input}!\-\_\-text@{\-\_\-text}}
+\index{\-\_\-text@{\-\_\-text}!Gruppe22::Client::TextInput@{Gruppe22\-::\-Client\-::\-Text\-Input}}
+\subsubsection[{\-\_\-text}]{\setlength{\rightskip}{0pt plus 5cm}string Gruppe22.\-Client.\-Text\-Input.\-\_\-text = \char`\"{}\char`\"{}\hspace{0.3cm}{\ttfamily [protected]}}}\label{class_gruppe22_1_1_client_1_1_text_input_a829d2cea87b902b6a62cc3ac904e0592}
+\hypertarget{class_gruppe22_1_1_client_1_1_text_input_a9c383c0270cf48278e25aeb04afc54c2}{\index{Gruppe22\-::\-Client\-::\-Text\-Input@{Gruppe22\-::\-Client\-::\-Text\-Input}!\-\_\-text\-Width@{\-\_\-text\-Width}}
+\index{\-\_\-text\-Width@{\-\_\-text\-Width}!Gruppe22::Client::TextInput@{Gruppe22\-::\-Client\-::\-Text\-Input}}
+\subsubsection[{\-\_\-text\-Width}]{\setlength{\rightskip}{0pt plus 5cm}int Gruppe22.\-Client.\-Text\-Input.\-\_\-text\-Width = 0\hspace{0.3cm}{\ttfamily [protected]}}}\label{class_gruppe22_1_1_client_1_1_text_input_a9c383c0270cf48278e25aeb04afc54c2}
+\hypertarget{class_gruppe22_1_1_client_1_1_text_input_a53174a0caffcd22e7327967ceb3bc9a5}{\index{Gruppe22\-::\-Client\-::\-Text\-Input@{Gruppe22\-::\-Client\-::\-Text\-Input}!\-\_\-tooltip@{\-\_\-tooltip}}
+\index{\-\_\-tooltip@{\-\_\-tooltip}!Gruppe22::Client::TextInput@{Gruppe22\-::\-Client\-::\-Text\-Input}}
+\subsubsection[{\-\_\-tooltip}]{\setlength{\rightskip}{0pt plus 5cm}string Gruppe22.\-Client.\-Text\-Input.\-\_\-tooltip = \char`\"{}\char`\"{}\hspace{0.3cm}{\ttfamily [protected]}}}\label{class_gruppe22_1_1_client_1_1_text_input_a53174a0caffcd22e7327967ceb3bc9a5}
+
+
+\subsection{Dokumentation der Propertys}
+\hypertarget{class_gruppe22_1_1_client_1_1_text_input_ae512171e8f7caead8c28eb9327ccbf40}{\index{Gruppe22\-::\-Client\-::\-Text\-Input@{Gruppe22\-::\-Client\-::\-Text\-Input}!can\-Edit@{can\-Edit}}
+\index{can\-Edit@{can\-Edit}!Gruppe22::Client::TextInput@{Gruppe22\-::\-Client\-::\-Text\-Input}}
+\subsubsection[{can\-Edit}]{\setlength{\rightskip}{0pt plus 5cm}bool Gruppe22.\-Client.\-Text\-Input.\-can\-Edit\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}}\label{class_gruppe22_1_1_client_1_1_text_input_ae512171e8f7caead8c28eb9327ccbf40}
+\hypertarget{class_gruppe22_1_1_client_1_1_text_input_ac50c924f3a99583da29fe82ff09c876e}{\index{Gruppe22\-::\-Client\-::\-Text\-Input@{Gruppe22\-::\-Client\-::\-Text\-Input}!can\-Focus@{can\-Focus}}
+\index{can\-Focus@{can\-Focus}!Gruppe22::Client::TextInput@{Gruppe22\-::\-Client\-::\-Text\-Input}}
+\subsubsection[{can\-Focus}]{\setlength{\rightskip}{0pt plus 5cm}override bool Gruppe22.\-Client.\-Text\-Input.\-can\-Focus\hspace{0.3cm}{\ttfamily [get]}}}\label{class_gruppe22_1_1_client_1_1_text_input_ac50c924f3a99583da29fe82ff09c876e}
+\hypertarget{class_gruppe22_1_1_client_1_1_text_input_a795e9f3cdc6b089dc1cc864907b33f44}{\index{Gruppe22\-::\-Client\-::\-Text\-Input@{Gruppe22\-::\-Client\-::\-Text\-Input}!text@{text}}
+\index{text@{text}!Gruppe22::Client::TextInput@{Gruppe22\-::\-Client\-::\-Text\-Input}}
+\subsubsection[{text}]{\setlength{\rightskip}{0pt plus 5cm}string Gruppe22.\-Client.\-Text\-Input.\-text\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}}\label{class_gruppe22_1_1_client_1_1_text_input_a795e9f3cdc6b089dc1cc864907b33f44}
+
+
+Die Dokumentation für diese Klasse wurde erzeugt aufgrund der Datei\-:\begin{DoxyCompactItemize}
+\item 
+C\-:/\-Users/beursken/\-Documents/\-Git\-Hub/gruppe22/\-Gruppe22/\-Gruppe22/\-Client/\-U\-I/\hyperlink{_text_input_8cs}{Text\-Input.\-cs}\end{DoxyCompactItemize}

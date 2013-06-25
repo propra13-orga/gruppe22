@@ -1,0 +1,144 @@
+\hypertarget{interface_gruppe22_1_1_client_1_1_i_key_handler}{\section{Gruppe22.\-Client.\-I\-Key\-Handler Schnittstellenreferenz}
+\label{interface_gruppe22_1_1_client_1_1_i_key_handler}\index{Gruppe22.\-Client.\-I\-Key\-Handler@{Gruppe22.\-Client.\-I\-Key\-Handler}}
+}
+
+
+An interface to emulate Windows Forms style key and mouse events  
+
+
+Klassendiagramm für Gruppe22.\-Client.\-I\-Key\-Handler\-:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=12.000000cm]{interface_gruppe22_1_1_client_1_1_i_key_handler}
+\end{center}
+\end{figure}
+\subsection*{Öffentliche Methoden}
+\begin{DoxyCompactItemize}
+\item 
+bool \hyperlink{interface_gruppe22_1_1_client_1_1_i_key_handler_a3816611e429cab857650f672fda4632b}{On\-Key\-Down} (Keys k)
+\begin{DoxyCompactList}\small\item\em Called whenever a key was up and is now down \end{DoxyCompactList}\item 
+bool \hyperlink{interface_gruppe22_1_1_client_1_1_i_key_handler_adf473af0ebd0c8a3a22ba252ed381356}{On\-Key\-Up} (Keys k)
+\begin{DoxyCompactList}\small\item\em Called whenever a key was down and is now up \end{DoxyCompactList}\item 
+bool \hyperlink{interface_gruppe22_1_1_client_1_1_i_key_handler_a6e52139cdd4408abdd31e61ce1e69991}{On\-Mouse\-Down} (int button)
+\begin{DoxyCompactList}\small\item\em Called when a mouse button changes from up to down \end{DoxyCompactList}\item 
+bool \hyperlink{interface_gruppe22_1_1_client_1_1_i_key_handler_ad1fd9aa17fc6f8328beddd59cef28499}{On\-Mouse\-Up} (int button)
+\begin{DoxyCompactList}\small\item\em Called when a mouse button changes from down to up \end{DoxyCompactList}\item 
+bool \hyperlink{interface_gruppe22_1_1_client_1_1_i_key_handler_aa66a6080c4ea14b63a5578882b9f3b3e}{On\-Mouse\-Held} (int button)
+\item 
+bool \hyperlink{interface_gruppe22_1_1_client_1_1_i_key_handler_a4196bd333be759f8ade7996f58ca39d6}{On\-Key\-Held} (Keys k)
+\end{DoxyCompactItemize}
+
+
+\subsection{Ausführliche Beschreibung}
+An interface to emulate Windows Forms style key and mouse events 
+
+
+
+\subsection{Dokumentation der Elementfunktionen}
+\hypertarget{interface_gruppe22_1_1_client_1_1_i_key_handler_a3816611e429cab857650f672fda4632b}{\index{Gruppe22\-::\-Client\-::\-I\-Key\-Handler@{Gruppe22\-::\-Client\-::\-I\-Key\-Handler}!On\-Key\-Down@{On\-Key\-Down}}
+\index{On\-Key\-Down@{On\-Key\-Down}!Gruppe22::Client::IKeyHandler@{Gruppe22\-::\-Client\-::\-I\-Key\-Handler}}
+\subsubsection[{On\-Key\-Down}]{\setlength{\rightskip}{0pt plus 5cm}bool Gruppe22.\-Client.\-I\-Key\-Handler.\-On\-Key\-Down (
+\begin{DoxyParamCaption}
+\item[{Keys}]{k}
+\end{DoxyParamCaption}
+)}}\label{interface_gruppe22_1_1_client_1_1_i_key_handler_a3816611e429cab857650f672fda4632b}
+
+
+Called whenever a key was up and is now down 
+
+
+\begin{DoxyParams}{Parameter}
+{\em k} & The key which was pressed\\
+\hline
+\end{DoxyParams}
+
+
+Implementiert in \hyperlink{class_gruppe22_1_1_client_1_1_game_win_aba7e900502db9021072b1c85ec2f249a}{Gruppe22.\-Client.\-Game\-Win}, \hyperlink{class_gruppe22_1_1_client_1_1_statusbox_a92512ba8bfcfeb6c417eedf5f1b3634e}{Gruppe22.\-Client.\-Statusbox}, \hyperlink{class_gruppe22_1_1_client_1_1_button_ad3b8e8bceadd5999af01485ed178446b}{Gruppe22.\-Client.\-Button}, \hyperlink{class_gruppe22_1_1_client_1_1_zoomable_a123f31a025a85e07001dab61a8102881}{Gruppe22.\-Client.\-Zoomable}, \hyperlink{class_gruppe22_1_1_client_1_1_window_ac71cd9635bec479f506ae2e7096b6617}{Gruppe22.\-Client.\-Window} und \hyperlink{class_gruppe22_1_1_client_1_1_u_i_element_a0f9957f48ecb697ff5ae1ac3f0873064}{Gruppe22.\-Client.\-U\-I\-Element}.
+
+\hypertarget{interface_gruppe22_1_1_client_1_1_i_key_handler_a4196bd333be759f8ade7996f58ca39d6}{\index{Gruppe22\-::\-Client\-::\-I\-Key\-Handler@{Gruppe22\-::\-Client\-::\-I\-Key\-Handler}!On\-Key\-Held@{On\-Key\-Held}}
+\index{On\-Key\-Held@{On\-Key\-Held}!Gruppe22::Client::IKeyHandler@{Gruppe22\-::\-Client\-::\-I\-Key\-Handler}}
+\subsubsection[{On\-Key\-Held}]{\setlength{\rightskip}{0pt plus 5cm}bool Gruppe22.\-Client.\-I\-Key\-Handler.\-On\-Key\-Held (
+\begin{DoxyParamCaption}
+\item[{Keys}]{k}
+\end{DoxyParamCaption}
+)}}\label{interface_gruppe22_1_1_client_1_1_i_key_handler_a4196bd333be759f8ade7996f58ca39d6}
+
+
+Implementiert in \hyperlink{class_gruppe22_1_1_client_1_1_game_win_a9a74789da3ac1c1fa9ac35541db76c6d}{Gruppe22.\-Client.\-Game\-Win}, \hyperlink{class_gruppe22_1_1_client_1_1_u_i_element_a00a8a507f4701226bd2406ae501750d6}{Gruppe22.\-Client.\-U\-I\-Element} und \hyperlink{class_gruppe22_1_1_client_1_1_zoomable_ac2965c52d19ec510714c511583ec4b36}{Gruppe22.\-Client.\-Zoomable}.
+
+\hypertarget{interface_gruppe22_1_1_client_1_1_i_key_handler_adf473af0ebd0c8a3a22ba252ed381356}{\index{Gruppe22\-::\-Client\-::\-I\-Key\-Handler@{Gruppe22\-::\-Client\-::\-I\-Key\-Handler}!On\-Key\-Up@{On\-Key\-Up}}
+\index{On\-Key\-Up@{On\-Key\-Up}!Gruppe22::Client::IKeyHandler@{Gruppe22\-::\-Client\-::\-I\-Key\-Handler}}
+\subsubsection[{On\-Key\-Up}]{\setlength{\rightskip}{0pt plus 5cm}bool Gruppe22.\-Client.\-I\-Key\-Handler.\-On\-Key\-Up (
+\begin{DoxyParamCaption}
+\item[{Keys}]{k}
+\end{DoxyParamCaption}
+)}}\label{interface_gruppe22_1_1_client_1_1_i_key_handler_adf473af0ebd0c8a3a22ba252ed381356}
+
+
+Called whenever a key was down and is now up 
+
+
+\begin{DoxyParams}{Parameter}
+{\em k} & The key which was pressed\\
+\hline
+\end{DoxyParams}
+
+
+Implementiert in \hyperlink{class_gruppe22_1_1_client_1_1_game_win_a9bab3243c9a2b2aaf135f0da6eac7ea3}{Gruppe22.\-Client.\-Game\-Win} und \hyperlink{class_gruppe22_1_1_client_1_1_u_i_element_a555436883e05d5c2df8aff0d1b5230ab}{Gruppe22.\-Client.\-U\-I\-Element}.
+
+\hypertarget{interface_gruppe22_1_1_client_1_1_i_key_handler_a6e52139cdd4408abdd31e61ce1e69991}{\index{Gruppe22\-::\-Client\-::\-I\-Key\-Handler@{Gruppe22\-::\-Client\-::\-I\-Key\-Handler}!On\-Mouse\-Down@{On\-Mouse\-Down}}
+\index{On\-Mouse\-Down@{On\-Mouse\-Down}!Gruppe22::Client::IKeyHandler@{Gruppe22\-::\-Client\-::\-I\-Key\-Handler}}
+\subsubsection[{On\-Mouse\-Down}]{\setlength{\rightskip}{0pt plus 5cm}bool Gruppe22.\-Client.\-I\-Key\-Handler.\-On\-Mouse\-Down (
+\begin{DoxyParamCaption}
+\item[{int}]{button}
+\end{DoxyParamCaption}
+)}}\label{interface_gruppe22_1_1_client_1_1_i_key_handler_a6e52139cdd4408abdd31e61ce1e69991}
+
+
+Called when a mouse button changes from up to down 
+
+
+\begin{DoxyParams}{Parameter}
+{\em button} & Left \hyperlink{class_gruppe22_1_1_client_1_1_button}{Button}=1, Middle \hyperlink{class_gruppe22_1_1_client_1_1_button}{Button}=2, Right \hyperlink{class_gruppe22_1_1_client_1_1_button}{Button}=3\\
+\hline
+\end{DoxyParams}
+
+
+Implementiert in \hyperlink{class_gruppe22_1_1_client_1_1_game_win_a62daf14bfc3ec358727ba46e12fa7167}{Gruppe22.\-Client.\-Game\-Win}, \hyperlink{class_gruppe22_1_1_client_1_1_grid_a73b2172889aee0a3135a62c0d1af76e9}{Gruppe22.\-Client.\-Grid}, \hyperlink{class_gruppe22_1_1_client_1_1_toolbar_ab6cb1fab74198b858a77fc0d86220db5}{Gruppe22.\-Client.\-Toolbar}, \hyperlink{class_gruppe22_1_1_client_1_1_shop_a38e6f534bd8c651103d61bcee914f60e}{Gruppe22.\-Client.\-Shop}, \hyperlink{class_gruppe22_1_1_client_1_1_character_window_abb07535d47bf7bcecfc92045c9a91116}{Gruppe22.\-Client.\-Character\-Window}, \hyperlink{class_gruppe22_1_1_client_1_1_statusbox_ab8eaff6863d543e251756c0954fe193d}{Gruppe22.\-Client.\-Statusbox}, \hyperlink{class_gruppe22_1_1_client_1_1_abilities_ae3f148ccf966b0c8157b038c0489dfa3}{Gruppe22.\-Client.\-Abilities}, \hyperlink{class_gruppe22_1_1_client_1_1_button_aa6c6ba54e6549ee851153040fda87b0e}{Gruppe22.\-Client.\-Button}, \hyperlink{class_gruppe22_1_1_client_1_1_window_a7bc0acea2d6e974e3b12ff29bf16333d}{Gruppe22.\-Client.\-Window}, \hyperlink{class_gruppe22_1_1_client_1_1_chat_aa5fdd87b71df060f018268a07dce5ed8}{Gruppe22.\-Client.\-Chat}, \hyperlink{class_gruppe22_1_1_client_1_1_number_entry_afe70d1af7d72762dc877ead2de4489f6}{Gruppe22.\-Client.\-Number\-Entry}, \hyperlink{class_gruppe22_1_1_client_1_1_u_i_element_a0530df2286336160b8b39c74ba380a44}{Gruppe22.\-Client.\-U\-I\-Element}, \hyperlink{class_gruppe22_1_1_client_1_1_inventory_a591cf287beb11b3d2f330d8f6b812e4e}{Gruppe22.\-Client.\-Inventory}, \hyperlink{class_gruppe22_1_1_client_1_1_simple_stats_adef63cea6f4c63a0d9b8c6a07b54a871}{Gruppe22.\-Client.\-Simple\-Stats} und \hyperlink{class_gruppe22_1_1_client_1_1_ability_choice_a15b4f981409cdc4b6f8c94a50e0df81f}{Gruppe22.\-Client.\-Ability\-Choice}.
+
+\hypertarget{interface_gruppe22_1_1_client_1_1_i_key_handler_aa66a6080c4ea14b63a5578882b9f3b3e}{\index{Gruppe22\-::\-Client\-::\-I\-Key\-Handler@{Gruppe22\-::\-Client\-::\-I\-Key\-Handler}!On\-Mouse\-Held@{On\-Mouse\-Held}}
+\index{On\-Mouse\-Held@{On\-Mouse\-Held}!Gruppe22::Client::IKeyHandler@{Gruppe22\-::\-Client\-::\-I\-Key\-Handler}}
+\subsubsection[{On\-Mouse\-Held}]{\setlength{\rightskip}{0pt plus 5cm}bool Gruppe22.\-Client.\-I\-Key\-Handler.\-On\-Mouse\-Held (
+\begin{DoxyParamCaption}
+\item[{int}]{button}
+\end{DoxyParamCaption}
+)}}\label{interface_gruppe22_1_1_client_1_1_i_key_handler_aa66a6080c4ea14b63a5578882b9f3b3e}
+
+
+Implementiert in \hyperlink{class_gruppe22_1_1_client_1_1_game_win_ad9f9d99d868de3f6e7446524074856c9}{Gruppe22.\-Client.\-Game\-Win} und \hyperlink{class_gruppe22_1_1_client_1_1_u_i_element_a054511c82ea1a27e503e00fd838974d2}{Gruppe22.\-Client.\-U\-I\-Element}.
+
+\hypertarget{interface_gruppe22_1_1_client_1_1_i_key_handler_ad1fd9aa17fc6f8328beddd59cef28499}{\index{Gruppe22\-::\-Client\-::\-I\-Key\-Handler@{Gruppe22\-::\-Client\-::\-I\-Key\-Handler}!On\-Mouse\-Up@{On\-Mouse\-Up}}
+\index{On\-Mouse\-Up@{On\-Mouse\-Up}!Gruppe22::Client::IKeyHandler@{Gruppe22\-::\-Client\-::\-I\-Key\-Handler}}
+\subsubsection[{On\-Mouse\-Up}]{\setlength{\rightskip}{0pt plus 5cm}bool Gruppe22.\-Client.\-I\-Key\-Handler.\-On\-Mouse\-Up (
+\begin{DoxyParamCaption}
+\item[{int}]{button}
+\end{DoxyParamCaption}
+)}}\label{interface_gruppe22_1_1_client_1_1_i_key_handler_ad1fd9aa17fc6f8328beddd59cef28499}
+
+
+Called when a mouse button changes from down to up 
+
+
+\begin{DoxyParams}{Parameter}
+{\em button} & Left \hyperlink{class_gruppe22_1_1_client_1_1_button}{Button}=1, Middle \hyperlink{class_gruppe22_1_1_client_1_1_button}{Button}=2, Right \hyperlink{class_gruppe22_1_1_client_1_1_button}{Button}=3\\
+\hline
+\end{DoxyParams}
+
+
+Implementiert in \hyperlink{class_gruppe22_1_1_client_1_1_game_win_a4adfd580aed6944cd2b286d3c6e768b9}{Gruppe22.\-Client.\-Game\-Win}, \hyperlink{class_gruppe22_1_1_client_1_1_toolbar_a0293be6c5ad20f3aebc4880dcca97c80}{Gruppe22.\-Client.\-Toolbar} und \hyperlink{class_gruppe22_1_1_client_1_1_u_i_element_a2765f580db64fba65696801389c6afab}{Gruppe22.\-Client.\-U\-I\-Element}.
+
+
+
+Die Dokumentation für diese Schnittstelle wurde erzeugt aufgrund der Datei\-:\begin{DoxyCompactItemize}
+\item 
+C\-:/\-Users/beursken/\-Documents/\-Git\-Hub/gruppe22/\-Gruppe22/\-Gruppe22/\-Client/\-U\-I/\hyperlink{_key_handler_8cs}{Key\-Handler.\-cs}\end{DoxyCompactItemize}

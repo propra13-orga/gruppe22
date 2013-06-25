@@ -1,0 +1,194 @@
+\hypertarget{class_gruppe22_1_1_client_1_1_zoomable}{\section{Gruppe22.\-Client.\-Zoomable Klassenreferenz}
+\label{class_gruppe22_1_1_client_1_1_zoomable}\index{Gruppe22.\-Client.\-Zoomable@{Gruppe22.\-Client.\-Zoomable}}
+}
+Klassendiagramm für Gruppe22.\-Client.\-Zoomable\-:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.589744cm]{class_gruppe22_1_1_client_1_1_zoomable}
+\end{center}
+\end{figure}
+\subsection*{Öffentliche Methoden}
+\begin{DoxyCompactItemize}
+\item 
+override void \hyperlink{class_gruppe22_1_1_client_1_1_zoomable_a809400f1259e419df7b95ba1577effc0}{Move\-Content} (Vector2 difference, int \-\_\-last\-Check=0)
+\item 
+override void \hyperlink{class_gruppe22_1_1_client_1_1_zoomable_a779978683bab4488bd4ff7cdb233ff20}{Scroll\-Wheel} (int Difference)
+\item 
+override bool \hyperlink{class_gruppe22_1_1_client_1_1_zoomable_a123f31a025a85e07001dab61a8102881}{On\-Key\-Down} (Keys k)
+\begin{DoxyCompactList}\small\item\em Called whenever a key was up and is now down \end{DoxyCompactList}\item 
+override bool \hyperlink{class_gruppe22_1_1_client_1_1_zoomable_ac2965c52d19ec510714c511583ec4b36}{On\-Key\-Held} (Keys k)
+\item 
+bool \hyperlink{class_gruppe22_1_1_client_1_1_zoomable_af55927c548e3553ab22b6145bb9d6f25}{Do\-Zoom} (Keys k)
+\item 
+void \hyperlink{class_gruppe22_1_1_client_1_1_zoomable_ac99cb8dcfdbe80e1d83a873df79f1584}{Move} (Vector2 target)
+\begin{DoxyCompactList}\small\item\em Move the camera by a specified number of pixels (pass through to camera) \end{DoxyCompactList}\item 
+\hyperlink{class_gruppe22_1_1_client_1_1_zoomable_a0d95fe7b3fd5e241d055392b1afc8cf5}{Zoomable} (\hyperlink{interface_gruppe22_1_1_backend_1_1_i_handle_event}{Backend.\-I\-Handle\-Event} parent, Sprite\-Batch sprite\-Batch, Content\-Manager content, Rectangle display\-Rect)
+\end{DoxyCompactItemize}
+\subsection*{Geschützte Attribute}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_gruppe22_1_1_client_1_1_camera}{Camera} \hyperlink{class_gruppe22_1_1_client_1_1_zoomable_aef967a0e7cd392b7d51c1b870f3b59be}{\-\_\-camera}
+\begin{DoxyCompactList}\small\item\em The transformation-\/matrix used for zooming and panning the map \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Propertys}
+\begin{DoxyCompactItemize}
+\item 
+float \hyperlink{class_gruppe22_1_1_client_1_1_zoomable_a4a23fa2ceb4738621d6aaea5bd9fa72f}{Zoom}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Current zoom level \end{DoxyCompactList}\item 
+Vector2 \hyperlink{class_gruppe22_1_1_client_1_1_zoomable_aba34634a38c1290ec329919c711f31d1}{Pos}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Current position of the map \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Beschreibung der Konstruktoren und Destruktoren}
+\hypertarget{class_gruppe22_1_1_client_1_1_zoomable_a0d95fe7b3fd5e241d055392b1afc8cf5}{\index{Gruppe22\-::\-Client\-::\-Zoomable@{Gruppe22\-::\-Client\-::\-Zoomable}!Zoomable@{Zoomable}}
+\index{Zoomable@{Zoomable}!Gruppe22::Client::Zoomable@{Gruppe22\-::\-Client\-::\-Zoomable}}
+\subsubsection[{Zoomable}]{\setlength{\rightskip}{0pt plus 5cm}Gruppe22.\-Client.\-Zoomable.\-Zoomable (
+\begin{DoxyParamCaption}
+\item[{{\bf Backend.\-I\-Handle\-Event}}]{parent, }
+\item[{Sprite\-Batch}]{sprite\-Batch, }
+\item[{Content\-Manager}]{content, }
+\item[{Rectangle}]{display\-Rect}
+\end{DoxyParamCaption}
+)}}\label{class_gruppe22_1_1_client_1_1_zoomable_a0d95fe7b3fd5e241d055392b1afc8cf5}
+
+
+
+
+
+\begin{DoxyParams}{Parameter}
+{\em sprite\-Batch} & \\
+\hline
+{\em content} & \\
+\hline
+{\em display\-Rect} & \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Dokumentation der Elementfunktionen}
+\hypertarget{class_gruppe22_1_1_client_1_1_zoomable_af55927c548e3553ab22b6145bb9d6f25}{\index{Gruppe22\-::\-Client\-::\-Zoomable@{Gruppe22\-::\-Client\-::\-Zoomable}!Do\-Zoom@{Do\-Zoom}}
+\index{Do\-Zoom@{Do\-Zoom}!Gruppe22::Client::Zoomable@{Gruppe22\-::\-Client\-::\-Zoomable}}
+\subsubsection[{Do\-Zoom}]{\setlength{\rightskip}{0pt plus 5cm}bool Gruppe22.\-Client.\-Zoomable.\-Do\-Zoom (
+\begin{DoxyParamCaption}
+\item[{Keys}]{k}
+\end{DoxyParamCaption}
+)}}\label{class_gruppe22_1_1_client_1_1_zoomable_af55927c548e3553ab22b6145bb9d6f25}
+\hypertarget{class_gruppe22_1_1_client_1_1_zoomable_ac99cb8dcfdbe80e1d83a873df79f1584}{\index{Gruppe22\-::\-Client\-::\-Zoomable@{Gruppe22\-::\-Client\-::\-Zoomable}!Move@{Move}}
+\index{Move@{Move}!Gruppe22::Client::Zoomable@{Gruppe22\-::\-Client\-::\-Zoomable}}
+\subsubsection[{Move}]{\setlength{\rightskip}{0pt plus 5cm}void Gruppe22.\-Client.\-Zoomable.\-Move (
+\begin{DoxyParamCaption}
+\item[{Vector2}]{target}
+\end{DoxyParamCaption}
+)}}\label{class_gruppe22_1_1_client_1_1_zoomable_ac99cb8dcfdbe80e1d83a873df79f1584}
+
+
+Move the camera by a specified number of pixels (pass through to camera) 
+
+
+\begin{DoxyParams}{Parameter}
+{\em target} & \\
+\hline
+\end{DoxyParams}
+\hypertarget{class_gruppe22_1_1_client_1_1_zoomable_a809400f1259e419df7b95ba1577effc0}{\index{Gruppe22\-::\-Client\-::\-Zoomable@{Gruppe22\-::\-Client\-::\-Zoomable}!Move\-Content@{Move\-Content}}
+\index{Move\-Content@{Move\-Content}!Gruppe22::Client::Zoomable@{Gruppe22\-::\-Client\-::\-Zoomable}}
+\subsubsection[{Move\-Content}]{\setlength{\rightskip}{0pt plus 5cm}override void Gruppe22.\-Client.\-Zoomable.\-Move\-Content (
+\begin{DoxyParamCaption}
+\item[{Vector2}]{difference, }
+\item[{int}]{\-\_\-last\-Check = {\ttfamily 0}}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{class_gruppe22_1_1_client_1_1_zoomable_a809400f1259e419df7b95ba1577effc0}
+
+
+
+
+
+\begin{DoxyParams}{Parameter}
+{\em difference} & \\
+\hline
+\end{DoxyParams}
+
+
+Erneute Implementation von \hyperlink{class_gruppe22_1_1_client_1_1_u_i_element_aa089eaf82ae3a89724a45eb8860cb97b}{Gruppe22.\-Client.\-U\-I\-Element}.
+
+\hypertarget{class_gruppe22_1_1_client_1_1_zoomable_a123f31a025a85e07001dab61a8102881}{\index{Gruppe22\-::\-Client\-::\-Zoomable@{Gruppe22\-::\-Client\-::\-Zoomable}!On\-Key\-Down@{On\-Key\-Down}}
+\index{On\-Key\-Down@{On\-Key\-Down}!Gruppe22::Client::Zoomable@{Gruppe22\-::\-Client\-::\-Zoomable}}
+\subsubsection[{On\-Key\-Down}]{\setlength{\rightskip}{0pt plus 5cm}override bool Gruppe22.\-Client.\-Zoomable.\-On\-Key\-Down (
+\begin{DoxyParamCaption}
+\item[{Keys}]{k}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{class_gruppe22_1_1_client_1_1_zoomable_a123f31a025a85e07001dab61a8102881}
+
+
+Called whenever a key was up and is now down 
+
+
+\begin{DoxyParams}{Parameter}
+{\em k} & The key which was pressed\\
+\hline
+\end{DoxyParams}
+
+
+Erneute Implementation von \hyperlink{class_gruppe22_1_1_client_1_1_u_i_element_a0f9957f48ecb697ff5ae1ac3f0873064}{Gruppe22.\-Client.\-U\-I\-Element}.
+
+\hypertarget{class_gruppe22_1_1_client_1_1_zoomable_ac2965c52d19ec510714c511583ec4b36}{\index{Gruppe22\-::\-Client\-::\-Zoomable@{Gruppe22\-::\-Client\-::\-Zoomable}!On\-Key\-Held@{On\-Key\-Held}}
+\index{On\-Key\-Held@{On\-Key\-Held}!Gruppe22::Client::Zoomable@{Gruppe22\-::\-Client\-::\-Zoomable}}
+\subsubsection[{On\-Key\-Held}]{\setlength{\rightskip}{0pt plus 5cm}override bool Gruppe22.\-Client.\-Zoomable.\-On\-Key\-Held (
+\begin{DoxyParamCaption}
+\item[{Keys}]{k}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{class_gruppe22_1_1_client_1_1_zoomable_ac2965c52d19ec510714c511583ec4b36}
+
+
+Erneute Implementation von \hyperlink{class_gruppe22_1_1_client_1_1_u_i_element_a00a8a507f4701226bd2406ae501750d6}{Gruppe22.\-Client.\-U\-I\-Element}.
+
+\hypertarget{class_gruppe22_1_1_client_1_1_zoomable_a779978683bab4488bd4ff7cdb233ff20}{\index{Gruppe22\-::\-Client\-::\-Zoomable@{Gruppe22\-::\-Client\-::\-Zoomable}!Scroll\-Wheel@{Scroll\-Wheel}}
+\index{Scroll\-Wheel@{Scroll\-Wheel}!Gruppe22::Client::Zoomable@{Gruppe22\-::\-Client\-::\-Zoomable}}
+\subsubsection[{Scroll\-Wheel}]{\setlength{\rightskip}{0pt plus 5cm}override void Gruppe22.\-Client.\-Zoomable.\-Scroll\-Wheel (
+\begin{DoxyParamCaption}
+\item[{int}]{Difference}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{class_gruppe22_1_1_client_1_1_zoomable_a779978683bab4488bd4ff7cdb233ff20}
+
+
+
+
+
+\begin{DoxyParams}{Parameter}
+{\em Difference} & \\
+\hline
+\end{DoxyParams}
+
+
+Erneute Implementation von \hyperlink{class_gruppe22_1_1_client_1_1_u_i_element_a691954dde0b9a1d39c064e86fea19bf5}{Gruppe22.\-Client.\-U\-I\-Element}.
+
+
+
+\subsection{Dokumentation der Datenelemente}
+\hypertarget{class_gruppe22_1_1_client_1_1_zoomable_aef967a0e7cd392b7d51c1b870f3b59be}{\index{Gruppe22\-::\-Client\-::\-Zoomable@{Gruppe22\-::\-Client\-::\-Zoomable}!\-\_\-camera@{\-\_\-camera}}
+\index{\-\_\-camera@{\-\_\-camera}!Gruppe22::Client::Zoomable@{Gruppe22\-::\-Client\-::\-Zoomable}}
+\subsubsection[{\-\_\-camera}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Camera} Gruppe22.\-Client.\-Zoomable.\-\_\-camera\hspace{0.3cm}{\ttfamily [protected]}}}\label{class_gruppe22_1_1_client_1_1_zoomable_aef967a0e7cd392b7d51c1b870f3b59be}
+
+
+The transformation-\/matrix used for zooming and panning the map 
+
+
+
+\subsection{Dokumentation der Propertys}
+\hypertarget{class_gruppe22_1_1_client_1_1_zoomable_aba34634a38c1290ec329919c711f31d1}{\index{Gruppe22\-::\-Client\-::\-Zoomable@{Gruppe22\-::\-Client\-::\-Zoomable}!Pos@{Pos}}
+\index{Pos@{Pos}!Gruppe22::Client::Zoomable@{Gruppe22\-::\-Client\-::\-Zoomable}}
+\subsubsection[{Pos}]{\setlength{\rightskip}{0pt plus 5cm}Vector2 Gruppe22.\-Client.\-Zoomable.\-Pos\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}}\label{class_gruppe22_1_1_client_1_1_zoomable_aba34634a38c1290ec329919c711f31d1}
+
+
+Current position of the map 
+
+\hypertarget{class_gruppe22_1_1_client_1_1_zoomable_a4a23fa2ceb4738621d6aaea5bd9fa72f}{\index{Gruppe22\-::\-Client\-::\-Zoomable@{Gruppe22\-::\-Client\-::\-Zoomable}!Zoom@{Zoom}}
+\index{Zoom@{Zoom}!Gruppe22::Client::Zoomable@{Gruppe22\-::\-Client\-::\-Zoomable}}
+\subsubsection[{Zoom}]{\setlength{\rightskip}{0pt plus 5cm}float Gruppe22.\-Client.\-Zoomable.\-Zoom\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}}\label{class_gruppe22_1_1_client_1_1_zoomable_a4a23fa2ceb4738621d6aaea5bd9fa72f}
+
+
+Current zoom level 
+
+
+
+Die Dokumentation für diese Klasse wurde erzeugt aufgrund der Datei\-:\begin{DoxyCompactItemize}
+\item 
+C\-:/\-Users/beursken/\-Documents/\-Git\-Hub/gruppe22/\-Gruppe22/\-Gruppe22/\-Client/\-U\-I/\hyperlink{_zoomable_8cs}{Zoomable.\-cs}\end{DoxyCompactItemize}

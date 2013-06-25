@@ -1,0 +1,340 @@
+\hypertarget{class_gruppe22_1_1_client_1_1_actor_view}{\section{Gruppe22.\-Client.\-Actor\-View Klassenreferenz}
+\label{class_gruppe22_1_1_client_1_1_actor_view}\index{Gruppe22.\-Client.\-Actor\-View@{Gruppe22.\-Client.\-Actor\-View}}
+}
+Klassendiagramm für Gruppe22.\-Client.\-Actor\-View\-:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{class_gruppe22_1_1_client_1_1_actor_view}
+\end{center}
+\end{figure}
+\subsection*{Öffentliche Methoden}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{class_gruppe22_1_1_client_1_1_actor_view_af0bf5a4427fcaf23ac0af9f286f246e1}{Play\-Now\-Or\-After\-Move} (\hyperlink{namespace_gruppe22_1_1_backend_aaa25d27da5307e9abb21f9f09b528f67}{Backend.\-Activity} \hyperlink{class_gruppe22_1_1_client_1_1_actor_view_af7f1f3741a7266476953b693df0067a2}{activity}, bool locked=false)
+\item 
+void \hyperlink{class_gruppe22_1_1_client_1_1_actor_view_a784d66744fea2c43f7a705c4bebb80a3}{End\-Move\-And\-Play} (\hyperlink{namespace_gruppe22_1_1_backend_aaa25d27da5307e9abb21f9f09b528f67}{Backend.\-Activity} \hyperlink{class_gruppe22_1_1_client_1_1_actor_view_af7f1f3741a7266476953b693df0067a2}{activity}, bool locked=false)
+\item 
+void \hyperlink{class_gruppe22_1_1_client_1_1_actor_view_abe6b2c58e6d9796f2a351af99689c9db}{Kill} ()
+\begin{DoxyCompactList}\small\item\em Sets an actor to \char`\"{}dead\char`\"{} state and displays final frame of animation \end{DoxyCompactList}\item 
+override void \hyperlink{class_gruppe22_1_1_client_1_1_actor_view_a1b068bd49a64ea380d700155ec9bda5e}{Read\-Xml} (System.\-Xml.\-Xml\-Reader reader)
+\begin{DoxyCompactList}\small\item\em Load object from X\-M\-L-\/file \end{DoxyCompactList}\item 
+override void \hyperlink{class_gruppe22_1_1_client_1_1_actor_view_a18566b8e88b63aa9901be779ebde09ab}{Save} (string \hyperlink{class_gruppe22_1_1_client_1_1_tile_set_afce49a3941b2d4a360990f9847282da1}{filename}=\char`\"{}bla.\-xml\char`\"{})
+\begin{DoxyCompactList}\small\item\em Save (merely a shortcut to the serializer \end{DoxyCompactList}\item 
+override void \hyperlink{class_gruppe22_1_1_client_1_1_actor_view_af94fec8c50c0919b4c762df7c681db4b}{Load} (string \hyperlink{class_gruppe22_1_1_client_1_1_tile_set_afce49a3941b2d4a360990f9847282da1}{filename}=\char`\"{}bla.\-xml\char`\"{})
+\begin{DoxyCompactList}\small\item\em Load (cannot use serializer at this level!) \end{DoxyCompactList}\item 
+override void \hyperlink{class_gruppe22_1_1_client_1_1_actor_view_af04d89d3988da620d7b092055f64b37b}{Write\-Xml} (System.\-Xml.\-Xml\-Writer writer)
+\begin{DoxyCompactList}\small\item\em Dump object to X\-M\-L-\/file \end{DoxyCompactList}\item 
+void \hyperlink{class_gruppe22_1_1_client_1_1_actor_view_ae79845d8f30b5eaae104757b85043386}{Add} (\hyperlink{namespace_gruppe22_1_1_backend_aaa25d27da5307e9abb21f9f09b528f67}{Backend.\-Activity} \hyperlink{class_gruppe22_1_1_client_1_1_actor_view_af7f1f3741a7266476953b693df0067a2}{activity}, \hyperlink{namespace_gruppe22_1_1_backend_a2d53d5d14b8ea0951ba6971e5da1ebf5}{Backend.\-Direction} \hyperlink{class_gruppe22_1_1_client_1_1_actor_view_ad51208acd18670716bde6c746b86655b}{direction}, string \hyperlink{class_gruppe22_1_1_client_1_1_tile_set_afce49a3941b2d4a360990f9847282da1}{filename}, \hyperlink{class_gruppe22_1_1_backend_1_1_coords}{Backend.\-Coords} start\-Pos, int cols=1, int rows=1, \hyperlink{class_gruppe22_1_1_backend_1_1_coords}{Backend.\-Coords} offset=null, \hyperlink{class_gruppe22_1_1_backend_1_1_coords}{Backend.\-Coords} crop=null, bool vertical=false)
+\begin{DoxyCompactList}\small\item\em Add animation for certain activity from a file \end{DoxyCompactList}\item 
+void \hyperlink{class_gruppe22_1_1_client_1_1_actor_view_aa5ff2045ed28649dfe11428be9c39660}{Animate} (bool has\-Moved)
+\item 
+void \hyperlink{class_gruppe22_1_1_client_1_1_actor_view_ae9b9945e735d77eba0a5118bcbb93596}{Update} (Game\-Time gametime)
+\item 
+\hyperlink{class_gruppe22_1_1_client_1_1_actor_view_a84160789d74c4206e3adbf18078c62a8}{Actor\-View} ()
+\item 
+\hyperlink{class_gruppe22_1_1_client_1_1_actor_view_a7a97196d62da28a51d533aa167e00c2f}{Actor\-View} (\hyperlink{class_gruppe22_1_1_client_1_1_camera}{Camera} camera, \hyperlink{interface_gruppe22_1_1_backend_1_1_i_handle_event}{Backend.\-I\-Handle\-Event} parent, int \hyperlink{class_gruppe22_1_1_client_1_1_actor_view_a6468d36affd0a3d63e3873cb201c4b3e}{id}, Content\-Manager content, \hyperlink{class_gruppe22_1_1_backend_1_1_coords}{Backend.\-Coords} \hyperlink{class_gruppe22_1_1_client_1_1_actor_view_a5a4e1de85966801e99c5fb08f7d342ca}{position}, string \hyperlink{class_gruppe22_1_1_client_1_1_tile_set_afce49a3941b2d4a360990f9847282da1}{filename}=\char`\"{}\char`\"{}, int \hyperlink{class_gruppe22_1_1_client_1_1_actor_view_a3c41306652c4ca9d9ab01b32445ce7da}{speed}=5, bool alive=true, int \hyperlink{class_gruppe22_1_1_client_1_1_tile_set_aff0371f9e4071f24de16612c2066ad5b}{width}=96, int \hyperlink{class_gruppe22_1_1_client_1_1_tile_set_a12343c861014c3631e1a40dfeef20312}{height}=96)
+\end{DoxyCompactItemize}
+\subsection*{Propertys}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_gruppe22_1_1_client_1_1_map_effect}{Map\-Effect} \hyperlink{class_gruppe22_1_1_client_1_1_actor_view_abb2c41d338d432d46f77f3ba2a41cfca}{effect}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\hyperlink{class_gruppe22_1_1_backend_1_1_coords}{Backend.\-Coords} \hyperlink{class_gruppe22_1_1_client_1_1_actor_view_a5a4e1de85966801e99c5fb08f7d342ca}{position}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+int \hyperlink{class_gruppe22_1_1_client_1_1_actor_view_a6468d36affd0a3d63e3873cb201c4b3e}{id}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+int \hyperlink{class_gruppe22_1_1_client_1_1_actor_view_a3c41306652c4ca9d9ab01b32445ce7da}{speed}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\hyperlink{class_gruppe22_1_1_backend_1_1_coords}{Backend.\-Coords} \hyperlink{class_gruppe22_1_1_client_1_1_actor_view_a0797749459b19b816824f63199eb3345}{target}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\hyperlink{class_gruppe22_1_1_backend_1_1_coords}{Backend.\-Coords} \hyperlink{class_gruppe22_1_1_client_1_1_actor_view_af45fbf7af164d290ea08e1091f8b4359}{cache\-Target}\hspace{0.3cm}{\ttfamily  \mbox{[}set\mbox{]}}
+\item 
+\hyperlink{namespace_gruppe22_1_1_backend_a2d53d5d14b8ea0951ba6971e5da1ebf5}{Backend.\-Direction} \hyperlink{class_gruppe22_1_1_client_1_1_actor_view_a892ab20788c4b8f17d7cb945a4c82cb2}{cache\-Dir}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+bool \hyperlink{class_gruppe22_1_1_client_1_1_actor_view_a7fb53fb0eb252d2b67410f9f9eae683c}{is\-Moving}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+\hyperlink{namespace_gruppe22_1_1_backend_aaa25d27da5307e9abb21f9f09b528f67}{Backend.\-Activity} \hyperlink{class_gruppe22_1_1_client_1_1_actor_view_af7f1f3741a7266476953b693df0067a2}{activity}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+\hyperlink{namespace_gruppe22_1_1_backend_a2d53d5d14b8ea0951ba6971e5da1ebf5}{Backend.\-Direction} \hyperlink{class_gruppe22_1_1_client_1_1_actor_view_ad51208acd18670716bde6c746b86655b}{direction}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+Texture2\-D \hyperlink{class_gruppe22_1_1_client_1_1_actor_view_a05942cdc958c646c23de2c6327bd7f54}{animation\-Texture}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+Rectangle \hyperlink{class_gruppe22_1_1_client_1_1_actor_view_ac447bd2a93cd5e534ff446d0244bca63}{animation\-Rect}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+int \hyperlink{class_gruppe22_1_1_client_1_1_actor_view_a9a4c4ec1dc5769d84653c1d41c4cf4dd}{offset\-Y}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+int \hyperlink{class_gruppe22_1_1_client_1_1_actor_view_a1786159bc34dd01c8390b493937df033}{offset\-X}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+int \hyperlink{class_gruppe22_1_1_client_1_1_actor_view_add6a5e3e2f6769eccff26a3d5ea0ef58}{crop\-X}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+int \hyperlink{class_gruppe22_1_1_client_1_1_actor_view_aa61c6d089ffd6ac7170dd2a6375ef85e}{crop\-Y}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\end{DoxyCompactItemize}
+\subsection*{Weitere Geerbte Elemente}
+
+
+\subsection{Beschreibung der Konstruktoren und Destruktoren}
+\hypertarget{class_gruppe22_1_1_client_1_1_actor_view_a84160789d74c4206e3adbf18078c62a8}{\index{Gruppe22\-::\-Client\-::\-Actor\-View@{Gruppe22\-::\-Client\-::\-Actor\-View}!Actor\-View@{Actor\-View}}
+\index{Actor\-View@{Actor\-View}!Gruppe22::Client::ActorView@{Gruppe22\-::\-Client\-::\-Actor\-View}}
+\subsubsection[{Actor\-View}]{\setlength{\rightskip}{0pt plus 5cm}Gruppe22.\-Client.\-Actor\-View.\-Actor\-View (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{class_gruppe22_1_1_client_1_1_actor_view_a84160789d74c4206e3adbf18078c62a8}
+\hypertarget{class_gruppe22_1_1_client_1_1_actor_view_a7a97196d62da28a51d533aa167e00c2f}{\index{Gruppe22\-::\-Client\-::\-Actor\-View@{Gruppe22\-::\-Client\-::\-Actor\-View}!Actor\-View@{Actor\-View}}
+\index{Actor\-View@{Actor\-View}!Gruppe22::Client::ActorView@{Gruppe22\-::\-Client\-::\-Actor\-View}}
+\subsubsection[{Actor\-View}]{\setlength{\rightskip}{0pt plus 5cm}Gruppe22.\-Client.\-Actor\-View.\-Actor\-View (
+\begin{DoxyParamCaption}
+\item[{{\bf Camera}}]{camera, }
+\item[{{\bf Backend.\-I\-Handle\-Event}}]{parent, }
+\item[{int}]{id, }
+\item[{Content\-Manager}]{content, }
+\item[{{\bf Backend.\-Coords}}]{position, }
+\item[{string}]{filename = {\ttfamily \char`\"{}\char`\"{}}, }
+\item[{int}]{speed = {\ttfamily 5}, }
+\item[{bool}]{alive = {\ttfamily true}, }
+\item[{int}]{width = {\ttfamily 96}, }
+\item[{int}]{height = {\ttfamily 96}}
+\end{DoxyParamCaption}
+)}}\label{class_gruppe22_1_1_client_1_1_actor_view_a7a97196d62da28a51d533aa167e00c2f}
+
+
+
+
+
+\begin{DoxyParams}{Parameter}
+{\em spritebatch} & \\
+\hline
+{\em name} & \\
+\hline
+{\em controllable} & \\
+\hline
+{\em position} & \\
+\hline
+{\em sprite} & \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Dokumentation der Elementfunktionen}
+\hypertarget{class_gruppe22_1_1_client_1_1_actor_view_ae79845d8f30b5eaae104757b85043386}{\index{Gruppe22\-::\-Client\-::\-Actor\-View@{Gruppe22\-::\-Client\-::\-Actor\-View}!Add@{Add}}
+\index{Add@{Add}!Gruppe22::Client::ActorView@{Gruppe22\-::\-Client\-::\-Actor\-View}}
+\subsubsection[{Add}]{\setlength{\rightskip}{0pt plus 5cm}void Gruppe22.\-Client.\-Actor\-View.\-Add (
+\begin{DoxyParamCaption}
+\item[{{\bf Backend.\-Activity}}]{activity, }
+\item[{{\bf Backend.\-Direction}}]{direction, }
+\item[{string}]{filename, }
+\item[{{\bf Backend.\-Coords}}]{start\-Pos, }
+\item[{int}]{cols = {\ttfamily 1}, }
+\item[{int}]{rows = {\ttfamily 1}, }
+\item[{{\bf Backend.\-Coords}}]{offset = {\ttfamily null}, }
+\item[{{\bf Backend.\-Coords}}]{crop = {\ttfamily null}, }
+\item[{bool}]{vertical = {\ttfamily false}}
+\end{DoxyParamCaption}
+)}}\label{class_gruppe22_1_1_client_1_1_actor_view_ae79845d8f30b5eaae104757b85043386}
+
+
+Add animation for certain activity from a file 
+
+
+\begin{DoxyParams}{Parameter}
+{\em activity} & \\
+\hline
+{\em direction} & \\
+\hline
+{\em filename} & \\
+\hline
+{\em start\-Pos} & \\
+\hline
+{\em cols} & \\
+\hline
+{\em rows} & \\
+\hline
+{\em vertical} & \\
+\hline
+\end{DoxyParams}
+\hypertarget{class_gruppe22_1_1_client_1_1_actor_view_aa5ff2045ed28649dfe11428be9c39660}{\index{Gruppe22\-::\-Client\-::\-Actor\-View@{Gruppe22\-::\-Client\-::\-Actor\-View}!Animate@{Animate}}
+\index{Animate@{Animate}!Gruppe22::Client::ActorView@{Gruppe22\-::\-Client\-::\-Actor\-View}}
+\subsubsection[{Animate}]{\setlength{\rightskip}{0pt plus 5cm}void Gruppe22.\-Client.\-Actor\-View.\-Animate (
+\begin{DoxyParamCaption}
+\item[{bool}]{has\-Moved}
+\end{DoxyParamCaption}
+)}}\label{class_gruppe22_1_1_client_1_1_actor_view_aa5ff2045ed28649dfe11428be9c39660}
+\hypertarget{class_gruppe22_1_1_client_1_1_actor_view_a784d66744fea2c43f7a705c4bebb80a3}{\index{Gruppe22\-::\-Client\-::\-Actor\-View@{Gruppe22\-::\-Client\-::\-Actor\-View}!End\-Move\-And\-Play@{End\-Move\-And\-Play}}
+\index{End\-Move\-And\-Play@{End\-Move\-And\-Play}!Gruppe22::Client::ActorView@{Gruppe22\-::\-Client\-::\-Actor\-View}}
+\subsubsection[{End\-Move\-And\-Play}]{\setlength{\rightskip}{0pt plus 5cm}void Gruppe22.\-Client.\-Actor\-View.\-End\-Move\-And\-Play (
+\begin{DoxyParamCaption}
+\item[{{\bf Backend.\-Activity}}]{activity, }
+\item[{bool}]{locked = {\ttfamily false}}
+\end{DoxyParamCaption}
+)}}\label{class_gruppe22_1_1_client_1_1_actor_view_a784d66744fea2c43f7a705c4bebb80a3}
+\hypertarget{class_gruppe22_1_1_client_1_1_actor_view_abe6b2c58e6d9796f2a351af99689c9db}{\index{Gruppe22\-::\-Client\-::\-Actor\-View@{Gruppe22\-::\-Client\-::\-Actor\-View}!Kill@{Kill}}
+\index{Kill@{Kill}!Gruppe22::Client::ActorView@{Gruppe22\-::\-Client\-::\-Actor\-View}}
+\subsubsection[{Kill}]{\setlength{\rightskip}{0pt plus 5cm}void Gruppe22.\-Client.\-Actor\-View.\-Kill (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{class_gruppe22_1_1_client_1_1_actor_view_abe6b2c58e6d9796f2a351af99689c9db}
+
+
+Sets an actor to \char`\"{}dead\char`\"{} state and displays final frame of animation 
+
+\hypertarget{class_gruppe22_1_1_client_1_1_actor_view_af94fec8c50c0919b4c762df7c681db4b}{\index{Gruppe22\-::\-Client\-::\-Actor\-View@{Gruppe22\-::\-Client\-::\-Actor\-View}!Load@{Load}}
+\index{Load@{Load}!Gruppe22::Client::ActorView@{Gruppe22\-::\-Client\-::\-Actor\-View}}
+\subsubsection[{Load}]{\setlength{\rightskip}{0pt plus 5cm}override void Gruppe22.\-Client.\-Actor\-View.\-Load (
+\begin{DoxyParamCaption}
+\item[{string}]{filename = {\ttfamily \char`\"{}bla.xml\char`\"{}}}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{class_gruppe22_1_1_client_1_1_actor_view_af94fec8c50c0919b4c762df7c681db4b}
+
+
+Load (cannot use serializer at this level!) 
+
+
+\begin{DoxyParams}{Parameter}
+{\em filename} & \\
+\hline
+\end{DoxyParams}
+
+
+Erneute Implementation von \hyperlink{class_gruppe22_1_1_client_1_1_tile_set_a9dd72fa07af2de21ab5c68e9d63c83f2}{Gruppe22.\-Client.\-Tile\-Set}.
+
+\hypertarget{class_gruppe22_1_1_client_1_1_actor_view_af0bf5a4427fcaf23ac0af9f286f246e1}{\index{Gruppe22\-::\-Client\-::\-Actor\-View@{Gruppe22\-::\-Client\-::\-Actor\-View}!Play\-Now\-Or\-After\-Move@{Play\-Now\-Or\-After\-Move}}
+\index{Play\-Now\-Or\-After\-Move@{Play\-Now\-Or\-After\-Move}!Gruppe22::Client::ActorView@{Gruppe22\-::\-Client\-::\-Actor\-View}}
+\subsubsection[{Play\-Now\-Or\-After\-Move}]{\setlength{\rightskip}{0pt plus 5cm}void Gruppe22.\-Client.\-Actor\-View.\-Play\-Now\-Or\-After\-Move (
+\begin{DoxyParamCaption}
+\item[{{\bf Backend.\-Activity}}]{activity, }
+\item[{bool}]{locked = {\ttfamily false}}
+\end{DoxyParamCaption}
+)}}\label{class_gruppe22_1_1_client_1_1_actor_view_af0bf5a4427fcaf23ac0af9f286f246e1}
+\hypertarget{class_gruppe22_1_1_client_1_1_actor_view_a1b068bd49a64ea380d700155ec9bda5e}{\index{Gruppe22\-::\-Client\-::\-Actor\-View@{Gruppe22\-::\-Client\-::\-Actor\-View}!Read\-Xml@{Read\-Xml}}
+\index{Read\-Xml@{Read\-Xml}!Gruppe22::Client::ActorView@{Gruppe22\-::\-Client\-::\-Actor\-View}}
+\subsubsection[{Read\-Xml}]{\setlength{\rightskip}{0pt plus 5cm}override void Gruppe22.\-Client.\-Actor\-View.\-Read\-Xml (
+\begin{DoxyParamCaption}
+\item[{System.\-Xml.\-Xml\-Reader}]{reader}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{class_gruppe22_1_1_client_1_1_actor_view_a1b068bd49a64ea380d700155ec9bda5e}
+
+
+Load object from X\-M\-L-\/file 
+
+
+\begin{DoxyParams}{Parameter}
+{\em reader} & Load object from X\-M\-L-\/stream\\
+\hline
+\end{DoxyParams}
+
+
+Erneute Implementation von \hyperlink{class_gruppe22_1_1_client_1_1_tile_set_a7395745bf6ef4bf3374d4221cb86689f}{Gruppe22.\-Client.\-Tile\-Set}.
+
+\hypertarget{class_gruppe22_1_1_client_1_1_actor_view_a18566b8e88b63aa9901be779ebde09ab}{\index{Gruppe22\-::\-Client\-::\-Actor\-View@{Gruppe22\-::\-Client\-::\-Actor\-View}!Save@{Save}}
+\index{Save@{Save}!Gruppe22::Client::ActorView@{Gruppe22\-::\-Client\-::\-Actor\-View}}
+\subsubsection[{Save}]{\setlength{\rightskip}{0pt plus 5cm}override void Gruppe22.\-Client.\-Actor\-View.\-Save (
+\begin{DoxyParamCaption}
+\item[{string}]{filename = {\ttfamily \char`\"{}bla.xml\char`\"{}}}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{class_gruppe22_1_1_client_1_1_actor_view_a18566b8e88b63aa9901be779ebde09ab}
+
+
+Save (merely a shortcut to the serializer 
+
+
+\begin{DoxyParams}{Parameter}
+{\em filename} & \\
+\hline
+\end{DoxyParams}
+
+
+Erneute Implementation von \hyperlink{class_gruppe22_1_1_client_1_1_tile_set_aee5a346f67239555aabd55180b29c10f}{Gruppe22.\-Client.\-Tile\-Set}.
+
+\hypertarget{class_gruppe22_1_1_client_1_1_actor_view_ae9b9945e735d77eba0a5118bcbb93596}{\index{Gruppe22\-::\-Client\-::\-Actor\-View@{Gruppe22\-::\-Client\-::\-Actor\-View}!Update@{Update}}
+\index{Update@{Update}!Gruppe22::Client::ActorView@{Gruppe22\-::\-Client\-::\-Actor\-View}}
+\subsubsection[{Update}]{\setlength{\rightskip}{0pt plus 5cm}void Gruppe22.\-Client.\-Actor\-View.\-Update (
+\begin{DoxyParamCaption}
+\item[{Game\-Time}]{gametime}
+\end{DoxyParamCaption}
+)}}\label{class_gruppe22_1_1_client_1_1_actor_view_ae9b9945e735d77eba0a5118bcbb93596}
+
+
+
+
+
+\begin{DoxyParams}{Parameter}
+{\em gametime} & \\
+\hline
+\end{DoxyParams}
+\hypertarget{class_gruppe22_1_1_client_1_1_actor_view_af04d89d3988da620d7b092055f64b37b}{\index{Gruppe22\-::\-Client\-::\-Actor\-View@{Gruppe22\-::\-Client\-::\-Actor\-View}!Write\-Xml@{Write\-Xml}}
+\index{Write\-Xml@{Write\-Xml}!Gruppe22::Client::ActorView@{Gruppe22\-::\-Client\-::\-Actor\-View}}
+\subsubsection[{Write\-Xml}]{\setlength{\rightskip}{0pt plus 5cm}override void Gruppe22.\-Client.\-Actor\-View.\-Write\-Xml (
+\begin{DoxyParamCaption}
+\item[{System.\-Xml.\-Xml\-Writer}]{writer}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{class_gruppe22_1_1_client_1_1_actor_view_af04d89d3988da620d7b092055f64b37b}
+
+
+Dump object to X\-M\-L-\/file 
+
+
+\begin{DoxyParams}{Parameter}
+{\em writer} & Write object to X\-M\-L-\/stream\\
+\hline
+\end{DoxyParams}
+
+
+Erneute Implementation von \hyperlink{class_gruppe22_1_1_client_1_1_tile_set_a4a27a9d327257a79db59b2681daaa0c7}{Gruppe22.\-Client.\-Tile\-Set}.
+
+
+
+\subsection{Dokumentation der Propertys}
+\hypertarget{class_gruppe22_1_1_client_1_1_actor_view_af7f1f3741a7266476953b693df0067a2}{\index{Gruppe22\-::\-Client\-::\-Actor\-View@{Gruppe22\-::\-Client\-::\-Actor\-View}!activity@{activity}}
+\index{activity@{activity}!Gruppe22::Client::ActorView@{Gruppe22\-::\-Client\-::\-Actor\-View}}
+\subsubsection[{activity}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Backend.\-Activity} Gruppe22.\-Client.\-Actor\-View.\-activity\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}}\label{class_gruppe22_1_1_client_1_1_actor_view_af7f1f3741a7266476953b693df0067a2}
+\hypertarget{class_gruppe22_1_1_client_1_1_actor_view_ac447bd2a93cd5e534ff446d0244bca63}{\index{Gruppe22\-::\-Client\-::\-Actor\-View@{Gruppe22\-::\-Client\-::\-Actor\-View}!animation\-Rect@{animation\-Rect}}
+\index{animation\-Rect@{animation\-Rect}!Gruppe22::Client::ActorView@{Gruppe22\-::\-Client\-::\-Actor\-View}}
+\subsubsection[{animation\-Rect}]{\setlength{\rightskip}{0pt plus 5cm}Rectangle Gruppe22.\-Client.\-Actor\-View.\-animation\-Rect\hspace{0.3cm}{\ttfamily [get]}}}\label{class_gruppe22_1_1_client_1_1_actor_view_ac447bd2a93cd5e534ff446d0244bca63}
+\hypertarget{class_gruppe22_1_1_client_1_1_actor_view_a05942cdc958c646c23de2c6327bd7f54}{\index{Gruppe22\-::\-Client\-::\-Actor\-View@{Gruppe22\-::\-Client\-::\-Actor\-View}!animation\-Texture@{animation\-Texture}}
+\index{animation\-Texture@{animation\-Texture}!Gruppe22::Client::ActorView@{Gruppe22\-::\-Client\-::\-Actor\-View}}
+\subsubsection[{animation\-Texture}]{\setlength{\rightskip}{0pt plus 5cm}Texture2\-D Gruppe22.\-Client.\-Actor\-View.\-animation\-Texture\hspace{0.3cm}{\ttfamily [get]}}}\label{class_gruppe22_1_1_client_1_1_actor_view_a05942cdc958c646c23de2c6327bd7f54}
+\hypertarget{class_gruppe22_1_1_client_1_1_actor_view_a892ab20788c4b8f17d7cb945a4c82cb2}{\index{Gruppe22\-::\-Client\-::\-Actor\-View@{Gruppe22\-::\-Client\-::\-Actor\-View}!cache\-Dir@{cache\-Dir}}
+\index{cache\-Dir@{cache\-Dir}!Gruppe22::Client::ActorView@{Gruppe22\-::\-Client\-::\-Actor\-View}}
+\subsubsection[{cache\-Dir}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Backend.\-Direction} Gruppe22.\-Client.\-Actor\-View.\-cache\-Dir\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}}\label{class_gruppe22_1_1_client_1_1_actor_view_a892ab20788c4b8f17d7cb945a4c82cb2}
+\hypertarget{class_gruppe22_1_1_client_1_1_actor_view_af45fbf7af164d290ea08e1091f8b4359}{\index{Gruppe22\-::\-Client\-::\-Actor\-View@{Gruppe22\-::\-Client\-::\-Actor\-View}!cache\-Target@{cache\-Target}}
+\index{cache\-Target@{cache\-Target}!Gruppe22::Client::ActorView@{Gruppe22\-::\-Client\-::\-Actor\-View}}
+\subsubsection[{cache\-Target}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Backend.\-Coords} Gruppe22.\-Client.\-Actor\-View.\-cache\-Target\hspace{0.3cm}{\ttfamily [set]}}}\label{class_gruppe22_1_1_client_1_1_actor_view_af45fbf7af164d290ea08e1091f8b4359}
+\hypertarget{class_gruppe22_1_1_client_1_1_actor_view_add6a5e3e2f6769eccff26a3d5ea0ef58}{\index{Gruppe22\-::\-Client\-::\-Actor\-View@{Gruppe22\-::\-Client\-::\-Actor\-View}!crop\-X@{crop\-X}}
+\index{crop\-X@{crop\-X}!Gruppe22::Client::ActorView@{Gruppe22\-::\-Client\-::\-Actor\-View}}
+\subsubsection[{crop\-X}]{\setlength{\rightskip}{0pt plus 5cm}int Gruppe22.\-Client.\-Actor\-View.\-crop\-X\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}}\label{class_gruppe22_1_1_client_1_1_actor_view_add6a5e3e2f6769eccff26a3d5ea0ef58}
+\hypertarget{class_gruppe22_1_1_client_1_1_actor_view_aa61c6d089ffd6ac7170dd2a6375ef85e}{\index{Gruppe22\-::\-Client\-::\-Actor\-View@{Gruppe22\-::\-Client\-::\-Actor\-View}!crop\-Y@{crop\-Y}}
+\index{crop\-Y@{crop\-Y}!Gruppe22::Client::ActorView@{Gruppe22\-::\-Client\-::\-Actor\-View}}
+\subsubsection[{crop\-Y}]{\setlength{\rightskip}{0pt plus 5cm}int Gruppe22.\-Client.\-Actor\-View.\-crop\-Y\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}}\label{class_gruppe22_1_1_client_1_1_actor_view_aa61c6d089ffd6ac7170dd2a6375ef85e}
+\hypertarget{class_gruppe22_1_1_client_1_1_actor_view_ad51208acd18670716bde6c746b86655b}{\index{Gruppe22\-::\-Client\-::\-Actor\-View@{Gruppe22\-::\-Client\-::\-Actor\-View}!direction@{direction}}
+\index{direction@{direction}!Gruppe22::Client::ActorView@{Gruppe22\-::\-Client\-::\-Actor\-View}}
+\subsubsection[{direction}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Backend.\-Direction} Gruppe22.\-Client.\-Actor\-View.\-direction\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}}\label{class_gruppe22_1_1_client_1_1_actor_view_ad51208acd18670716bde6c746b86655b}
+\hypertarget{class_gruppe22_1_1_client_1_1_actor_view_abb2c41d338d432d46f77f3ba2a41cfca}{\index{Gruppe22\-::\-Client\-::\-Actor\-View@{Gruppe22\-::\-Client\-::\-Actor\-View}!effect@{effect}}
+\index{effect@{effect}!Gruppe22::Client::ActorView@{Gruppe22\-::\-Client\-::\-Actor\-View}}
+\subsubsection[{effect}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Map\-Effect} Gruppe22.\-Client.\-Actor\-View.\-effect\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}}\label{class_gruppe22_1_1_client_1_1_actor_view_abb2c41d338d432d46f77f3ba2a41cfca}
+\hypertarget{class_gruppe22_1_1_client_1_1_actor_view_a6468d36affd0a3d63e3873cb201c4b3e}{\index{Gruppe22\-::\-Client\-::\-Actor\-View@{Gruppe22\-::\-Client\-::\-Actor\-View}!id@{id}}
+\index{id@{id}!Gruppe22::Client::ActorView@{Gruppe22\-::\-Client\-::\-Actor\-View}}
+\subsubsection[{id}]{\setlength{\rightskip}{0pt plus 5cm}int Gruppe22.\-Client.\-Actor\-View.\-id\hspace{0.3cm}{\ttfamily [get]}}}\label{class_gruppe22_1_1_client_1_1_actor_view_a6468d36affd0a3d63e3873cb201c4b3e}
+\hypertarget{class_gruppe22_1_1_client_1_1_actor_view_a7fb53fb0eb252d2b67410f9f9eae683c}{\index{Gruppe22\-::\-Client\-::\-Actor\-View@{Gruppe22\-::\-Client\-::\-Actor\-View}!is\-Moving@{is\-Moving}}
+\index{is\-Moving@{is\-Moving}!Gruppe22::Client::ActorView@{Gruppe22\-::\-Client\-::\-Actor\-View}}
+\subsubsection[{is\-Moving}]{\setlength{\rightskip}{0pt plus 5cm}bool Gruppe22.\-Client.\-Actor\-View.\-is\-Moving\hspace{0.3cm}{\ttfamily [get]}}}\label{class_gruppe22_1_1_client_1_1_actor_view_a7fb53fb0eb252d2b67410f9f9eae683c}
+\hypertarget{class_gruppe22_1_1_client_1_1_actor_view_a1786159bc34dd01c8390b493937df033}{\index{Gruppe22\-::\-Client\-::\-Actor\-View@{Gruppe22\-::\-Client\-::\-Actor\-View}!offset\-X@{offset\-X}}
+\index{offset\-X@{offset\-X}!Gruppe22::Client::ActorView@{Gruppe22\-::\-Client\-::\-Actor\-View}}
+\subsubsection[{offset\-X}]{\setlength{\rightskip}{0pt plus 5cm}int Gruppe22.\-Client.\-Actor\-View.\-offset\-X\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}}\label{class_gruppe22_1_1_client_1_1_actor_view_a1786159bc34dd01c8390b493937df033}
+\hypertarget{class_gruppe22_1_1_client_1_1_actor_view_a9a4c4ec1dc5769d84653c1d41c4cf4dd}{\index{Gruppe22\-::\-Client\-::\-Actor\-View@{Gruppe22\-::\-Client\-::\-Actor\-View}!offset\-Y@{offset\-Y}}
+\index{offset\-Y@{offset\-Y}!Gruppe22::Client::ActorView@{Gruppe22\-::\-Client\-::\-Actor\-View}}
+\subsubsection[{offset\-Y}]{\setlength{\rightskip}{0pt plus 5cm}int Gruppe22.\-Client.\-Actor\-View.\-offset\-Y\hspace{0.3cm}{\ttfamily [get]}}}\label{class_gruppe22_1_1_client_1_1_actor_view_a9a4c4ec1dc5769d84653c1d41c4cf4dd}
+\hypertarget{class_gruppe22_1_1_client_1_1_actor_view_a5a4e1de85966801e99c5fb08f7d342ca}{\index{Gruppe22\-::\-Client\-::\-Actor\-View@{Gruppe22\-::\-Client\-::\-Actor\-View}!position@{position}}
+\index{position@{position}!Gruppe22::Client::ActorView@{Gruppe22\-::\-Client\-::\-Actor\-View}}
+\subsubsection[{position}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Backend.\-Coords} Gruppe22.\-Client.\-Actor\-View.\-position\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}}\label{class_gruppe22_1_1_client_1_1_actor_view_a5a4e1de85966801e99c5fb08f7d342ca}
+\hypertarget{class_gruppe22_1_1_client_1_1_actor_view_a3c41306652c4ca9d9ab01b32445ce7da}{\index{Gruppe22\-::\-Client\-::\-Actor\-View@{Gruppe22\-::\-Client\-::\-Actor\-View}!speed@{speed}}
+\index{speed@{speed}!Gruppe22::Client::ActorView@{Gruppe22\-::\-Client\-::\-Actor\-View}}
+\subsubsection[{speed}]{\setlength{\rightskip}{0pt plus 5cm}int Gruppe22.\-Client.\-Actor\-View.\-speed\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}}\label{class_gruppe22_1_1_client_1_1_actor_view_a3c41306652c4ca9d9ab01b32445ce7da}
+\hypertarget{class_gruppe22_1_1_client_1_1_actor_view_a0797749459b19b816824f63199eb3345}{\index{Gruppe22\-::\-Client\-::\-Actor\-View@{Gruppe22\-::\-Client\-::\-Actor\-View}!target@{target}}
+\index{target@{target}!Gruppe22::Client::ActorView@{Gruppe22\-::\-Client\-::\-Actor\-View}}
+\subsubsection[{target}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Backend.\-Coords} Gruppe22.\-Client.\-Actor\-View.\-target\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}}\label{class_gruppe22_1_1_client_1_1_actor_view_a0797749459b19b816824f63199eb3345}
+
+
+Die Dokumentation für diese Klasse wurde erzeugt aufgrund der Datei\-:\begin{DoxyCompactItemize}
+\item 
+C\-:/\-Users/beursken/\-Documents/\-Git\-Hub/gruppe22/\-Gruppe22/\-Gruppe22/\-Client/\-Map/\hyperlink{_actor_view_8cs}{Actor\-View.\-cs}\end{DoxyCompactItemize}

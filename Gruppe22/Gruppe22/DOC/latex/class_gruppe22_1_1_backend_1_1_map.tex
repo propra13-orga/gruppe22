@@ -1,0 +1,637 @@
+\hypertarget{class_gruppe22_1_1_backend_1_1_map}{\section{Gruppe22.\-Backend.\-Map Klassenreferenz}
+\label{class_gruppe22_1_1_backend_1_1_map}\index{Gruppe22.\-Backend.\-Map@{Gruppe22.\-Backend.\-Map}}
+}
+Klassendiagramm für Gruppe22.\-Backend.\-Map\-:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=3.000000cm]{class_gruppe22_1_1_backend_1_1_map}
+\end{center}
+\end{figure}
+\subsection*{Öffentliche Methoden}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{class_gruppe22_1_1_backend_1_1_map_a3f3723458566403e40673d4e757efb76}{Update} (Game\-Time game\-Time)
+\begin{DoxyCompactList}\small\item\em Refresh tiles which do something (traps, enemies, N\-P\-Cs) \end{DoxyCompactList}\item 
+void \hyperlink{class_gruppe22_1_1_backend_1_1_map_a120d2585d2cc5279322670a1274c820a}{Add\-Actor} (\hyperlink{class_gruppe22_1_1_backend_1_1_item}{Item} item, \hyperlink{class_gruppe22_1_1_backend_1_1_coords}{Backend.\-Coords} from)
+\begin{DoxyCompactList}\small\item\em Add an actor to a tile \end{DoxyCompactList}\item 
+void \hyperlink{class_gruppe22_1_1_backend_1_1_map_a0a3ac3d6dc5d341c9d1ebd9348d8db7a}{Uncover} (\hyperlink{class_gruppe22_1_1_backend_1_1_coords}{Coords} coords, int radius=4)
+\item 
+void \hyperlink{class_gruppe22_1_1_backend_1_1_map_ab7a2c3d607228ddb4aca3f28d6802f5a}{Move\-Actor} (\hyperlink{class_gruppe22_1_1_backend_1_1_actor}{Actor} actor, \hyperlink{namespace_gruppe22_1_1_backend_a2d53d5d14b8ea0951ba6971e5da1ebf5}{Direction} dir)
+\begin{DoxyCompactList}\small\item\em Move an actor on the map in a specified direction (does not check for walls -\/ use Can\-Move) \end{DoxyCompactList}\item 
+void \hyperlink{class_gruppe22_1_1_backend_1_1_map_a1d4d36a2ab918a0c37db26195508a0e5}{Add\-Item} (\hyperlink{class_gruppe22_1_1_backend_1_1_item}{Item} item, \hyperlink{class_gruppe22_1_1_backend_1_1_coords}{Backend.\-Coords} to)
+\begin{DoxyCompactList}\small\item\em Add an item to a tile \end{DoxyCompactList}\item 
+void \hyperlink{class_gruppe22_1_1_backend_1_1_map_a2bb2e356f5d269823152b90b6460dc96}{Move\-Item} (\hyperlink{class_gruppe22_1_1_backend_1_1_item}{Item} item, \hyperlink{class_gruppe22_1_1_backend_1_1_coords}{Backend.\-Coords} from, \hyperlink{namespace_gruppe22_1_1_backend_a2d53d5d14b8ea0951ba6971e5da1ebf5}{Direction} dir)
+\begin{DoxyCompactList}\small\item\em Move an item on the map (not carried by an actor) in a specified direction \end{DoxyCompactList}\item 
+\hyperlink{class_gruppe22_1_1_backend_1_1_coords}{Backend.\-Coords} \hyperlink{class_gruppe22_1_1_backend_1_1_map_aedf8ea673120929f8ad213d12441cd46}{Closest\-Enemy} (\hyperlink{class_gruppe22_1_1_backend_1_1_coords}{Coords} coords, int radius=4, bool include\-Player=true, bool include\-N\-P\-C=true, bool include\-Enemy=true)
+\begin{DoxyCompactList}\small\item\em Get coordinates for closest enemy within a specified radius \end{DoxyCompactList}\item 
+void \hyperlink{class_gruppe22_1_1_backend_1_1_map_a81e7cdb072bbd70c12ec23c76ce0cc3a}{Path\-To} (\hyperlink{class_gruppe22_1_1_backend_1_1_coords}{Coords} from, \hyperlink{class_gruppe22_1_1_backend_1_1_coords}{Backend.\-Coords} to, out List$<$ \hyperlink{class_gruppe22_1_1_backend_1_1_coords}{Coords} $>$ result, ref Sorted\-Set$<$ \hyperlink{class_gruppe22_1_1_backend_1_1_coords}{Coords} $>$ visited, int maxlength=20, string indent=\char`\"{}\char`\"{})
+\item 
+\hyperlink{class_gruppe22_1_1_backend_1_1_coords}{Backend.\-Coords} \hyperlink{class_gruppe22_1_1_backend_1_1_map_a186008c8dbdf442c4753dcf9eace5b58}{Get\-Checkpoint\-Coords} ()
+\item 
+\hyperlink{class_gruppe22_1_1_backend_1_1_floor_tile}{Floor\-Tile} \hyperlink{class_gruppe22_1_1_backend_1_1_map_a6b3eb978a3e4230531ee1f23a0f511b4}{Tile\-By\-Coords} (\hyperlink{class_gruppe22_1_1_backend_1_1_coords}{Coords} coords)
+\item 
+void \hyperlink{class_gruppe22_1_1_backend_1_1_map_a0c7963e738e6441b87c75a62381d95fd}{Remove\-Actor} (int x, int y)
+\item 
+int \hyperlink{class_gruppe22_1_1_backend_1_1_map_a87cb732700403985727f2535ecc3f955}{first\-Actor\-I\-D} (int x, int y)
+\item 
+bool \hyperlink{class_gruppe22_1_1_backend_1_1_map_afd4780d14e0ebb8dbd087b0a5d6cfbb9}{Can\-Move} (\hyperlink{class_gruppe22_1_1_backend_1_1_coords}{Coords} current\-Pos, \hyperlink{namespace_gruppe22_1_1_backend_a2d53d5d14b8ea0951ba6971e5da1ebf5}{Direction} dir)
+\begin{DoxyCompactList}\small\item\em Check whether it is possible to move from a certain place on a map in a certain direction \end{DoxyCompactList}\item 
+virtual void \hyperlink{class_gruppe22_1_1_backend_1_1_map_af3d260b8e5fb50958d07d99e171891d1}{Handle\-Event} (bool Down\-Stream, \hyperlink{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73}{Events} event\-I\-D, params object\mbox{[}$\,$\mbox{]} data)
+\item 
+void \hyperlink{class_gruppe22_1_1_backend_1_1_map_ae5bf2ecbd364c82ae01c10b33ad8350a}{Load} (string filename, \hyperlink{class_gruppe22_1_1_backend_1_1_coords}{Backend.\-Coords} player=null)
+\begin{DoxyCompactList}\small\item\em Load a map from a file \end{DoxyCompactList}\item 
+void \hyperlink{class_gruppe22_1_1_backend_1_1_map_af5841f0eb6d27b7196056cfea1097141}{Debug\-Map} ()
+\item 
+virtual void \hyperlink{class_gruppe22_1_1_backend_1_1_map_ab1fe0990776579437497c699222253db}{Save} (string filename)
+\begin{DoxyCompactList}\small\item\em Write the current map to a file \end{DoxyCompactList}\item 
+\hyperlink{class_gruppe22_1_1_backend_1_1_map_ae43adfadc340541f54d6584f6851eb8e}{Map} (Content\-Manager content)
+\item 
+\hyperlink{class_gruppe22_1_1_backend_1_1_map_aa498945697ea3156633c5f1243fa2adc}{Map} (Content\-Manager content, object parent, string filename=\char`\"{}\char`\"{}, \hyperlink{class_gruppe22_1_1_backend_1_1_coords}{Backend.\-Coords} player\-Pos=null)
+\begin{DoxyCompactList}\small\item\em Constructor for using a previously saved map \end{DoxyCompactList}\item 
+virtual void \hyperlink{class_gruppe22_1_1_backend_1_1_map_a1a656c9f7104699b2736fdcc156615d3}{Dispose} ()
+\end{DoxyCompactItemize}
+\subsection*{Öffentliche, statische Methoden}
+\begin{DoxyCompactItemize}
+\item 
+static \hyperlink{namespace_gruppe22_1_1_backend_a2d53d5d14b8ea0951ba6971e5da1ebf5}{Direction} \hyperlink{class_gruppe22_1_1_backend_1_1_map_ab84aa5963511604d27923fd9b7194d0f}{Which\-Way\-Is} (\hyperlink{class_gruppe22_1_1_backend_1_1_coords}{Coords} from, \hyperlink{class_gruppe22_1_1_backend_1_1_coords}{Backend.\-Coords} to, bool Direct\-Only=false)
+\item 
+static \hyperlink{namespace_gruppe22_1_1_backend_a2d53d5d14b8ea0951ba6971e5da1ebf5}{Direction} \hyperlink{class_gruppe22_1_1_backend_1_1_map_a90ad354d8da1ed9aa2cfac631edc864a}{Opposite\-Direction} (\hyperlink{namespace_gruppe22_1_1_backend_a2d53d5d14b8ea0951ba6971e5da1ebf5}{Direction} dir)
+\item 
+static \hyperlink{class_gruppe22_1_1_backend_1_1_coords}{Backend.\-Coords} \hyperlink{class_gruppe22_1_1_backend_1_1_map_a81136519b96adecb02bfd5552f5b55d3}{Direction\-Tile} (\hyperlink{class_gruppe22_1_1_backend_1_1_coords}{Coords} start, \hyperlink{namespace_gruppe22_1_1_backend_a2d53d5d14b8ea0951ba6971e5da1ebf5}{Direction} dir)
+\item 
+static \hyperlink{namespace_gruppe22_1_1_backend_a2d53d5d14b8ea0951ba6971e5da1ebf5}{Direction} \hyperlink{class_gruppe22_1_1_backend_1_1_map_ad56a1c4f4d9e9b1feb66d631e807ce56}{Next\-Direction} (\hyperlink{namespace_gruppe22_1_1_backend_a2d53d5d14b8ea0951ba6971e5da1ebf5}{Direction} dir, bool direct\-Only=false)
+\item 
+static List$<$ \hyperlink{class_gruppe22_1_1_backend_1_1_exit}{Exit} $>$ \hyperlink{class_gruppe22_1_1_backend_1_1_map_aaa0f3a0e9da112f1e60e04b5e2668bef}{Exit\-To\-Entry} (int To\-Room, List$<$ \hyperlink{class_gruppe22_1_1_backend_1_1_exit}{Exit} $>$ \hyperlink{class_gruppe22_1_1_backend_1_1_map_a0dc104d0e3f5896a272e4ed47dd79378}{exits})
+\end{DoxyCompactItemize}
+\subsection*{Geschützte Attribute}
+\begin{DoxyCompactItemize}
+\item 
+Content\-Manager \hyperlink{class_gruppe22_1_1_backend_1_1_map_a477dd82902079fe3e40bedf22dbf2055}{\-\_\-content}
+\item 
+int \hyperlink{class_gruppe22_1_1_backend_1_1_map_a90048a67b858c4e4e5e3937785a59c83}{\-\_\-level}
+\item 
+string \hyperlink{class_gruppe22_1_1_backend_1_1_map_a4848f9eaed6a4fb65f88bd3b72e2d8f0}{\-\_\-name}
+\item 
+string \hyperlink{class_gruppe22_1_1_backend_1_1_map_a6c2e2b3369e1d2f793ae1c09d625a8ad}{\-\_\-dungeonname}
+\item 
+string \hyperlink{class_gruppe22_1_1_backend_1_1_map_aa963f4d1f06aa5722e961a7674828910}{\-\_\-wall\-File} = \char`\"{}wall1\char`\"{}
+\item 
+string \hyperlink{class_gruppe22_1_1_backend_1_1_map_a244299d80c512876e41c641aafa5effc}{\-\_\-floor\-File} = \char`\"{}floor1\char`\"{}
+\item 
+int \hyperlink{class_gruppe22_1_1_backend_1_1_map_ad75386d3edea7cb43bbf558742a5824e}{\-\_\-light}
+\item 
+string \hyperlink{class_gruppe22_1_1_backend_1_1_map_a99cac5327d78e72ced96f0dad20060cf}{\-\_\-music} = \char`\"{}level1\char`\"{}
+\item 
+int \hyperlink{class_gruppe22_1_1_backend_1_1_map_a09dec3f5d4010c7f0f3578e5de84d01b}{\-\_\-id}
+\item 
+List$<$ List$<$ \hyperlink{class_gruppe22_1_1_backend_1_1_floor_tile}{Floor\-Tile} $>$ $>$ \hyperlink{class_gruppe22_1_1_backend_1_1_map_a50c1a30d7d1c705375416767a474aa36}{\-\_\-tiles} = null
+\begin{DoxyCompactList}\small\item\em A two dimensional list of tiles \end{DoxyCompactList}\item 
+int \hyperlink{class_gruppe22_1_1_backend_1_1_map_a18b255b6ba29200aa83cd246ae8e3427}{\-\_\-width} = 10
+\begin{DoxyCompactList}\small\item\em Internal current width \end{DoxyCompactList}\item 
+List$<$ \hyperlink{class_gruppe22_1_1_backend_1_1_exit}{Exit} $>$ \hyperlink{class_gruppe22_1_1_backend_1_1_map_a57a44f95cc20e9516fb6d0ae805b68df}{\-\_\-exits}
+\item 
+int \hyperlink{class_gruppe22_1_1_backend_1_1_map_a69879990b9ce22a9fa0d31454d068b32}{\-\_\-height} = 10
+\begin{DoxyCompactList}\small\item\em Internal current height \end{DoxyCompactList}\item 
+List$<$ \hyperlink{class_gruppe22_1_1_backend_1_1_actor}{Actor} $>$ \hyperlink{class_gruppe22_1_1_backend_1_1_map_a29deb43269ce0e3dd577aafcd28aeb88}{\-\_\-actors} = null
+\begin{DoxyCompactList}\small\item\em A list of Actors in the current room \end{DoxyCompactList}\item 
+List$<$ \hyperlink{class_gruppe22_1_1_backend_1_1_item}{Item} $>$ \hyperlink{class_gruppe22_1_1_backend_1_1_map_a07ce05356ba78ac1470d64e0c736e190}{\-\_\-items} = null
+\item 
+List$<$ \hyperlink{class_gruppe22_1_1_backend_1_1_coords}{Coords} $>$ \hyperlink{class_gruppe22_1_1_backend_1_1_map_a1c8b19d3884fe44b1714ebec0256ce2a}{\-\_\-update\-Tiles} = null
+\end{DoxyCompactItemize}
+\subsection*{Propertys}
+\begin{DoxyCompactItemize}
+\item 
+int \hyperlink{class_gruppe22_1_1_backend_1_1_map_abf7263c43d22ca634eceba89c06904cf}{level}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+string \hyperlink{class_gruppe22_1_1_backend_1_1_map_ae0e576fd7e8d25a3eb0370f2bcc896e1}{floor\-File}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+string \hyperlink{class_gruppe22_1_1_backend_1_1_map_af94c194982941748ccc41e58a2398691}{music}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+string \hyperlink{class_gruppe22_1_1_backend_1_1_map_ac30d110dd5617ce4ee1f0cab607ea6e8}{wall\-File}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+int \hyperlink{class_gruppe22_1_1_backend_1_1_map_a520dd5d828f2d1d0459736fe6bd09831}{light}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+string \hyperlink{class_gruppe22_1_1_backend_1_1_map_a7829a94426d54e43019423f88a7cec59}{name}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+string \hyperlink{class_gruppe22_1_1_backend_1_1_map_a76814bb49c2210b400230b9ee530010f}{dungeonname}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+List$<$ \hyperlink{class_gruppe22_1_1_backend_1_1_coords}{Coords} $>$ \hyperlink{class_gruppe22_1_1_backend_1_1_map_a33e42ed0b62ddb58ce402fb6fc455fdb}{update\-Tiles}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+int \hyperlink{class_gruppe22_1_1_backend_1_1_map_a31168190229d5fdaad90a0e27d41ef1a}{id}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+List$<$ \hyperlink{class_gruppe22_1_1_backend_1_1_actor}{Actor} $>$ \hyperlink{class_gruppe22_1_1_backend_1_1_map_a5b7ce0cacb479c6590d249aae60138fd}{actors}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+List$<$ \hyperlink{class_gruppe22_1_1_backend_1_1_exit}{Exit} $>$ \hyperlink{class_gruppe22_1_1_backend_1_1_map_a0dc104d0e3f5896a272e4ed47dd79378}{exits}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+List$<$ \hyperlink{class_gruppe22_1_1_backend_1_1_item}{Item} $>$ \hyperlink{class_gruppe22_1_1_backend_1_1_map_a91a89a011cd659affbbb00ea924211ca}{items}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\item 
+int \hyperlink{class_gruppe22_1_1_backend_1_1_map_ae185d7c51dd35311f6065044e603e81f}{width}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Current Width of the maze \end{DoxyCompactList}\item 
+int \hyperlink{class_gruppe22_1_1_backend_1_1_map_aef59f2269d64d10b35acbabb6461fa55}{height}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Current Height of the maze \end{DoxyCompactList}\item 
+List$<$ \hyperlink{class_gruppe22_1_1_backend_1_1_coords}{Coords} $>$ \hyperlink{class_gruppe22_1_1_backend_1_1_map_a186af3927e65a77740f619513dd2c60a}{actor\-Positions}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\begin{DoxyCompactList}\small\item\em A list of the current position of every actor \end{DoxyCompactList}\item 
+\hyperlink{class_gruppe22_1_1_backend_1_1_floor_tile}{Floor\-Tile} \hyperlink{class_gruppe22_1_1_backend_1_1_map_ac19e7d998d1c4befe3f1129939fd6b74}{this\mbox{[}\-Coords coords\mbox{]}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Get the tile at coordinates x and y \end{DoxyCompactList}\item 
+\hyperlink{class_gruppe22_1_1_backend_1_1_floor_tile}{Floor\-Tile} \hyperlink{class_gruppe22_1_1_backend_1_1_map_a51c56c902b3c7d2ee1e324b59ee89f8a}{this\mbox{[}int x, int y\mbox{]}}\hspace{0.3cm}{\ttfamily  \mbox{[}get, set\mbox{]}}
+\begin{DoxyCompactList}\small\item\em Get the tile at coordinates x and y \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Beschreibung der Konstruktoren und Destruktoren}
+\hypertarget{class_gruppe22_1_1_backend_1_1_map_ae43adfadc340541f54d6584f6851eb8e}{\index{Gruppe22\-::\-Backend\-::\-Map@{Gruppe22\-::\-Backend\-::\-Map}!Map@{Map}}
+\index{Map@{Map}!Gruppe22::Backend::Map@{Gruppe22\-::\-Backend\-::\-Map}}
+\subsubsection[{Map}]{\setlength{\rightskip}{0pt plus 5cm}Gruppe22.\-Backend.\-Map.\-Map (
+\begin{DoxyParamCaption}
+\item[{Content\-Manager}]{content}
+\end{DoxyParamCaption}
+)}}\label{class_gruppe22_1_1_backend_1_1_map_ae43adfadc340541f54d6584f6851eb8e}
+\hypertarget{class_gruppe22_1_1_backend_1_1_map_aa498945697ea3156633c5f1243fa2adc}{\index{Gruppe22\-::\-Backend\-::\-Map@{Gruppe22\-::\-Backend\-::\-Map}!Map@{Map}}
+\index{Map@{Map}!Gruppe22::Backend::Map@{Gruppe22\-::\-Backend\-::\-Map}}
+\subsubsection[{Map}]{\setlength{\rightskip}{0pt plus 5cm}Gruppe22.\-Backend.\-Map.\-Map (
+\begin{DoxyParamCaption}
+\item[{Content\-Manager}]{content, }
+\item[{object}]{parent, }
+\item[{string}]{filename = {\ttfamily \char`\"{}\char`\"{}}, }
+\item[{{\bf Backend.\-Coords}}]{player\-Pos = {\ttfamily null}}
+\end{DoxyParamCaption}
+)}}\label{class_gruppe22_1_1_backend_1_1_map_aa498945697ea3156633c5f1243fa2adc}
+
+
+Constructor for using a previously saved map 
+
+
+\begin{DoxyParams}{Parameter}
+{\em filename} & \\
+\hline
+\end{DoxyParams}
+
+
+\subsection{Dokumentation der Elementfunktionen}
+\hypertarget{class_gruppe22_1_1_backend_1_1_map_a120d2585d2cc5279322670a1274c820a}{\index{Gruppe22\-::\-Backend\-::\-Map@{Gruppe22\-::\-Backend\-::\-Map}!Add\-Actor@{Add\-Actor}}
+\index{Add\-Actor@{Add\-Actor}!Gruppe22::Backend::Map@{Gruppe22\-::\-Backend\-::\-Map}}
+\subsubsection[{Add\-Actor}]{\setlength{\rightskip}{0pt plus 5cm}void Gruppe22.\-Backend.\-Map.\-Add\-Actor (
+\begin{DoxyParamCaption}
+\item[{{\bf Item}}]{item, }
+\item[{{\bf Backend.\-Coords}}]{from}
+\end{DoxyParamCaption}
+)}}\label{class_gruppe22_1_1_backend_1_1_map_a120d2585d2cc5279322670a1274c820a}
+
+
+Add an actor to a tile 
+
+
+\begin{DoxyParams}{Parameter}
+{\em item} & \\
+\hline
+{\em from} & \\
+\hline
+\end{DoxyParams}
+\hypertarget{class_gruppe22_1_1_backend_1_1_map_a1d4d36a2ab918a0c37db26195508a0e5}{\index{Gruppe22\-::\-Backend\-::\-Map@{Gruppe22\-::\-Backend\-::\-Map}!Add\-Item@{Add\-Item}}
+\index{Add\-Item@{Add\-Item}!Gruppe22::Backend::Map@{Gruppe22\-::\-Backend\-::\-Map}}
+\subsubsection[{Add\-Item}]{\setlength{\rightskip}{0pt plus 5cm}void Gruppe22.\-Backend.\-Map.\-Add\-Item (
+\begin{DoxyParamCaption}
+\item[{{\bf Item}}]{item, }
+\item[{{\bf Backend.\-Coords}}]{to}
+\end{DoxyParamCaption}
+)}}\label{class_gruppe22_1_1_backend_1_1_map_a1d4d36a2ab918a0c37db26195508a0e5}
+
+
+Add an item to a tile 
+
+
+\begin{DoxyParams}{Parameter}
+{\em actor} & \\
+\hline
+{\em to} & \\
+\hline
+\end{DoxyParams}
+\hypertarget{class_gruppe22_1_1_backend_1_1_map_afd4780d14e0ebb8dbd087b0a5d6cfbb9}{\index{Gruppe22\-::\-Backend\-::\-Map@{Gruppe22\-::\-Backend\-::\-Map}!Can\-Move@{Can\-Move}}
+\index{Can\-Move@{Can\-Move}!Gruppe22::Backend::Map@{Gruppe22\-::\-Backend\-::\-Map}}
+\subsubsection[{Can\-Move}]{\setlength{\rightskip}{0pt plus 5cm}bool Gruppe22.\-Backend.\-Map.\-Can\-Move (
+\begin{DoxyParamCaption}
+\item[{{\bf Coords}}]{current\-Pos, }
+\item[{{\bf Direction}}]{dir}
+\end{DoxyParamCaption}
+)}}\label{class_gruppe22_1_1_backend_1_1_map_afd4780d14e0ebb8dbd087b0a5d6cfbb9}
+
+
+Check whether it is possible to move from a certain place on a map in a certain direction 
+
+
+\begin{DoxyParams}{Parameter}
+{\em current\-Pos} & Coordinates on current map\\
+\hline
+{\em dir} & Direction to move to\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Rückgabe}
+true if move is allowed
+\end{DoxyReturn}
+\hypertarget{class_gruppe22_1_1_backend_1_1_map_aedf8ea673120929f8ad213d12441cd46}{\index{Gruppe22\-::\-Backend\-::\-Map@{Gruppe22\-::\-Backend\-::\-Map}!Closest\-Enemy@{Closest\-Enemy}}
+\index{Closest\-Enemy@{Closest\-Enemy}!Gruppe22::Backend::Map@{Gruppe22\-::\-Backend\-::\-Map}}
+\subsubsection[{Closest\-Enemy}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Backend.\-Coords} Gruppe22.\-Backend.\-Map.\-Closest\-Enemy (
+\begin{DoxyParamCaption}
+\item[{{\bf Coords}}]{coords, }
+\item[{int}]{radius = {\ttfamily 4}, }
+\item[{bool}]{include\-Player = {\ttfamily true}, }
+\item[{bool}]{include\-N\-P\-C = {\ttfamily true}, }
+\item[{bool}]{include\-Enemy = {\ttfamily true}}
+\end{DoxyParamCaption}
+)}}\label{class_gruppe22_1_1_backend_1_1_map_aedf8ea673120929f8ad213d12441cd46}
+
+
+Get coordinates for closest enemy within a specified radius 
+
+
+\begin{DoxyParams}{Parameter}
+{\em coords} & \\
+\hline
+{\em radius} & \\
+\hline
+{\em include\-Player} & \\
+\hline
+{\em include\-N\-P\-C} & \\
+\hline
+{\em include\-Enemy} & \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Rückgabe}
+
+\end{DoxyReturn}
+\hypertarget{class_gruppe22_1_1_backend_1_1_map_af5841f0eb6d27b7196056cfea1097141}{\index{Gruppe22\-::\-Backend\-::\-Map@{Gruppe22\-::\-Backend\-::\-Map}!Debug\-Map@{Debug\-Map}}
+\index{Debug\-Map@{Debug\-Map}!Gruppe22::Backend::Map@{Gruppe22\-::\-Backend\-::\-Map}}
+\subsubsection[{Debug\-Map}]{\setlength{\rightskip}{0pt plus 5cm}void Gruppe22.\-Backend.\-Map.\-Debug\-Map (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{class_gruppe22_1_1_backend_1_1_map_af5841f0eb6d27b7196056cfea1097141}
+\hypertarget{class_gruppe22_1_1_backend_1_1_map_a81136519b96adecb02bfd5552f5b55d3}{\index{Gruppe22\-::\-Backend\-::\-Map@{Gruppe22\-::\-Backend\-::\-Map}!Direction\-Tile@{Direction\-Tile}}
+\index{Direction\-Tile@{Direction\-Tile}!Gruppe22::Backend::Map@{Gruppe22\-::\-Backend\-::\-Map}}
+\subsubsection[{Direction\-Tile}]{\setlength{\rightskip}{0pt plus 5cm}static {\bf Backend.\-Coords} Gruppe22.\-Backend.\-Map.\-Direction\-Tile (
+\begin{DoxyParamCaption}
+\item[{{\bf Coords}}]{start, }
+\item[{{\bf Direction}}]{dir}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [static]}}}\label{class_gruppe22_1_1_backend_1_1_map_a81136519b96adecb02bfd5552f5b55d3}
+\hypertarget{class_gruppe22_1_1_backend_1_1_map_a1a656c9f7104699b2736fdcc156615d3}{\index{Gruppe22\-::\-Backend\-::\-Map@{Gruppe22\-::\-Backend\-::\-Map}!Dispose@{Dispose}}
+\index{Dispose@{Dispose}!Gruppe22::Backend::Map@{Gruppe22\-::\-Backend\-::\-Map}}
+\subsubsection[{Dispose}]{\setlength{\rightskip}{0pt plus 5cm}virtual void Gruppe22.\-Backend.\-Map.\-Dispose (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{class_gruppe22_1_1_backend_1_1_map_a1a656c9f7104699b2736fdcc156615d3}
+\hypertarget{class_gruppe22_1_1_backend_1_1_map_aaa0f3a0e9da112f1e60e04b5e2668bef}{\index{Gruppe22\-::\-Backend\-::\-Map@{Gruppe22\-::\-Backend\-::\-Map}!Exit\-To\-Entry@{Exit\-To\-Entry}}
+\index{Exit\-To\-Entry@{Exit\-To\-Entry}!Gruppe22::Backend::Map@{Gruppe22\-::\-Backend\-::\-Map}}
+\subsubsection[{Exit\-To\-Entry}]{\setlength{\rightskip}{0pt plus 5cm}static List$<${\bf Exit}$>$ Gruppe22.\-Backend.\-Map.\-Exit\-To\-Entry (
+\begin{DoxyParamCaption}
+\item[{int}]{To\-Room, }
+\item[{List$<$ {\bf Exit} $>$}]{exits}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [static]}}}\label{class_gruppe22_1_1_backend_1_1_map_aaa0f3a0e9da112f1e60e04b5e2668bef}
+\hypertarget{class_gruppe22_1_1_backend_1_1_map_a87cb732700403985727f2535ecc3f955}{\index{Gruppe22\-::\-Backend\-::\-Map@{Gruppe22\-::\-Backend\-::\-Map}!first\-Actor\-I\-D@{first\-Actor\-I\-D}}
+\index{first\-Actor\-I\-D@{first\-Actor\-I\-D}!Gruppe22::Backend::Map@{Gruppe22\-::\-Backend\-::\-Map}}
+\subsubsection[{first\-Actor\-I\-D}]{\setlength{\rightskip}{0pt plus 5cm}int Gruppe22.\-Backend.\-Map.\-first\-Actor\-I\-D (
+\begin{DoxyParamCaption}
+\item[{int}]{x, }
+\item[{int}]{y}
+\end{DoxyParamCaption}
+)}}\label{class_gruppe22_1_1_backend_1_1_map_a87cb732700403985727f2535ecc3f955}
+\hypertarget{class_gruppe22_1_1_backend_1_1_map_a186008c8dbdf442c4753dcf9eace5b58}{\index{Gruppe22\-::\-Backend\-::\-Map@{Gruppe22\-::\-Backend\-::\-Map}!Get\-Checkpoint\-Coords@{Get\-Checkpoint\-Coords}}
+\index{Get\-Checkpoint\-Coords@{Get\-Checkpoint\-Coords}!Gruppe22::Backend::Map@{Gruppe22\-::\-Backend\-::\-Map}}
+\subsubsection[{Get\-Checkpoint\-Coords}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Backend.\-Coords} Gruppe22.\-Backend.\-Map.\-Get\-Checkpoint\-Coords (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{class_gruppe22_1_1_backend_1_1_map_a186008c8dbdf442c4753dcf9eace5b58}
+\hypertarget{class_gruppe22_1_1_backend_1_1_map_af3d260b8e5fb50958d07d99e171891d1}{\index{Gruppe22\-::\-Backend\-::\-Map@{Gruppe22\-::\-Backend\-::\-Map}!Handle\-Event@{Handle\-Event}}
+\index{Handle\-Event@{Handle\-Event}!Gruppe22::Backend::Map@{Gruppe22\-::\-Backend\-::\-Map}}
+\subsubsection[{Handle\-Event}]{\setlength{\rightskip}{0pt plus 5cm}virtual void Gruppe22.\-Backend.\-Map.\-Handle\-Event (
+\begin{DoxyParamCaption}
+\item[{bool}]{Down\-Stream, }
+\item[{{\bf Events}}]{event\-I\-D, }
+\item[{params object\mbox{[}$\,$\mbox{]}}]{data}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{class_gruppe22_1_1_backend_1_1_map_af3d260b8e5fb50958d07d99e171891d1}
+\hypertarget{class_gruppe22_1_1_backend_1_1_map_ae5bf2ecbd364c82ae01c10b33ad8350a}{\index{Gruppe22\-::\-Backend\-::\-Map@{Gruppe22\-::\-Backend\-::\-Map}!Load@{Load}}
+\index{Load@{Load}!Gruppe22::Backend::Map@{Gruppe22\-::\-Backend\-::\-Map}}
+\subsubsection[{Load}]{\setlength{\rightskip}{0pt plus 5cm}void Gruppe22.\-Backend.\-Map.\-Load (
+\begin{DoxyParamCaption}
+\item[{string}]{filename, }
+\item[{{\bf Backend.\-Coords}}]{player = {\ttfamily null}}
+\end{DoxyParamCaption}
+)}}\label{class_gruppe22_1_1_backend_1_1_map_ae5bf2ecbd364c82ae01c10b33ad8350a}
+
+
+Load a map from a file 
+
+
+\begin{DoxyParams}{Parameter}
+{\em filename} & The filename to read from\\
+\hline
+{\em player} & The starting position on the loaded map\\
+\hline
+\end{DoxyParams}
+\hypertarget{class_gruppe22_1_1_backend_1_1_map_ab7a2c3d607228ddb4aca3f28d6802f5a}{\index{Gruppe22\-::\-Backend\-::\-Map@{Gruppe22\-::\-Backend\-::\-Map}!Move\-Actor@{Move\-Actor}}
+\index{Move\-Actor@{Move\-Actor}!Gruppe22::Backend::Map@{Gruppe22\-::\-Backend\-::\-Map}}
+\subsubsection[{Move\-Actor}]{\setlength{\rightskip}{0pt plus 5cm}void Gruppe22.\-Backend.\-Map.\-Move\-Actor (
+\begin{DoxyParamCaption}
+\item[{{\bf Actor}}]{actor, }
+\item[{{\bf Direction}}]{dir}
+\end{DoxyParamCaption}
+)}}\label{class_gruppe22_1_1_backend_1_1_map_ab7a2c3d607228ddb4aca3f28d6802f5a}
+
+
+Move an actor on the map in a specified direction (does not check for walls -\/ use Can\-Move) 
+
+
+\begin{DoxyParams}{Parameter}
+{\em actor} & \\
+\hline
+{\em from} & \\
+\hline
+{\em dir} & \\
+\hline
+\end{DoxyParams}
+\hypertarget{class_gruppe22_1_1_backend_1_1_map_a2bb2e356f5d269823152b90b6460dc96}{\index{Gruppe22\-::\-Backend\-::\-Map@{Gruppe22\-::\-Backend\-::\-Map}!Move\-Item@{Move\-Item}}
+\index{Move\-Item@{Move\-Item}!Gruppe22::Backend::Map@{Gruppe22\-::\-Backend\-::\-Map}}
+\subsubsection[{Move\-Item}]{\setlength{\rightskip}{0pt plus 5cm}void Gruppe22.\-Backend.\-Map.\-Move\-Item (
+\begin{DoxyParamCaption}
+\item[{{\bf Item}}]{item, }
+\item[{{\bf Backend.\-Coords}}]{from, }
+\item[{{\bf Direction}}]{dir}
+\end{DoxyParamCaption}
+)}}\label{class_gruppe22_1_1_backend_1_1_map_a2bb2e356f5d269823152b90b6460dc96}
+
+
+Move an item on the map (not carried by an actor) in a specified direction 
+
+
+\begin{DoxyParams}{Parameter}
+{\em item} & item to move\\
+\hline
+{\em from} & square from which to move item\\
+\hline
+{\em dir} & Direction to move to\\
+\hline
+\end{DoxyParams}
+\hypertarget{class_gruppe22_1_1_backend_1_1_map_ad56a1c4f4d9e9b1feb66d631e807ce56}{\index{Gruppe22\-::\-Backend\-::\-Map@{Gruppe22\-::\-Backend\-::\-Map}!Next\-Direction@{Next\-Direction}}
+\index{Next\-Direction@{Next\-Direction}!Gruppe22::Backend::Map@{Gruppe22\-::\-Backend\-::\-Map}}
+\subsubsection[{Next\-Direction}]{\setlength{\rightskip}{0pt plus 5cm}static {\bf Direction} Gruppe22.\-Backend.\-Map.\-Next\-Direction (
+\begin{DoxyParamCaption}
+\item[{{\bf Direction}}]{dir, }
+\item[{bool}]{direct\-Only = {\ttfamily false}}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [static]}}}\label{class_gruppe22_1_1_backend_1_1_map_ad56a1c4f4d9e9b1feb66d631e807ce56}
+\hypertarget{class_gruppe22_1_1_backend_1_1_map_a90ad354d8da1ed9aa2cfac631edc864a}{\index{Gruppe22\-::\-Backend\-::\-Map@{Gruppe22\-::\-Backend\-::\-Map}!Opposite\-Direction@{Opposite\-Direction}}
+\index{Opposite\-Direction@{Opposite\-Direction}!Gruppe22::Backend::Map@{Gruppe22\-::\-Backend\-::\-Map}}
+\subsubsection[{Opposite\-Direction}]{\setlength{\rightskip}{0pt plus 5cm}static {\bf Direction} Gruppe22.\-Backend.\-Map.\-Opposite\-Direction (
+\begin{DoxyParamCaption}
+\item[{{\bf Direction}}]{dir}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [static]}}}\label{class_gruppe22_1_1_backend_1_1_map_a90ad354d8da1ed9aa2cfac631edc864a}
+\hypertarget{class_gruppe22_1_1_backend_1_1_map_a81e7cdb072bbd70c12ec23c76ce0cc3a}{\index{Gruppe22\-::\-Backend\-::\-Map@{Gruppe22\-::\-Backend\-::\-Map}!Path\-To@{Path\-To}}
+\index{Path\-To@{Path\-To}!Gruppe22::Backend::Map@{Gruppe22\-::\-Backend\-::\-Map}}
+\subsubsection[{Path\-To}]{\setlength{\rightskip}{0pt plus 5cm}void Gruppe22.\-Backend.\-Map.\-Path\-To (
+\begin{DoxyParamCaption}
+\item[{{\bf Coords}}]{from, }
+\item[{{\bf Backend.\-Coords}}]{to, }
+\item[{out List$<$ {\bf Coords} $>$}]{result, }
+\item[{ref Sorted\-Set$<$ {\bf Coords} $>$}]{visited, }
+\item[{int}]{maxlength = {\ttfamily 20}, }
+\item[{string}]{indent = {\ttfamily \char`\"{}\char`\"{}}}
+\end{DoxyParamCaption}
+)}}\label{class_gruppe22_1_1_backend_1_1_map_a81e7cdb072bbd70c12ec23c76ce0cc3a}
+\hypertarget{class_gruppe22_1_1_backend_1_1_map_a0c7963e738e6441b87c75a62381d95fd}{\index{Gruppe22\-::\-Backend\-::\-Map@{Gruppe22\-::\-Backend\-::\-Map}!Remove\-Actor@{Remove\-Actor}}
+\index{Remove\-Actor@{Remove\-Actor}!Gruppe22::Backend::Map@{Gruppe22\-::\-Backend\-::\-Map}}
+\subsubsection[{Remove\-Actor}]{\setlength{\rightskip}{0pt plus 5cm}void Gruppe22.\-Backend.\-Map.\-Remove\-Actor (
+\begin{DoxyParamCaption}
+\item[{int}]{x, }
+\item[{int}]{y}
+\end{DoxyParamCaption}
+)}}\label{class_gruppe22_1_1_backend_1_1_map_a0c7963e738e6441b87c75a62381d95fd}
+\hypertarget{class_gruppe22_1_1_backend_1_1_map_ab1fe0990776579437497c699222253db}{\index{Gruppe22\-::\-Backend\-::\-Map@{Gruppe22\-::\-Backend\-::\-Map}!Save@{Save}}
+\index{Save@{Save}!Gruppe22::Backend::Map@{Gruppe22\-::\-Backend\-::\-Map}}
+\subsubsection[{Save}]{\setlength{\rightskip}{0pt plus 5cm}virtual void Gruppe22.\-Backend.\-Map.\-Save (
+\begin{DoxyParamCaption}
+\item[{string}]{filename}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{class_gruppe22_1_1_backend_1_1_map_ab1fe0990776579437497c699222253db}
+
+
+Write the current map to a file 
+
+
+\begin{DoxyParams}{Parameter}
+{\em filename} & The filename to write to\\
+\hline
+\end{DoxyParams}
+
+
+Erneute Implementation in \hyperlink{class_gruppe22_1_1_backend_1_1_generator_ae0e94d668013ad78b8ed91f98009e488}{Gruppe22.\-Backend.\-Generator}.
+
+\hypertarget{class_gruppe22_1_1_backend_1_1_map_a6b3eb978a3e4230531ee1f23a0f511b4}{\index{Gruppe22\-::\-Backend\-::\-Map@{Gruppe22\-::\-Backend\-::\-Map}!Tile\-By\-Coords@{Tile\-By\-Coords}}
+\index{Tile\-By\-Coords@{Tile\-By\-Coords}!Gruppe22::Backend::Map@{Gruppe22\-::\-Backend\-::\-Map}}
+\subsubsection[{Tile\-By\-Coords}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Floor\-Tile} Gruppe22.\-Backend.\-Map.\-Tile\-By\-Coords (
+\begin{DoxyParamCaption}
+\item[{{\bf Coords}}]{coords}
+\end{DoxyParamCaption}
+)}}\label{class_gruppe22_1_1_backend_1_1_map_a6b3eb978a3e4230531ee1f23a0f511b4}
+\hypertarget{class_gruppe22_1_1_backend_1_1_map_a0a3ac3d6dc5d341c9d1ebd9348d8db7a}{\index{Gruppe22\-::\-Backend\-::\-Map@{Gruppe22\-::\-Backend\-::\-Map}!Uncover@{Uncover}}
+\index{Uncover@{Uncover}!Gruppe22::Backend::Map@{Gruppe22\-::\-Backend\-::\-Map}}
+\subsubsection[{Uncover}]{\setlength{\rightskip}{0pt plus 5cm}void Gruppe22.\-Backend.\-Map.\-Uncover (
+\begin{DoxyParamCaption}
+\item[{{\bf Coords}}]{coords, }
+\item[{int}]{radius = {\ttfamily 4}}
+\end{DoxyParamCaption}
+)}}\label{class_gruppe22_1_1_backend_1_1_map_a0a3ac3d6dc5d341c9d1ebd9348d8db7a}
+\hypertarget{class_gruppe22_1_1_backend_1_1_map_a3f3723458566403e40673d4e757efb76}{\index{Gruppe22\-::\-Backend\-::\-Map@{Gruppe22\-::\-Backend\-::\-Map}!Update@{Update}}
+\index{Update@{Update}!Gruppe22::Backend::Map@{Gruppe22\-::\-Backend\-::\-Map}}
+\subsubsection[{Update}]{\setlength{\rightskip}{0pt plus 5cm}void Gruppe22.\-Backend.\-Map.\-Update (
+\begin{DoxyParamCaption}
+\item[{Game\-Time}]{game\-Time}
+\end{DoxyParamCaption}
+)}}\label{class_gruppe22_1_1_backend_1_1_map_a3f3723458566403e40673d4e757efb76}
+
+
+Refresh tiles which do something (traps, enemies, N\-P\-Cs) 
+
+
+\begin{DoxyParams}{Parameter}
+{\em game\-Time} & \\
+\hline
+\end{DoxyParams}
+\hypertarget{class_gruppe22_1_1_backend_1_1_map_ab84aa5963511604d27923fd9b7194d0f}{\index{Gruppe22\-::\-Backend\-::\-Map@{Gruppe22\-::\-Backend\-::\-Map}!Which\-Way\-Is@{Which\-Way\-Is}}
+\index{Which\-Way\-Is@{Which\-Way\-Is}!Gruppe22::Backend::Map@{Gruppe22\-::\-Backend\-::\-Map}}
+\subsubsection[{Which\-Way\-Is}]{\setlength{\rightskip}{0pt plus 5cm}static {\bf Direction} Gruppe22.\-Backend.\-Map.\-Which\-Way\-Is (
+\begin{DoxyParamCaption}
+\item[{{\bf Coords}}]{from, }
+\item[{{\bf Backend.\-Coords}}]{to, }
+\item[{bool}]{Direct\-Only = {\ttfamily false}}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [static]}}}\label{class_gruppe22_1_1_backend_1_1_map_ab84aa5963511604d27923fd9b7194d0f}
+
+
+\subsection{Dokumentation der Datenelemente}
+\hypertarget{class_gruppe22_1_1_backend_1_1_map_a29deb43269ce0e3dd577aafcd28aeb88}{\index{Gruppe22\-::\-Backend\-::\-Map@{Gruppe22\-::\-Backend\-::\-Map}!\-\_\-actors@{\-\_\-actors}}
+\index{\-\_\-actors@{\-\_\-actors}!Gruppe22::Backend::Map@{Gruppe22\-::\-Backend\-::\-Map}}
+\subsubsection[{\-\_\-actors}]{\setlength{\rightskip}{0pt plus 5cm}List$<${\bf Actor}$>$ Gruppe22.\-Backend.\-Map.\-\_\-actors = null\hspace{0.3cm}{\ttfamily [protected]}}}\label{class_gruppe22_1_1_backend_1_1_map_a29deb43269ce0e3dd577aafcd28aeb88}
+
+
+A list of Actors in the current room 
+
+\hypertarget{class_gruppe22_1_1_backend_1_1_map_a477dd82902079fe3e40bedf22dbf2055}{\index{Gruppe22\-::\-Backend\-::\-Map@{Gruppe22\-::\-Backend\-::\-Map}!\-\_\-content@{\-\_\-content}}
+\index{\-\_\-content@{\-\_\-content}!Gruppe22::Backend::Map@{Gruppe22\-::\-Backend\-::\-Map}}
+\subsubsection[{\-\_\-content}]{\setlength{\rightskip}{0pt plus 5cm}Content\-Manager Gruppe22.\-Backend.\-Map.\-\_\-content\hspace{0.3cm}{\ttfamily [protected]}}}\label{class_gruppe22_1_1_backend_1_1_map_a477dd82902079fe3e40bedf22dbf2055}
+\hypertarget{class_gruppe22_1_1_backend_1_1_map_a6c2e2b3369e1d2f793ae1c09d625a8ad}{\index{Gruppe22\-::\-Backend\-::\-Map@{Gruppe22\-::\-Backend\-::\-Map}!\-\_\-dungeonname@{\-\_\-dungeonname}}
+\index{\-\_\-dungeonname@{\-\_\-dungeonname}!Gruppe22::Backend::Map@{Gruppe22\-::\-Backend\-::\-Map}}
+\subsubsection[{\-\_\-dungeonname}]{\setlength{\rightskip}{0pt plus 5cm}string Gruppe22.\-Backend.\-Map.\-\_\-dungeonname\hspace{0.3cm}{\ttfamily [protected]}}}\label{class_gruppe22_1_1_backend_1_1_map_a6c2e2b3369e1d2f793ae1c09d625a8ad}
+\hypertarget{class_gruppe22_1_1_backend_1_1_map_a57a44f95cc20e9516fb6d0ae805b68df}{\index{Gruppe22\-::\-Backend\-::\-Map@{Gruppe22\-::\-Backend\-::\-Map}!\-\_\-exits@{\-\_\-exits}}
+\index{\-\_\-exits@{\-\_\-exits}!Gruppe22::Backend::Map@{Gruppe22\-::\-Backend\-::\-Map}}
+\subsubsection[{\-\_\-exits}]{\setlength{\rightskip}{0pt plus 5cm}List$<${\bf Exit}$>$ Gruppe22.\-Backend.\-Map.\-\_\-exits\hspace{0.3cm}{\ttfamily [protected]}}}\label{class_gruppe22_1_1_backend_1_1_map_a57a44f95cc20e9516fb6d0ae805b68df}
+\hypertarget{class_gruppe22_1_1_backend_1_1_map_a244299d80c512876e41c641aafa5effc}{\index{Gruppe22\-::\-Backend\-::\-Map@{Gruppe22\-::\-Backend\-::\-Map}!\-\_\-floor\-File@{\-\_\-floor\-File}}
+\index{\-\_\-floor\-File@{\-\_\-floor\-File}!Gruppe22::Backend::Map@{Gruppe22\-::\-Backend\-::\-Map}}
+\subsubsection[{\-\_\-floor\-File}]{\setlength{\rightskip}{0pt plus 5cm}string Gruppe22.\-Backend.\-Map.\-\_\-floor\-File = \char`\"{}floor1\char`\"{}\hspace{0.3cm}{\ttfamily [protected]}}}\label{class_gruppe22_1_1_backend_1_1_map_a244299d80c512876e41c641aafa5effc}
+\hypertarget{class_gruppe22_1_1_backend_1_1_map_a69879990b9ce22a9fa0d31454d068b32}{\index{Gruppe22\-::\-Backend\-::\-Map@{Gruppe22\-::\-Backend\-::\-Map}!\-\_\-height@{\-\_\-height}}
+\index{\-\_\-height@{\-\_\-height}!Gruppe22::Backend::Map@{Gruppe22\-::\-Backend\-::\-Map}}
+\subsubsection[{\-\_\-height}]{\setlength{\rightskip}{0pt plus 5cm}int Gruppe22.\-Backend.\-Map.\-\_\-height = 10\hspace{0.3cm}{\ttfamily [protected]}}}\label{class_gruppe22_1_1_backend_1_1_map_a69879990b9ce22a9fa0d31454d068b32}
+
+
+Internal current height 
+
+\hypertarget{class_gruppe22_1_1_backend_1_1_map_a09dec3f5d4010c7f0f3578e5de84d01b}{\index{Gruppe22\-::\-Backend\-::\-Map@{Gruppe22\-::\-Backend\-::\-Map}!\-\_\-id@{\-\_\-id}}
+\index{\-\_\-id@{\-\_\-id}!Gruppe22::Backend::Map@{Gruppe22\-::\-Backend\-::\-Map}}
+\subsubsection[{\-\_\-id}]{\setlength{\rightskip}{0pt plus 5cm}int Gruppe22.\-Backend.\-Map.\-\_\-id\hspace{0.3cm}{\ttfamily [protected]}}}\label{class_gruppe22_1_1_backend_1_1_map_a09dec3f5d4010c7f0f3578e5de84d01b}
+\hypertarget{class_gruppe22_1_1_backend_1_1_map_a07ce05356ba78ac1470d64e0c736e190}{\index{Gruppe22\-::\-Backend\-::\-Map@{Gruppe22\-::\-Backend\-::\-Map}!\-\_\-items@{\-\_\-items}}
+\index{\-\_\-items@{\-\_\-items}!Gruppe22::Backend::Map@{Gruppe22\-::\-Backend\-::\-Map}}
+\subsubsection[{\-\_\-items}]{\setlength{\rightskip}{0pt plus 5cm}List$<${\bf Item}$>$ Gruppe22.\-Backend.\-Map.\-\_\-items = null\hspace{0.3cm}{\ttfamily [protected]}}}\label{class_gruppe22_1_1_backend_1_1_map_a07ce05356ba78ac1470d64e0c736e190}
+\hypertarget{class_gruppe22_1_1_backend_1_1_map_a90048a67b858c4e4e5e3937785a59c83}{\index{Gruppe22\-::\-Backend\-::\-Map@{Gruppe22\-::\-Backend\-::\-Map}!\-\_\-level@{\-\_\-level}}
+\index{\-\_\-level@{\-\_\-level}!Gruppe22::Backend::Map@{Gruppe22\-::\-Backend\-::\-Map}}
+\subsubsection[{\-\_\-level}]{\setlength{\rightskip}{0pt plus 5cm}int Gruppe22.\-Backend.\-Map.\-\_\-level\hspace{0.3cm}{\ttfamily [protected]}}}\label{class_gruppe22_1_1_backend_1_1_map_a90048a67b858c4e4e5e3937785a59c83}
+\hypertarget{class_gruppe22_1_1_backend_1_1_map_ad75386d3edea7cb43bbf558742a5824e}{\index{Gruppe22\-::\-Backend\-::\-Map@{Gruppe22\-::\-Backend\-::\-Map}!\-\_\-light@{\-\_\-light}}
+\index{\-\_\-light@{\-\_\-light}!Gruppe22::Backend::Map@{Gruppe22\-::\-Backend\-::\-Map}}
+\subsubsection[{\-\_\-light}]{\setlength{\rightskip}{0pt plus 5cm}int Gruppe22.\-Backend.\-Map.\-\_\-light\hspace{0.3cm}{\ttfamily [protected]}}}\label{class_gruppe22_1_1_backend_1_1_map_ad75386d3edea7cb43bbf558742a5824e}
+\hypertarget{class_gruppe22_1_1_backend_1_1_map_a99cac5327d78e72ced96f0dad20060cf}{\index{Gruppe22\-::\-Backend\-::\-Map@{Gruppe22\-::\-Backend\-::\-Map}!\-\_\-music@{\-\_\-music}}
+\index{\-\_\-music@{\-\_\-music}!Gruppe22::Backend::Map@{Gruppe22\-::\-Backend\-::\-Map}}
+\subsubsection[{\-\_\-music}]{\setlength{\rightskip}{0pt plus 5cm}string Gruppe22.\-Backend.\-Map.\-\_\-music = \char`\"{}level1\char`\"{}\hspace{0.3cm}{\ttfamily [protected]}}}\label{class_gruppe22_1_1_backend_1_1_map_a99cac5327d78e72ced96f0dad20060cf}
+\hypertarget{class_gruppe22_1_1_backend_1_1_map_a4848f9eaed6a4fb65f88bd3b72e2d8f0}{\index{Gruppe22\-::\-Backend\-::\-Map@{Gruppe22\-::\-Backend\-::\-Map}!\-\_\-name@{\-\_\-name}}
+\index{\-\_\-name@{\-\_\-name}!Gruppe22::Backend::Map@{Gruppe22\-::\-Backend\-::\-Map}}
+\subsubsection[{\-\_\-name}]{\setlength{\rightskip}{0pt plus 5cm}string Gruppe22.\-Backend.\-Map.\-\_\-name\hspace{0.3cm}{\ttfamily [protected]}}}\label{class_gruppe22_1_1_backend_1_1_map_a4848f9eaed6a4fb65f88bd3b72e2d8f0}
+\hypertarget{class_gruppe22_1_1_backend_1_1_map_a50c1a30d7d1c705375416767a474aa36}{\index{Gruppe22\-::\-Backend\-::\-Map@{Gruppe22\-::\-Backend\-::\-Map}!\-\_\-tiles@{\-\_\-tiles}}
+\index{\-\_\-tiles@{\-\_\-tiles}!Gruppe22::Backend::Map@{Gruppe22\-::\-Backend\-::\-Map}}
+\subsubsection[{\-\_\-tiles}]{\setlength{\rightskip}{0pt plus 5cm}List$<$List$<${\bf Floor\-Tile}$>$ $>$ Gruppe22.\-Backend.\-Map.\-\_\-tiles = null\hspace{0.3cm}{\ttfamily [protected]}}}\label{class_gruppe22_1_1_backend_1_1_map_a50c1a30d7d1c705375416767a474aa36}
+
+
+A two dimensional list of tiles 
+
+\hypertarget{class_gruppe22_1_1_backend_1_1_map_a1c8b19d3884fe44b1714ebec0256ce2a}{\index{Gruppe22\-::\-Backend\-::\-Map@{Gruppe22\-::\-Backend\-::\-Map}!\-\_\-update\-Tiles@{\-\_\-update\-Tiles}}
+\index{\-\_\-update\-Tiles@{\-\_\-update\-Tiles}!Gruppe22::Backend::Map@{Gruppe22\-::\-Backend\-::\-Map}}
+\subsubsection[{\-\_\-update\-Tiles}]{\setlength{\rightskip}{0pt plus 5cm}List$<${\bf Coords}$>$ Gruppe22.\-Backend.\-Map.\-\_\-update\-Tiles = null\hspace{0.3cm}{\ttfamily [protected]}}}\label{class_gruppe22_1_1_backend_1_1_map_a1c8b19d3884fe44b1714ebec0256ce2a}
+\hypertarget{class_gruppe22_1_1_backend_1_1_map_aa963f4d1f06aa5722e961a7674828910}{\index{Gruppe22\-::\-Backend\-::\-Map@{Gruppe22\-::\-Backend\-::\-Map}!\-\_\-wall\-File@{\-\_\-wall\-File}}
+\index{\-\_\-wall\-File@{\-\_\-wall\-File}!Gruppe22::Backend::Map@{Gruppe22\-::\-Backend\-::\-Map}}
+\subsubsection[{\-\_\-wall\-File}]{\setlength{\rightskip}{0pt plus 5cm}string Gruppe22.\-Backend.\-Map.\-\_\-wall\-File = \char`\"{}wall1\char`\"{}\hspace{0.3cm}{\ttfamily [protected]}}}\label{class_gruppe22_1_1_backend_1_1_map_aa963f4d1f06aa5722e961a7674828910}
+\hypertarget{class_gruppe22_1_1_backend_1_1_map_a18b255b6ba29200aa83cd246ae8e3427}{\index{Gruppe22\-::\-Backend\-::\-Map@{Gruppe22\-::\-Backend\-::\-Map}!\-\_\-width@{\-\_\-width}}
+\index{\-\_\-width@{\-\_\-width}!Gruppe22::Backend::Map@{Gruppe22\-::\-Backend\-::\-Map}}
+\subsubsection[{\-\_\-width}]{\setlength{\rightskip}{0pt plus 5cm}int Gruppe22.\-Backend.\-Map.\-\_\-width = 10\hspace{0.3cm}{\ttfamily [protected]}}}\label{class_gruppe22_1_1_backend_1_1_map_a18b255b6ba29200aa83cd246ae8e3427}
+
+
+Internal current width 
+
+
+
+\subsection{Dokumentation der Propertys}
+\hypertarget{class_gruppe22_1_1_backend_1_1_map_a186af3927e65a77740f619513dd2c60a}{\index{Gruppe22\-::\-Backend\-::\-Map@{Gruppe22\-::\-Backend\-::\-Map}!actor\-Positions@{actor\-Positions}}
+\index{actor\-Positions@{actor\-Positions}!Gruppe22::Backend::Map@{Gruppe22\-::\-Backend\-::\-Map}}
+\subsubsection[{actor\-Positions}]{\setlength{\rightskip}{0pt plus 5cm}List$<${\bf Coords}$>$ Gruppe22.\-Backend.\-Map.\-actor\-Positions\hspace{0.3cm}{\ttfamily [get]}}}\label{class_gruppe22_1_1_backend_1_1_map_a186af3927e65a77740f619513dd2c60a}
+
+
+A list of the current position of every actor 
+
+\hypertarget{class_gruppe22_1_1_backend_1_1_map_a5b7ce0cacb479c6590d249aae60138fd}{\index{Gruppe22\-::\-Backend\-::\-Map@{Gruppe22\-::\-Backend\-::\-Map}!actors@{actors}}
+\index{actors@{actors}!Gruppe22::Backend::Map@{Gruppe22\-::\-Backend\-::\-Map}}
+\subsubsection[{actors}]{\setlength{\rightskip}{0pt plus 5cm}List$<${\bf Actor}$>$ Gruppe22.\-Backend.\-Map.\-actors\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}}\label{class_gruppe22_1_1_backend_1_1_map_a5b7ce0cacb479c6590d249aae60138fd}
+\hypertarget{class_gruppe22_1_1_backend_1_1_map_a76814bb49c2210b400230b9ee530010f}{\index{Gruppe22\-::\-Backend\-::\-Map@{Gruppe22\-::\-Backend\-::\-Map}!dungeonname@{dungeonname}}
+\index{dungeonname@{dungeonname}!Gruppe22::Backend::Map@{Gruppe22\-::\-Backend\-::\-Map}}
+\subsubsection[{dungeonname}]{\setlength{\rightskip}{0pt plus 5cm}string Gruppe22.\-Backend.\-Map.\-dungeonname\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}}\label{class_gruppe22_1_1_backend_1_1_map_a76814bb49c2210b400230b9ee530010f}
+\hypertarget{class_gruppe22_1_1_backend_1_1_map_a0dc104d0e3f5896a272e4ed47dd79378}{\index{Gruppe22\-::\-Backend\-::\-Map@{Gruppe22\-::\-Backend\-::\-Map}!exits@{exits}}
+\index{exits@{exits}!Gruppe22::Backend::Map@{Gruppe22\-::\-Backend\-::\-Map}}
+\subsubsection[{exits}]{\setlength{\rightskip}{0pt plus 5cm}List$<${\bf Exit}$>$ Gruppe22.\-Backend.\-Map.\-exits\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}}\label{class_gruppe22_1_1_backend_1_1_map_a0dc104d0e3f5896a272e4ed47dd79378}
+\hypertarget{class_gruppe22_1_1_backend_1_1_map_ae0e576fd7e8d25a3eb0370f2bcc896e1}{\index{Gruppe22\-::\-Backend\-::\-Map@{Gruppe22\-::\-Backend\-::\-Map}!floor\-File@{floor\-File}}
+\index{floor\-File@{floor\-File}!Gruppe22::Backend::Map@{Gruppe22\-::\-Backend\-::\-Map}}
+\subsubsection[{floor\-File}]{\setlength{\rightskip}{0pt plus 5cm}string Gruppe22.\-Backend.\-Map.\-floor\-File\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}}\label{class_gruppe22_1_1_backend_1_1_map_ae0e576fd7e8d25a3eb0370f2bcc896e1}
+\hypertarget{class_gruppe22_1_1_backend_1_1_map_aef59f2269d64d10b35acbabb6461fa55}{\index{Gruppe22\-::\-Backend\-::\-Map@{Gruppe22\-::\-Backend\-::\-Map}!height@{height}}
+\index{height@{height}!Gruppe22::Backend::Map@{Gruppe22\-::\-Backend\-::\-Map}}
+\subsubsection[{height}]{\setlength{\rightskip}{0pt plus 5cm}int Gruppe22.\-Backend.\-Map.\-height\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}}\label{class_gruppe22_1_1_backend_1_1_map_aef59f2269d64d10b35acbabb6461fa55}
+
+
+Current Height of the maze 
+
+\hypertarget{class_gruppe22_1_1_backend_1_1_map_a31168190229d5fdaad90a0e27d41ef1a}{\index{Gruppe22\-::\-Backend\-::\-Map@{Gruppe22\-::\-Backend\-::\-Map}!id@{id}}
+\index{id@{id}!Gruppe22::Backend::Map@{Gruppe22\-::\-Backend\-::\-Map}}
+\subsubsection[{id}]{\setlength{\rightskip}{0pt plus 5cm}int Gruppe22.\-Backend.\-Map.\-id\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}}\label{class_gruppe22_1_1_backend_1_1_map_a31168190229d5fdaad90a0e27d41ef1a}
+\hypertarget{class_gruppe22_1_1_backend_1_1_map_a91a89a011cd659affbbb00ea924211ca}{\index{Gruppe22\-::\-Backend\-::\-Map@{Gruppe22\-::\-Backend\-::\-Map}!items@{items}}
+\index{items@{items}!Gruppe22::Backend::Map@{Gruppe22\-::\-Backend\-::\-Map}}
+\subsubsection[{items}]{\setlength{\rightskip}{0pt plus 5cm}List$<${\bf Item}$>$ Gruppe22.\-Backend.\-Map.\-items\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}}\label{class_gruppe22_1_1_backend_1_1_map_a91a89a011cd659affbbb00ea924211ca}
+\hypertarget{class_gruppe22_1_1_backend_1_1_map_abf7263c43d22ca634eceba89c06904cf}{\index{Gruppe22\-::\-Backend\-::\-Map@{Gruppe22\-::\-Backend\-::\-Map}!level@{level}}
+\index{level@{level}!Gruppe22::Backend::Map@{Gruppe22\-::\-Backend\-::\-Map}}
+\subsubsection[{level}]{\setlength{\rightskip}{0pt plus 5cm}int Gruppe22.\-Backend.\-Map.\-level\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}}\label{class_gruppe22_1_1_backend_1_1_map_abf7263c43d22ca634eceba89c06904cf}
+\hypertarget{class_gruppe22_1_1_backend_1_1_map_a520dd5d828f2d1d0459736fe6bd09831}{\index{Gruppe22\-::\-Backend\-::\-Map@{Gruppe22\-::\-Backend\-::\-Map}!light@{light}}
+\index{light@{light}!Gruppe22::Backend::Map@{Gruppe22\-::\-Backend\-::\-Map}}
+\subsubsection[{light}]{\setlength{\rightskip}{0pt plus 5cm}int Gruppe22.\-Backend.\-Map.\-light\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}}\label{class_gruppe22_1_1_backend_1_1_map_a520dd5d828f2d1d0459736fe6bd09831}
+\hypertarget{class_gruppe22_1_1_backend_1_1_map_af94c194982941748ccc41e58a2398691}{\index{Gruppe22\-::\-Backend\-::\-Map@{Gruppe22\-::\-Backend\-::\-Map}!music@{music}}
+\index{music@{music}!Gruppe22::Backend::Map@{Gruppe22\-::\-Backend\-::\-Map}}
+\subsubsection[{music}]{\setlength{\rightskip}{0pt plus 5cm}string Gruppe22.\-Backend.\-Map.\-music\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}}\label{class_gruppe22_1_1_backend_1_1_map_af94c194982941748ccc41e58a2398691}
+\hypertarget{class_gruppe22_1_1_backend_1_1_map_a7829a94426d54e43019423f88a7cec59}{\index{Gruppe22\-::\-Backend\-::\-Map@{Gruppe22\-::\-Backend\-::\-Map}!name@{name}}
+\index{name@{name}!Gruppe22::Backend::Map@{Gruppe22\-::\-Backend\-::\-Map}}
+\subsubsection[{name}]{\setlength{\rightskip}{0pt plus 5cm}string Gruppe22.\-Backend.\-Map.\-name\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}}\label{class_gruppe22_1_1_backend_1_1_map_a7829a94426d54e43019423f88a7cec59}
+\hypertarget{class_gruppe22_1_1_backend_1_1_map_ac19e7d998d1c4befe3f1129939fd6b74}{\index{Gruppe22\-::\-Backend\-::\-Map@{Gruppe22\-::\-Backend\-::\-Map}!this\mbox{[}\-Coords coords\mbox{]}@{this[Coords coords]}}
+\index{this\mbox{[}\-Coords coords\mbox{]}@{this[Coords coords]}!Gruppe22::Backend::Map@{Gruppe22\-::\-Backend\-::\-Map}}
+\subsubsection[{this[Coords coords]}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Floor\-Tile} Gruppe22.\-Backend.\-Map.\-this\mbox{[}{\bf Coords} coords\mbox{]}\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}}\label{class_gruppe22_1_1_backend_1_1_map_ac19e7d998d1c4befe3f1129939fd6b74}
+
+
+Get the tile at coordinates x and y 
+
+
+\begin{DoxyParams}{Parameter}
+{\em x} & The x-\/coordinate\\
+\hline
+{\em y} & The y-\/coordinate\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Rückgabe}
+The tile at the specified coordinates
+\end{DoxyReturn}
+\hypertarget{class_gruppe22_1_1_backend_1_1_map_a51c56c902b3c7d2ee1e324b59ee89f8a}{\index{Gruppe22\-::\-Backend\-::\-Map@{Gruppe22\-::\-Backend\-::\-Map}!this\mbox{[}int x, int y\mbox{]}@{this[int x, int y]}}
+\index{this\mbox{[}int x, int y\mbox{]}@{this[int x, int y]}!Gruppe22::Backend::Map@{Gruppe22\-::\-Backend\-::\-Map}}
+\subsubsection[{this[int x, int y]}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Floor\-Tile} Gruppe22.\-Backend.\-Map.\-this\mbox{[}int x, int y\mbox{]}\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}}\label{class_gruppe22_1_1_backend_1_1_map_a51c56c902b3c7d2ee1e324b59ee89f8a}
+
+
+Get the tile at coordinates x and y 
+
+
+\begin{DoxyParams}{Parameter}
+{\em x} & The x-\/coordinate\\
+\hline
+{\em y} & The y-\/coordinate\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Rückgabe}
+The tile at the specified coordinates
+\end{DoxyReturn}
+\hypertarget{class_gruppe22_1_1_backend_1_1_map_a33e42ed0b62ddb58ce402fb6fc455fdb}{\index{Gruppe22\-::\-Backend\-::\-Map@{Gruppe22\-::\-Backend\-::\-Map}!update\-Tiles@{update\-Tiles}}
+\index{update\-Tiles@{update\-Tiles}!Gruppe22::Backend::Map@{Gruppe22\-::\-Backend\-::\-Map}}
+\subsubsection[{update\-Tiles}]{\setlength{\rightskip}{0pt plus 5cm}List$<${\bf Coords}$>$ Gruppe22.\-Backend.\-Map.\-update\-Tiles\hspace{0.3cm}{\ttfamily [get]}}}\label{class_gruppe22_1_1_backend_1_1_map_a33e42ed0b62ddb58ce402fb6fc455fdb}
+\hypertarget{class_gruppe22_1_1_backend_1_1_map_ac30d110dd5617ce4ee1f0cab607ea6e8}{\index{Gruppe22\-::\-Backend\-::\-Map@{Gruppe22\-::\-Backend\-::\-Map}!wall\-File@{wall\-File}}
+\index{wall\-File@{wall\-File}!Gruppe22::Backend::Map@{Gruppe22\-::\-Backend\-::\-Map}}
+\subsubsection[{wall\-File}]{\setlength{\rightskip}{0pt plus 5cm}string Gruppe22.\-Backend.\-Map.\-wall\-File\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}}\label{class_gruppe22_1_1_backend_1_1_map_ac30d110dd5617ce4ee1f0cab607ea6e8}
+\hypertarget{class_gruppe22_1_1_backend_1_1_map_ae185d7c51dd35311f6065044e603e81f}{\index{Gruppe22\-::\-Backend\-::\-Map@{Gruppe22\-::\-Backend\-::\-Map}!width@{width}}
+\index{width@{width}!Gruppe22::Backend::Map@{Gruppe22\-::\-Backend\-::\-Map}}
+\subsubsection[{width}]{\setlength{\rightskip}{0pt plus 5cm}int Gruppe22.\-Backend.\-Map.\-width\hspace{0.3cm}{\ttfamily [get]}, {\ttfamily [set]}}}\label{class_gruppe22_1_1_backend_1_1_map_ae185d7c51dd35311f6065044e603e81f}
+
+
+Current Width of the maze 
+
+
+
+Die Dokumentation für diese Klasse wurde erzeugt aufgrund der Datei\-:\begin{DoxyCompactItemize}
+\item 
+C\-:/\-Users/beursken/\-Documents/\-Git\-Hub/gruppe22/\-Gruppe22/\-Gruppe22/\-Backend/\-Map/\hyperlink{_map_8cs}{Map.\-cs}\end{DoxyCompactItemize}

@@ -1,0 +1,223 @@
+\hypertarget{class_gruppe22_1_1_client_1_1_window}{\section{Gruppe22.\-Client.\-Window Klassenreferenz}
+\label{class_gruppe22_1_1_client_1_1_window}\index{Gruppe22.\-Client.\-Window@{Gruppe22.\-Client.\-Window}}
+}
+Klassendiagramm für Gruppe22.\-Client.\-Window\-:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=1.720430cm]{class_gruppe22_1_1_client_1_1_window}
+\end{center}
+\end{figure}
+\subsection*{Öffentliche Methoden}
+\begin{DoxyCompactItemize}
+\item 
+override void \hyperlink{class_gruppe22_1_1_client_1_1_window_aec6e5dacbb02d585132ee1f799937aaa}{Update} (Game\-Time game\-Time)
+\item 
+override bool \hyperlink{class_gruppe22_1_1_client_1_1_window_ac71cd9635bec479f506ae2e7096b6617}{On\-Key\-Down} (Keys k)
+\begin{DoxyCompactList}\small\item\em Called whenever a key was up and is now down \end{DoxyCompactList}\item 
+override bool \hyperlink{class_gruppe22_1_1_client_1_1_window_a7bc0acea2d6e974e3b12ff29bf16333d}{On\-Mouse\-Down} (int button)
+\begin{DoxyCompactList}\small\item\em Called when a mouse button changes from up to down \end{DoxyCompactList}\item 
+void \hyperlink{class_gruppe22_1_1_client_1_1_window_aa25423364d8386d5c4b3878906a2565f}{Add\-Child} (\hyperlink{class_gruppe22_1_1_client_1_1_u_i_element}{U\-I\-Element} child)
+\item 
+override void \hyperlink{class_gruppe22_1_1_client_1_1_window_a36c526268f11ddcf3bdb0d8dd4979c60}{Draw} (Game\-Time game\-Time)
+\item 
+void \hyperlink{class_gruppe22_1_1_client_1_1_window_ac6a6bca2fdb223d72a8a5a5b478f98d3}{Change\-Focus} (bool forward=true)
+\item 
+override void \hyperlink{class_gruppe22_1_1_client_1_1_window_a739e05296bc72eba8f0876d0372c9d26}{Dispose} ()
+\item 
+override void \hyperlink{class_gruppe22_1_1_client_1_1_window_a9a679d02be82c36731063a0a9c58ba22}{Handle\-Event} (bool Down\-Stream, \hyperlink{namespace_gruppe22_1_1_backend_ab56df91bb0bdafa1ea978e552209ce73}{Backend.\-Events} event\-I\-D, params object\mbox{[}$\,$\mbox{]} data)
+\item 
+\hyperlink{class_gruppe22_1_1_client_1_1_window_a5f8ffce1aa48181299acf64e7c88996d}{Window} (\hyperlink{interface_gruppe22_1_1_backend_1_1_i_handle_event}{Backend.\-I\-Handle\-Event} parent, Sprite\-Batch sprite\-Batch, Content\-Manager content, Rectangle display\-Rect)
+\begin{DoxyCompactList}\small\item\em Constructor \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Geschützte Attribute}
+\begin{DoxyCompactItemize}
+\item 
+Texture2\-D \hyperlink{class_gruppe22_1_1_client_1_1_window_ae18ccb8e8b1bb5acf64ab6b39afd0018}{\-\_\-background}
+\begin{DoxyCompactList}\small\item\em Single pixel to fill background \end{DoxyCompactList}\item 
+List$<$ \hyperlink{class_gruppe22_1_1_client_1_1_u_i_element}{U\-I\-Element} $>$ \hyperlink{class_gruppe22_1_1_client_1_1_window_a3183f9f2663e2973529ddd494cbb847a}{\-\_\-children}
+\begin{DoxyCompactList}\small\item\em U\-I-\/\-Children \end{DoxyCompactList}\item 
+int \hyperlink{class_gruppe22_1_1_client_1_1_window_a2c5c9a090aecb62bb99a4a6c0e8c7e4c}{\-\_\-focus\-I\-D} = 0
+\end{DoxyCompactItemize}
+\subsection*{Propertys}
+\begin{DoxyCompactItemize}
+\item 
+override bool \hyperlink{class_gruppe22_1_1_client_1_1_window_aed543c8546dcd049df9ef4e2742af0bd}{ignore\-Pause}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+override bool \hyperlink{class_gruppe22_1_1_client_1_1_window_ab198ef577055a03ab657cefc633999a3}{hold\-Focus}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\item 
+List$<$ \hyperlink{class_gruppe22_1_1_client_1_1_u_i_element}{U\-I\-Element} $>$ \hyperlink{class_gruppe22_1_1_client_1_1_window_a8480b3645d012595c617cf1a39ad5a72}{children}\hspace{0.3cm}{\ttfamily  \mbox{[}get\mbox{]}}
+\end{DoxyCompactItemize}
+
+
+\subsection{Beschreibung der Konstruktoren und Destruktoren}
+\hypertarget{class_gruppe22_1_1_client_1_1_window_a5f8ffce1aa48181299acf64e7c88996d}{\index{Gruppe22\-::\-Client\-::\-Window@{Gruppe22\-::\-Client\-::\-Window}!Window@{Window}}
+\index{Window@{Window}!Gruppe22::Client::Window@{Gruppe22\-::\-Client\-::\-Window}}
+\subsubsection[{Window}]{\setlength{\rightskip}{0pt plus 5cm}Gruppe22.\-Client.\-Window.\-Window (
+\begin{DoxyParamCaption}
+\item[{{\bf Backend.\-I\-Handle\-Event}}]{parent, }
+\item[{Sprite\-Batch}]{sprite\-Batch, }
+\item[{Content\-Manager}]{content, }
+\item[{Rectangle}]{display\-Rect}
+\end{DoxyParamCaption}
+)}}\label{class_gruppe22_1_1_client_1_1_window_a5f8ffce1aa48181299acf64e7c88996d}
+
+
+Constructor 
+
+
+
+\subsection{Dokumentation der Elementfunktionen}
+\hypertarget{class_gruppe22_1_1_client_1_1_window_aa25423364d8386d5c4b3878906a2565f}{\index{Gruppe22\-::\-Client\-::\-Window@{Gruppe22\-::\-Client\-::\-Window}!Add\-Child@{Add\-Child}}
+\index{Add\-Child@{Add\-Child}!Gruppe22::Client::Window@{Gruppe22\-::\-Client\-::\-Window}}
+\subsubsection[{Add\-Child}]{\setlength{\rightskip}{0pt plus 5cm}void Gruppe22.\-Client.\-Window.\-Add\-Child (
+\begin{DoxyParamCaption}
+\item[{{\bf U\-I\-Element}}]{child}
+\end{DoxyParamCaption}
+)}}\label{class_gruppe22_1_1_client_1_1_window_aa25423364d8386d5c4b3878906a2565f}
+\hypertarget{class_gruppe22_1_1_client_1_1_window_ac6a6bca2fdb223d72a8a5a5b478f98d3}{\index{Gruppe22\-::\-Client\-::\-Window@{Gruppe22\-::\-Client\-::\-Window}!Change\-Focus@{Change\-Focus}}
+\index{Change\-Focus@{Change\-Focus}!Gruppe22::Client::Window@{Gruppe22\-::\-Client\-::\-Window}}
+\subsubsection[{Change\-Focus}]{\setlength{\rightskip}{0pt plus 5cm}void Gruppe22.\-Client.\-Window.\-Change\-Focus (
+\begin{DoxyParamCaption}
+\item[{bool}]{forward = {\ttfamily true}}
+\end{DoxyParamCaption}
+)}}\label{class_gruppe22_1_1_client_1_1_window_ac6a6bca2fdb223d72a8a5a5b478f98d3}
+\hypertarget{class_gruppe22_1_1_client_1_1_window_a739e05296bc72eba8f0876d0372c9d26}{\index{Gruppe22\-::\-Client\-::\-Window@{Gruppe22\-::\-Client\-::\-Window}!Dispose@{Dispose}}
+\index{Dispose@{Dispose}!Gruppe22::Client::Window@{Gruppe22\-::\-Client\-::\-Window}}
+\subsubsection[{Dispose}]{\setlength{\rightskip}{0pt plus 5cm}override void Gruppe22.\-Client.\-Window.\-Dispose (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{class_gruppe22_1_1_client_1_1_window_a739e05296bc72eba8f0876d0372c9d26}
+
+
+Erneute Implementation von \hyperlink{class_gruppe22_1_1_client_1_1_u_i_element_a4dbf6405c99a1b2b45610d90e127e7fd}{Gruppe22.\-Client.\-U\-I\-Element}.
+
+\hypertarget{class_gruppe22_1_1_client_1_1_window_a36c526268f11ddcf3bdb0d8dd4979c60}{\index{Gruppe22\-::\-Client\-::\-Window@{Gruppe22\-::\-Client\-::\-Window}!Draw@{Draw}}
+\index{Draw@{Draw}!Gruppe22::Client::Window@{Gruppe22\-::\-Client\-::\-Window}}
+\subsubsection[{Draw}]{\setlength{\rightskip}{0pt plus 5cm}override void Gruppe22.\-Client.\-Window.\-Draw (
+\begin{DoxyParamCaption}
+\item[{Game\-Time}]{game\-Time}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{class_gruppe22_1_1_client_1_1_window_a36c526268f11ddcf3bdb0d8dd4979c60}
+
+
+
+
+
+\begin{DoxyParams}{Parameter}
+{\em game\-Time} & \\
+\hline
+\end{DoxyParams}
+
+
+Erneute Implementation von \hyperlink{class_gruppe22_1_1_client_1_1_u_i_element_ae68afcbd1db3540052d6b399022e56e7}{Gruppe22.\-Client.\-U\-I\-Element}.
+
+\hypertarget{class_gruppe22_1_1_client_1_1_window_a9a679d02be82c36731063a0a9c58ba22}{\index{Gruppe22\-::\-Client\-::\-Window@{Gruppe22\-::\-Client\-::\-Window}!Handle\-Event@{Handle\-Event}}
+\index{Handle\-Event@{Handle\-Event}!Gruppe22::Client::Window@{Gruppe22\-::\-Client\-::\-Window}}
+\subsubsection[{Handle\-Event}]{\setlength{\rightskip}{0pt plus 5cm}override void Gruppe22.\-Client.\-Window.\-Handle\-Event (
+\begin{DoxyParamCaption}
+\item[{bool}]{Down\-Stream, }
+\item[{{\bf Backend.\-Events}}]{event\-I\-D, }
+\item[{params object\mbox{[}$\,$\mbox{]}}]{data}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{class_gruppe22_1_1_client_1_1_window_a9a679d02be82c36731063a0a9c58ba22}
+
+
+Erneute Implementation von \hyperlink{class_gruppe22_1_1_client_1_1_u_i_element_ad06a1ce6c1705a1c7aa91756f368a517}{Gruppe22.\-Client.\-U\-I\-Element}.
+
+\hypertarget{class_gruppe22_1_1_client_1_1_window_ac71cd9635bec479f506ae2e7096b6617}{\index{Gruppe22\-::\-Client\-::\-Window@{Gruppe22\-::\-Client\-::\-Window}!On\-Key\-Down@{On\-Key\-Down}}
+\index{On\-Key\-Down@{On\-Key\-Down}!Gruppe22::Client::Window@{Gruppe22\-::\-Client\-::\-Window}}
+\subsubsection[{On\-Key\-Down}]{\setlength{\rightskip}{0pt plus 5cm}override bool Gruppe22.\-Client.\-Window.\-On\-Key\-Down (
+\begin{DoxyParamCaption}
+\item[{Keys}]{k}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{class_gruppe22_1_1_client_1_1_window_ac71cd9635bec479f506ae2e7096b6617}
+
+
+Called whenever a key was up and is now down 
+
+
+\begin{DoxyParams}{Parameter}
+{\em k} & The key which was pressed\\
+\hline
+\end{DoxyParams}
+
+
+Erneute Implementation von \hyperlink{class_gruppe22_1_1_client_1_1_u_i_element_a0f9957f48ecb697ff5ae1ac3f0873064}{Gruppe22.\-Client.\-U\-I\-Element}.
+
+\hypertarget{class_gruppe22_1_1_client_1_1_window_a7bc0acea2d6e974e3b12ff29bf16333d}{\index{Gruppe22\-::\-Client\-::\-Window@{Gruppe22\-::\-Client\-::\-Window}!On\-Mouse\-Down@{On\-Mouse\-Down}}
+\index{On\-Mouse\-Down@{On\-Mouse\-Down}!Gruppe22::Client::Window@{Gruppe22\-::\-Client\-::\-Window}}
+\subsubsection[{On\-Mouse\-Down}]{\setlength{\rightskip}{0pt plus 5cm}override bool Gruppe22.\-Client.\-Window.\-On\-Mouse\-Down (
+\begin{DoxyParamCaption}
+\item[{int}]{button}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{class_gruppe22_1_1_client_1_1_window_a7bc0acea2d6e974e3b12ff29bf16333d}
+
+
+Called when a mouse button changes from up to down 
+
+
+\begin{DoxyParams}{Parameter}
+{\em button} & Left \hyperlink{class_gruppe22_1_1_client_1_1_button}{Button}=1, Middle \hyperlink{class_gruppe22_1_1_client_1_1_button}{Button}=2, Right \hyperlink{class_gruppe22_1_1_client_1_1_button}{Button}=3\\
+\hline
+\end{DoxyParams}
+
+
+Erneute Implementation von \hyperlink{class_gruppe22_1_1_client_1_1_u_i_element_a0530df2286336160b8b39c74ba380a44}{Gruppe22.\-Client.\-U\-I\-Element}.
+
+\hypertarget{class_gruppe22_1_1_client_1_1_window_aec6e5dacbb02d585132ee1f799937aaa}{\index{Gruppe22\-::\-Client\-::\-Window@{Gruppe22\-::\-Client\-::\-Window}!Update@{Update}}
+\index{Update@{Update}!Gruppe22::Client::Window@{Gruppe22\-::\-Client\-::\-Window}}
+\subsubsection[{Update}]{\setlength{\rightskip}{0pt plus 5cm}override void Gruppe22.\-Client.\-Window.\-Update (
+\begin{DoxyParamCaption}
+\item[{Game\-Time}]{game\-Time}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{class_gruppe22_1_1_client_1_1_window_aec6e5dacbb02d585132ee1f799937aaa}
+
+
+
+
+
+\begin{DoxyParams}{Parameter}
+{\em game\-Time} & \\
+\hline
+\end{DoxyParams}
+
+
+Erneute Implementation von \hyperlink{class_gruppe22_1_1_client_1_1_u_i_element_a456bc763b6ed6ab441bb0ae96b6f4f8b}{Gruppe22.\-Client.\-U\-I\-Element}.
+
+
+
+\subsection{Dokumentation der Datenelemente}
+\hypertarget{class_gruppe22_1_1_client_1_1_window_ae18ccb8e8b1bb5acf64ab6b39afd0018}{\index{Gruppe22\-::\-Client\-::\-Window@{Gruppe22\-::\-Client\-::\-Window}!\-\_\-background@{\-\_\-background}}
+\index{\-\_\-background@{\-\_\-background}!Gruppe22::Client::Window@{Gruppe22\-::\-Client\-::\-Window}}
+\subsubsection[{\-\_\-background}]{\setlength{\rightskip}{0pt plus 5cm}Texture2\-D Gruppe22.\-Client.\-Window.\-\_\-background\hspace{0.3cm}{\ttfamily [protected]}}}\label{class_gruppe22_1_1_client_1_1_window_ae18ccb8e8b1bb5acf64ab6b39afd0018}
+
+
+Single pixel to fill background 
+
+\hypertarget{class_gruppe22_1_1_client_1_1_window_a3183f9f2663e2973529ddd494cbb847a}{\index{Gruppe22\-::\-Client\-::\-Window@{Gruppe22\-::\-Client\-::\-Window}!\-\_\-children@{\-\_\-children}}
+\index{\-\_\-children@{\-\_\-children}!Gruppe22::Client::Window@{Gruppe22\-::\-Client\-::\-Window}}
+\subsubsection[{\-\_\-children}]{\setlength{\rightskip}{0pt plus 5cm}List$<${\bf U\-I\-Element}$>$ Gruppe22.\-Client.\-Window.\-\_\-children\hspace{0.3cm}{\ttfamily [protected]}}}\label{class_gruppe22_1_1_client_1_1_window_a3183f9f2663e2973529ddd494cbb847a}
+
+
+U\-I-\/\-Children 
+
+\hypertarget{class_gruppe22_1_1_client_1_1_window_a2c5c9a090aecb62bb99a4a6c0e8c7e4c}{\index{Gruppe22\-::\-Client\-::\-Window@{Gruppe22\-::\-Client\-::\-Window}!\-\_\-focus\-I\-D@{\-\_\-focus\-I\-D}}
+\index{\-\_\-focus\-I\-D@{\-\_\-focus\-I\-D}!Gruppe22::Client::Window@{Gruppe22\-::\-Client\-::\-Window}}
+\subsubsection[{\-\_\-focus\-I\-D}]{\setlength{\rightskip}{0pt plus 5cm}int Gruppe22.\-Client.\-Window.\-\_\-focus\-I\-D = 0\hspace{0.3cm}{\ttfamily [protected]}}}\label{class_gruppe22_1_1_client_1_1_window_a2c5c9a090aecb62bb99a4a6c0e8c7e4c}
+
+
+\subsection{Dokumentation der Propertys}
+\hypertarget{class_gruppe22_1_1_client_1_1_window_a8480b3645d012595c617cf1a39ad5a72}{\index{Gruppe22\-::\-Client\-::\-Window@{Gruppe22\-::\-Client\-::\-Window}!children@{children}}
+\index{children@{children}!Gruppe22::Client::Window@{Gruppe22\-::\-Client\-::\-Window}}
+\subsubsection[{children}]{\setlength{\rightskip}{0pt plus 5cm}List$<${\bf U\-I\-Element}$>$ Gruppe22.\-Client.\-Window.\-children\hspace{0.3cm}{\ttfamily [get]}}}\label{class_gruppe22_1_1_client_1_1_window_a8480b3645d012595c617cf1a39ad5a72}
+\hypertarget{class_gruppe22_1_1_client_1_1_window_ab198ef577055a03ab657cefc633999a3}{\index{Gruppe22\-::\-Client\-::\-Window@{Gruppe22\-::\-Client\-::\-Window}!hold\-Focus@{hold\-Focus}}
+\index{hold\-Focus@{hold\-Focus}!Gruppe22::Client::Window@{Gruppe22\-::\-Client\-::\-Window}}
+\subsubsection[{hold\-Focus}]{\setlength{\rightskip}{0pt plus 5cm}override bool Gruppe22.\-Client.\-Window.\-hold\-Focus\hspace{0.3cm}{\ttfamily [get]}}}\label{class_gruppe22_1_1_client_1_1_window_ab198ef577055a03ab657cefc633999a3}
+\hypertarget{class_gruppe22_1_1_client_1_1_window_aed543c8546dcd049df9ef4e2742af0bd}{\index{Gruppe22\-::\-Client\-::\-Window@{Gruppe22\-::\-Client\-::\-Window}!ignore\-Pause@{ignore\-Pause}}
+\index{ignore\-Pause@{ignore\-Pause}!Gruppe22::Client::Window@{Gruppe22\-::\-Client\-::\-Window}}
+\subsubsection[{ignore\-Pause}]{\setlength{\rightskip}{0pt plus 5cm}override bool Gruppe22.\-Client.\-Window.\-ignore\-Pause\hspace{0.3cm}{\ttfamily [get]}}}\label{class_gruppe22_1_1_client_1_1_window_aed543c8546dcd049df9ef4e2742af0bd}
+
+
+Die Dokumentation für diese Klasse wurde erzeugt aufgrund der Datei\-:\begin{DoxyCompactItemize}
+\item 
+C\-:/\-Users/beursken/\-Documents/\-Git\-Hub/gruppe22/\-Gruppe22/\-Gruppe22/\-Client/\-U\-I/\hyperlink{_window_8cs}{Window.\-cs}\end{DoxyCompactItemize}
