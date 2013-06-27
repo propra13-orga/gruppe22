@@ -18,6 +18,9 @@ namespace Gruppe22.Backend
     public class Actor
     {
         #region protected Fields
+        /// <summary>
+        /// Zufallsgenerator.
+        /// </summary>
         protected Random _random;
         protected int _newItems = 0;
         protected ActorTile _tile;
@@ -78,7 +81,11 @@ namespace Gruppe22.Backend
             set { _deadcounter = value; }
         }*/
 
-
+        /// <summary>
+        /// Get-Methode für die Items des Actors.
+        /// </summary>
+        /// <param name="i">ID zu dem Item.</param>
+        /// <returns>Item mit der id i des Actors, sonst null wenn nicht im Inventar des Actors.</returns>
         public Item Items(int i)
         {
             for (int count = 0; count < inventory.Count; ++count)
@@ -101,6 +108,9 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// Aktiviert die Regenetarion des Actors nach speziellen Formeln.
+        /// </summary>
         public void Regen()
         {
             if (_regenerating == false)
@@ -122,6 +132,7 @@ namespace Gruppe22.Backend
                 _regenerating = false;
             }
         }
+
 
         public int viewRange
         {
@@ -182,6 +193,10 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// Eigenschaft legt fest ob Actor aggresiv ist oder nicht.
+        /// Dabei ändert sich das Angriffsverhalten (Bei Computergegnern).
+        /// </summary>
         public bool aggro
         {
             get
@@ -193,6 +208,7 @@ namespace Gruppe22.Backend
                 _aggro = value;
             }
         }
+
         public bool crazy
         {
             get
@@ -363,6 +379,9 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// Eigenschaft die den Namen des Actors beschreibt.
+        /// </summary>
         public string name
         {
             get
@@ -375,6 +394,9 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// Eigenschaft (schreibgeschützt): Level des Actors
+        /// </summary>
         public int level
         {
             get
@@ -396,6 +418,9 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// Get-Eigenschaft zu dem Zustand (lebt/ist tot) des Actors.
+        /// </summary>
         public bool isDead
         {
             get
@@ -404,6 +429,9 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// ID des Actors.
+        /// </summary>
         public int id
         {
             get
@@ -421,7 +449,9 @@ namespace Gruppe22.Backend
 
 
 
-
+        /// <summary>
+        /// Gibt die Eigenschaft bzw. den Faktor zum Ausweichen von Angriffen, bzw. setzt diese fest.
+        /// </summary>
         public int evade
         {
             get
@@ -434,6 +464,9 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// Eigenschaft: Blockzahl des Actors.
+        /// </summary>
         public int block
         {
             get
@@ -614,6 +647,9 @@ namespace Gruppe22.Backend
 
         #region Public Methods
 
+        /// <summary>
+        /// Methode zum Levelaufstieg des Actors.
+        /// </summary>
         public void LevelUp()
         {
             _level++;
@@ -624,9 +660,9 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// 
+        /// Methode zum hinzufügen von Rüstung.
         /// </summary>
-        /// <param name="amount"></param>
+        /// <param name="amount">Neue Rüstungszahl.</param>
         public void AddProtection(int amount)
         {
             if (amount > _armor)
@@ -641,9 +677,9 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// 
+        /// Lebenspunkte hinzufügen.
         /// </summary>
-        /// <param name="amount"></param>
+        /// <param name="amount">Neue Lebenspunkte.</param>
         public void AddHealth(int amount)
         {
             int temp = Math.Max(amount, _maxhealth - _health - amount);
@@ -864,9 +900,9 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// a method to read an actor from a (room-)file and set his values
+        /// Methode zum Lesen eines Actors aus einer (room-)Datei und setzen der Werte
         /// </summary>
-        /// <param name="reader">the XmlReader which should be used</param>
+        /// <param name="reader">Der zu benutzende XmlReader.</param>
         public void Load(XmlReader reader)
         {
             //            System.Diagnostics.Debug.WriteLine(reader.Name);
@@ -1005,13 +1041,17 @@ namespace Gruppe22.Backend
             else return;
         }
 
+        /// <summary>
+        /// Anpassung der ToSting-Methode.
+        /// </summary>
+        /// <returns>name des Actors.</returns>
         public override string ToString()
         {
             return base.ToString() + " (" + _name + ")";
         }
 
         /// <summary>
-        /// Methode to generate random names for actors
+        /// Methode zum generieren von zufälligen Spieler-Namen
         /// uses GenerateName() for files if possible
         /// </summary>
         public void GenerateName()
@@ -1106,10 +1146,10 @@ namespace Gruppe22.Backend
             }
         }
         /// <summary>
-        /// Method to generate a random name from a given file
+        /// Methode zum generieren eines zufälligen Spieler-Namens aus einer Datei
         /// </summary>
-        /// <param name="filename">a file with one name in each line</param>
-        /// <returns>the chosen name</returns>
+        /// <param name="filename">Die Quelldatei. Ein Name je Zeile.</param>
+        /// <returns>Der ermittelte Name</returns>
         public string GenerateName(string filename)
         {
             using (TextReader reader = new StreamReader(filename))
@@ -1128,8 +1168,8 @@ namespace Gruppe22.Backend
         /// Konstruktor.
         /// </summary>
         /// <param name="content"></param>
-        /// <param name="actorType">Player, NPC or Enemy</param>
-        /// <param name="health">default 15+random(30) or 5+random(maxhealth-5) if maxhealth is passed</param>
+        /// <param name="actorType">Player, NPC oder Enemy</param>
+        /// <param name="health">Standardwert 15+random(30) or 5+random(maxhealth-5) if maxhealth is passed</param>
         /// <param name="armor">default random(10)</param>
         /// <param name="damage">default 12+random(10)</param>
         /// <param name="maxHealth">default = health</param>

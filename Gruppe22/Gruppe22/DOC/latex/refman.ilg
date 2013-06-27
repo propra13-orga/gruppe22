@@ -1,0 +1,35 @@
+This is makeindex, version 2.15 [MiKTeX 2.9 64-bit] (kpathsea + Thai support).
+Scanning input file refman.idx....
+!! Input index error (file = refman.idx, line = 970):
+   -- Extra `!' at position 251 of first argument.
+!! Input index error (file = refman.idx, line = 971):
+   -- Extra `!' at position 24 of first argument.
+.
+!! Input index error (file = refman.idx, line = 1672):
+   -- Extra `@' at position 304 of first argument.
+!! Input index error (file = refman.idx, line = 1673):
+   -- Extra `@' at position 80 of first argument.
+!! Input index error (file = refman.idx, line = 1674):
+   -- Extra `@' at position 281 of first argument.
+!! Input index error (file = refman.idx, line = 1675):
+   -- Extra `@' at position 57 of first argument.
+.
+!! Input index error (file = refman.idx, line = 2071):
+   -- Extra `@' at position 324 of first argument.
+!! Input index error (file = refman.idx, line = 2072):
+   -- Extra `@' at position 50 of first argument.
+
+!! Input index error (file = refman.idx, line = 2335):
+   -- First argument too long (max 1024).
+!! Input index error (file = refman.idx, line = 2336):
+   -- First argument too long (max 1024).
+
+!! Input index error (file = refman.idx, line = 2339):
+   -- First argument too long (max 1024).
+!! Input index error (file = refman.idx, line = 2340):
+   -- First argument too long (max 1024).
+done (2399 entries accepted, 12 rejected).
+Sorting entries.......................done (29206 comparisons).
+Generating output file refman.ind......done (4490 lines written, 0 warnings).
+Output written in refman.ind.
+Transcript written in refman.ilg.
