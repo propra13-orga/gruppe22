@@ -56,19 +56,36 @@ namespace Gruppe22.Backend
         /// Beschreibung des Items.
         /// </summary>
         private string _description = "";
+        /// <summary>
+        /// Wert.
+        /// </summary>
         private int _value = 0;
+        /// <summary>
+        /// Feld welches markiert, ob Item neu ist.
+        /// </summary>
         private bool _new = false;
+        /// <summary>
+        /// Feld das beschreibt ob Item verbraucht/zerstört ist.
+        /// </summary>
         private bool _destroyed = false;
+        /// <summary>
+        /// Ressourcen-Manager.
+        /// </summary>
         private ContentManager _content = null;
         List<ItemEffect> _effects = null;
 
+        /// <summary>
+        /// Die Wert-Eigenschaft.
+        /// </summary>
         public int value
         {
             get { return _value; }
             set { _value = value; }
         }
 
-
+        /// <summary>
+        /// Eigenschaft der Effektliste.
+        /// </summary>
         public List<ItemEffect> effects
         {
             get
@@ -76,6 +93,10 @@ namespace Gruppe22.Backend
                 return _effects;
             }
         }
+
+        /// <summary>
+        /// Eigenschaft ob Item neu ist.
+        /// </summary>
         public bool isNew
         {
             get
@@ -88,6 +109,9 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// Eigenschaft Besitzer (Actor) zu dem Item.
+        /// </summary>
         public Actor owner
         {
             get
@@ -100,6 +124,9 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// Item wird aufgehoben bzw. aktiviert.
+        /// </summary>
         public virtual void EquipItem()
         {
             // System.Diagnostics.Debug.WriteLine("Equip");
@@ -113,8 +140,6 @@ namespace Gruppe22.Backend
                     {
                         ChangeEffect(effect, true);
                     }
-
-
                 }
                 else
                 {
@@ -142,6 +167,9 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// Löst die Fähigkeiten des Items aus.
+        /// </summary>
         public virtual void UseItem()
         {
             if (_owner != null)
@@ -154,7 +182,11 @@ namespace Gruppe22.Backend
             }
         }
 
-
+        /// <summary>
+        /// Verändert einen Effect.
+        /// </summary>
+        /// <param name="effect">Der Effekt.</param>
+        /// <param name="enable">Aktivieren/deaktivieren.</param>
         public void ChangeEffect(ItemEffect effect, bool enable)
         {
             if (_owner != null)
@@ -345,10 +377,22 @@ namespace Gruppe22.Backend
             }
 
         }
+        /// <summary>
+        /// Eigenschaft Level.
+        /// </summary>
         public int level { get { return _level; } set { _level = value; } }
+        /// <summary>
+        /// Eigenschaft zu der Symbol-Datei für das Item.
+        /// </summary>
         public ImageData icon { get { return _icon; } set { _icon = value; } }
+        /// <summary>
+        /// Eigenschaft ob das Item ausgerüstet ist (d.h. einem Actor zugeordnet) oder nicht.
+        /// </summary>
         public bool equipped { get { return _equipped; } set { _equipped = value; } }
 
+        /// <summary>
+        /// Eigenschaft Tile zu diesem Item.
+        /// </summary>
         public ItemTile tile
         {
             get
@@ -361,6 +405,9 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// Effekt-Update-Methode.
+        /// </summary>
         public void Update()
         {
             if (_equipped)
@@ -379,6 +426,10 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// Liest ein Item aus dem XmlReader.
+        /// </summary>
+        /// <param name="reader">Der entsprechende mlReader.</param>
         public void Load(XmlReader reader)
         {
             _name = reader.GetAttribute("name");
@@ -419,6 +470,10 @@ namespace Gruppe22.Backend
             reader.ReadEndElement(); // End Effects
         }
 
+        /// <summary>
+        /// Speichert den Item in eine xml-Datei (room..., o.ä.).
+        /// </summary>
+        /// <param name="xmlw">Der zu verwendete XmlWriter.</param>
         public void Save(XmlWriter xmlw)
         {
             xmlw.WriteStartElement("Item");
@@ -462,6 +517,9 @@ namespace Gruppe22.Backend
 
         }
 
+        /// <summary>
+        /// Eigenschaft: Gibt zurück oder setzt fest ob das Item zerstört ist.
+        /// </summary>
         public bool destroyed
         {
             get
@@ -474,6 +532,9 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// Eigenschaft: Name des Items.
+        /// </summary>
         public string name
         {
             get
@@ -486,7 +547,9 @@ namespace Gruppe22.Backend
             }
         }
 
-
+        /// <summary>
+        /// Eigenschaft zu der Beschreibung des Items.
+        /// </summary>
         public string description
         {
             get
@@ -499,6 +562,9 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// Eigenschaft: ItemType
+        /// </summary>
         public ItemType itemType
         {
             get
@@ -507,6 +573,11 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// Konvertierungsmethode von ItemProperty zu string.
+        /// </summary>
+        /// <param name="property">Eigenschaft.</param>
+        /// <returns>Name der Eigenschaft als Zeichenkette.</returns>
         public static string PropertyToString(ItemProperty property)
         {
             switch (property)
@@ -575,6 +646,9 @@ namespace Gruppe22.Backend
             return "";
         }
 
+        /// <summary>
+        /// Fähigkeitseigenschaft.
+        /// </summary>
         public string abilityList
         {
             get
@@ -608,6 +682,9 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// Namenserzeugende Methode nach einer speziellen Struktur.
+        /// </summary>
         public void GenerateName()
         {
 
@@ -737,6 +814,9 @@ namespace Gruppe22.Backend
             EstimateValue();
         }
 
+        /// <summary>
+        /// Hilfsmethode für GenerateName(). Setzt das Feld value.
+        /// </summary>
         public void EstimateValue()
         {
             if (value == 0)
@@ -778,6 +858,10 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// Eigenschaftserzeugende Funktion (nach Pseudozufall).
+        /// </summary>
+        /// <param name="r">Wird für die Erzeugung des Pseudozufalls benötigt.</param>
         public void GenerateProperties(Random r = null)
         {
             if (r == null) r = new Random();
@@ -839,6 +923,10 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// Item wird von einem Actor aufgehoben.
+        /// </summary>
+        /// <param name="actor">Spielfigur die das Item aufnimmt.</param>
         public void Pickup(Actor actor)
         {
             if (_owner != null)
@@ -863,7 +951,10 @@ namespace Gruppe22.Backend
             _tile = null;
         }
 
-
+        /// <summary>
+        /// Das aktuelle Item fällt auf den Boden (FloorTile).
+        /// </summary>
+        /// <param name="tile">Das aktuelle Boden-Tile auf dem das Item (bzw. der Actor der es im Inventar hat) steht.</param>
         public void Drop(FloorTile tile)
         {
             if (_owner != null)
@@ -873,7 +964,9 @@ namespace Gruppe22.Backend
             tile.Add(_tile);
         }
 
-
+        /// <summary>
+        /// Erstellt ein Item-Symbol für das Inventar etc.
+        /// </summary>
         public void GenerateIcon()
         {
             /*
@@ -1115,6 +1208,14 @@ namespace Gruppe22.Backend
 
         }
 
+        /// <summary>
+        /// Konstruktor.
+        /// </summary>
+        /// <param name="content"></param>
+        /// <param name="r"></param>
+        /// <param name="value"></param>
+        /// <param name="level"></param>
+        /// <param name="gold"></param>
         public Item(ContentManager content, Random r = null, int value = 0, int level = 1, bool gold = true)
             : this(content)
         {
@@ -1150,6 +1251,16 @@ namespace Gruppe22.Backend
             GenerateIcon();
         }
 
+        /// <summary>
+        /// Konstruktor.
+        /// </summary>
+        /// <param name="content"></param>
+        /// <param name="itemtype"></param>
+        /// <param name="name"></param>
+        /// <param name="r"></param>
+        /// <param name="icon"></param>
+        /// <param name="value"></param>
+        /// <param name="level"></param>
         public Item(ContentManager content, ItemType itemtype, string name = "", Random r = null, ImageData icon = null, int value = 0, int level = 1)
             : this(content)
         {
@@ -1168,7 +1279,16 @@ namespace Gruppe22.Backend
             GenerateIcon();
 
         }
-
+        /// <summary>
+        /// Noch ein Konstruktor mit anderen Initial-Parametern.
+        /// </summary>
+        /// <param name="content"></param>
+        /// <param name="parent"></param>
+        /// <param name="itemtype"></param>
+        /// <param name="name"></param>
+        /// <param name="icon"></param>
+        /// <param name="value"></param>
+        /// <param name="level"></param>
         public Item(ContentManager content, ItemTile parent, ItemType itemtype, string name = "", ImageData icon = null, int value = 0, int level = 1)
             : this(content)
         {
@@ -1188,6 +1308,16 @@ namespace Gruppe22.Backend
             if (icon == null) GenerateIcon();
         }
 
+        /// <summary>
+        /// Ein weiterer Konstruktor.
+        /// </summary>
+        /// <param name="content">Ressourcen-Manager.</param>
+        /// <param name="owner">Der Besitzer-Actor des Items.</param>
+        /// <param name="itemtype">Typ</param>
+        /// <param name="name">Name</param>
+        /// <param name="icon">Symbol</param>
+        /// <param name="value">Wert</param>
+        /// <param name="level">Level</param>
         public Item(ContentManager content, Actor owner, ItemType itemtype, string name = "", ImageData icon = null, int value = 0, int level = 1)
             : this(content)
         {
@@ -1207,6 +1337,10 @@ namespace Gruppe22.Backend
             if (icon == null) GenerateIcon();
         }
 
+        /// <summary>
+        /// Konstruktor.
+        /// </summary>
+        /// <param name="content">Der Ressourcen-Manager.</param>
         public Item(ContentManager content)
         {
             _effects = new List<ItemEffect>();

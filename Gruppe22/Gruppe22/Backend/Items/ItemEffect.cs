@@ -32,13 +32,25 @@ namespace Gruppe22.Backend
     }
 
     /// <summary>
-    /// Effect of an item on a certain character statistic
+    /// Effekt eines Item auf einer bestimmten Charakter-Statistik
     /// </summary>
     public class ItemEffect
     {
+        /// <summary>
+        /// Item-Effekt-Eigenschaft aus der Aufzählung.
+        /// </summary>
         private ItemProperty _property = ItemProperty.Null;
+        /// <summary>
+        /// Effektwert.
+        /// </summary>
         private int _effect = 0;
+        /// <summary>
+        /// Dauer des Item-Effektes.
+        /// </summary>
         private int _duration = 0;
+        /// <summary>
+        /// Eigenschaft des Effektes.
+        /// </summary>
         public int effect
         {
             get
@@ -50,6 +62,9 @@ namespace Gruppe22.Backend
                 _effect = value;
             }
         }
+        /// <summary>
+        /// Eigenschaft der Aufzählung Item-Eigenschaft.
+        /// </summary>
         public ItemProperty property
         {
             get
@@ -61,6 +76,9 @@ namespace Gruppe22.Backend
                 _property = value;
             }
         }
+        /// <summary>
+        /// Eigenschaft zur Dauer.
+        /// </summary>
         public int duration
         {
             get
@@ -72,7 +90,12 @@ namespace Gruppe22.Backend
                 _duration = value;
             }
         }
-
+        /// <summary>
+        /// Konstruktor.
+        /// </summary>
+        /// <param name="property">Fähigkeit.</param>
+        /// <param name="effect">Wirkung.</param>
+        /// <param name="duration">Dauer.</param>
         public ItemEffect(ItemProperty property = ItemProperty.Null, int effect = 0, int duration = 0)
         {
             _property = property;
