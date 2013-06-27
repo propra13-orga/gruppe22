@@ -10,23 +10,27 @@ namespace Gruppe22.Backend
     public class DoorTile : WallTile
     {
         /// <summary>
-        /// Whether the door is open
+        /// Tür offen oder nicht
         /// </summary>
         private bool _open = false;
         /// <summary>
-        /// ID of key used to open door; 0 for no key
+        /// Die ID des Schlüssels mit dem diese Tür geöffnet werden kann; 0 bedeutet man braucht kein Schlüssel
         /// </summary>
         private int _key = 0;
         /// <summary>
-        /// Whether the door is open
+        /// Öffentliche Eigenschaft für den Zustand der Tür
         /// </summary>        
         public bool open { get { return _open; } set { _open = value; } }
         /// <summary>
-        /// ID of key used to open door; 0 for no key
+        /// Öffentliche Eigenschaft für die Schlüssel-ID
         /// </summary>
-
         public int key { get { return _key; } set { _key = value; } }
-
+        /// <summary>
+        /// Konstruktor.
+        /// </summary>
+        /// <param name="parent">Elternobjekt.</param>
+        /// <param name="locked">Verschlossen?</param>
+        /// <param name="key">Schlüssel-ID</param>
         public DoorTile(object parent, bool locked = true, int key = 0)
             : base(parent)
         {
@@ -34,7 +38,9 @@ namespace Gruppe22.Backend
             _open = !locked;
         }
 
-
+        /// <summary>
+        /// Neue öffentliche Eigenschaft s. WallType.
+        /// </summary>
         new public WallType type
         {
             get
@@ -43,6 +49,10 @@ namespace Gruppe22.Backend
                 else return Backend.WallType.ClosedDoor;
             }
         }
+        /// <summary>
+        /// Speichert das WallTile in die XML.
+        /// </summary>
+        /// <param name="xmlw">Der zu verwendete XmlWriter.</param>
         public override void Save(XmlWriter xmlw)
         {
             xmlw.WriteStartElement("DoorTile");

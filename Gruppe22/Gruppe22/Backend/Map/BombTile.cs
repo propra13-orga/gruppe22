@@ -8,6 +8,10 @@ namespace Gruppe22.Backend
 {
     class BombTile:Tile
     {
+        /// <summary>
+        /// Konstruktor zu dem BombTile (Bombe).
+        /// </summary>
+        /// <param name="parent">Elternobjekt.</param>
         public BombTile(object parent)
             : base(parent)
         {

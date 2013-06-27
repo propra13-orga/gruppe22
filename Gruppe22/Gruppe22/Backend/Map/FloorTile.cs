@@ -14,22 +14,25 @@ namespace Gruppe22.Backend
         #region Private Fields
 
         /// <summary>
-        /// Fields displayed (and checked) on top of the current field
+        /// Liste der Tiles die auf diesem FloorTile liegen.
         /// </summary>
         protected List<Tile> _overlay;
 
         /// <summary>
-        /// The Position of the tile
+        /// Die Koordinaten bezogene Position des Bodenstückes.
         /// </summary>
         protected Backend.Coords _coords = null;
 
         /// <summary>
-        /// Whether field is visible on the minimap
+        /// Markiert ob dieses Bodenstück in der Minimap angezeigt wird oder nicht.
         /// </summary>
         private bool _visited = false;
         #endregion
 
         #region Public Fields
+        /// <summary>
+        /// Öffentliche Eigenschaft zu dem overlay.
+        /// </summary>
         public List<Tile> overlay
         {
             get
@@ -42,6 +45,9 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// Gibt eine Liste der Actors zurück die sich auf diesem Bodenstück befinden.
+        /// </summary>
         public List<Actor> actors
         {
             get
@@ -55,6 +61,9 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// Gibt eine Liste der Items zurück, die auf dem Boden liegen.
+        /// </summary>
         public List<Item> items
         {
             get
@@ -68,6 +77,9 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// Gibt die erste Falle die auf dem Boden liegt zurück oder null.
+        /// </summary>
         public TrapTile trap
         {
             get
@@ -81,6 +93,9 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// Gibt das CheckpointTile aus dem overlay zurück oder null.
+        /// </summary>
         public CheckpointTile checkpoint
         {
             get
@@ -94,6 +109,9 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// Gibt das TeleportTile das auf dem Boden steht oder null.
+        /// </summary>
         public TeleportTile teleport
         {
             get
@@ -107,6 +125,9 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// Gibt den ersten Actor der auf dem Boden steht zurück oder null.
+        /// </summary>
         public Actor firstActor
         {
             get
@@ -120,6 +141,9 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// Gibt das erste ReservedTile aus dem overlay zurück oder null.
+        /// </summary>
         public ReservedTile reserved
         {
             get
@@ -133,6 +157,9 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// Gibt die erste gefundene Tür aus dem overlay zurück oder null.
+        /// </summary>
         public DoorTile door
         {
             get
@@ -146,6 +173,9 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// Gibt das erste gefundene Item zurück oder null.
+        /// </summary>
         public ItemTile firstItem
         {
             get
@@ -159,6 +189,9 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// Koordinaten des Tiles.
+        /// </summary>
         public new Backend.Coords coords
         {
             get
@@ -172,7 +205,7 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Determine whether tile has a checkpoint on it
+        /// bestimmt ob auf diesem Tile ein Checkpoint ist.
         /// </summary>
         public bool hasCheckpoint
         {
@@ -188,7 +221,7 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Determine whether tile can be entered
+        /// Bestimmt ob dieses Tile betreten werden kann.
         /// </summary>
         public bool canEnter
         {
@@ -206,7 +239,7 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Determine whether tile has a wall on it
+        /// Bestimmt ob hier eine Wand steht.
         /// </summary>
         public bool hasWall
         {
@@ -222,7 +255,9 @@ namespace Gruppe22.Backend
         }
 
 
-
+        /// <summary>
+        /// Wandtyp.
+        /// </summary>
         public WallType wallType
         {
             get
@@ -238,7 +273,7 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Determine whether tile has a door on it
+        /// Bestimmt ob eine Tür auf diesem Tile ist.
         /// </summary>
         public bool hasDoor
         {
@@ -255,7 +290,7 @@ namespace Gruppe22.Backend
 
 
         /// <summary>
-        /// Determine whether tile has a special floor style (empty space, fire, water, road, grass, rocks, etc.)
+        /// Bestimmt ob das Tile einen speziellen Boden-Stil hat.
         /// </summary>
         public int floorStyle
         {
@@ -270,7 +305,7 @@ namespace Gruppe22.Backend
             }
         }
         /// <summary>
-        /// Determine whether a player is standing on the current tile
+        /// Bestimmt ob der Spieler sich auf diesem Tile befindet.
         /// </summary>
         public bool hasPlayer
         {
@@ -288,7 +323,7 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Determine whether an enemy is standing on the current tile
+        /// Bestimmt ob auf dem aktuellen Tile ein NPC steht
         /// </summary>
         public bool hasNPC
         {
@@ -305,7 +340,7 @@ namespace Gruppe22.Backend
             }
         }
         /// <summary>
-        /// Determine whether an enemy is standing on the current tile
+        /// Bestimmt ob auf dem aktuellen Tile ein Feind steht
         /// </summary>
         public bool hasEnemy
         {
@@ -323,7 +358,7 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Determine whether the current tile contains a teleporter
+        /// Bestimmt ob das aktuelle Tile einen Teleporter (Raumwechsel) beinhaltet
         /// </summary>
         public bool hasTeleport
         {
@@ -341,7 +376,7 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Determine whether the current tile has a trap on it
+        /// Bestimmt ob das aktuelle Tile eine Falle hat.
         /// </summary>
         public bool hasTrap
         {
@@ -359,7 +394,7 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Determine whether there is a treasure on the current tile
+        /// Bestimmt ob ein Schatz auf dem aktuellen Tile liegt.
         /// </summary>
         public bool hasTreasure
         {
@@ -376,6 +411,9 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// Öffentliche Eigenschaft der Sichtbarkeit der Tiles.
+        /// </summary>
         public bool visible
         {
             get
@@ -389,7 +427,7 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Determine whether the current tile is the 'end' of the game
+        /// Bestimmt ob das aktuelle Tile das 'Ende' des Spielfeldes
         /// </summary>
         public bool hasTarget
         {
@@ -412,9 +450,9 @@ namespace Gruppe22.Backend
 
 
         /// <summary>
-        /// Refresh tiles which do something (traps, enemies, NPCs)
+        /// Update der interaktiven Tiles.
         /// </summary>
-        /// <param name="gameTime"></param>
+        /// <param name="gameTime">Hilfsobjekt.</param>
         public override void Update(GameTime gameTime)
         {
             for (int i = 0; i < _overlay.Count; ++i)
@@ -424,9 +462,9 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Remove all tiles of a specified type from overlay
+        /// Lösche alle Tiles des angegebenen Types aus dem overlay
         /// </summary>
-        /// <param name="type"></param>
+        /// <param name="type">Der Typ der Tiles die gelöscht werden sollen.</param>
         public void Remove(TileType type)
         {
             for (int i = 0; i < _overlay.Count; ++i)
@@ -499,10 +537,12 @@ namespace Gruppe22.Backend
                 }
         }
 
+        
         /// <summary>
-        /// Add specified tile to overlay
+        /// Fügt den angegebenen Tile zu dem overlay hinzu. 
         /// </summary>
-        /// <param name="tile"></param>
+        /// <param name="tile">Das Tile das hinzugefügt wird.</param>
+        /// <param name="update"></param>
         public void Add(Tile tile, bool update = false)
         {
             _overlay.Add(tile);
@@ -517,7 +557,7 @@ namespace Gruppe22.Backend
 
 
         /// <summary>
-        /// Remove specified tile from overlay
+        /// Löscht den angegebenen Tile aus dem overlay.
         /// </summary>
         /// <param name="tile"></param>
         public void Remove(Tile tile)
@@ -530,8 +570,9 @@ namespace Gruppe22.Backend
 
         #region Constructor
         /// <summary>
-        /// A empty constructor
+        /// Einfacher Konstruktor.
         /// </summary>
+        /// <param name="parent">Elternobjekt.</param>
         public FloorTile(object parent)
             : base(parent)
         {
@@ -540,8 +581,11 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// A constructor adding a walltile to the overlay if the contructed tile is impassable
+        /// Dieser Konstruktor fürgt dem overlay ein WallTile hinzu, falls die Stelle als unpassierbar markiert ist 
         /// </summary>
+        /// <param name="parent">Elternobjekt.</param>
+        /// <param name="coords">Koordinaten.</param>
+        /// <param name="canEnter">Passierbarkeit.</param>
         public FloorTile(object parent, Backend.Coords coords = null, bool canEnter = true)
             : this(parent)
         {
@@ -558,7 +602,7 @@ namespace Gruppe22.Backend
         #endregion
 
         /// <summary>
-        /// Save the Floortile and every tile in it's overlay
+        /// Speichert das FloorTile und den zugehörigen overlay
         /// </summary>
         public override void Save(XmlWriter xmlw)
         {
@@ -578,7 +622,7 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Clean up Tile
+        /// Aufräumen nachdem die Objekte verworfen werden können.
         /// </summary>
         public void Dispose()
         {
