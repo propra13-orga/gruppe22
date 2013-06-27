@@ -9,6 +9,9 @@ namespace Gruppe22.Backend
     public class Enemy : Actor
     {
 
+        /// <summary>
+        /// Zuweisung von Skills und Eigenschaften zu dem Enemy.
+        /// </summary>
         public void AssignSkillsAndAbilities()
         {
             while (_skills > 0)
@@ -60,7 +63,7 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Constructor
+        /// Konstruktor. Initialisieren der Struktur.
         /// </summary>
         public Enemy(ContentManager content, int health = -1, int armour = -1, int damage = -1, int maxHealth = -1, string name = "", Random r = null, int level = 1)
             : base(content, ActorType.Enemy, health, armour, damage, maxHealth, name, r)

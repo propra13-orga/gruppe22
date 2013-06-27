@@ -23,14 +23,38 @@ namespace Gruppe22.Backend
     }
     public class Item
     {
+        /// <summary>
+        /// ID des Items.
+        /// </summary>
         private int _id = 1;
+        /// <summary>
+        /// Level des Items. 
+        /// </summary>
         private int _level = 1;
+        /// <summary>
+        /// Typ des Items.
+        /// </summary>
         private ItemType _itemType = Backend.ItemType.Armor;
+        /// <summary>
+        /// Das Tile-Objekt zu dem Item.
+        /// </summary>
         private ItemTile _tile = null;
+        /// <summary>
+        /// Der Actor zu dem dieses Item gehört.
+        /// </summary>
         private Actor _owner = null;
         private ImageData _icon = null;
+        /// <summary>
+        /// Dieses Feld zeigt an, ob das Item von einem Actor aufgehoben wurde oder nicht.
+        /// </summary>
         private bool _equipped = false;
+        /// <summary>
+        /// Feld für den Namen des Items.
+        /// </summary>
         private string _name = "";
+        /// <summary>
+        /// Beschreibung des Items.
+        /// </summary>
         private string _description = "";
         private int _value = 0;
         private bool _new = false;
@@ -103,6 +127,9 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// Eigenschaft zu der ID des Items.
+        /// </summary>
         public int id
         {
             get
