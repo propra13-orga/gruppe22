@@ -10,16 +10,40 @@ namespace Gruppe22.Backend
     public class ActorTile : Tile
     {
         #region Private Fields
+        /// <summary>
+        /// Der Actor, der auf diesem Tile "steht".
+        /// </summary>
         private Actor _actor;
+        /// <summary>
+        /// Die verstrichene Zeit.
+        /// </summary>
         private int _elapsed = 0;
+        /// <summary>
+        /// Anzahl der Einheiten die ein Actor abwartet, bevor ein Kommando umgesetzt wird.
+        /// </summary>
         private int _timeToThink = 50;
+        /// <summary>
+        /// Kampfunfähig.
+        /// </summary>
         private bool _disabled = false;
+        /// <summary>
+        /// Richtung des Actors. Siehe Aufzählung.
+        /// </summary>
         private Direction _lastDir = Direction.None;
+        /// <summary>
+        /// Hilfsfeld zur erzeugung von Pseudozufall.
+        /// </summary>
         private Random _random = null;
+        /// <summary>
+        /// Funktionsfähigkeit.
+        /// </summary>
         private bool _working = false;
         #endregion
 
         #region Public Fields
+        /// <summary>
+        /// Eigenschaft zu dem Actorfeld.
+        /// </summary>
         public Actor actor
         {
             get { return _actor; }
@@ -44,7 +68,10 @@ namespace Gruppe22.Backend
                 _disabled = !value;
             }
         }
-
+        /// <summary>
+        /// Speichert das ActorTile in den XML-Strom.
+        /// </summary>
+        /// <param name="xmlw">Der zu verwendete XmlWriter.</param>
         public override void Save(XmlWriter xmlw)
         {
             xmlw.WriteStartElement("ActorTile");
@@ -54,12 +81,19 @@ namespace Gruppe22.Backend
         #endregion
 
         #region Constructor
+        /// <summary>
+        /// Konstruktor.
+        /// </summary>
+        /// <param name="parent">Elternobjekt.</param>
+        /// <param name="actor">Der Actor.</param>
         public ActorTile(object parent, Actor actor)
             : this(parent)
         {
             _actor = actor;
         }
-
+        /// <summary>
+        /// Lässt den Actor sein gesamtes Item-Inventar auf den Boden (Eltern-Tile) fallen.
+        /// </summary>
         public void DropItems()
         {
             while (actor.inventory.Count > 0)
@@ -71,6 +105,10 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// Workout bewegnungen. Die Computer-KI.
+        /// </summary>
+        /// <returns>Ergebnis von asynchonen Task.</returns>
         public async Task WorkoutMoves()
         {
             bool canAttack = false;
@@ -186,7 +224,10 @@ namespace Gruppe22.Backend
             }
 
         }
-
+        /// <summary>
+        /// Die in erwägung gezogene Bewegung.
+        /// </summary>
+        /// <returns>Ergenbnis.</returns>
         public async Task ConsiderMoves()
         {
             _working = true;
@@ -194,6 +235,10 @@ namespace Gruppe22.Backend
             _working = false;
         }
 
+        /// <summary>
+        /// Die Update-Routine des Spiels.
+        /// </summary>
+        /// <param name="gameTime">Spielzeit. Wird für Physik des Spiels benötigt.</param>
         public override void Update(Microsoft.Xna.Framework.GameTime gameTime)
         {
             if (!actor.isDead)
@@ -212,7 +257,11 @@ namespace Gruppe22.Backend
                 }
             }
         }
-
+        /// <summary>
+        /// Konstruktor.
+        /// </summary>
+        /// <param name="parent">Elternobjekt.</param>
+        /// <param name="r">Hilfsobjekt.</param>
         public ActorTile(object parent, Random r = null)
             : base(parent)
         {

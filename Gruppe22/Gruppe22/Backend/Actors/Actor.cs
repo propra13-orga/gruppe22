@@ -22,16 +22,46 @@ namespace Gruppe22.Backend
         /// Zufallsgenerator.
         /// </summary>
         protected Random _random;
+        /// <summary>
+        /// Anzahl der neuen Items.
+        /// </summary>
         protected int _newItems = 0;
+        /// <summary>
+        /// Das Tile zu diesem Actor.
+        /// </summary>
         protected ActorTile _tile;
+        /// <summary>
+        /// Der typ des Actors, s. Aufzählung.
+        /// </summary>
         protected ActorType _actorType;
+        /// <summary>
+        /// Die ID.
+        /// </summary>
         protected int _id = 0;
+        /// <summary>
+        /// Name des Actors.
+        /// </summary>
         protected string _name = "";
+        /// <summary>
+        /// Die Inventarliste des Actors.
+        /// </summary>
         protected List<Item> _inventory = null;
         //protected int _deadcounter = 0;
+        /// <summary>
+        /// Mana.
+        /// </summary>
         protected int _mana = 50;
+        /// <summary>
+        /// Beschreibt wie gut der Actor einem Angriff ausweichen kann.
+        /// </summary>
         protected int _evade = 0;
+        /// <summary>
+        /// beschreibt wie gut/schlecht der Actor einen Angriff blockieren kann.
+        /// </summary>
         protected int _block = 0;
+        /// <summary>
+        /// TODO: hier weiter die Felder und zugehörigen Eigenschaften beschreiben, ich(Ruslan) weiß leider nicht genau was die tun deshalb konnte ich an der stelle nicht weitermachen.
+        /// </summary>
         protected int _penetrate = 0;
         protected int _healthReg = 0;
         protected int _stealHealth = 0;
@@ -44,9 +74,15 @@ namespace Gruppe22.Backend
         protected int _destroyArmor = 0;
         protected int _maxMana = 100;
         protected int _manaReg = 0;
+        /// <summary>
+        /// Das Budget des Actors.
+        /// </summary>
         protected int _gold = 0;
         protected bool _locked = false;
         protected int _level = 0;
+        /// <summary>
+        /// Die höhe des Schades den der Actor verursachen kann.
+        /// </summary>
         protected int _damage = 0;
         protected bool _aggro = true;
         protected bool _ranged = false;
