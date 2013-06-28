@@ -13,17 +13,9 @@ namespace Gruppe22.Backend
     /// <summary>
     /// Program Logic completely abstracted from Frontend
     /// </summary>
-    public class PureLogic : IHandleEvent
+    public class PureLogic : Logic,IHandleEvent
     {
-        private Map _map;
-        private IHandleEvent _parent;
-        private Random _random;
-
-        public Map map
-        {
-            get { return _map; }
-            set { _map = value; }
-        }
+       
 
         /// <summary>
         /// methode to evaluate the damage in a combat between two actors
@@ -236,47 +228,11 @@ namespace Gruppe22.Backend
                     break;
 
                 case Backend.Events.LoadFromCheckPoint:
-                    _status = Backend.GameStatus.NoRedraw;
-                    _deadcounter--;
-                    string lastCheck = File.ReadAllText("CheckPoint");
-                    while (Directory.GetFiles(".", "savedroom*.xml").Length > 0)
-                    {
-                        File.Delete(Directory.GetFiles(".", "savedroom*.xml")[0]);
-                    }
-                    Regex re = new Regex(@"\d+");
-                    foreach (string file in Directory.GetFiles(".", "checkpoint*.xml"))
-                    {
-                        Match m = re.Match(file);
-                        File.Copy(file, "savedroom" + m.Value + ".xml");
-                    }
-                    _map.actors.Clear();
-                    _map.Load("savedroom" + lastCheck + ".xml", null);
-                    File.WriteAllText("GameData", "room" + _map.id.ToString() + ".xml" + Environment.NewLine + _deadcounter.ToString());
-                    _mainmap1.resetActors();
-                    //_mainmap2.resetActors();
-                    _mana.actor = _map.actors[0];
-                    _health.actor = _map.actors[0];
-                    _toolbar.actor = _map.actors[0];
-                    _status = Backend.GameStatus.Paused;
-                    HandleEvent(true, Backend.Events.ContinueGame);
+                    _parent.HandleEvent(false, Events.LoadFromCheckPoint, data);
                     break;
 
                 case Backend.Events.ChangeMap: // Load another map
-                    _PlaySoundEffect(0); //SoundEffect change map
-                    _status = Backend.GameStatus.NoRedraw; // prevent redraw (which would crash the game!)
-                    _map.Save("savedroom" + _map.id + ".xml");
-                    if (File.Exists("saved" + (string)data[0]))
-                        _map.Load("saved" + (string)data[0], (Coords)data[1]);
-                    else
-                        _map.Load((string)data[0], (Coords)data[1]);
-                    _mainmap1.resetActors();
-                    //_mainmap2.resetActors();
-                    _minimap1.MoveCamera(_map.actors[0].tile.coords);
-
-                    _parent.HandleEvent(false, Events.ShowMessage, "You entered room number " + data[0].ToString().Substring(4, 1) + ".");
-                    File.WriteAllText("GameData", data[0].ToString() + Environment.NewLine + _deadcounter.ToString());
-
-                    _status = Backend.GameStatus.Running;
+                    _parent.HandleEvent(false, Events.ChangeMap, data);                    
                     break;
 
                 case Backend.Events.FinishedAnimation:
@@ -863,14 +819,5 @@ namespace Gruppe22.Backend
         }
         #endregion
 
-        public PureLogic(IHandleEvent parent, Map map = null, Random _random = null)
-        {
-            _parent = parent;
-            if (map != null)
-            {
-                _map = map;
-            }
-            if (_random == null) _random = new Random();
-        }
     }
 }

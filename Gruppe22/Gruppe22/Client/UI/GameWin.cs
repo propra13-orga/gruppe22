@@ -13,6 +13,7 @@ using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Media;
 using Lidgren.Network;
 using Gruppe22.Backend;
+using System.Text.RegularExpressions;
 
 namespace Gruppe22.Client
 {
@@ -23,7 +24,7 @@ namespace Gruppe22.Client
     {
         #region Private Fields
 
-        protected Backend.PureLogic _logic=null;
+        protected Backend.Logic _logic = null;
         /// <summary>
         /// Central Output device
         /// </summary>
@@ -64,15 +65,7 @@ namespace Gruppe22.Client
         /// </summary>
         protected UIElement _focus = null;
 
-        /// <summary>
-        /// Internal storage for Player 1
-        /// </summary>
-        protected Backend.Map _map1 = null;
 
-        /// <summary>
-        /// Internal storage for Player 2
-        /// </summary>
-        protected Backend.Map _map2 = null;
 
         /// <summary>
         /// Whether the game is paused (for menus etc.)
@@ -169,7 +162,7 @@ namespace Gruppe22.Client
         {
             _interfaceElements = new List<UIElement>(); // Initialize the list of UI elements (but not the objects themselves, see LoadContent)
             _logic = new PureLogic(this, null);
-            if ((!System.IO.File.Exists("room1.xml"))&&(_network==null))
+            if ((!System.IO.File.Exists("room1.xml")) && (_network == null))
             {
                 _logic.GenerateMaps();
             }
@@ -274,6 +267,8 @@ namespace Gruppe22.Client
             SoundEffectInstance effect = soundEffects[index].CreateInstance();
             effect.Play();
         }
+
+
 
         private void _ShowTextBox(string message)
         {
@@ -569,6 +564,22 @@ namespace Gruppe22.Client
         {
             switch (eventID)
             {
+                case Backend.Events.ChangeMap:
+                    _status = Backend.GameStatus.NoRedraw; // prevent redraw (which would crash the game!)
+                    _map1.Save("savedroom" + _map.id + ".xml");
+                    if (File.Exists("saved" + (string)data[0]))
+                        _map1.Load("saved" + (string)data[0], (Coords)data[1]);
+                    else
+                        _map1.Load((string)data[0], (Coords)data[1]);
+                    _mainmap1.resetActors();
+                    //_mainmap2.resetActors();
+                    _minimap1.MoveCamera(_map1.actors[0].tile.coords);
+
+                    HandleEvent(false, Events.ShowMessage, "You entered room number " + data[0].ToString().Substring(4, 1) + ".");
+                    File.WriteAllText("GameData", data[0].ToString() + Environment.NewLine + _deadcounter.ToString());
+
+                    _status = Backend.GameStatus.Running;
+                    break;
                 case Backend.Events.Chat:
                     if (_network != null)
                     {
@@ -705,6 +716,32 @@ namespace Gruppe22.Client
                     }
                     break;
 
+                case Backend.Events.LoadFromCheckPoint:
+                    _status = Backend.GameStatus.NoRedraw;
+                    _deadcounter--;
+                    string lastCheck = File.ReadAllText("CheckPoint");
+                    while (Directory.GetFiles(".", "savedroom*.xml").Length > 0)
+                    {
+                        File.Delete(Directory.GetFiles(".", "savedroom*.xml")[0]);
+                    }
+                    Regex re = new Regex(@"\d+");
+                    foreach (string file in Directory.GetFiles(".", "checkpoint*.xml"))
+                    {
+                        Match m = re.Match(file);
+                        File.Copy(file, "savedroom" + m.Value + ".xml");
+                    }
+                    _map1.actors.Clear();
+                    _map1.Load("savedroom" + lastCheck + ".xml", null);
+                    File.WriteAllText("GameData", "room" + _map1.id.ToString() + ".xml" + Environment.NewLine + _deadcounter.ToString());
+                    _mainmap1.resetActors();
+                    //_mainmap2.resetActors();
+                    _mana.actor = _map1.actors[0];
+                    _health.actor = _map1.actors[0];
+                    _toolbar.actor = _map1.actors[0];
+                    _status = Backend.GameStatus.Paused;
+                    HandleEvent(true, Backend.Events.ContinueGame);
+                    break;
+
                 case Backend.Events.Player2:
                     foreach (UIElement element in _interfaceElements)
                     {
@@ -726,7 +763,7 @@ namespace Gruppe22.Client
                     break;
 
                 case Backend.Events.LAN:
-                     ShowLANWindow();
+                    ShowLANWindow();
 
                     /*  //_secondPlayer = true;
                       _lan = true;

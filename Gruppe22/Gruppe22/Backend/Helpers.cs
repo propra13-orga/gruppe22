@@ -201,6 +201,7 @@ namespace Gruppe22.Backend
 
     public enum SoundFX
     {
+        ChangeMap=0,
         Damage=4
     }
     public enum Buttons
