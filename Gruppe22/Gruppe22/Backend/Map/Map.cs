@@ -10,23 +10,53 @@ namespace Gruppe22.Backend
 {
     public class Exit
     {
+        /// <summary>
+        /// Koordinaten des Ausgangs.
+        /// </summary>
         private Backend.Coords _from;
+        /// <summary>
+        /// Koordinaten des Ziels.
+        /// </summary>
         private Backend.Coords _to;
+        /// <summary>
+        /// Raumdateiname in dem sich der Spieler im moment befindet.
+        /// </summary>
         private string _fromRoom;
+        /// <summary>
+        /// Raumdateiname zu dem Raum wo der Spieler hin gelangt, wenn er diesen Ausgang nimmt.
+        /// </summary>
         private string _toRoom;
+        /// <summary>
+        /// Öffentliche Eigenschaft zu from
+        /// </summary>
         public Backend.Coords from
         {
             get { return _from; }
         }
 
+        /// <summary>
+        /// Öffentliche Eigenschaft
+        /// </summary>
         public Backend.Coords to
         {
             get { return _to; }
         }
+        /// <summary>
+        /// Öffentliche Eigenschaft
+        /// </summary>
         public string fromRoom { get { return _fromRoom; } }
-
+        /// <summary>
+        /// Öffentliche Eigenschaft
+        /// </summary>
         public string toRoom { get { return _toRoom; } }
 
+        /// <summary>
+        /// Konstruktor.
+        /// </summary>
+        /// <param name="from">Koordinaten des Ausgangs.</param>
+        /// <param name="fromRoom">Dateiname zu dem Quellraum.</param>
+        /// <param name="to">Koordinaten für den Sprung in den nächsten Raum.</param>
+        /// <param name="toRoom">Raumname des Zielraumes.</param>
         public Exit(Coords from, string fromRoom, Backend.Coords to = null, string toRoom = "")
         {
             _from = from;
@@ -39,50 +69,88 @@ namespace Gruppe22.Backend
     public class Map : IHandleEvent, IDisposable
     {
         #region Private Fields
+        /// <summary>
+        /// Der Ressourcen-Manager des Spiels.
+        /// </summary>
         protected ContentManager _content;
+        /// <summary>
+        /// Das Level zu dem diese Map (Raum) gehört.
+        /// </summary>
         protected int _level;
+        /// <summary>
+        /// Name des Raums.
+        /// </summary>
         protected string _name;
+        /// <summary>
+        /// Der Dungeon-name des Raums.
+        /// </summary>
         protected string _dungeonname;
+        /// <summary>
+        /// Der verwendeten Wand-Dateien.
+        /// </summary>
         protected string _wallFile = "wall1";
+        /// <summary>
+        /// Die verwendeten Boden-Dateien.
+        /// </summary>
         protected string _floorFile = "floor1";
+        /// <summary>
+        /// Lichtfeld beschreibt die stärke des Lichtkreises im Spiel.
+        /// </summary>
         protected int _light;
+        /// <summary>
+        /// Die zu verwendete Musikdatei.
+        /// </summary>
         protected string _music = "level1";
+        /// <summary>
+        /// Die Raum-ID.
+        /// </summary>
         protected int _id;
-
+        /// <summary>
+        /// Das Elternobjekt. Hier Mainwindow bzw. GameWin/GameLogic.
+        /// </summary>
         private object _parent = null;
 
         /// <summary>
-        /// A two dimensional list of tiles
+        /// Die Hauptstruktur der Karte, zweidimensionale Liste von Tiles.
         /// </summary>
         protected List<List<FloorTile>> _tiles = null;
 
         /// <summary>
-        /// Internal current width
+        /// Aktuelle Breite (wird intern verwendet).
         /// </summary>
         protected int _width = 10;
 
         protected List<Exit> _exits;
 
         /// <summary>
-        /// Internal current height
+        /// Die aktuelle interne höhe 
         /// </summary>
         protected int _height = 10;
 
         /// <summary>
-        /// Blank tile returned when requesting tile outside map boundaries (i.e. negative values / values beyond width or height)
+        /// Beschreibt das Ende des Begehbaren bereiches.
         /// </summary>
         private FloorTile _blankTile = null;
 
         /// <summary>
-        /// A list of Actors in the current room
+        /// Die Liste aller Actors zu dem aktuellen Raum.
         /// </summary>
         protected List<Actor> _actors = null;
+        /// <summary>
+        /// Die Liste aller Items zu dem aktuellen Raum.
+        /// </summary>
         protected List<Item> _items = null;
+        /// <summary>
+        /// Die Liste aller Tiles die eine Update-Methode besitzen d.h. irgend eine art von Animation oder Effekt besitzen.
+        /// </summary>
         protected List<Coords> _updateTiles = null;
         #endregion
 
         #region Public Fields
 
+        /// <summary>
+        /// Öffentliche Eigenschaft
+        /// </summary>
         public int level
         {
             get
@@ -96,25 +164,33 @@ namespace Gruppe22.Backend
         }
 
 
-
+        /// <summary>
+        /// Öffentliche Eigenschaft
+        /// </summary>
         public string floorFile
         {
             get { return _floorFile; }
             set { _floorFile = value; }
         }
-
+        /// <summary>
+        /// Öffentliche Eigenschaft
+        /// </summary>
         public string music
         {
             get { return _music; }
             set { _music = value; }
         }
-
+        /// <summary>
+        /// Öffentliche Eigenschaft
+        /// </summary>
         public string wallFile
         {
             get { return _wallFile; }
             set { _wallFile = value; }
         }
-
+        /// <summary>
+        /// Öffentliche Eigenschaft
+        /// </summary>
         public int light
         {
             get
@@ -126,7 +202,9 @@ namespace Gruppe22.Backend
                 _light = value;
             }
         }
-
+        /// <summary>
+        /// Öffentliche Eigenschaft
+        /// </summary>
         public string name
         {
             get
@@ -138,7 +216,9 @@ namespace Gruppe22.Backend
                 _name = value;
             }
         }
-
+        /// <summary>
+        /// Öffentliche Eigenschaft
+        /// </summary>
         public string dungeonname
         {
             get
@@ -150,6 +230,9 @@ namespace Gruppe22.Backend
                 _dungeonname = value;
             }
         }
+        /// <summary>
+        /// Öffentliche Eigenschaft
+        /// </summary>
         public List<Coords> updateTiles
         {
             get
@@ -157,6 +240,9 @@ namespace Gruppe22.Backend
                 return _updateTiles;
             }
         }
+        /// <summary>
+        /// Öffentliche Eigenschaft
+        /// </summary>
         public int id
         {
             get
@@ -168,7 +254,9 @@ namespace Gruppe22.Backend
                 id = value;
             }
         }
-
+        /// <summary>
+        /// Öffentliche Eigenschaft
+        /// </summary>
         public List<Actor> actors
         {
             get
@@ -180,7 +268,9 @@ namespace Gruppe22.Backend
                 _actors = value;
             }
         }
-
+        /// <summary>
+        /// Öffentliche Eigenschaft
+        /// </summary>
         public List<Exit> exits
         {
             get
@@ -192,7 +282,9 @@ namespace Gruppe22.Backend
                 _exits = value;
             }
         }
-
+        /// <summary>
+        /// Öffentliche Eigenschaft
+        /// </summary>
         public List<Item> items
         {
             get
@@ -206,7 +298,7 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Current Width of the maze
+        /// Öffentliche Eigenschaft zur Labyrintbreite.
         /// </summary>
         public int width
         {
@@ -221,7 +313,7 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Current Height of the maze
+        /// Labyrinthöhe.
         /// </summary>
         public int height
         {
@@ -236,7 +328,7 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// A list of the current position of every actor
+        /// Die Liste der aktuellen Position aller Actor-Objekte au der Karte.
         /// </summary>
         public List<Coords> actorPositions
         {
@@ -253,7 +345,7 @@ namespace Gruppe22.Backend
 
 
         /// <summary>
-        /// Get the tile at coordinates x and y
+        /// Liefert das Tile-Objekt, das sich an dem angegebenen Koordinatenpunkt befindet.
         /// </summary>
         /// <param name="x">The x-coordinate</param>
         /// <param name="y">The y-coordinate</param>
@@ -271,7 +363,7 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Get the tile at coordinates x and y
+        /// Eine weitere Variante der Methode, hier int-Werte als Koordinaten, statt der Klasse Coords.
         /// </summary>
         /// <param name="x">The x-coordinate</param>
         /// <param name="y">The y-coordinate</param>
@@ -301,7 +393,7 @@ namespace Gruppe22.Backend
 
         #region Public Methods
         /// <summary>
-        /// Refresh tiles which do something (traps, enemies, NPCs)
+        /// Aktualisiert die Tile-Objekte, die eine Aktion besitzen.
         /// </summary>
         /// <param name="gameTime"></param>
         public void Update(GameTime gameTime)
@@ -313,7 +405,7 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Add an actor to a tile
+        /// Add an actor to a tile. Tut noch nix.
         /// </summary>
         /// <param name="item"></param>
         /// <param name="from"></param>
@@ -321,7 +413,11 @@ namespace Gruppe22.Backend
         {
 
         }
-
+        /// <summary>
+        /// Aufdeken (sichtbar machen) der Umgebung um eine Koordinate mit Radius radius. (Euklidische Norm)
+        /// </summary>
+        /// <param name="coords">Der Umgebungspunkt.</param>
+        /// <param name="radius">Der Radius.</param>
         public void Uncover(Coords coords, int radius = 4)
         {
             for (int i = 0; i < radius; ++i)
@@ -343,7 +439,7 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Move an actor on the map in a specified direction (does not check for walls - use CanMove)
+        /// Bewegt einen Actor in die angegebene Richtung (prüft nicht auf Wandwiderstand - benutze CanMove)
         /// </summary>
         /// <param name="actor"></param>
         /// <param name="from"></param>
@@ -368,7 +464,7 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Add an item to a tile
+        /// Hinzufügen eines Item zu einem Tile. Diese Methode wird nicht verwendet.
         /// </summary>
         /// <param name="actor"></param>
         /// <param name="to"></param>
@@ -393,7 +489,7 @@ namespace Gruppe22.Backend
 
 
         /// <summary>
-        /// Get coordinates for closest enemy within a specified radius
+        /// Gibt die Koordinate des am nächsten liegenden Feindes zurück.
         /// </summary>
         /// <param name="coords"></param>
         /// <param name="radius"></param>
@@ -450,6 +546,15 @@ namespace Gruppe22.Backend
             return new Backend.Coords(-1, -1);
         }
 
+        /// <summary>
+        /// Sucht den Weg zwischen zwei angegebenen Punkten.
+        /// </summary>
+        /// <param name="from"></param>
+        /// <param name="to"></param>
+        /// <param name="result"></param>
+        /// <param name="visited"></param>
+        /// <param name="maxlength"></param>
+        /// <param name="indent"></param>
         public void PathTo(Coords from, Backend.Coords to, out List<Coords> result, ref SortedSet<Coords> visited, int maxlength = 20, string indent = "")
         {
             result = null;
@@ -525,7 +630,10 @@ namespace Gruppe22.Backend
 
             return;
         }
-
+        /// <summary>
+        /// Gibt die Koordinaten des Checkpointes in diesem Raum zurück, oder null.
+        /// </summary>
+        /// <returns>Die Koordinaten.</returns>
         public Backend.Coords GetCheckpointCoords()
         {
             foreach (List<FloorTile> ltiles in _tiles)
@@ -536,16 +644,30 @@ namespace Gruppe22.Backend
                 }
             return null;
         }
-
+        /// <summary>
+        /// Gibt den FloorTile der die angegebenen Koordinaten besitzt zurück.
+        /// </summary>
+        /// <param name="coords">Koordinaten im Raum.</param>
+        /// <returns>Das dort liegende FloorTile.</returns>
         public FloorTile TileByCoords(Coords coords)
         {
             return this[coords.x, coords.y];
         }
+        /// <summary>
+        /// Löscht den Feind der sich auf der Koordinate (x,y) befindet.
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
         public void RemoveActor(int x, int y)
         {
             _tiles[y][x].Remove(TileType.Enemy);
         }
-
+        /// <summary>
+        /// Die ID des ersten Actors, der auf (x,y) steht.
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
         public int firstActorID(int x, int y)
         {
             if (_tiles[y][x].firstActor != null)
@@ -617,6 +739,12 @@ namespace Gruppe22.Backend
             return false;
         }
 
+        /// <summary>
+        /// Ereignis-Methode.
+        /// </summary>
+        /// <param name="DownStream"></param>
+        /// <param name="eventID"></param>
+        /// <param name="data"></param>
         public virtual void HandleEvent(bool DownStream, Events eventID, params object[] data)
         {
             if (!DownStream)
@@ -921,6 +1049,9 @@ namespace Gruppe22.Backend
             Uncover(actors[0].tile.coords, actors[0].viewRange);
         }
 
+        /// <summary>
+        /// Diese Methode bearbeitet die Karte.
+        /// </summary>
         public void DebugMap()
         {
             string output = "";
