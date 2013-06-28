@@ -22,7 +22,7 @@ namespace Gruppe22
     /// <summary>
     /// The main class (disposing events, handling game logic, reacting to user input)
     /// </summary>
-    public class MainWindow : Backend.GameLogic
+    public class MainWindow : Gruppe22.Client.GameWin
     {
 
 

@@ -8,33 +8,6 @@ using Microsoft.Xna.Framework.Content;
 
 namespace Gruppe22.Backend
 {
-    public class Exit
-    {
-        private Backend.Coords _from;
-        private Backend.Coords _to;
-        private string _fromRoom;
-        private string _toRoom;
-        public Backend.Coords from
-        {
-            get { return _from; }
-        }
-
-        public Backend.Coords to
-        {
-            get { return _to; }
-        }
-        public string fromRoom { get { return _fromRoom; } }
-
-        public string toRoom { get { return _toRoom; } }
-
-        public Exit(Coords from, string fromRoom, Backend.Coords to = null, string toRoom = "")
-        {
-            _from = from;
-            _fromRoom = fromRoom;
-            _toRoom = toRoom;
-            _to = to;
-        }
-    }
 
     public class Map : IHandleEvent, IDisposable
     {

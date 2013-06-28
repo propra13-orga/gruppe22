@@ -41,7 +41,7 @@ namespace Gruppe22.Client
         public override bool OnMouseDown(int button)
         {
             if (_button) {
-                ((Backend.GameLogic)_parent).ShowCharacterWindow(_actor);
+                ((GameWin)_parent).ShowCharacterWindow(_actor);
                 _button = false;
 
                 return true;

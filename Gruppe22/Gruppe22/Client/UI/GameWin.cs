@@ -12,6 +12,7 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Media;
 using Lidgren.Network;
+using Gruppe22.Backend;
 
 namespace Gruppe22.Client
 {
@@ -21,6 +22,8 @@ namespace Gruppe22.Client
     public class GameWin : Game, Backend.IHandleEvent, IKeyHandler
     {
         #region Private Fields
+
+        protected Backend.PureLogic _logic=null;
         /// <summary>
         /// Central Output device
         /// </summary>
@@ -165,6 +168,23 @@ namespace Gruppe22.Client
         protected override void Initialize()
         {
             _interfaceElements = new List<UIElement>(); // Initialize the list of UI elements (but not the objects themselves, see LoadContent)
+            _logic = new PureLogic(this, null);
+            if ((!System.IO.File.Exists("room1.xml"))&&(_network==null))
+            {
+                _logic.GenerateMaps();
+            }
+            string path = "room1.xml";
+            if (File.Exists("GameData"))
+                path = File.ReadAllText("GameData");
+            if (path.IndexOf(Environment.NewLine) > 0)
+            {
+                _deadcounter = Int32.Parse(path.Substring(path.IndexOf(Environment.NewLine) + Environment.NewLine.Length));
+                path = path.Substring(0, path.IndexOf(Environment.NewLine));
+            }
+            if (File.Exists("saved" + (string)path))
+                _map1 = new Map(Content, this, "saved" + (string)path);
+            else
+                _map1 = new Map(Content, this, (string)path);
             base.Initialize();
         }
 
@@ -248,6 +268,27 @@ namespace Gruppe22.Client
 
 
 
+        private void _PlaySoundEffect(int index)
+        {
+
+            SoundEffectInstance effect = soundEffects[index].CreateInstance();
+            effect.Play();
+        }
+
+        private void _ShowTextBox(string message)
+        {
+            _status = Backend.GameStatus.Paused;
+            Client.Window _messagebox = new Client.Window(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width) / 2.0f) - 300, (int)(GraphicsDevice.Viewport.Height / 2.0f) - 100, 600, 200));
+            Client.Statusbox stat = new Client.Statusbox(_messagebox, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width) / 2.0f) - 300 + 10, (int)(GraphicsDevice.Viewport.Height / 2.0f) - 70, 590, 110), false, true);
+            stat.AddLine(message);
+            _messagebox.AddChild(stat);
+            _messagebox.AddChild(new Client.Button(_messagebox, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width) / 2.0f) - 65, (int)(GraphicsDevice.Viewport.Height / 2.0f) + 30, 130, 40), "Goodbye!", (int)Backend.Buttons.Close));
+            //  _mainMenu.AddChild(new ProgressBar(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) + 80, 300, 30), ProgressStyle.Block,100,2));
+
+            _interfaceElements.Add(_messagebox);
+            _messagebox.ChangeFocus();
+            _focus = _interfaceElements[_interfaceElements.Count - 1];
+        }
 
         /// <summary>
         /// Allows the game to run logic such as updating the world,
@@ -748,7 +789,8 @@ namespace Gruppe22.Client
                 case Backend.Events.NewMap:
                     _status = Backend.GameStatus.NoRedraw;
                     _deadcounter = -1;
-                    (this as Backend.GameLogic).GenerateMaps();
+                    if (_network == null)
+                        _logic.GenerateMaps();
                     HandleEvent(true, Backend.Events.ResetGame);
                     break;
 
@@ -928,6 +970,14 @@ namespace Gruppe22.Client
 
             _interfaceElements.Add(_gameOver);
             _focus = _interfaceElements[_interfaceElements.Count - 1];
+        }
+
+        public void PlayMusic()
+        {
+            _backMusic = Content.Load<Song>(_map1.music); // Todo: *.mp3
+            MediaPlayer.Play(_backMusic);
+            MediaPlayer.IsRepeating = true;
+            MediaPlayer.Volume = (float)0.3;
         }
 
         /// <summary>

@@ -161,6 +161,7 @@ namespace Gruppe22.Backend
         MoveActor,
         ChangeMap,
         NewMap,
+        FireProjectile,
         ResetGame,
         About,
         AnimateActor,
@@ -190,8 +191,17 @@ namespace Gruppe22.Backend
         AddDragItem,
         Dialogue,
         Pause,
-        Chat
+        Chat,
+        FloatText, 
+        PlaySound,
+        ShowTextBox,
+        DamagePlayer,
+        PlayerKilled
+    }
 
+    public enum SoundFX
+    {
+        Damage=4
     }
     public enum Buttons
     {

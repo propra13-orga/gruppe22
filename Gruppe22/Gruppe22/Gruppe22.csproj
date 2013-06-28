@@ -100,6 +100,7 @@
     <Compile Include="Backend\Map\BombTile.cs" />
     <Compile Include="Backend\Map\CheckpointTile.cs" />
     <Compile Include="Backend\Map\DoorTile.cs" />
+    <Compile Include="Backend\Map\exit.cs" />
     <Compile Include="Backend\Map\FloorTile.cs" />
     <Compile Include="Backend\Map\GapTile.cs" />
     <Compile Include="Backend\Map\Generator.cs" />
@@ -118,6 +119,7 @@
     <Compile Include="Backend\Map\TrapTile.cs" />
     <Compile Include="Backend\Map\TriggerTile.cs" />
     <Compile Include="Backend\Map\WallTile.cs" />
+    <Compile Include="Backend\PureLogic.cs" />
     <Compile Include="Client\Network\NetPlayer.cs" />
     <Compile Include="Client\Map\ActorView.cs" />
     <Compile Include="Client\Map\Camera.cs" />
@@ -137,7 +139,6 @@
     <Compile Include="Client\UI\ClientData.cs" />
     <Compile Include="Client\UI\Dialog.cs" />
     <Compile Include="Client\UI\FileDialog.cs" />
-    <Compile Include="Backend\GameLogic.cs" />
     <Compile Include="Client\UI\GameWin.cs" />
     <Compile Include="Client\UI\ImageInfo2Texture.cs" />
     <Compile Include="Client\UI\Orb.cs" />
