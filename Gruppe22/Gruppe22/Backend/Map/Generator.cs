@@ -11,7 +11,13 @@ namespace Gruppe22.Backend
 {
     public class Generator : Map
     {
+        /// <summary>
+        /// Listenstruktur aus speziellen GeneratorTiles, als Hilfsmittle zum Generieren einer Karte.
+        /// </summary>
         private new List<List<GeneratorTile>> _tiles = null;
+        /// <summary>
+        /// Hilfsfeld.
+        /// </summary>
         private bool _connected = false;
         private Random r;
         public bool connected
