@@ -379,6 +379,13 @@ namespace Gruppe22.Client
             {
                 switch (eventID)
                 {
+                    case Backend.Events.RotateActor:
+                        {
+                            int id = (int)data[0];
+                            Backend.Coords coords = (Backend.Coords)data[1];
+                            _actors[id].target = _map2screen(coords);
+                        };
+                        break;
                     case Backend.Events.MoveActor:
                         {
                             int id = (int)data[0];

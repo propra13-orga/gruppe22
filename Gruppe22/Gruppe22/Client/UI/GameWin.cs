@@ -499,6 +499,31 @@ namespace Gruppe22.Client
         /// <param name="data"></param>
         public virtual void HandleEvent(bool DownStream, Backend.Events eventID, params object[] data)
         {
+            if (DownStream)
+            {
+                switch (eventID)
+                {
+                    case Events.RotateActor:
+                        _logic.HandleEvent(true, Events.RotateActor, data);
+                        break;
+                    case Events.MoveActor:
+                        _logic.HandleEvent(true, Events.MoveActor, data);
+                        break;
+                }
+            }
+            else
+            {
+                switch (eventID)
+                {
+                    case Events.RotateActor:
+                        _mainmap1.HandleEvent(true, Events.RotateActor, data);
+                        break;
+                    case Events.MoveActor:
+                        _mainmap1.HandleEvent(true, Events.MoveActor, data);
+                        break;
+                }
+            }
+
             switch (eventID)
             {
                 case Backend.Events.ChangeMap:
@@ -688,7 +713,9 @@ namespace Gruppe22.Client
                         {
                             _mainmap1.noMove = true;
                         }
+                        _status = GameStatus.Running;
                         _focus = null;
+
                     }
                     break;
 

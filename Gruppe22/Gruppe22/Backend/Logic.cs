@@ -35,14 +35,15 @@ namespace Gruppe22.Backend
 
         }
 
-        public Logic(IHandleEvent parent, Map map = null, Random _random = null)
+        public Logic(IHandleEvent parent, Map map = null, Random random = null)
         {
             _parent = parent;
             if (map != null)
             {
                 _map = map;
             }
-            if (_random == null) _random = new Random();
+            if (random == null) _random = new Random();
+            else _random = random;
         }
 
         public virtual void HandleEvent(bool DownStream, Events eventID, params object[] data)

@@ -26,6 +26,12 @@ namespace Gruppe22.Backend
             File.WriteAllText("GameData", filename);
         }
 
+
+        public override void Update(GameTime gametime)
+        {
+            _map.Update(gametime);
+        }
+
         public void Restart()
         {
             _DeleteSavedRooms();
@@ -458,7 +464,7 @@ namespace Gruppe22.Backend
                         int id = (int)data[0];
                         Direction dir = (Direction)data[1];
 
-                        if (data.Length > 2)
+                        if (data.Length > 1)
                         {
                             if (((FloorTile)_map.actors[id].tile.parent).hasTrap)
                             {
@@ -466,6 +472,7 @@ namespace Gruppe22.Backend
                                     ((FloorTile)_map.actors[id].tile.parent).trap.status = TrapState.NoDisplay;
                             }
                             Backend.Coords target = Map.DirectionTile(_map.actors[id].tile.coords, dir);
+                            _map.actors[id].direction = dir;
                             _parent.HandleEvent(false, Backend.Events.RotateActor, id, _map.actors[id].tile.coords, dir);
 
                             Actor a = _map[target.x, target.y].firstActor;
@@ -500,13 +507,6 @@ namespace Gruppe22.Backend
                                     _parent.HandleEvent(false, Backend.Events.MoveActor, id, _map.actors[id].tile.coords);
                                     _map.actors[id].locked = true;
                                 }
-                            }
-                        }
-                        else
-                        {
-                            if (data.Length < 3)
-                            {
-                                //  _mainmap1.actors[0].cacheDir = dir;
                             }
                         }
                     }
@@ -843,6 +843,7 @@ namespace Gruppe22.Backend
             {
                 GenerateMaps();
             }
+            
             string path = "room1.xml";
             if (File.Exists("GameData"))
                 path = File.ReadAllText("GameData");
@@ -851,9 +852,9 @@ namespace Gruppe22.Backend
                 path = path.Substring(0, path.IndexOf(Environment.NewLine));
             }
             if (File.Exists("saved" + (string)path))
-                map = new Map(this, "saved" + (string)path);
+                _map = new Map(this, "saved" + (string)path);
             else
-                map = new Map(this, (string)path);
+                _map = new Map(this, (string)path);
         }
     }
 }

@@ -63,6 +63,7 @@ namespace Gruppe22.Client
         /// Whether the actor is locked during an animation (i.e. playing other animations is not allowed
         /// </summary>
         private bool _lock = false;
+        private Backend.Direction _prevDir = Backend.Direction.Up;
         private bool _blockUpdates = false;
         /// <summary>
         /// Whether the actor was killed (i.e. should neither move nor animate)
@@ -190,10 +191,10 @@ namespace Gruppe22.Client
                 if (_activity != value)
                 {
                     _elapsed = 0;
-                    if (_textures[(int)value * 8 + (int)Math.Log((double)_actor.direction,2)].animationTexture != null)
+                    if (_textures[(int)value * 8 + (int)Math.Log((double)direction, 2)].animationTexture != null)
                     {
                         _activity = value;
-                        _textures[(int)_activity * 8 + (int)Math.Log((double)_actor.direction,2)].ResetAnimation();
+                        _textures[(int)_activity * 8 + (int)Math.Log((double)direction, 2)].ResetAnimation();
                     }
                 }
             }
@@ -203,7 +204,9 @@ namespace Gruppe22.Client
         {
             get
             {
-                return _actor.direction;
+                if (_actor.direction != Backend.Direction.None)
+                    return _actor.direction;
+                else return _prevDir;
             }
         }
 
@@ -211,11 +214,7 @@ namespace Gruppe22.Client
         {
             get
             {
-                if (_actor.direction == Backend.Direction.None)
-                {
-                    return _textures[(int)_activity].animationTexture;
-                }
-                return _textures[(int)_activity * 8 + (int)Math.Log((double)_actor.direction, 2)].animationTexture;
+                return _textures[(int)_activity * 8 + (int)Math.Log((double)direction, 2)].animationTexture;
             }
         }
 
@@ -223,7 +222,7 @@ namespace Gruppe22.Client
         {
             get
             {
-                return _textures[(int)_activity * 8 + (int)Math.Log((double)_actor.direction, 2)].animationRect;
+                return _textures[(int)_activity * 8 + (int)Math.Log((double)direction, 2)].animationRect;
             }
         }
 
@@ -231,7 +230,7 @@ namespace Gruppe22.Client
         {
             get
             {
-                return _textures[(int)_activity * 8 + (int)Math.Log((double)_actor.direction, 2)].offsetY;
+                return _textures[(int)_activity * 8 + (int)Math.Log((double)direction, 2)].offsetY;
             }
 
         }
@@ -240,7 +239,7 @@ namespace Gruppe22.Client
         {
             get
             {
-                return _textures[(int)_activity * 8 + (int)Math.Log((double)_actor.direction, 2)].offsetX;
+                return _textures[(int)_activity * 8 + (int)Math.Log((double)direction, 2)].offsetX;
             }
             set { }
 
@@ -250,7 +249,7 @@ namespace Gruppe22.Client
         {
             get
             {
-                return _textures[(int)_activity * 8 + (int)Math.Log((double)_actor.direction, 2)].cropX;
+                return _textures[(int)_activity * 8 + (int)Math.Log((double)direction, 2)].cropX;
             }
             set { }
 
@@ -259,7 +258,7 @@ namespace Gruppe22.Client
         {
             get
             {
-                return _textures[(int)_activity * 8 + (int)Math.Log((double)_actor.direction, 2)].cropY;
+                return _textures[(int)_activity * 8 + (int)Math.Log((double)direction, 2)].cropY;
             }
             set { }
 
@@ -298,7 +297,7 @@ namespace Gruppe22.Client
         {
             _lock = true;
             this.activity = Backend.Activity.Die;
-            _textures[(int)_activity * 8 + (int)Math.Log((double)_actor.direction, 2)].FinalAnimation();
+            _textures[(int)_activity * 8 + (int)Math.Log((double)direction, 2)].FinalAnimation();
         }
 
         /// <summary>
@@ -395,7 +394,7 @@ namespace Gruppe22.Client
         public void Add(Backend.Activity activity, Backend.Direction direction, string filename, Backend.Coords startPos, int cols = 1, int rows = 1, Backend.Coords offset = null, Backend.Coords crop = null, bool vertical = false)
         {
             int x = (int)Math.Log((double)direction, 2);
-            _textures[(int)activity * 8 + (int)Math.Log((double)direction, 2)].AddAnimation(filename, startPos, cols, rows,offset,crop, vertical);
+            _textures[(int)activity * 8 + (int)Math.Log((double)direction, 2)].AddAnimation(filename, startPos, cols, rows, offset, crop, vertical);
         }
 
 
@@ -405,7 +404,7 @@ namespace Gruppe22.Client
 
             if (_activity != Backend.Activity.Walk)
             {
-                if (_textures[(int)_activity * 8 + (int)Math.Log((double)_actor.direction, 2)].NextAnimation())
+                if (_textures[(int)_activity * 8 + (int)Math.Log((double)direction, 2)].NextAnimation())
                 {
                     if (_activity != Backend.Activity.Die)
                     {
@@ -430,7 +429,7 @@ namespace Gruppe22.Client
             {
                 if (hasMoved)
                 {
-                    _textures[(int)_activity * 8 + (int)Math.Log((double)_actor.direction, 2)].NextAnimation();
+                    _textures[(int)_activity * 8 + (int)Math.Log((double)direction, 2)].NextAnimation();
                 }
             }
         }
@@ -443,6 +442,8 @@ namespace Gruppe22.Client
         {
             if (!_blockUpdates)
             {
+                Backend.Direction tmp = _actor.direction;
+                if ((tmp != Backend.Direction.None) && (tmp != _prevDir)) _prevDir = tmp;
                 if (_effect != null)
                 {
                     if (_effect.finished)
@@ -522,8 +523,8 @@ namespace Gruppe22.Client
                         {
                             //                            _position = _target;
                             //                          _target = _cacheTarget;
-                            _parent.HandleEvent(false, Backend.Events.TileEntered, _id, _actor.direction);
-                            
+                            _parent.HandleEvent(false, Backend.Events.TileEntered, _id, direction);
+
 
 
                         }

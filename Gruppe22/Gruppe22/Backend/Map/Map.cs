@@ -752,7 +752,7 @@ namespace Gruppe22.Backend
                                         {
                                             uint id = 0;
                                             if (xmlr.GetAttribute("id", _id.ToString()) != null) id = UInt32.Parse(xmlr.GetAttribute("id"));
-                                            Direction dir = Direction.None;
+                                            Direction dir = Direction.Up;
                                             if (xmlr.GetAttribute("direction", _id.ToString()) != null) dir = (Direction)Enum.Parse(typeof(Direction), xmlr.GetAttribute("direction").ToString());
                                             ProjectileTile projectile = new ProjectileTile(tile, dir, id);
                                         }
