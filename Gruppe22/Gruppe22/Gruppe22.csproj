@@ -158,7 +158,9 @@
     <Compile Include="Client\UI\UIElement.cs" />
     <Compile Include="Client\UI\Window.cs" />
     <Compile Include="Client\UI\Zoomable.cs" />
+    <Compile Include="Logic.cs" />
     <Compile Include="Mainwindow.cs" />
+    <Compile Include="Netlogic.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

@@ -385,7 +385,7 @@ namespace Gruppe22.Client
                             _actors[id].target = _map2screen(coords);
                         };
                         break;
-                    case Backend.Events.Player1:
+                    case Backend.Events.Magic:
                         _actors[0].effect = new MapEffect(_environment[2][2], new Backend.Coords(_actors[0].position.x + 7, _actors[0].position.y + 2));
                         break;
                     case Backend.Events.ExplodeProjectile:

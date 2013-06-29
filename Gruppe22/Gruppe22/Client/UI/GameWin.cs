@@ -36,9 +36,9 @@ namespace Gruppe22.Client
         protected SpriteBatch _spriteBatch = null;
 
         /// <summary>
-        /// Count deads of player to load checkpoint or show gameover
+        /// Unique ID of current player Character
         /// </summary>
-        protected int _deadcounter = -1;
+        protected int playerID = 0;
 
         /// <summary>
         /// Current mousewheel position (used to calculate changes)
@@ -171,13 +171,13 @@ namespace Gruppe22.Client
                 path = File.ReadAllText("GameData");
             if (path.IndexOf(Environment.NewLine) > 0)
             {
-                _deadcounter = Int32.Parse(path.Substring(path.IndexOf(Environment.NewLine) + Environment.NewLine.Length));
+                _logic.map.actors[(int)playerID].lives = uint.Parse(path.Substring(path.IndexOf(Environment.NewLine) + Environment.NewLine.Length));
                 path = path.Substring(0, path.IndexOf(Environment.NewLine));
             }
             if (File.Exists("saved" + (string)path))
-                _map1 = new Map(Content, this, "saved" + (string)path);
+                _logic.map = new Map(Content, this, "saved" + (string)path);
             else
-                _map1 = new Map(Content, this, (string)path);
+                _logic.map = new Map(Content, this, (string)path);
             base.Initialize();
         }
 
@@ -186,11 +186,11 @@ namespace Gruppe22.Client
             _status = Backend.GameStatus.Paused;
             // Setup user interface elements
 
-            _toolbar = new Toolbar(this, _spriteBatch, Content, new Rectangle((_graphics.GraphicsDevice.Viewport.Width - 490) / 2, _graphics.GraphicsDevice.Viewport.Height - 140, (_graphics.GraphicsDevice.Viewport.Width - 490) / 2, 34), _map1.actors[0]);
+            _toolbar = new Toolbar(this, _spriteBatch, Content, new Rectangle((_graphics.GraphicsDevice.Viewport.Width - 490) / 2, _graphics.GraphicsDevice.Viewport.Height - 140, (_graphics.GraphicsDevice.Viewport.Width - 490) / 2, 34), _logic.map.actors[0]);
             _interfaceElements.Add(_toolbar);
-            _mainmap1 = new Mainmap(this, _spriteBatch, Content, new Rectangle(5, 5, _graphics.GraphicsDevice.Viewport.Width - 5, ((_graphics.GraphicsDevice.Viewport.Height - 20)) - 125), _map1, true);
+            _mainmap1 = new Mainmap(this, _spriteBatch, Content, new Rectangle(5, 5, _graphics.GraphicsDevice.Viewport.Width - 5, ((_graphics.GraphicsDevice.Viewport.Height - 20)) - 125), _logic.map, true);
             _interfaceElements.Add(_mainmap1);
-            _minimap1 = new Minimap(this, _spriteBatch, Content, new Rectangle(_graphics.GraphicsDevice.Viewport.Width - 220, 5, 215, 215), _map1);
+            _minimap1 = new Minimap(this, _spriteBatch, Content, new Rectangle(_graphics.GraphicsDevice.Viewport.Width - 220, 5, 215, 215), _logic.map);
             _interfaceElements.Add(_minimap1);
 
             _statusbox = new Chat(this, _spriteBatch, Content, new Rectangle(145, _graphics.GraphicsDevice.Viewport.Height - 100, _graphics.GraphicsDevice.Viewport.Width - 525, 95));
@@ -198,13 +198,13 @@ namespace Gruppe22.Client
 
 
             _statusbox.AddLine("Welcome to this highly innovative Dungeon Crawler!\nYou can scroll in this status window.\nUse A-S-D-W to move your character.\n Use Arrow keys (or drag mouse) to scroll map or minimap\n Press ESC to display Game Menu.");
-            _health = new Orb(this, _spriteBatch, Content, new Rectangle(5, _graphics.GraphicsDevice.Viewport.Height - 139, 90, 90), _map1.actors[0], false);
+            _health = new Orb(this, _spriteBatch, Content, new Rectangle(5, _graphics.GraphicsDevice.Viewport.Height - 139, 90, 90), _logic.map.actors[0], false);
             _interfaceElements.Add(_health);
 
-            _mana = new Orb(this, _spriteBatch, Content, new Rectangle(_graphics.GraphicsDevice.Viewport.Width - 380, _graphics.GraphicsDevice.Viewport.Height - 139, 90, 90), _map1.actors[0], true);
+            _mana = new Orb(this, _spriteBatch, Content, new Rectangle(_graphics.GraphicsDevice.Viewport.Width - 380, _graphics.GraphicsDevice.Viewport.Height - 139, 90, 90), _logic.map.actors[0], true);
             _interfaceElements.Add(_mana);
 
-            if (_map1.actors[0].health < 1)
+            if (_logic.map.actors[0].health < 1)
             {
                 ShowEndGame();
             }
@@ -222,7 +222,7 @@ namespace Gruppe22.Client
             tmp = Content.Load<SoundEffect>("trapdamage1.wav");
             soundEffects.Add(tmp);
             MediaPlayer.IsRepeating = true;
-            _backMusic = Content.Load<Song>(_map1.music); // Todo: *.mp3
+            _backMusic = Content.Load<Song>(_logic.map.music); // Todo: *.mp3
             MediaPlayer.Play(_backMusic);
             MediaPlayer.IsRepeating = true;
 
@@ -334,7 +334,7 @@ namespace Gruppe22.Client
 
                         if (_status == Backend.GameStatus.Running)
                         {
-                            _map1.Update(gameTime);
+                            _logic.map.Update(gameTime);
                         }
 
                         if (_focus != null)
@@ -566,17 +566,17 @@ namespace Gruppe22.Client
             {
                 case Backend.Events.ChangeMap:
                     _status = Backend.GameStatus.NoRedraw; // prevent redraw (which would crash the game!)
-                    _map1.Save("savedroom" + _map.id + ".xml");
+                    _logic.map.Save("savedroom" + _logic.map.id + ".xml");
                     if (File.Exists("saved" + (string)data[0]))
-                        _map1.Load("saved" + (string)data[0], (Coords)data[1]);
+                        _logic.map.Load("saved" + (string)data[0], (Coords)data[1]);
                     else
-                        _map1.Load((string)data[0], (Coords)data[1]);
+                        _logic.map.Load((string)data[0], (Coords)data[1]);
                     _mainmap1.resetActors();
                     //_mainmap2.resetActors();
-                    _minimap1.MoveCamera(_map1.actors[0].tile.coords);
+                    _minimap1.MoveCamera(_logic.map.actors[playerID].tile.coords);
 
                     HandleEvent(false, Events.ShowMessage, "You entered room number " + data[0].ToString().Substring(4, 1) + ".");
-                    File.WriteAllText("GameData", data[0].ToString() + Environment.NewLine + _deadcounter.ToString());
+                    File.WriteAllText("GameData", data[0].ToString() + Environment.NewLine + _logic.map.actors[playerID].lives.ToString());
 
                     _status = Backend.GameStatus.Running;
                     break;
@@ -689,18 +689,6 @@ namespace Gruppe22.Client
                         }
                     }
                     break;
-                case Backend.Events.Player1:
-                    foreach (UIElement element in _interfaceElements)
-                    {
-                        element.HandleEvent(true, Backend.Events.ToggleButton, Backend.Events.Player2, false);
-                        element.HandleEvent(true, Backend.Events.ToggleButton, Backend.Events.Player1, true);
-                        element.HandleEvent(true, Backend.Events.ToggleButton, Backend.Events.Local, true);
-                        element.HandleEvent(true, Backend.Events.ToggleButton, Backend.Events.LAN, false);
-                    }
-                    //_secondPlayer = false;
-                    _mainmap1.Resize(new Rectangle(5, 5, _graphics.GraphicsDevice.Viewport.Width - 230, ((_graphics.GraphicsDevice.Viewport.Height - 20)) - 115));
-                    _lan = false;
-                    break;
 
                 case Backend.Events.FetchFile:
                     if (data.Length > 0)
@@ -718,7 +706,7 @@ namespace Gruppe22.Client
 
                 case Backend.Events.LoadFromCheckPoint:
                     _status = Backend.GameStatus.NoRedraw;
-                    _deadcounter--;
+                    _logic.map.actors[playerID].lives--;
                     string lastCheck = File.ReadAllText("CheckPoint");
                     while (Directory.GetFiles(".", "savedroom*.xml").Length > 0)
                     {
@@ -730,39 +718,21 @@ namespace Gruppe22.Client
                         Match m = re.Match(file);
                         File.Copy(file, "savedroom" + m.Value + ".xml");
                     }
-                    _map1.actors.Clear();
-                    _map1.Load("savedroom" + lastCheck + ".xml", null);
-                    File.WriteAllText("GameData", "room" + _map1.id.ToString() + ".xml" + Environment.NewLine + _deadcounter.ToString());
+                    _logic.map.actors.Clear();
+                    _logic.map.Load("savedroom" + lastCheck + ".xml", null);
+                    File.WriteAllText("GameData", "room" + _logic.map.id.ToString() + ".xml" + Environment.NewLine + _logic.map.actors[playerID].ToString());
                     _mainmap1.resetActors();
                     //_mainmap2.resetActors();
-                    _mana.actor = _map1.actors[0];
-                    _health.actor = _map1.actors[0];
-                    _toolbar.actor = _map1.actors[0];
+                    _mana.actor = _logic.map.actors[0];
+                    _health.actor = _logic.map.actors[0];
+                    _toolbar.actor = _logic.map.actors[0];
                     _status = Backend.GameStatus.Paused;
                     HandleEvent(true, Backend.Events.ContinueGame);
                     break;
 
-                case Backend.Events.Player2:
-                    foreach (UIElement element in _interfaceElements)
-                    {
-                        element.HandleEvent(true, Backend.Events.ToggleButton, Backend.Events.Player2, true);
-                        element.HandleEvent(true, Backend.Events.ToggleButton, Backend.Events.Player1, false);
-                    }
-                    //_secondPlayer = true;
-                    if (!_lan)
-                    {
-                        // _mainmap2.enabled = true;
-                        _mainmap1.Resize(new Rectangle(5, 5, _graphics.GraphicsDevice.Viewport.Width - 230, ((_graphics.GraphicsDevice.Viewport.Height - 20) / 2) - 60));
-                    }
-                    else
-                    {
-                        //   _mainmap2.enabled = false;
-                        _mainmap1.Resize(new Rectangle(5, 5, _graphics.GraphicsDevice.Viewport.Width - 230, ((_graphics.GraphicsDevice.Viewport.Height - 20)) - 115));
-                    }
 
-                    break;
 
-                case Backend.Events.LAN:
+                case Backend.Events.Network:
                     ShowLANWindow();
 
                     /*  //_secondPlayer = true;
@@ -778,16 +748,6 @@ namespace Gruppe22.Client
                       _mainmap1.Resize(new Rectangle(5, 5, _graphics.GraphicsDevice.Viewport.Width - 230, ((_graphics.GraphicsDevice.Viewport.Height - 20)) - 115));*/
                     break;
 
-                case Backend.Events.Local:
-                    foreach (UIElement element in _interfaceElements)
-                    {
-                        element.HandleEvent(true, Backend.Events.ToggleButton, Backend.Events.Local, true);
-                        element.HandleEvent(true, Backend.Events.ToggleButton, Backend.Events.LAN, false);
-                    }
-                    _lan = false;
-                    //    _mainmap2.enabled = true;
-                    _mainmap1.Resize(new Rectangle(5, 5, _graphics.GraphicsDevice.Viewport.Width - 230, ((_graphics.GraphicsDevice.Viewport.Height - 20) / 2) - 60));
-                    break;
 
                 case Backend.Events.ContinueGame:
                     if (_status != Backend.GameStatus.NoRedraw)
@@ -803,7 +763,7 @@ namespace Gruppe22.Client
                             _mainmap1.noMove = true;
                         }
                         _focus = null;
-                        //_backMusic = Content.Load<Song>(_map1.music); // Todo: *.mp3
+                        //_backMusic = Content.Load<Song>(_logic.map.music); // Todo: *.mp3
                         MediaPlayer.Play(_backMusic);
                         //MediaPlayer.Volume = (float)0.3;
                         //MediaPlayer.IsRepeating = true;
@@ -819,13 +779,13 @@ namespace Gruppe22.Client
                     break;
 
                 case Backend.Events.EndGame:
-                    _map1.Save("savedroom" + _map1.id + ".xml");
+                    _logic.map.Save("savedroom" + _logic.map.id + ".xml");
                     Exit();
                     break;
 
                 case Backend.Events.NewMap:
                     _status = Backend.GameStatus.NoRedraw;
-                    _deadcounter = -1;
+                    _logic.map.actors[playerID].lives = 0;
                     if (_network == null)
                         _logic.GenerateMaps();
                     HandleEvent(true, Backend.Events.ResetGame);
@@ -833,15 +793,15 @@ namespace Gruppe22.Client
 
                 case Backend.Events.ResetGame:
                     _status = Backend.GameStatus.NoRedraw;
-                    _deadcounter = -1;
+                    _logic.map.actors[playerID].lives = 0;
                     DeleteSavedRooms();
-                    _map1.Dispose();
-                    _map1.Load("room1.xml", null);
+                    _logic.map.Dispose();
+                    _logic.map.Load("room1.xml", null);
                     _mainmap1.resetActors();
                     //  _mainmap2.resetActors();
-                    _mana.actor = _map1.actors[0];
-                    _health.actor = _map1.actors[0];
-                    _toolbar.actor = _map1.actors[0];
+                    _mana.actor = _logic.map.actors[0];
+                    _health.actor = _logic.map.actors[0];
+                    _toolbar.actor = _logic.map.actors[0];
                     _status = Backend.GameStatus.Paused;
                     HandleEvent(true, Backend.Events.ContinueGame);
                     break;
@@ -990,16 +950,16 @@ namespace Gruppe22.Client
                 _status = Backend.GameStatus.Running;
             }
             _status = Backend.GameStatus.GameOver;
-            _map1.Save("savedroom" + _map1.id + ".xml");
+            _logic.map.Save("savedroom" + _logic.map.id + ".xml");
             Window _gameOver = new Window(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width) / 2.0f) - 300, (int)(GraphicsDevice.Viewport.Height / 2.0f) - 100, 600, 200));
             Statusbox stat = new Statusbox(_gameOver, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width) / 2.0f) - 300 + 10, (int)(GraphicsDevice.Viewport.Height / 2.0f) - 70, 590, 110), false, true);
             stat.AddLine(title + "\n \n" + message);
             _gameOver.AddChild(stat);
             _gameOver.AddChild(new Button(_gameOver, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width) / 2.0f) - 300 + 10, (int)(GraphicsDevice.Viewport.Height / 2.0f) + 30, 130, 40), "New Maps", (int)Backend.Buttons.Reset));
 
-            if (_deadcounter > 0)
+            if (_logic.map.actors[playerID].lives > 0)
             {
-                _gameOver.AddChild(new Button(_gameOver, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width) / 2.0f) - 300 + 170, (int)(GraphicsDevice.Viewport.Height / 2.0f) + 30, 160, 40), "Restore (" + _deadcounter.ToString() + " left)", (int)Backend.Buttons.Load));
+                _gameOver.AddChild(new Button(_gameOver, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width) / 2.0f) - 300 + 170, (int)(GraphicsDevice.Viewport.Height / 2.0f) + 30, 160, 40), "Restore (" + _logic.map.actors[playerID].ToString() + " left)", (int)Backend.Buttons.Load));
             }
             _gameOver.AddChild(new Button(_gameOver, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width) / 2.0f) - 300 + 600 - 190, (int)(GraphicsDevice.Viewport.Height / 2.0f) + 30, 100, 40), "Restart", (int)Backend.Buttons.Restart));
             _gameOver.AddChild(new Button(_gameOver, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width) / 2.0f) - 300 + 600 - 80, (int)(GraphicsDevice.Viewport.Height / 2.0f) + 30, 70, 40), "Quit", (int)Backend.Buttons.Quit));
@@ -1011,7 +971,7 @@ namespace Gruppe22.Client
 
         public void PlayMusic()
         {
-            _backMusic = Content.Load<Song>(_map1.music); // Todo: *.mp3
+            _backMusic = Content.Load<Song>(_logic.map.music); // Todo: *.mp3
             MediaPlayer.Play(_backMusic);
             MediaPlayer.IsRepeating = true;
             MediaPlayer.Volume = (float)0.3;

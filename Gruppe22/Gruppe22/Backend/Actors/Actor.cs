@@ -22,6 +22,7 @@ namespace Gruppe22.Backend
         /// Zufallsgenerator.
         /// </summary>
         protected Random _random;
+        protected uint _lives = 1;
         /// <summary>
         /// Anzahl der neuen Items.
         /// </summary>
@@ -132,6 +133,17 @@ namespace Gruppe22.Backend
 
         }
 
+        public uint lives
+        {
+            get
+            {
+                return _lives;
+            }
+            set
+            {
+                _lives = value;
+            }
+        }
         public int newItems
         {
             get

@@ -120,10 +120,10 @@ namespace Gruppe22.Client
 
         public override void HandleEvent(bool downstream, Backend.Events eventID, params object[] data)
         {
-            if ((eventID == Backend.Events.ToggleButton) && ((int)data[0] == _id))
+          /*  if ((eventID == Backend.Events.ToggleButton) && ((int)data[0] == _id))
             {
                 stayDown = (bool)data[1];
-            }
+            } */
         }
 
         public bool hidden

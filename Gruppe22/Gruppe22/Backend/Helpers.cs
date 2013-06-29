@@ -153,56 +153,66 @@ namespace Gruppe22.Backend
     }
     public enum Events
     {
+        // Central Game Events
         ContinueGame = 0,
-        Shop,
         EndGame,
-        ToggleButton,
-        HideNotification,
-        MoveActor,
-        ChangeMap,
-        NewMap,
-        FireProjectile,
         ResetGame,
-        About,
-        AnimateActor,
-        FinishedAnimation,
-        ShowMessage,
-        Player1,
-        Player2,
-        Network,
-        Settings,
-        Local,
-        LAN,
-        FetchFile,
-        TileEntered,
-        Attack,
-        TrapActivate,
-        RequestFocus,
         LoadFromCheckPoint,
-        ExplodeProjectile,
-        MoveProjectile,
-        FinishedProjectileMove,
+        About,
+        Network,
+        FetchFile,
+        RequestFocus,
+
+        // Events returned by UI elements
         ButtonPressed,
-        ActivateAbility,
+        AddDragItem,
+
+        // Events used to display UI
         ShowCharacter,
         ShowInventory,
         ShowMenu,
         ShowAbilities,
-        AddDragItem,
         Dialogue,
         Pause,
         Chat,
-        FloatText, 
+        Settings,
+
+        // Events presenting feedback
+        FloatText,
         PlaySound,
+        Magic,
+        ShowMessage,
         ShowTextBox,
-        DamagePlayer,
-        PlayerKilled
+
+        // Communication between game logic and interface / clients
+        TileEntered,
+        Attack,
+        MoveActor,
+        ChangeMap,
+        NewMap,
+        ExplodeProjectile,
+        MoveProjectile,
+        ActivateAbility,
+        DamageActor,
+        KillActor,
+        AddProjectile,
+        TrapActivate,
+        AnimateActor,
+        RotateActor,
+        FinishedAnimation,
+        Checkpoint,
+        FinishedProjectileMove,
+        FireProjectile,
+        Shop,
+        GameOver
     }
 
     public enum SoundFX
     {
-        ChangeMap=0,
-        Damage=4
+        ChangeMap = 0,
+        Pickup = 1,
+        Checkpoint = 2,
+        Damage = 4
     }
     public enum Buttons
     {

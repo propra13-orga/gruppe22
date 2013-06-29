@@ -187,13 +187,10 @@ namespace Gruppe22.Client
                                 _parent.HandleEvent(false, Backend.Events.About, null);
                                 break;
                             case Backend.Buttons.LAN:
-                                _parent.HandleEvent(false, Backend.Events.LAN, null);
+                                _parent.HandleEvent(false, Backend.Events.Network, null);
                                 break;
                             case Backend.Buttons.Load:
                                 _parent.HandleEvent(false, Backend.Events.LoadFromCheckPoint, null);
-                                break;
-                            case Backend.Buttons.Local:
-                                _parent.HandleEvent(false, Backend.Events.Local, null);
                                 break;
                             case Backend.Buttons.NewMap:
                                 _parent.HandleEvent(false, Backend.Events.NewMap, null);
@@ -206,15 +203,6 @@ namespace Gruppe22.Client
                                 break;
                             case Backend.Buttons.Restart:
                                 _parent.HandleEvent(false, Backend.Events.ResetGame, null);
-                                break;
-                            case Backend.Buttons.Settings:
-                                _parent.HandleEvent(false, Backend.Events.Settings, null);
-                                break;
-                            case Backend.Buttons.SinglePlayer:
-                                _parent.HandleEvent(false, Backend.Events.Player1, null);
-                                break;
-                            case Backend.Buttons.TwoPlayers:
-                                _parent.HandleEvent(false, Backend.Events.Player2, null);
                                 break;
                             default:
                                 _parent.HandleEvent(false, eventID, data);

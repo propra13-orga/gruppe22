@@ -13,9 +13,9 @@ namespace Gruppe22.Backend
     /// <summary>
     /// Program Logic completely abstracted from Frontend
     /// </summary>
-    public class PureLogic : Logic,IHandleEvent
+    public class PureLogic : Logic, IHandleEvent
     {
-       
+
 
         /// <summary>
         /// methode to evaluate the damage in a combat between two actors
@@ -54,7 +54,7 @@ namespace Gruppe22.Backend
                     if (_map.actors[defender] is Player)
                     {
                         _parent.HandleEvent(false, Events.FloatText, _map.actors[defender].tile.coords, damage.ToString(), Color.DarkRed);
-                        _RemoveHealth();
+                        _parent.HandleEvent(false, Events.DamageActor, defender, _map.actors[defender].health, _map.actors[defender].tile.coords, damage);
                     }
                     else
                     {
@@ -137,7 +137,7 @@ namespace Gruppe22.Backend
                         actor.health -= damage;
                         if (actor is Player)
                         {
-                            _parent.HandleEvent(false, Events.DamagePlayer, actor.id, actor.health, target, damage);
+                            _parent.HandleEvent(false, Events.DamageActor, actor.id, actor.health, target, damage);
                         }
                         else
                         {
@@ -175,7 +175,7 @@ namespace Gruppe22.Backend
         /// <param name="sender"></param>
         /// <param name="eventID"></param>
         /// <param name="data"></param>
-        public void HandleEvent(bool DownStream, Events eventID, params object[] data)
+        public override void HandleEvent(bool DownStream, Events eventID, params object[] data)
         {
 
             switch (eventID)
@@ -190,7 +190,7 @@ namespace Gruppe22.Backend
                             HandleEvent(false, Backend.Events.ShowMessage, "You used " + actor.Items(-id).name);
                             if (actor.Items(-id).destroyed)
                             {
-                                _toolbar.HandleEvent(true, Backend.Events.AddDragItem, id);
+                                _parent.HandleEvent(false, Backend.Events.AddDragItem, id);
                             }
                         }
                         else
@@ -232,7 +232,7 @@ namespace Gruppe22.Backend
                     break;
 
                 case Backend.Events.ChangeMap: // Load another map
-                    _parent.HandleEvent(false, Events.ChangeMap, data);                    
+                    _parent.HandleEvent(false, Events.ChangeMap, data);
                     break;
 
                 case Backend.Events.FinishedAnimation:
@@ -261,7 +261,7 @@ namespace Gruppe22.Backend
                         }
                         else
                         {
-                            _parent.HandleEvent(false, Events.PlayerKilled, FinishedID);
+                            _parent.HandleEvent(false, Events.KillActor, FinishedID);
                         }
                     }
                     break;
@@ -285,7 +285,7 @@ namespace Gruppe22.Backend
                         // Pickup any items
                         while (_map[target.x, target.y].hasTreasure)
                         {
-                            _PlaySoundEffect(2); //SoundEffect pick items
+                            _parent.HandleEvent(false, Events.PlaySound, SoundFX.Pickup); //SoundEffect pick items
                             _parent.HandleEvent(false, Events.ShowMessage, ((id == 0) ? "You found " : _map.actors[id].name + " found ") + _map[target.x, target.y].firstItem.item.name + " .");
                             if (id == 0)
                                 _parent.HandleEvent(false, Events.FloatText, target, "Found " + _map[target.x, target.y].firstItem.item.name, Color.DarkGreen);
@@ -308,17 +308,17 @@ namespace Gruppe22.Backend
                         //Checkpoint - save by entering
                         if ((_map[target.x, target.y].hasCheckpoint) && (!_map[target.x, target.y].checkpoint.visited) && (id == 0))
                         {
-                            _PlaySoundEffect(1);//SoundEffect checkpoint
+                            _parent.HandleEvent(false, Events.PlaySound, SoundFX.Checkpoint);//SoundEffect checkpoint
                             _map[target.x, target.y].checkpoint.visited = true;
                             _map.actors[id].health = _map.actors[id].maxhealth;
                             _map.actors[id].mana = _map.actors[id].maxMana;
-                            if (_deadcounter == -1)
-                                _deadcounter = 3;
+                            if (_map.actors[id].lives== -1)
+                                _map.actors[id].lives = 3;
                             if (_map[target.x, target.y].checkpoint.bonuslife > 0)
-                                _deadcounter += _map[target.x, target.y].checkpoint.bonuslife;
+                                _map.actors[id].lives += (uint)_map[target.x, target.y].checkpoint.bonuslife;
                             _map.Save("savedroom" + _map.id + ".xml");
                             _parent.HandleEvent(false, Events.FloatText, target, "Checkpoint", Color.DarkOliveGreen);
-                            File.WriteAllText("GameData", "room" + _map.id.ToString() + ".xml" + Environment.NewLine + _deadcounter.ToString());
+                            File.WriteAllText("GameData", "room" + _map.id.ToString() + ".xml" + Environment.NewLine + _map.actors[id].lives.ToString());
                             File.WriteAllText("CheckPoint", _map.id.ToString());
                             Regex regex = new Regex(@"\d+");
                             foreach (string file in Directory.GetFiles(".", "checkpoint*.xml"))
@@ -332,17 +332,17 @@ namespace Gruppe22.Backend
                                 File.Copy(file, "checkpoint" + m.Value + ".xml");
                             }
 
-                            _parent.HandleEvent(false, Events.ShowMessage, "Checkpoint reached (" + _deadcounter.ToString() + " lives remaining)");
-                            _mainmap1.HandleEvent(true, Backend.Events.Player1, 1);
+                            _parent.HandleEvent(false, Events.ShowMessage, "Checkpoint reached (" + _map.actors[id].lives.ToString() + " lives remaining)");
+                            _parent.HandleEvent(false, Events.Checkpoint);
                         }
 
                         // Trigger floor switches
                         if ((_map[_map.actors[id].tile.coords.x, _map.actors[id].tile.coords.y].hasTarget) && (id == 0))
                         {
-                            _mainmap1.HandleEvent(true, Backend.Events.AnimateActor, id, Activity.Talk);
+                            _parent.HandleEvent(false, Backend.Events.AnimateActor, id, Activity.Talk);
                             //_mainmap2.HandleEvent(true, Backend.Events.AnimateActor, id, Activity.Talk);
 
-                            ShowEndGame("You have successfully found the hidden treasure. Can you do it again?", "Congratulations!");
+                            _parent.HandleEvent(false, Events.GameOver, true);
                         }
 
 
@@ -361,7 +361,7 @@ namespace Gruppe22.Backend
 
                         if (_map.CanMove(_map.actors[id].tile.coords, dir))
                         {
-                            _mainmap1.HandleEvent(true, Backend.Events.AnimateActor, id, Activity.Attack, false, dir, true);
+                            _parent.HandleEvent(false, Backend.Events.AnimateActor, id, Activity.Attack, false, dir, true);
                             _CombatDamage(id, _map[target.x, target.y].firstActor.id);
                         }
 
@@ -395,25 +395,22 @@ namespace Gruppe22.Backend
                                 if (actor is Player)
                                 {
                                     _parent.HandleEvent(false, Events.FloatText, actor.tile.coords, damage.ToString(), Color.DarkRed);
-                                    _RemoveHealth();
+                                    _parent.HandleEvent(false, Events.DamageActor);
                                 }
                             }
                         }
-                        _mainmap1.HandleEvent(true, eventID, data);
+                        _parent.HandleEvent(false, eventID, data);
                     }
                     break;
 
                 case Backend.Events.MoveProjectile:
                     if (data[0] == null)
                     {
-                        uint id = _mainmap1.AddProjectile(((FloorTile)data[1]).coords, (Direction)data[2], new ProjectileTile((FloorTile)data[1], (Direction)data[2]));
-                        _map[((FloorTile)data[1]).coords].Add(_mainmap1.GetProjectile(id).tile, false);
-                        _mainmap1.GetProjectile(id).tile.id = id;
-                        _mainmap1.GetProjectile(id).tile.NextTile(false);
+                        _parent.HandleEvent(false, Backend.Events.AddProjectile, ((FloorTile)data[1]).coords,  (Direction)data[2], new ProjectileTile((FloorTile)data[1], (Direction)data[2]));
                     }
                     else
                     {
-                        _mainmap1.GetProjectile(((ProjectileTile)data[0]).id).moveTo((Coords)data[1]);
+                        _parent.HandleEvent(false, Backend.Events.MoveProjectile, ((ProjectileTile)data[0]).id, (Coords)data[1]);
                     }
                     break;
 
@@ -434,7 +431,7 @@ namespace Gruppe22.Backend
                         int id = (int)data[0];
                         Direction dir = (Direction)data[1];
 
-                        if (!_mainmap1.IsMoving(id) || (data.Length > 2))
+                        if (data.Length > 2)
                         {
                             if (((FloorTile)_map.actors[id].tile.parent).hasTrap)
                             {
@@ -442,8 +439,7 @@ namespace Gruppe22.Backend
                                     ((FloorTile)_map.actors[id].tile.parent).trap.status = TrapState.NoDisplay;
                             }
                             Backend.Coords target = Map.DirectionTile(_map.actors[id].tile.coords, dir);
-
-                            _mainmap1.ChangeDir(id, dir); // Look into different direction
+                            _parent.HandleEvent(false, Backend.Events.RotateActor, id, _map.actors[id].tile.coords,dir);
 
                             Actor a = _map[target.x, target.y].firstActor;
                             if ((a is NPC) && (_map.actors[id] is Player))
@@ -474,14 +470,8 @@ namespace Gruppe22.Backend
                                 if (_map.CanMove(_map.actors[id].tile.coords, dir))
                                 {
                                     _map.MoveActor(_map.actors[id], dir);
-                                    if (_map.actors[id] is Player)
-                                        _minimap1.MoveCamera(_map.actors[id].tile.coords);
+                                    _parent.HandleEvent(false, Backend.Events.MoveActor, id, _map.actors[id].tile.coords);
                                     _map.actors[id].locked = true;
-
-                                    _mainmap1.HandleEvent(true, Backend.Events.MoveActor, id, _map.actors[id].tile.coords);
-                                    //_mainmap2.HandleEvent(true, Backend.Events.MoveActor, id, _map.actors[id].tile.coords);
-
-
                                 }
                             }
                         }
@@ -665,7 +655,7 @@ namespace Gruppe22.Backend
         /// <summary>
         /// Generate three levels consisting of multiple rooms each and save them to xml files
         /// </summary>
-        public void GenerateMaps()
+        public override void GenerateMaps()
         {
 
             List<Generator> rooms = new List<Generator>();
@@ -819,5 +809,9 @@ namespace Gruppe22.Backend
         }
         #endregion
 
+        public PureLogic(IHandleEvent parent, Map map = null, Random _random = null)
+            : base(parent, map, _random)
+        {
+        }
     }
 }

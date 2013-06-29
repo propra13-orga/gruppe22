@@ -6,18 +6,23 @@ using System.Threading.Tasks;
 
 namespace Gruppe22.Backend
 {
-    public class Logic:IHandleEvent
+    public class Logic : IHandleEvent
     {
-        private Map _map;
-        private IHandleEvent _parent;
-        private Random _random;
+        protected Map _map;
+        protected IHandleEvent _parent;
+        protected Random _random;
 
         public Map map
         {
             get { return _map; }
             set { _map = value; }
         }
-        
+
+        public virtual void GenerateMaps()
+        {
+
+        }
+
         public Logic(IHandleEvent parent, Map map = null, Random _random = null)
         {
             _parent = parent;
@@ -26,6 +31,10 @@ namespace Gruppe22.Backend
                 _map = map;
             }
             if (_random == null) _random = new Random();
+        }
+
+        public virtual void HandleEvent(bool DownStream, Events eventID, params object[] data)
+        {
         }
     }
 }

@@ -8,5 +8,9 @@ namespace Gruppe22.Backend
 {
     public class NetLogic:Logic
     {
+        public NetLogic(IHandleEvent parent, Map map = null, Random _random = null)
+            : base(parent, map, _random)
+        {
+        }
     }
 }
