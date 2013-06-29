@@ -105,10 +105,11 @@ namespace Gruppe22.Client
             _target = Mainmap._map2screen(coord);
         }
 
-        public void Draw()
-        {
 
-        }
+        /// <summary>
+        /// Refresh all objects on the map (animation etc)
+        /// </summary>
+        /// <param name="gametime">elapsed time since game start</param>
         public void Update(GameTime gametime)
         {
             _elapsed += (uint)gametime.ElapsedGameTime.Milliseconds;

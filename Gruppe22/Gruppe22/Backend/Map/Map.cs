@@ -8,7 +8,9 @@ using Microsoft.Xna.Framework.Content;
 
 namespace Gruppe22.Backend
 {
-
+    /// <summary>
+    /// Backend object representing a room in the game
+    /// </summary>
     public class Map : IHandleEvent, IDisposable
     {
         #region Private Fields
@@ -61,6 +63,9 @@ namespace Gruppe22.Backend
         /// </summary>
         protected int _width = 10;
 
+        /// <summary>
+        /// A list of all exits from current room
+        /// </summary>
         protected List<Exit> _exits;
 
         /// <summary>
@@ -82,6 +87,7 @@ namespace Gruppe22.Backend
         /// </summary>
         protected List<Coords> _updateTiles = null;
         #endregion
+
 
         #region Public Fields
 
@@ -277,12 +283,12 @@ namespace Gruppe22.Backend
         }
 
 
+
         /// <summary>
-        /// Get the tile at coordinates x and y
+        /// Get the tile at coordinates specified by a coords-object
         /// </summary>
-        /// <param name="x">The x-coordinate</param>
-        /// <param name="y">The y-coordinate</param>
-        /// <returns>The tile at the specified coordinates</returns>
+        /// <param name="coords">Coordinate object specifying the tile</param>
+        /// <returns>The floortile at the specified coordinates</returns>
         public FloorTile this[Coords coords]
         {
             get
@@ -530,6 +536,10 @@ namespace Gruppe22.Backend
             return;
         }
 
+        /// <summary>
+        /// Get coordinates of checkpoint on map (if any)
+        /// </summary>
+        /// <returns>null if no checkpoint exists, coords object otherwise</returns>
         public Backend.Coords GetCheckpointCoords()
         {
             foreach (List<FloorTile> ltiles in _tiles)
@@ -541,15 +551,22 @@ namespace Gruppe22.Backend
             return null;
         }
 
+        /// <summary>
+        /// Get tile specified by a coords-object (deprecated, use direct access by map[])
+        /// </summary>
+        /// <param name="coords">Coordinates of tile</param>
+        /// <returns>Tile object at specified coordinates</returns>
         public FloorTile TileByCoords(Coords coords)
         {
             return this[coords.x, coords.y];
         }
-        public void RemoveActor(int x, int y)
-        {
-            _tiles[y][x].Remove(TileType.Enemy);
-        }
 
+        /// <summary>
+        /// Get ID of first actor on a specified tile
+        /// </summary>
+        /// <param name="x">x-coordinates of tile</param>
+        /// <param name="y">y-coordinates of tile</param>
+        /// <returns></returns>
         public int firstActorID(int x, int y)
         {
             if (_tiles[y][x].firstActor != null)
@@ -621,6 +638,12 @@ namespace Gruppe22.Backend
             return false;
         }
 
+        /// <summary>
+        /// Event Handling (implementation of IHandleEvent)
+        /// </summary>
+        /// <param name="DownStream">true if message is meant for children; false if it is meant for parents</param>
+        /// <param name="eventID">Unique ID of the event</param>
+        /// <param name="data">Any data associated with the event</param>
         public virtual void HandleEvent(bool DownStream, Events eventID, params object[] data)
         {
             if (!DownStream)
@@ -628,7 +651,7 @@ namespace Gruppe22.Backend
                 switch (eventID)
                 {
                     default:
-                        ((Backend.IHandleEvent)_parent).HandleEvent(false, eventID, data);
+                        _parent.HandleEvent(false, eventID, data);
                         break;
                 }
             }
@@ -924,6 +947,9 @@ namespace Gruppe22.Backend
             Uncover(actors[0].tile.coords, actors[0].viewRange);
         }
 
+        /// <summary>
+        /// Display map & walls in text form
+        /// </summary>
         public void DebugMap()
         {
             string output = "";
@@ -1000,12 +1026,11 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// 
+        /// Constructor for a loading a map from a file
         /// </summary>
-        /// <param name="content"></param>
-        /// <param name="parent"></param>
-        /// <param name="filename"></param>
-        /// <param name="playerPos"></param>
+        /// <param name="parent">An event handler to pass events to</param>
+        /// <param name="filename">Filename of XML-file containing map data</param>
+        /// <param name="playerPos">Coordinates of player on map</param>
         public Map(IHandleEvent parent, string filename = "", Backend.Coords playerPos = null)
             : this()
         {
