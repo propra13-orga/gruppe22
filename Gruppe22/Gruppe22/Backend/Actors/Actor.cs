@@ -8,6 +8,9 @@ using Microsoft.Xna.Framework.Content;
 
 namespace Gruppe22.Backend
 {
+    /// <summary>
+    /// Types of actors
+    /// </summary>
     public enum ActorType
     {
         Player = 0,
@@ -15,6 +18,9 @@ namespace Gruppe22.Backend
         Enemy = 2
     }
 
+    /// <summary>
+    /// A living entity (backend)
+    /// </summary>
     public class Actor
     {
         #region protected Fields
@@ -22,6 +28,9 @@ namespace Gruppe22.Backend
         /// Zufallsgenerator.
         /// </summary>
         protected Random _random;
+        /// <summary>
+        /// Number of lives (ressurection)
+        /// </summary>
         protected uint _lives = 1;
         /// <summary>
         /// Anzahl der neuen Items.
@@ -100,6 +109,7 @@ namespace Gruppe22.Backend
         public List<int> _quicklist = null;
         protected int _armor = 40;
         protected int _abilityPoints = 0;
+        protected Direction _direction = Direction.Right;
         protected int _skills = 0;
         protected int _viewRange = 4;
         protected string _animationFile = ".\\content\\player.xml";
@@ -132,6 +142,9 @@ namespace Gruppe22.Backend
 
         }
 
+        /// <summary>
+        /// Number of current lives (read/write)
+        /// </summary>
         public uint lives
         {
             get
@@ -143,6 +156,10 @@ namespace Gruppe22.Backend
                 _lives = value;
             }
         }
+
+        /// <summary>
+        /// List of items which have changed since last viewing inventory
+        /// </summary>
         public int newItems
         {
             get
@@ -152,6 +169,21 @@ namespace Gruppe22.Backend
             set
             {
                 _newItems = value;
+            }
+        }
+
+        /// <summary>
+        /// Direction actor is currently facing (read/write)
+        /// </summary>
+        public Direction direction
+        {
+            get
+            {
+                return _direction;
+            }
+            set
+            {
+                _direction = value;
             }
         }
 
@@ -820,8 +852,11 @@ namespace Gruppe22.Backend
             writer.WriteAttributeString("destroyArmor", Convert.ToString(_destroyArmor));
             writer.WriteAttributeString("animation", Convert.ToString(_animationFile));
             writer.WriteAttributeString("viewRange", Convert.ToString(_viewRange));
-            writer.WriteAttributeString("stunned", Convert.ToString(_stunned));
-            writer.WriteAttributeString("charmed", Convert.ToString(_charmed));
+            if (_stunned != -1) writer.WriteAttributeString("stunned", Convert.ToString(_stunned));
+            if (_charmed != -1) writer.WriteAttributeString("charmed", Convert.ToString(_charmed));
+            if (_lives != 1) writer.WriteAttributeString("lives", Convert.ToString(_lives));
+            if (_direction != Direction.None) writer.WriteAttributeString("direction", Convert.ToString(_lives));
+
             if (_charmed != 0) _friendly = true;
             writer.WriteAttributeString("scared", Convert.ToString(_scared));
 
@@ -932,6 +967,8 @@ namespace Gruppe22.Backend
             _charmed = a.charmed;
             _quicklist = a.quickList;
             _abilities = a.abilities;
+            _lives = a.lives;
+            _direction = a.direction;
 
             if ((a.actorType == ActorType.NPC) && (actorType == ActorType.NPC))
             {
@@ -987,6 +1024,10 @@ namespace Gruppe22.Backend
             _maxMana = Convert.ToInt32(reader.GetAttribute("maxMana"));
             _destroyWeapon = Convert.ToInt32(reader.GetAttribute("destroyWeapon"));
             _destroyArmor = Convert.ToInt32(reader.GetAttribute("destroyArmor"));
+            if (reader.GetAttribute("lives") != null) _lives = Convert.ToUInt32(reader.GetAttribute("lives"));
+            if (reader.GetAttribute("direction") != null)
+                _direction = (Direction)Enum.Parse(typeof(Direction), reader.GetAttribute("direction"));
+
 
             if (reader.GetAttribute("crazy") != null) _crazy = Convert.ToBoolean(reader.GetAttribute("crazy"));
             if (reader.GetAttribute("ranged") != null) _ranged = Convert.ToBoolean(reader.GetAttribute("ranged"));
@@ -1224,9 +1265,9 @@ namespace Gruppe22.Backend
         /// <param name="rnd">a random used to generate the actors starting values</param>
         /// <param name="animationFile">the file used to display the actor</param>
         /// <param name="level">the default starting level is 1</param>
-        public Actor( ActorType actorType, int health, int armor, int damage, int maxHealth = -1, string name = "", Random rnd = null, string animationFile = "", int level = -1)
+        public Actor(ActorType actorType, int health, int armor, int damage, int maxHealth = -1, string name = "", Random rnd = null, string animationFile = "", int level = -1)
         {
-            
+
             _actorType = actorType;
             _abilities = new List<Ability>();
             _quicklist = new List<int>(10);

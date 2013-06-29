@@ -91,7 +91,8 @@ namespace Gruppe22.Client
         }
         public static void CreateActor(Mainmap _map, ContentManager _content, Camera _camera, string character = "")
         {
-            ActorView player = new ActorView(_camera, _map, 0, _content, Backend.Coords.Zero);
+            Backend.Actor tmp = new Backend.Actor(Backend.ActorType.NPC, 20, 20, 20);
+            ActorView player = new ActorView(_camera, _map, 0, _content, Backend.Coords.Zero, tmp);
             _AddActivity(_content, player, character, "walk", Backend.Activity.Walk);
             _AddActivity(_content, player, character, "hit", Backend.Activity.Hit);
             _AddActivity(_content, player, character, "die", Backend.Activity.Die);
@@ -184,7 +185,7 @@ namespace Gruppe22.Client
 
 
             _tiles.Add(name + "b", WallDir.LeftRight, new Rectangle(384, 211, 128, 172), new Backend.Coords(0, 20), null, Backend.WallType.OpenDoor);
-            _tiles.Add(name + "b", WallDir.LeftRight, new Rectangle(256, 211, 128, 172), new Backend.Coords(0,20), null, Backend.WallType.ClosedDoor);
+            _tiles.Add(name + "b", WallDir.LeftRight, new Rectangle(256, 211, 128, 172), new Backend.Coords(0, 20), null, Backend.WallType.ClosedDoor);
 
 
             _tiles.Add(name + "b", WallDir.UpLeftDiag, new Rectangle(256, 0, 128, 192), new Backend.Coords(32, 16), new Backend.Coords(32, 0), Backend.WallType.Deco1);

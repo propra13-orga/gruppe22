@@ -88,7 +88,6 @@ namespace Gruppe22.Backend
         protected List<Coords> _updateTiles = null;
         #endregion
 
-
         #region Public Fields
 
         /// <summary>

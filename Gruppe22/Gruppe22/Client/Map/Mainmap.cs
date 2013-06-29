@@ -409,7 +409,8 @@ namespace Gruppe22.Client
                             bool delay = false;
                             bool isLock = true;
                             if (data.Length > 2) delay = (bool)data[2];
-                            if (data.Length > 3) _actors[id].direction = (Backend.Direction)data[3];
+                            if (data.Length > 3)
+                                _parent.HandleEvent(false, Backend.Events.RotateActor, id, _map.actors[id].tile.coords, (Backend.Direction)data[3]);
                             if ((activity == Backend.Activity.Die) || (activity == Backend.Activity.Hit))
                             {
                                 _actors[id].effect = new MapEffect(_environment[2][1], new Backend.Coords(_actors[id].position.x + 7, _actors[id].position.y + 2));
@@ -1269,7 +1270,7 @@ namespace Gruppe22.Client
                     {
                         foreach (Backend.Item item in (_map[x, y].items))
                         {
-                            _spriteBatch.Draw(TextureFromData.Convert(item.icon,_content), new Rectangle(_map2screen(x, y).x + item.icon.offset.x + 32, _map2screen(x, y).y + 16 + item.icon.offset.y,
+                            _spriteBatch.Draw(TextureFromData.Convert(item.icon, _content), new Rectangle(_map2screen(x, y).x + item.icon.offset.x + 32, _map2screen(x, y).y + 16 + item.icon.offset.y,
                                 item.icon.rect.Width - item.icon.crop.x, item.icon.rect.Height - item.icon.crop.y), item.icon.rect, ((y == (int)_highlightedTile.y) && (x == (int)_highlightedTile.x)) ? Color.Red : Color.White);
                         }
 
@@ -1282,11 +1283,6 @@ namespace Gruppe22.Client
         public bool IsMoving(int id)
         {
             return _actors[id].isMoving;
-        }
-
-        public void ChangeDir(int id, Backend.Direction dir)
-        {
-            _actors[id].direction = dir;
         }
 
         public void resetActors()
@@ -1308,13 +1304,13 @@ namespace Gruppe22.Client
                 switch (_map.actors[count].actorType)
                 {
                     case Backend.ActorType.Player:
-                        _actors.Add(new ActorView(_camera, this, count, _content, _map2screen(_map.actorPositions[count]), _map.actors[count].animationFile, 3, _map.actors[count].health > 0));
+                        _actors.Add(new ActorView(_camera, this, count, _content, _map2screen(_map.actorPositions[count]), _map.actors[count], _map.actors[count].animationFile, 3, _map.actors[count].health > 0));
                         break;
                     case Backend.ActorType.Enemy:
-                        _actors.Add(new ActorView(_camera, this, count, _content, _map2screen(_map.actorPositions[count]), _map.actors[count].animationFile, 3, _map.actors[count].health > 0));
+                        _actors.Add(new ActorView(_camera, this, count, _content, _map2screen(_map.actorPositions[count]), _map.actors[count], _map.actors[count].animationFile, 3, _map.actors[count].health > 0));
                         break;
                     case Backend.ActorType.NPC:
-                        _actors.Add(new ActorView(_camera, this, count, _content, _map2screen(_map.actorPositions[count]), _map.actors[count].animationFile, 12, _map.actors[count].health > 0));
+                        _actors.Add(new ActorView(_camera, this, count, _content, _map2screen(_map.actorPositions[count]), _map.actors[count], _map.actors[count].animationFile, 12, _map.actors[count].health > 0));
                         break;
                 }
             }
@@ -1401,7 +1397,7 @@ namespace Gruppe22.Client
                         {
                             if (!_actors[_playerID].isMoving)
                             {
-                                MovePlayer(Backend.Map.WhichWayIs(_highlightedTile, _map.actors[_playerID].tile.coords));
+                                _parent.HandleEvent(true, Backend.Events.MoveActor, _playerID, Backend.Map.WhichWayIs(_highlightedTile, _map.actors[_playerID].tile.coords));
                             }
                         }
 
@@ -1472,7 +1468,6 @@ namespace Gruppe22.Client
             {
                 //  System.Diagnostics.Debug.WriteLine("Add to " + _map.actors[_playerID].tile.coords);
 
-                _parent.HandleEvent(false, Backend.Events.MoveProjectile, null, _map.actors[_playerID].tile.parent, _actors[_playerID].direction);
                 _fireCount = 800;
             }
 
@@ -1487,17 +1482,6 @@ namespace Gruppe22.Client
         {
 
         }
-
-        /// <summary>
-        /// Check whether player can move to a certain square from current position
-        /// </summary>
-        /// <param name="dir">Direction to move to</param>
-        public void MovePlayer(Backend.Direction dir)
-        {
-            if (!_actors[_playerID].isMoving)
-                _parent.HandleEvent(false, Backend.Events.MoveActor, 0, dir);
-        }
-
         #endregion
 
 

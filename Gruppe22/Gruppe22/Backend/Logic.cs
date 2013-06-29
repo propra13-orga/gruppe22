@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Xna.Framework;
 
 namespace Gruppe22.Backend
 {
@@ -19,6 +20,12 @@ namespace Gruppe22.Backend
         }
 
         public virtual void GenerateMaps()
+        {
+
+        }
+
+
+        public virtual void Update(GameTime gametime)
         {
 
         }

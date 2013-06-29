@@ -23,7 +23,6 @@ namespace Gruppe22.Client
         private Backend.Coords _target = null;
         private bool _nomove = true;
         private Backend.Coords _cacheTarget = null;
-        private Backend.Direction _cacheDir = Backend.Direction.None;
         private Camera _camera = null;
         /// <summary>
         /// Current animation played
@@ -32,7 +31,7 @@ namespace Gruppe22.Client
         /// <summary>
         /// Direction the actor is facing
         /// </summary>
-        private Backend.Direction _direction = Backend.Direction.Down;
+        private Backend.Actor _actor = null;
         /// <summary>
         /// Movement speed (nur relevant to animation, see _animationTime below)
         /// </summary>
@@ -169,17 +168,6 @@ namespace Gruppe22.Client
             }
         }
 
-        public Backend.Direction cacheDir
-        {
-            set
-            {
-                _cacheDir = value;
-            }
-            get
-            {
-                return _cacheDir;
-            }
-        }
 
         public bool isMoving
         {
@@ -202,10 +190,10 @@ namespace Gruppe22.Client
                 if (_activity != value)
                 {
                     _elapsed = 0;
-                    if (_textures[(int)value * 8 + (int)Math.Log((double)_direction,2)].animationTexture != null)
+                    if (_textures[(int)value * 8 + (int)Math.Log((double)_actor.direction,2)].animationTexture != null)
                     {
                         _activity = value;
-                        _textures[(int)_activity * 8 + (int)Math.Log((double)_direction,2)].ResetAnimation();
+                        _textures[(int)_activity * 8 + (int)Math.Log((double)_actor.direction,2)].ResetAnimation();
                     }
                 }
             }
@@ -215,17 +203,7 @@ namespace Gruppe22.Client
         {
             get
             {
-                return _direction;
-            }
-            set
-            {
-                if (_direction != value)
-                {
-                    _elapsed = 0;
-                    if (value != Backend.Direction.None)
-                        _direction = value;
-                    _textures[(int)_activity * 8 + (int)Math.Log((double)_direction,2)].ResetAnimation();
-                }
+                return _actor.direction;
             }
         }
 
@@ -233,11 +211,11 @@ namespace Gruppe22.Client
         {
             get
             {
-                if (_direction == Backend.Direction.None)
+                if (_actor.direction == Backend.Direction.None)
                 {
                     return _textures[(int)_activity].animationTexture;
                 }
-                return _textures[(int)_activity * 8 + (int)Math.Log((double)_direction,2)].animationTexture;
+                return _textures[(int)_activity * 8 + (int)Math.Log((double)_actor.direction, 2)].animationTexture;
             }
         }
 
@@ -245,7 +223,7 @@ namespace Gruppe22.Client
         {
             get
             {
-                return _textures[(int)_activity * 8 + (int)Math.Log((double)_direction,2)].animationRect;
+                return _textures[(int)_activity * 8 + (int)Math.Log((double)_actor.direction, 2)].animationRect;
             }
         }
 
@@ -253,7 +231,7 @@ namespace Gruppe22.Client
         {
             get
             {
-                return _textures[(int)_activity * 8 + (int)Math.Log((double)_direction,2)].offsetY;
+                return _textures[(int)_activity * 8 + (int)Math.Log((double)_actor.direction, 2)].offsetY;
             }
 
         }
@@ -262,7 +240,7 @@ namespace Gruppe22.Client
         {
             get
             {
-                return _textures[(int)_activity * 8 + (int)Math.Log((double)_direction,2)].offsetX;
+                return _textures[(int)_activity * 8 + (int)Math.Log((double)_actor.direction, 2)].offsetX;
             }
             set { }
 
@@ -272,7 +250,7 @@ namespace Gruppe22.Client
         {
             get
             {
-                return _textures[(int)_activity * 8 + (int)Math.Log((double)_direction,2)].cropX;
+                return _textures[(int)_activity * 8 + (int)Math.Log((double)_actor.direction, 2)].cropX;
             }
             set { }
 
@@ -281,7 +259,7 @@ namespace Gruppe22.Client
         {
             get
             {
-                return _textures[(int)_activity * 8 + (int)Math.Log((double)_direction,2)].cropY;
+                return _textures[(int)_activity * 8 + (int)Math.Log((double)_actor.direction, 2)].cropY;
             }
             set { }
 
@@ -320,7 +298,7 @@ namespace Gruppe22.Client
         {
             _lock = true;
             this.activity = Backend.Activity.Die;
-            _textures[(int)_activity * 8 + (int)Math.Log((double)_direction,2)].FinalAnimation();
+            _textures[(int)_activity * 8 + (int)Math.Log((double)_actor.direction, 2)].FinalAnimation();
         }
 
         /// <summary>
@@ -427,7 +405,7 @@ namespace Gruppe22.Client
 
             if (_activity != Backend.Activity.Walk)
             {
-                if (_textures[(int)_activity * 8 + (int)Math.Log((double)_direction,2)].NextAnimation())
+                if (_textures[(int)_activity * 8 + (int)Math.Log((double)_actor.direction, 2)].NextAnimation())
                 {
                     if (_activity != Backend.Activity.Die)
                     {
@@ -452,7 +430,7 @@ namespace Gruppe22.Client
             {
                 if (hasMoved)
                 {
-                    _textures[(int)_activity * 8 + (int)Math.Log((double)_direction,2)].NextAnimation();
+                    _textures[(int)_activity * 8 + (int)Math.Log((double)_actor.direction, 2)].NextAnimation();
                 }
             }
         }
@@ -544,13 +522,8 @@ namespace Gruppe22.Client
                         {
                             //                            _position = _target;
                             //                          _target = _cacheTarget;
-                            _parent.HandleEvent(false, Backend.Events.TileEntered, _id, _direction);
-                            if (_cacheDir != Backend.Direction.None)
-                            {
-                                _parent.HandleEvent(false, Backend.Events.MoveActor, _id, _cacheDir, true);
-                                _cacheDir = Backend.Direction.None;
-
-                            }
+                            _parent.HandleEvent(false, Backend.Events.TileEntered, _id, _actor.direction);
+                            
 
 
                         }
@@ -590,11 +563,12 @@ namespace Gruppe22.Client
         /// <param name="controllable"></param>
         /// <param name="position"></param>
         /// <param name="sprite"></param>
-        public ActorView(Camera camera, Backend.IHandleEvent parent, int id, ContentManager content, Backend.Coords position, string filename = "", int speed = 5, bool alive = true, int width = 96, int height = 96)
+        public ActorView(Camera camera, Backend.IHandleEvent parent, int id, ContentManager content, Backend.Coords position, Backend.Actor actor, string filename = "", int speed = 5, bool alive = true, int width = 96, int height = 96)
             : base(content, width, height, "")
         {
             _camera = camera;
             _position = position;
+            _actor = actor;
             _id = id;
             _speed = speed;
             _target = new Backend.Coords((int)position.x, (int)position.y);

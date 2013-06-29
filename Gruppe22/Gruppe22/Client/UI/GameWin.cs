@@ -38,7 +38,7 @@ namespace Gruppe22.Client
         /// <summary>
         /// Unique ID of current player Character
         /// </summary>
-        protected int playerID = 0;
+        protected int _playerID = 0;
 
         /// <summary>
         /// Current mousewheel position (used to calculate changes)
@@ -148,9 +148,11 @@ namespace Gruppe22.Client
         /// </summary>
         protected List<SoundEffect> soundEffects = null;
 
+        /// <summary>
+        /// Descriptive text stating which file is currently downloading
+        /// </summary>
         protected string _downloading = "";
 
-        protected NetPlayer _network = null;
         #endregion
 
 
@@ -162,7 +164,7 @@ namespace Gruppe22.Client
         {
             _interfaceElements = new List<UIElement>(); // Initialize the list of UI elements (but not the objects themselves, see LoadContent)
             _logic = new PureLogic(this, null);
-            if ((!System.IO.File.Exists("room1.xml")) && (_network == null))
+            if ((!System.IO.File.Exists("room1.xml")) && (_logic is PureLogic))
             {
                 _logic.GenerateMaps();
             }
@@ -171,7 +173,7 @@ namespace Gruppe22.Client
                 path = File.ReadAllText("GameData");
             if (path.IndexOf(Environment.NewLine) > 0)
             {
-                _logic.map.actors[(int)playerID].lives = uint.Parse(path.Substring(path.IndexOf(Environment.NewLine) + Environment.NewLine.Length));
+                _logic.map.actors[(int)_playerID].lives = uint.Parse(path.Substring(path.IndexOf(Environment.NewLine) + Environment.NewLine.Length));
                 path = path.Substring(0, path.IndexOf(Environment.NewLine));
             }
             if (File.Exists("saved" + (string)path))
@@ -292,10 +294,7 @@ namespace Gruppe22.Client
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            if (_network != null)
-            {
-                _network.Update(gameTime);
-            }
+            _logic.Update(gameTime);
             if (_status != Backend.GameStatus.GameOver)
             {
                 foreach (Keys k in _events.keys) { HandleMovementKeys(k); }
@@ -474,19 +473,19 @@ namespace Gruppe22.Client
                     _statusbox.focus = true;
                     break;
                 case Keys.Up:
-                    _mainmap1.MovePlayer(Backend.Direction.Up);
+                    HandleEvent(true, Backend.Events.MoveActor, _playerID, Backend.Direction.Up);
                     break;
                 case Keys.Left:
-                    _mainmap1.MovePlayer(Backend.Direction.Left);
+                    HandleEvent(true, Backend.Events.MoveActor, _playerID, Backend.Direction.Left);
                     break;
                 case Keys.Right:
-                    _mainmap1.MovePlayer(Backend.Direction.Right);
+                    HandleEvent(true, Backend.Events.MoveActor, _playerID, Backend.Direction.Right);
                     break;
                 case Keys.Down:
-                    _mainmap1.MovePlayer(Backend.Direction.Down);
+                    HandleEvent(true, Backend.Events.MoveActor, _playerID, Backend.Direction.Down);
                     break;
                 case Keys.Space:
-                    _mainmap1.FireProjectile();
+                    HandleEvent(true, Backend.Events.MoveProjectile, null, _logic.map.actors[_playerID].tile.parent, _logic.map.actors[_playerID].direction);
                     break;
 
             }
@@ -573,21 +572,21 @@ namespace Gruppe22.Client
                         _logic.map.Load((string)data[0], (Coords)data[1]);
                     _mainmap1.resetActors();
                     //_mainmap2.resetActors();
-                    _minimap1.MoveCamera(_logic.map.actors[playerID].tile.coords);
+                    _minimap1.MoveCamera(_logic.map.actors[_playerID].tile.coords);
 
                     HandleEvent(false, Events.ShowMessage, "You entered room number " + data[0].ToString().Substring(4, 1) + ".");
-                    File.WriteAllText("GameData", data[0].ToString() + Environment.NewLine + _logic.map.actors[playerID].lives.ToString());
+                    File.WriteAllText("GameData", data[0].ToString() + Environment.NewLine + _logic.map.actors[_playerID].lives.ToString());
 
                     _status = Backend.GameStatus.Running;
                     break;
                 case Backend.Events.Chat:
-                    if (_network != null)
+                    if (_logic is PureLogic)
                     {
-
+                        _statusbox.AddLine((string)data[0], Color.Pink);
                     }
                     else
                     {
-                        _statusbox.AddLine((string)data[0], Color.Pink);
+                        (_logic as NetLogic).SendChat((string)data[0]);
                     }
                     break;
                 case Backend.Events.AddDragItem:
@@ -706,7 +705,7 @@ namespace Gruppe22.Client
 
                 case Backend.Events.LoadFromCheckPoint:
                     _status = Backend.GameStatus.NoRedraw;
-                    _logic.map.actors[playerID].lives--;
+                    _logic.map.actors[_playerID].lives--;
                     string lastCheck = File.ReadAllText("CheckPoint");
                     while (Directory.GetFiles(".", "savedroom*.xml").Length > 0)
                     {
@@ -720,7 +719,7 @@ namespace Gruppe22.Client
                     }
                     _logic.map.actors.Clear();
                     _logic.map.Load("savedroom" + lastCheck + ".xml", null);
-                    File.WriteAllText("GameData", "room" + _logic.map.id.ToString() + ".xml" + Environment.NewLine + _logic.map.actors[playerID].ToString());
+                    File.WriteAllText("GameData", "room" + _logic.map.id.ToString() + ".xml" + Environment.NewLine + _logic.map.actors[_playerID].ToString());
                     _mainmap1.resetActors();
                     //_mainmap2.resetActors();
                     _mana.actor = _logic.map.actors[0];
@@ -785,15 +784,15 @@ namespace Gruppe22.Client
 
                 case Backend.Events.NewMap:
                     _status = Backend.GameStatus.NoRedraw;
-                    _logic.map.actors[playerID].lives = 0;
-                    if (_network == null)
+                    _logic.map.actors[_playerID].lives = 0;
+                    if (_logic is PureLogic)
                         _logic.GenerateMaps();
                     HandleEvent(true, Backend.Events.ResetGame);
                     break;
 
                 case Backend.Events.ResetGame:
                     _status = Backend.GameStatus.NoRedraw;
-                    _logic.map.actors[playerID].lives = 0;
+                    _logic.map.actors[_playerID].lives = 0;
                     DeleteSavedRooms();
                     _logic.map.Dispose();
                     _logic.map.Load("room1.xml", null);
@@ -957,9 +956,9 @@ namespace Gruppe22.Client
             _gameOver.AddChild(stat);
             _gameOver.AddChild(new Button(_gameOver, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width) / 2.0f) - 300 + 10, (int)(GraphicsDevice.Viewport.Height / 2.0f) + 30, 130, 40), "New Maps", (int)Backend.Buttons.Reset));
 
-            if (_logic.map.actors[playerID].lives > 0)
+            if (_logic.map.actors[_playerID].lives > 0)
             {
-                _gameOver.AddChild(new Button(_gameOver, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width) / 2.0f) - 300 + 170, (int)(GraphicsDevice.Viewport.Height / 2.0f) + 30, 160, 40), "Restore (" + _logic.map.actors[playerID].ToString() + " left)", (int)Backend.Buttons.Load));
+                _gameOver.AddChild(new Button(_gameOver, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width) / 2.0f) - 300 + 170, (int)(GraphicsDevice.Viewport.Height / 2.0f) + 30, 160, 40), "Restore (" + _logic.map.actors[_playerID].ToString() + " left)", (int)Backend.Buttons.Load));
             }
             _gameOver.AddChild(new Button(_gameOver, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width) / 2.0f) - 300 + 600 - 190, (int)(GraphicsDevice.Viewport.Height / 2.0f) + 30, 100, 40), "Restart", (int)Backend.Buttons.Restart));
             _gameOver.AddChild(new Button(_gameOver, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width) / 2.0f) - 300 + 600 - 80, (int)(GraphicsDevice.Viewport.Height / 2.0f) + 30, 70, 40), "Quit", (int)Backend.Buttons.Quit));
