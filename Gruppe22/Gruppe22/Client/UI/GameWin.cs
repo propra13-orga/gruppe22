@@ -175,9 +175,9 @@ namespace Gruppe22.Client
                 path = path.Substring(0, path.IndexOf(Environment.NewLine));
             }
             if (File.Exists("saved" + (string)path))
-                _logic.map = new Map(Content, this, "saved" + (string)path);
+                _logic.map = new Map(this, "saved" + (string)path);
             else
-                _logic.map = new Map(Content, this, (string)path);
+                _logic.map = new Map(this, (string)path);
             base.Initialize();
         }
 

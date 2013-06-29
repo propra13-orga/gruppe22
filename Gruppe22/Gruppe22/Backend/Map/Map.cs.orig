@@ -2,47 +2,264 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Xml;
-<<<<<<< HEAD
 using Microsoft.Xna.Framework;
-=======
->>>>>>> origin/xml
+using System.Text.RegularExpressions;
+using Microsoft.Xna.Framework.Content;
 
-namespace Gruppe22
+namespace Gruppe22.Backend
 {
+<<<<<<< HEAD
+=======
+    public class Exit
+    {
+        /// <summary>
+        /// Koordinaten des Ausgangs.
+        /// </summary>
+        private Backend.Coords _from;
+        /// <summary>
+        /// Koordinaten des Ziels.
+        /// </summary>
+        private Backend.Coords _to;
+        /// <summary>
+        /// Raumdateiname in dem sich der Spieler im moment befindet.
+        /// </summary>
+        private string _fromRoom;
+        /// <summary>
+        /// Raumdateiname zu dem Raum wo der Spieler hin gelangt, wenn er diesen Ausgang nimmt.
+        /// </summary>
+        private string _toRoom;
+        /// <summary>
+        /// Öffentliche Eigenschaft zu from
+        /// </summary>
+        public Backend.Coords from
+        {
+            get { return _from; }
+        }
+
+        /// <summary>
+        /// Öffentliche Eigenschaft
+        /// </summary>
+        public Backend.Coords to
+        {
+            get { return _to; }
+        }
+        /// <summary>
+        /// Öffentliche Eigenschaft
+        /// </summary>
+        public string fromRoom { get { return _fromRoom; } }
+        /// <summary>
+        /// Öffentliche Eigenschaft
+        /// </summary>
+        public string toRoom { get { return _toRoom; } }
+
+        /// <summary>
+        /// Konstruktor.
+        /// </summary>
+        /// <param name="from">Koordinaten des Ausgangs.</param>
+        /// <param name="fromRoom">Dateiname zu dem Quellraum.</param>
+        /// <param name="to">Koordinaten für den Sprung in den nächsten Raum.</param>
+        /// <param name="toRoom">Raumname des Zielraumes.</param>
+        public Exit(Coords from, string fromRoom, Backend.Coords to = null, string toRoom = "")
+        {
+            _from = from;
+            _fromRoom = fromRoom;
+            _toRoom = toRoom;
+            _to = to;
+        }
+    }
+>>>>>>> 118f66d2edbf0af5150385370d415ca78e902ddd
+
     public class Map : IHandleEvent, IDisposable
     {
         #region Private Fields
-        private IHandleEvent _parent;
+        /// <summary>
+        /// Der Ressourcen-Manager des Spiels.
+        /// </summary>
+        protected ContentManager _content;
+        /// <summary>
+        /// Das Level zu dem diese Map (Raum) gehört.
+        /// </summary>
+        protected int _level;
+        /// <summary>
+        /// Name des Raums.
+        /// </summary>
+        protected string _name;
+        /// <summary>
+        /// Der Dungeon-name des Raums.
+        /// </summary>
+        protected string _dungeonname;
+        /// <summary>
+        /// Der verwendeten Wand-Dateien.
+        /// </summary>
+        protected string _wallFile = "wall1";
+        /// <summary>
+        /// Die verwendeten Boden-Dateien.
+        /// </summary>
+        protected string _floorFile = "floor1";
+        /// <summary>
+        /// Lichtfeld beschreibt die stärke des Lichtkreises im Spiel.
+        /// </summary>
+        protected int _light;
+        /// <summary>
+        /// Die zu verwendete Musikdatei.
+        /// </summary>
+        protected string _music = "level1";
+        /// <summary>
+        /// Die Raum-ID.
+        /// </summary>
+        protected int _id;
+        /// <summary>
+        /// Das Elternobjekt. Hier Mainwindow bzw. GameWin/GameLogic.
+        /// </summary>
+        private object _parent = null;
 
         /// <summary>
-        /// A two dimensional list of tiles
+        /// Die Hauptstruktur der Karte, zweidimensionale Liste von Tiles.
         /// </summary>
-        private List<List<Tile>> _tiles = null;
-        /// <summary>
-        /// Internal current width
-        /// </summary>
-        private int _width = 10;
+        protected List<List<FloorTile>> _tiles = null;
 
         /// <summary>
-        /// Internal current height
+        /// Aktuelle Breite (wird intern verwendet).
         /// </summary>
-        private int _height = 10;
+        protected int _width = 10;
+
+        protected List<Exit> _exits;
 
         /// <summary>
-        /// Blank tile returned when requesting tile outside map boundaries (i.e. negative values / values beyond width or height)
+        /// Die aktuelle interne höhe 
         /// </summary>
-        private Tile _blankTile = null;
+        protected int _height = 10;
 
-        public List<Actor> _actors = null;
-        public List<Item> _items = null;
-        private List<Coords> _updateTiles = null;
+        /// <summary>
+        /// Beschreibt das Ende des Begehbaren bereiches.
+        /// </summary>
+        private FloorTile _blankTile = null;
+
+        /// <summary>
+        /// Die Liste aller Actors zu dem aktuellen Raum.
+        /// </summary>
+        protected List<Actor> _actors = null;
+        /// <summary>
+        /// Die Liste aller Items zu dem aktuellen Raum.
+        /// </summary>
+        protected List<Item> _items = null;
+        /// <summary>
+        /// Die Liste aller Tiles die eine Update-Methode besitzen d.h. irgend eine art von Animation oder Effekt besitzen.
+        /// </summary>
+        protected List<Coords> _updateTiles = null;
         #endregion
-
-        int _test = 0;
 
         #region Public Fields
 
-       
+        /// <summary>
+        /// Öffentliche Eigenschaft
+        /// </summary>
+        public int level
+        {
+            get
+            {
+                return _level;
+            }
+            set
+            {
+                _level = value;
+            }
+        }
+
+
+        /// <summary>
+        /// Öffentliche Eigenschaft
+        /// </summary>
+        public string floorFile
+        {
+            get { return _floorFile; }
+            set { _floorFile = value; }
+        }
+        /// <summary>
+        /// Öffentliche Eigenschaft
+        /// </summary>
+        public string music
+        {
+            get { return _music; }
+            set { _music = value; }
+        }
+        /// <summary>
+        /// Öffentliche Eigenschaft
+        /// </summary>
+        public string wallFile
+        {
+            get { return _wallFile; }
+            set { _wallFile = value; }
+        }
+        /// <summary>
+        /// Öffentliche Eigenschaft
+        /// </summary>
+        public int light
+        {
+            get
+            {
+                return _light;
+            }
+            set
+            {
+                _light = value;
+            }
+        }
+        /// <summary>
+        /// Öffentliche Eigenschaft
+        /// </summary>
+        public string name
+        {
+            get
+            {
+                return _name;
+            }
+            set
+            {
+                _name = value;
+            }
+        }
+        /// <summary>
+        /// Öffentliche Eigenschaft
+        /// </summary>
+        public string dungeonname
+        {
+            get
+            {
+                return _dungeonname;
+            }
+            set
+            {
+                _dungeonname = value;
+            }
+        }
+        /// <summary>
+        /// Öffentliche Eigenschaft
+        /// </summary>
+        public List<Coords> updateTiles
+        {
+            get
+            {
+                return _updateTiles;
+            }
+        }
+        /// <summary>
+        /// Öffentliche Eigenschaft
+        /// </summary>
+        public int id
+        {
+            get
+            {
+                return _id;
+            }
+            set
+            {
+                id = value;
+            }
+        }
+        /// <summary>
+        /// Öffentliche Eigenschaft
+        /// </summary>
         public List<Actor> actors
         {
             get
@@ -54,7 +271,23 @@ namespace Gruppe22
                 _actors = value;
             }
         }
-
+        /// <summary>
+        /// Öffentliche Eigenschaft
+        /// </summary>
+        public List<Exit> exits
+        {
+            get
+            {
+                return _exits;
+            }
+            set
+            {
+                _exits = value;
+            }
+        }
+        /// <summary>
+        /// Öffentliche Eigenschaft
+        /// </summary>
         public List<Item> items
         {
             get
@@ -66,8 +299,9 @@ namespace Gruppe22
                 _items = value;
             }
         }
+
         /// <summary>
-        /// CUrrent Width of the maze
+        /// Öffentliche Eigenschaft zur Labyrintbreite.
         /// </summary>
         public int width
         {
@@ -82,7 +316,7 @@ namespace Gruppe22
         }
 
         /// <summary>
-        /// Current Height of the maze
+        /// Labyrinthöhe.
         /// </summary>
         public int height
         {
@@ -96,37 +330,48 @@ namespace Gruppe22
             }
         }
 
+        /// <summary>
+        /// Die Liste der aktuellen Position aller Actor-Objekte au der Karte.
+        /// </summary>
         public List<Coords> actorPositions
         {
             get
             {
                 List<Coords> result = new List<Coords>();
-                foreach (Coords coords in _updateTiles)
+                foreach (Actor actor in _actors)
                 {
-                    if (_tiles[coords.y][coords.x] is ActorTile)
-                    {
-                        ActorTile t = _tiles[coords.y][coords.x] as ActorTile;
-                        if (t.actorType == ActorType.Player)
-                        {
-                            result.Insert(0, coords);
-                        }
-                        else
-                        {
-                            result.Add(coords);
-                        };
-                    }
+                    result.Add(actor.tile.coords);
                 }
-                return _updateTiles;
+                return result;
             }
         }
 
+
         /// <summary>
-        /// Get the tile at coordinates x and y
+        /// Liefert das Tile-Objekt, das sich an dem angegebenen Koordinatenpunkt befindet.
         /// </summary>
         /// <param name="x">The x-coordinate</param>
         /// <param name="y">The y-coordinate</param>
         /// <returns>The tile at the specified coordinates</returns>
-        public Tile this[int x, int y]
+        public FloorTile this[Coords coords]
+        {
+            get
+            {
+                return this[coords.x, coords.y];
+            }
+            set
+            {
+                this[coords.x, coords.y] = value;
+            }
+        }
+
+        /// <summary>
+        /// Eine weitere Variante der Methode, hier int-Werte als Koordinaten, statt der Klasse Coords.
+        /// </summary>
+        /// <param name="x">The x-coordinate</param>
+        /// <param name="y">The y-coordinate</param>
+        /// <returns>The tile at the specified coordinates</returns>
+        public FloorTile this[int x, int y]
         {
             get
             {
@@ -149,103 +394,66 @@ namespace Gruppe22
         }
         #endregion
 
-        #region Private Methods
-        /// <summary>
-        /// Get the next tile based on included Connection info
-        /// </summary>
-        /// <param name="current">The start field</param>
-        /// <returns>The next field or null if field would be beyond map</returns>
-        private Path _Walk(Path current)
-        {
-            Path result = new Path(current.x, current.y, Connection.None);
-
-            switch (current.dir)
-            {
-                case Connection.Up:
-                    result.y -= 2;
-                    break;
-                case Connection.Right:
-                    result.x += 2;
-                    break;
-                case Connection.Down:
-                    result.y += 2;
-                    break;
-                case Connection.Left:
-                    result.x -= 2;
-                    break;
-            };
-
-            if ((result.x >= 1) && (result.x <= 2 * _width) && (result.y >= 0) && (result.y <= 2 * _height))
-                return result;
-            return null;
-        }
-
-        private void _NextTile(ref Path pos)
-        {
-            int count = 0;
-            while ((_tiles[pos.y][pos.x].connected) && (count < _width * _height))
-            {
-                count += 1;
-                pos.x += 2;
-                if (pos.x > _width * 2)
-                {
-                    pos.x = 1;
-                    pos.y += 2;
-                };
-                if (pos.y > _height * 2)
-                {
-                    pos.y = 1;
-                    pos.x = 1;
-                }
-            }
-            if (count >= _width * _height)
-            {
-                pos.x = -1;
-                pos.y = -1;
-            }
-        }
-
-
-
-
-        #endregion
-
         #region Public Methods
         /// <summary>
-        /// Refresh tiles which do something (traps, enemies, NPCs)
+        /// Aktualisiert die Tile-Objekte, die eine Aktion besitzen.
         /// </summary>
         /// <param name="gameTime"></param>
         public void Update(GameTime gameTime)
         {
-            foreach (Coords c in _updateTiles)
+            for (int i = 0; i < _updateTiles.Count; ++i)
             {
-                _tiles[c.y][c.x].Update(gameTime);
+                _tiles[_updateTiles[i].y][_updateTiles[i].x].Update(gameTime);
             }
         }
 
         /// <summary>
-        /// Add an actor to a tile
+        /// Add an actor to a tile. Tut noch nix.
         /// </summary>
         /// <param name="item"></param>
         /// <param name="from"></param>
-        public void AddActor(Item item, Coords from)
+        public void AddActor(Item item, Backend.Coords from)
         {
+
+        }
+        /// <summary>
+        /// Aufdeken (sichtbar machen) der Umgebung um eine Koordinate mit Radius radius. (Euklidische Norm)
+        /// </summary>
+        /// <param name="coords">Der Umgebungspunkt.</param>
+        /// <param name="radius">Der Radius.</param>
+        public void Uncover(Coords coords, int radius = 4)
+        {
+            for (int i = 0; i < radius; ++i)
+            {
+                for (int x = Math.Max(0, coords.x - radius); x <= Math.Min(coords.x + radius, _width); ++x)
+                {
+                    this[x, coords.y - i].visible = true;
+                    this[x, coords.y + i].visible = true;
+                    // System.Diagnostics.Debug.WriteLine(new Backend.Coords(x, coords.y - radius).ToString() + " - " + new Backend.Coords(x, coords.y + radius).ToString());
+                }
+                for (int y = Math.Max(0, coords.y - radius); y <= Math.Min(coords.y + radius, _height); ++y)
+                {
+                    this[coords.x - i, y].visible = true;
+                    this[coords.x + i, y].visible = true;
+                    //   System.Diagnostics.Debug.WriteLine(new Backend.Coords(coords.x - radius, y).ToString() + " - " + new Backend.Coords(coords.x + radius, y).ToString());
+                }
+            }
 
         }
 
         /// <summary>
-        /// Move an actor on the map in a specified direction (does not check for walls - use CanMove)
+        /// Bewegt einen Actor in die angegebene Richtung (prüft nicht auf Wandwiderstand - benutze CanMove)
         /// </summary>
         /// <param name="actor"></param>
         /// <param name="from"></param>
         /// <param name="dir"></param>
         public void MoveActor(Actor actor, Direction dir)
         {
-            Coords source = actor.tile.coords;
-            Coords target = DirectionTile(actor.tile.coords, dir);
+            Backend.Coords source = actor.tile.coords;
+            Backend.Coords target = DirectionTile(actor.tile.coords, dir);
 
             // Remove ActorTile from current tile
-            ((Tile)actor.tile.parent).Remove(actor.tile);
+            ((FloorTile)actor.tile.parent).Remove(actor.tile);
             // Add ActorTile to new Tile
             _tiles[target.y][target.x].Add(actor.tile);
             actor.tile.parent = _tiles[target.y][target.x];
@@ -259,11 +467,11 @@ namespace Gruppe22
         }
 
         /// <summary>
-        /// Add an item to a tile
+        /// Hinzufügen eines Item zu einem Tile. Diese Methode wird nicht verwendet.
         /// </summary>
         /// <param name="actor"></param>
         /// <param name="to"></param>
-        public void AddItem(Item item, Coords to)
+        public void AddItem(Item item, Backend.Coords to)
         {
             // Create ItemTile (if non existant)
             // or: Remove ItemTile from current tile
@@ -276,43 +484,201 @@ namespace Gruppe22
         /// <param name="item">item to move</param>
         /// <param name="from">square from which to move item</param>
         /// <param name="dir">Direction to move to</param>
-        public void MoveItem(Item item, Coords from, Direction dir)
+        public void MoveItem(Item item, Backend.Coords from, Direction dir)
         {
             // or: Remove ItemTile from current tile specified by coords
             // Add ItemTile to new Tile
         }
 
-        public Coords DirectionTile(Coords start, Direction dir)
+
+        /// <summary>
+        /// Gibt die Koordinate des am nächsten liegenden Feindes zurück.
+        /// </summary>
+        /// <param name="coords"></param>
+        /// <param name="radius"></param>
+        /// <param name="includePlayer"></param>
+        /// <param name="includeNPC"></param>
+        /// <param name="includeEnemy"></param>
+        /// <returns></returns>
+        public Backend.Coords ClosestEnemy(Coords coords, int radius = 4, bool includePlayer = true, bool includeNPC = true, bool includeEnemy = true)
         {
-            switch (dir)
+            for (int distance = 0; distance <= radius; ++distance)
             {
-                case Direction.Left:
-                    return new Coords(start.x - 1, start.y);
-                    break;
-                case Direction.Right:
-                    return new Coords(start.x + 1, start.y);
-                    break;
-                case Direction.Down:
-                    return new Coords(start.x, start.y + 1);
-                    break;
-                case Direction.Up:
-                    return new Coords(start.x, start.y - 1);
-                    break;
-                case Direction.DownLeft:
-                    return new Coords(start.x - 1, start.y + 1);
-                    break;
-                case Direction.UpRight:
-                    return new Coords(start.x + 1, start.y - 1);
-                    break;
-                case Direction.DownRight:
-                    return new Coords(start.x + 1, start.y + 1);
-                    break;
-                case Direction.UpLeft:
-                    return new Coords(start.x - 1, start.y - 1);
-                    break;
+                for (int x = Math.Max(coords.x - distance, 0); x <= Math.Min(coords.x + distance, _width); ++x)
+                {
+                    if ((((includePlayer && this[x, coords.y - distance].hasPlayer))
+                        //                    ||((includeNPC&&this[coords.x-distance,y].hasNPC))
+                    || ((includeEnemy && this[x, coords.y - distance].hasEnemy)))
+                        && ((x != coords.x) || (distance != 0)))
+                    {
+                        //System.Diagnostics.Debug.WriteLine(coords.x + "/" + coords.y + "->" + x + "/" + (coords.y - distance).ToString() + " = " + (this[x, coords.y - distance].hasPlayer ? "Player" : "Enemy"));
+                        return new Backend.Coords(x, coords.y - distance);
+                    }
+                    if ((((includePlayer && this[x, coords.y + distance].hasPlayer))
+                        //                    ||((includeNPC&&this[coords.x-distance,y].hasNPC))
+                    || ((includeEnemy && this[x, coords.y + distance].hasEnemy)))
+                                            && ((x != coords.x) || (distance != 0)))
+                    {
+                        // System.Diagnostics.Debug.WriteLine(coords.x + "/" + coords.y + "->" + x + "/" + (coords.y + distance).ToString() + " = " + (this[x, coords.y + distance].hasPlayer ? "Player" : "Enemy"));
+
+                        return new Backend.Coords(x, coords.y + distance);
+                    }
+                }
+                for (int y = Math.Max(coords.y - distance, 0); y <= Math.Min(coords.y + distance, _height); ++y)
+                {
+                    if ((((includePlayer && this[coords.x - distance, y].hasPlayer))
+                        //                    ||((includeNPC&&this[coords.x-distance,y].hasNPC))
+                    || ((includeEnemy && this[coords.x - distance, y].hasEnemy)))
+                        && ((y != coords.y) || (distance != 0)))
+                    {
+                        //   System.Diagnostics.Debug.WriteLine(coords.x + "/" + coords.y + "->" + (coords.x - distance) + "/" + y.ToString() + " = " + (this[coords.x - distance, y].hasPlayer ? "Player" : "Enemy"));
+
+                        return new Backend.Coords(coords.x - distance, y);
+                    }
+                    if ((((includePlayer && this[coords.x + distance, y].hasPlayer))
+                        //                    ||((includeNPC&&this[coords.x-distance,y].hasNPC))
+                    || ((includeEnemy && this[coords.x + distance, y].hasEnemy)))
+                        && ((y != coords.y) || (distance != 0)))
+                    {
+                        //  System.Diagnostics.Debug.WriteLine(coords.x + "/" + coords.y + "->" + (coords.x + distance) + "/" + y.ToString() + " = " + (this[coords.x + distance, y].hasPlayer ? "Player" : "Enemy"));
+
+                        return new Backend.Coords(coords.x + distance, y);
+                    }
+                }
             }
-            return start;
+            return new Backend.Coords(-1, -1);
         }
+
+        /// <summary>
+        /// Sucht den Weg zwischen zwei angegebenen Punkten.
+        /// </summary>
+        /// <param name="from"></param>
+        /// <param name="to"></param>
+        /// <param name="result"></param>
+        /// <param name="visited"></param>
+        /// <param name="maxlength"></param>
+        /// <param name="indent"></param>
+        public void PathTo(Coords from, Backend.Coords to, out List<Coords> result, ref SortedSet<Coords> visited, int maxlength = 20, string indent = "")
+        {
+            result = null;
+            if (visited == null)
+            {
+                visited = new SortedSet<Coords>();
+            }
+            visited.Add(from);
+
+            if (maxlength > 0)
+            {
+                if (from.Equals(to))
+                {
+                    result = new List<Coords>();
+                    result.Add(to);
+                    visited.Remove(from);
+                    return;
+                }
+
+
+                Direction dir = WhichWayIs(to, from, true); // start by direct route
+                int count = 0;
+                while (count < 4)
+                {
+                    Backend.Coords tmp = Map.DirectionTile(from, dir);
+
+
+                    if ((this[tmp.x, tmp.y].canEnter) && (!visited.Contains(tmp)))
+                    {
+                        // System.Diagnostics.Debug.WriteLine(indent + "Looking " + dir + " of " + from + " to " + tmp);
+
+                        PathTo(tmp, to, out result, ref visited, maxlength - 1, indent + " ");
+                        if (result != null)
+                        {
+                            //   System.Diagnostics.Debug.WriteLine(indent + " - " + from.x + "/" + from.y);
+                            if (result.Count > 1)
+                            {
+                                if ((Math.Abs(result[1].x - from.x) < 2) && (Math.Abs(result[1].y - from.y) < 2) && (CanMove(result[1], WhichWayIs(result[1], from))))
+                                    result[0] = from; // Diagonals preferred
+
+                                else result.Insert(0, from);
+                            }
+                            else
+                            {
+
+                                result.Insert(0, from); // Only starting point in list                                 
+                            }
+                            visited.Remove(from);
+
+                            // System.Diagnostics.Debug.WriteLine(indent + "*" + from.x + "/" + from.y + " leads over " + dir.ToString() + " to " + to.x + " / " + to.y);
+                            return;
+
+                        }
+                        /*    else
+                            {
+                                System.Diagnostics.Debug.WriteLine(indent + from.x + "/" + from.y + " no exit " + dir.ToString() + " to " + to.x + " / " + to.y);
+                            } */
+                    }
+                    /*    else
+                        {
+                            if (!visited.Contains(tmp))
+                            {
+                                System.Diagnostics.Debug.WriteLine(indent + dir.ToString() + " of " + from.x + "/" + from.y + " is blocked");
+                            }
+                        } */
+                    dir = NextDirection(dir, true);
+                    count += 1;
+                }
+
+            }
+            //PathTo(from, to, maxlength - 1);
+            visited.Remove(from);
+
+            return;
+        }
+        /// <summary>
+        /// Gibt die Koordinaten des Checkpointes in diesem Raum zurück, oder null.
+        /// </summary>
+        /// <returns>Die Koordinaten.</returns>
+        public Backend.Coords GetCheckpointCoords()
+        {
+            foreach (List<FloorTile> ltiles in _tiles)
+                foreach (FloorTile tile in ltiles)
+                {
+                    if (tile.hasCheckpoint)
+                        return tile.coords;
+                }
+            return null;
+        }
+        /// <summary>
+        /// Gibt den FloorTile der die angegebenen Koordinaten besitzt zurück.
+        /// </summary>
+        /// <param name="coords">Koordinaten im Raum.</param>
+        /// <returns>Das dort liegende FloorTile.</returns>
+        public FloorTile TileByCoords(Coords coords)
+        {
+            return this[coords.x, coords.y];
+        }
+        /// <summary>
+        /// Löscht den Feind der sich auf der Koordinate (x,y) befindet.
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        public void RemoveActor(int x, int y)
+        {
+            _tiles[y][x].Remove(TileType.Enemy);
+        }
+        /// <summary>
+        /// Die ID des ersten Actors, der auf (x,y) steht.
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <returns></returns>
+        public int firstActorID(int x, int y)
+        {
+            if (_tiles[y][x].firstActor != null)
+                return _tiles[y][x].firstActor.id;
+            else
+                return -1;
+        }
+
         /// <summary>
         /// Check whether it is possible to move from a certain place on a map in a certain direction
         /// </summary>
@@ -377,447 +743,324 @@ namespace Gruppe22
         }
 
         /// <summary>
-        /// Create a grid of walls
+        /// Ereignis-Methode.
         /// </summary>
-        public void ClearMaze()
+        /// <param name="DownStream"></param>
+        /// <param name="eventID"></param>
+        /// <param name="data"></param>
+        public virtual void HandleEvent(bool DownStream, Events eventID, params object[] data)
         {
-            foreach (List<Tile> row in _tiles)
+            if (!DownStream)
             {
-                row.Clear();
-            }
-            _tiles.Clear();
-            for (int row = 0; row < _height * 2 + 1; row++)
-            {
-                _tiles.Add(new List<Tile>());
-                for (int col = 0; col < _width * 2 + 1; col++)
+                switch (eventID)
                 {
-                    _tiles[row].Add(new Tile(this, new Coords(col, row),
-
-                        (row % 2 == 1)
-                        && (col % 2 == 1))
-                        );
+                    default:
+                        ((Backend.IHandleEvent)_parent).HandleEvent(false, eventID, data);
+                        break;
                 }
-            }
-        }
-
-
-        public void AddTraps(int amount = -1)
-        {
-            if (amount < 0) amount = 5;
-            Random r = new Random();
-            for (int i = 0; i < amount; ++i)
-            {
-                int count = 0;
-                Path pos = new Path(2 + r.Next(_width / 2 - 2) * 2, 2 + r.Next(_height / 2 - 2) * 2);
-                while ((pos.x > 0) && (!_tiles[pos.y][pos.x].canEnter))
-                {
-                    count += 1;
-                    pos.x += 2;
-                    if (pos.x > _width - 2)
-                    {
-                        pos.x = 2;
-                        pos.y += 2;
-                    };
-                    if (pos.y > _height - 2)
-                    {
-                        pos.y = 2;
-                        pos.x = 2;
-                    }
-                }
-
-                if (count >= _width * _height)
-                {
-                    pos.x = -1;
-                    pos.y = -1;
-                }
-                if ((pos.x >= 0) && (pos.x < _width) && (pos.y < _height) && (pos.y >= 0))
-                {
-                    TrapTile trapTile = new TrapTile(_tiles[pos.y][pos.x]);
-                    _tiles[pos.y][pos.x].Add(trapTile);
-                    _updateTiles.Add(pos);
-                }
-            }
-
-        }
-
-        public virtual void HandleEvent(UIElement sender, Events eventID, params object[] data)
-        {
-            ((IHandleEvent)_parent).HandleEvent(sender, eventID, data);
-        }
-
-        public void AddPlayer(Coords pos)
-        {
-            if (pos == null)
-            {
-                pos = new Coords(1, 1);
-            }
-            Player player = new Player("Klaus", 20, 20, 20);
-            ActorTile playerTile = new ActorTile(_tiles[pos.y][pos.x], player);
-            player.tile = playerTile;
-            _tiles[pos.y][pos.x].Add(playerTile);
-            _updateTiles.Add(pos);
-            _actors.Add(player);
-        }
-
-        public void AddEnemies(int amount = -1)
-        {
-            if (amount < 0) amount = 5;
-            Random r = new Random();
-            for (int i = 0; i < amount; ++i)
-            {
-                int count = 0;
-                Path pos = new Path(2 + r.Next(_width / 2 - 2) * 2, 2 + r.Next(_height / 2 - 2) * 2);
-                while ((pos.x > 0) &&
-                    (_tiles[pos.y][pos.x].overlay.Count == 0))
-                {
-                    count += 1;
-                    pos.x += 2;
-                    if (pos.x > _width - 2)
-                    {
-                        pos.x = 2;
-                        pos.y += 2;
-                    };
-                    if (pos.y > _height - 2)
-                    {
-                        pos.y = 2;
-                        pos.x = 2;
-                    }
-                }
-
-                if (count >= _width * _height)
-                {
-                    pos.x = -1;
-                    pos.y = -1;
-                }
-                if ((pos.x >= 0) && (pos.x < _width) && (pos.y < _height) && (pos.y >= 0))
-                {
-                    Enemy enemy = new Enemy(50, 90, 20);
-                    ActorTile enemyTile = new ActorTile(_tiles[pos.y][pos.x], enemy);
-                    enemy.tile = enemyTile;
-                    _tiles[pos.y][pos.x].Add(enemyTile);
-                    _updateTiles.Add(pos);
-                    _actors.Add(enemy);
-                }
-            }
-
-        }
-
-
-        public void AddDoors(int amount = -1)
-        {
-            if (amount < 0) amount = 5;
-            if (amount < 0) amount = 5;
-            Random r = new Random();
-            for (int i = 0; i < amount; ++i)
-            {
-                int count = 0;
-                Path pos = new Path(2 + r.Next(_width / 2 - 2) * 2, 2 + r.Next(_height / 2 - 2) * 2);
-                while ((pos.x > 0) && (!_tiles[pos.y][pos.x].canEnter))
-                {
-                    count += 1;
-                    pos.x += 2;
-                    if (pos.x > _width - 2)
-                    {
-                        pos.x = 2;
-                        pos.y += 2;
-                    };
-                    if (pos.y > _height - 2)
-                    {
-                        pos.y = 2;
-                        pos.x = 2;
-                    }
-                }
-
-                if (count >= _width * _height)
-                {
-                    pos.x = -1;
-                    pos.y = -1;
-                }
-                if ((pos.x >= 0) && (pos.x < _width) && (pos.y < _height) && (pos.y >= 0))
-                {
-                    TeleportTile teleportTile = new TeleportTile(this, "Raum2", pos);
-                    _tiles[pos.y][pos.x].Add(teleportTile);
-                    _updateTiles.Add(pos);
-                }
-            }
-
-        }
-
-
-        public void AddItems(int amount = -1)
-        {
-            if (amount < 0) amount = 5;
-            Random r = new Random();
-            for (int i = 0; i < amount; ++i)
-            {
-                int count = 0;
-                Path pos = new Path(2 + r.Next(_width / 2 - 2) * 2, 2 + r.Next(_height / 2 - 2) * 2);
-                while ((pos.x > 0) &&
-                    (_tiles[pos.y][pos.x].overlay.Count == 0))
-                {
-                    count += 1;
-                    pos.x += 2;
-                    if (pos.x > _width - 2)
-                    {
-                        pos.x = 2;
-                        pos.y += 2;
-                    };
-                    if (pos.y > _height - 2)
-                    {
-                        pos.y = 2;
-                        pos.x = 2;
-                    }
-                }
-
-                if (count >= _width * _height)
-                {
-                    pos.x = -1;
-                    pos.y = -1;
-                }
-                if ((pos.x >= 0) && (pos.x < _width) && (pos.y < _height) && (pos.y >= 0))
-                {
-                    Item item = new Item();
-                    ItemTile itemTile = new ItemTile(_tiles[pos.y][pos.x], item);
-                    item.tile = itemTile;
-                    _tiles[pos.y][pos.x].Add(itemTile);
-                    _items.Add(item);
-                }
-            }
-        }
-
-        public void ClearWalls(int number = -1)
-        {
-            if (number < 0)
-            {
-                number = ((width / 2) * (height / 2)) / 4;
-            };
-            Random r = new Random();
-
-            for (int i = 0; i < number; ++i)
-            {
-                int count = 0;
-                Path pos = new Path(2 + r.Next(_width / 2 - 2) * 2, 2 + r.Next(_height / 2 - 2) * 2);
-                while ((pos.x > 0) && (_tiles[pos.y][pos.x].canEnter))
-                {
-                    count += 1;
-                    pos.x += 2;
-                    if (pos.x > _width - 2)
-                    {
-                        pos.x = 2;
-                        pos.y += 2;
-                    };
-                    if (pos.y > _height - 2)
-                    {
-                        pos.y = 2;
-                        pos.x = 2;
-                    }
-                }
-
-                if (count >= _width * _height)
-                {
-                    pos.x = -1;
-                    pos.y = -1;
-                }
-                _tiles[pos.y][pos.x].Remove(TileType.Wall);
             }
         }
 
         /// <summary>
-        /// Create a new maze
-        /// </summary>
-        /// <param name="slow"></param>
-        public void GenerateMaze()
-        {
-            ClearMaze();
-
-            Random r = new Random();
-
-            Path originPos = new Path(1 + r.Next(_width - 1) * 2, 1 + r.Next(_height - 1) * 2);
-            Path currentPos = new Path(1 + r.Next(_width - 1) * 2, 1 + r.Next(_height - 1) * 2);
-
-            _tiles[originPos.y][originPos.x].connected = true;
-            _tiles[originPos.y][originPos.x].Remove(TileType.Wall);
-            int remaining = _width * _height - 1;
-
-            Path startPos = originPos;
-            while ((currentPos.x > -1) && (remaining > 0))
-            {
-                _NextTile(ref startPos);
-                currentPos = startPos;
-
-                while ((currentPos.x > 0) && (!_tiles[currentPos.y][currentPos.x].connected))
-                {
-                    currentPos.dir = (Connection)r.Next(4) + 1;
-                    Path next = _Walk(currentPos);
-                    int dirCount = 0;
-                    while ((next == null) && (dirCount < 4))
-                    {
-                        dirCount += 1;
-                        currentPos.dir += 1;
-                        if (currentPos.dir == Connection.Invalid)
-                            currentPos.dir = Connection.Up;
-                        next = _Walk(currentPos);
-                    }
-                    if (dirCount == 4) break;
-                    _tiles[currentPos.y][currentPos.x].connection = currentPos.dir;
-                    currentPos = next;
-                }
-                Path endPos = currentPos;
-                currentPos = startPos;
-                while ((currentPos.x != endPos.x) || (currentPos.y != endPos.y))
-                {
-                    _tiles[currentPos.y][currentPos.x].connected = true;
-                    switch (_tiles[currentPos.y][currentPos.x].connection)
-                    {
-                        case Connection.Left:
-                            _tiles[currentPos.y][currentPos.x - 1].Remove(TileType.Wall);
-                            break;
-                        case Connection.Right:
-                            _tiles[currentPos.y][currentPos.x + 1].Remove(TileType.Wall);
-                            break;
-                        case Connection.Up:
-                            _tiles[currentPos.y - 1][currentPos.x].Remove(TileType.Wall);
-                            break;
-                        case Connection.Down:
-                            _tiles[currentPos.y + 1][currentPos.x].Remove(TileType.Wall);
-                            break;
-                    }
-                    currentPos.dir = _tiles[currentPos.y][currentPos.x].connection;
-                    _tiles[currentPos.y][currentPos.x].connection = Connection.Invalid;
-                    currentPos = _Walk(currentPos);
-                    startPos = new Path(1 + r.Next(_width - 1) * 2, 1 + r.Next(_height - 1) * 2);
-                    --remaining;
-                }
-            }
-            _width = _width * 2 + 1;
-            _height = _height * 2 + 1;
-        }
-
-        /// <summary>
-        /// Read a map from a file
+        /// Load a map from a file
         /// </summary>
         /// <param name="filename">The filename to read from</param>
-        /// <returns>true if read was successful</returns>
-        public void Load(string filename, Coords player)
+        /// <param name="player">The starting position on the loaded map</param>
+        public void Load(string filename, Backend.Coords player = null)
         {
-<<<<<<< HEAD
+            Regex re = new Regex(@"\d+");
+            Match m = re.Match(filename);
+            _id = Convert.ToInt32(m.Value);
+            bool isReady = false;
+            Player playerA = null;
+
             if (player == null)
             {
-                player = new Coords(1, 1);
-=======
-            bool result = true;
-            XmlTextReader reader = new XmlTextReader(filename);
-
-            try
-            {
-                while (reader.Read())
-                {
-                    if (reader.IsStartElement() && reader.Name.Equals("map"))
-                    {
-                        _height = Convert.ToInt32(reader.GetAttribute("height"));
-                        _width = Convert.ToInt32(reader.GetAttribute("width"));
-                        int y = 0;
-                        while (reader.Name.Equals("row"))
-                        {
-                            _tiles.Add(new List<Tile>());
-                            int x = 0;
-                            while (reader.Name.Equals("tile"))
-                            {
-                                _tiles[y].Add(new Tile());
-                                _tiles[y][x].Load(reader);
-                            }
-                            y++;
-                        }
-                    }
-                    else result = false;
-                }
->>>>>>> origin/xml
+                player = new Backend.Coords(1, 1);
             }
             if (_actors.Count > 0)
             {
-<<<<<<< HEAD
                 for (int i = 0; i < _actors.Count; ++i)
                 {
-                    if (_actors[i].actorType != ActorType.Player)
+                    if (_actors[i] is Player)
                     {
-                        _actors.RemoveAt(i);
-                        i -= 1;
-                    }
-                    else
-                    {
-                        _actors[i].tile = null;
+                        playerA = (Player)_actors[i];
+                        playerA.tile = null;
+                        isReady = true;
+                        break;
                     }
                 }
-=======
-                reader.Close();
->>>>>>> origin/xml
+                _actors.Clear();
             }
             else
             {
-                Player playerA = new Player("Klaus", 20, 20, 20);
-                _actors.Add(playerA);
+                playerA = new Player(_content, 100, 0, 30);
             }
+            _actors.Add(playerA);
+
             _tiles.Clear();
             _items.Clear();
             _updateTiles.Clear();
-            XmlReader xmlr = XmlReader.Create(filename);
+            XmlReaderSettings settings = new XmlReaderSettings();
+            settings.IgnoreWhitespace = true;
+            settings.IgnoreComments = true;
+            XmlReader xmlr = XmlReader.Create(filename, settings);
             xmlr.MoveToContent();//xml
             _width = int.Parse(xmlr.GetAttribute("width"));
             _height = int.Parse(xmlr.GetAttribute("height"));
+            if (xmlr.GetAttribute("name") != null) _name = xmlr.GetAttribute("name");
+            if (xmlr.GetAttribute("level") != null) _level = int.Parse(xmlr.GetAttribute("level"));
+            if (xmlr.GetAttribute("dungeon") != null) _dungeonname = xmlr.GetAttribute("dungeon");
+            if (xmlr.GetAttribute("floor") != null) _floorFile = xmlr.GetAttribute("floor");
+            if (xmlr.GetAttribute("wall") != null) _wallFile = xmlr.GetAttribute("wall");
+            if (xmlr.GetAttribute("light") != null) _light = int.Parse(xmlr.GetAttribute("light"));
+            if (xmlr.GetAttribute("music") != null) _music = xmlr.GetAttribute("music");
+
             xmlr.ReadStartElement("GameMap");//GameMap
 
-            for (int r = 0; r < _height; r++)
-            { // Add Rows
-                xmlr.Read();//row
-                //TODO: dynamisches einlesen von overlay-Tiles
-                _tiles.Add(new List<Tile>());
-                for (int j = 0; j < _width; j++)
-                { // Add Tiles and overlay-Tiles
-                    switch (xmlr.Name)
-                    {
-                        case "Tile":
-                            Tile tile = new Tile(this, new Coords(j, r), true);
-                            if (!xmlr.IsEmptyElement)
-                            {
-                                xmlr.Read();
-
-                                while ((xmlr.NodeType != XmlNodeType.EndElement))
-                                {
-                                    switch (xmlr.Name)
-                                    {
-                                        case "WallTile":
-                                            tile.Add(TileType.Wall);
-                                            break;
-                                    }
-                                    xmlr.Read();
-                                }
-                            }
-                            _tiles[r].Add(tile);
-                            xmlr.Read();
-
-                            break;
-                        default:
-                            j--;
-                            xmlr.Read();
-                            break;
-                    }
+            for (int row = 0; row < _height; ++row)
+            {
+                _tiles.Add(new List<FloorTile>());
+                for (int col = 0; col < _width; ++col)
+                {
+                    _tiles[row].Add(new FloorTile(this, new Backend.Coords(col, row)));
                 }
             }
-            xmlr.Close(); 
+
+            while ((xmlr.NodeType != XmlNodeType.EndElement) && (xmlr.NodeType != XmlNodeType.None))
+            { // Add Tiles and overlay-Tiles
+                switch (xmlr.Name)
+                {
+                    case "Tile":
+                        FloorTile tile = _tiles[Int32.Parse(xmlr.GetAttribute("CoordY"))][Int32.Parse(xmlr.GetAttribute("CoordX"))];
+                        if (xmlr.GetAttribute("visited") != null)
+                        {
+                            tile.visible = Boolean.Parse(xmlr.GetAttribute("visited"));
+                        }
+                        if (!xmlr.IsEmptyElement)
+                        {
+                            xmlr.Read();
+
+                            while ((xmlr.NodeType != XmlNodeType.EndElement))
+                            {
+                                switch (xmlr.Name)
+                                {
+                                    case "WallTile":
+                                        WallTile wall = new WallTile(this);
+                                        if (xmlr.GetAttribute("Enabled") != null) wall.enabled = Boolean.Parse(xmlr.GetAttribute("Enabled"));
+                                        if (xmlr.GetAttribute("Health") != null) wall.health = Int32.Parse(xmlr.GetAttribute("Health"));
+                                        if (xmlr.GetAttribute("Type") != null) wall.type = (WallType)Enum.Parse(typeof(WallType), xmlr.GetAttribute("Type").ToString());
+
+                                        if (xmlr.GetAttribute("Illusion") != null) wall.illusion = Boolean.Parse(xmlr.GetAttribute("Illusion"));
+                                        if (xmlr.GetAttribute("Illusionvisible") != null) wall.illusionVisible = Boolean.Parse(xmlr.GetAttribute("Illusionvisible"));
+                                        tile.Add(wall);
+                                        break;
+                                    case "ProjectileTile":
+                                        {
+                                            uint id = 0;
+                                            if (xmlr.GetAttribute("id", _id.ToString()) != null) id = UInt32.Parse(xmlr.GetAttribute("id"));
+                                            Direction dir = Direction.None;
+                                            if (xmlr.GetAttribute("direction", _id.ToString()) != null) dir = (Direction)Enum.Parse(typeof(Direction), xmlr.GetAttribute("direction").ToString());
+                                            ProjectileTile projectile = new ProjectileTile(tile, dir, id);
+                                        }
+                                        break;
+                                    case "ItemTile":
+                                        Item item = new Item(_content);
+                                        xmlr.Read();
+                                        item.Load(xmlr);
+                                        ItemTile itemTile = new ItemTile(tile, item);
+                                        item.tile = itemTile;
+                                        tile.Add(itemTile);
+                                        xmlr.Read(); // End Item
+                                        break;
+
+                                    case "TargetTile":
+                                        tile.Add(new TargetTile(tile));
+                                        break;
+
+                                    case "TrapTile":
+                                        TrapTile trap = new TrapTile(this, Int32.Parse(xmlr.GetAttribute("damage")));
+                                        if (xmlr.GetAttribute("penetrate") != null) trap.penetrate = Int32.Parse(xmlr.GetAttribute("penetrate"));
+
+                                        if (xmlr.GetAttribute("evade") != null) trap.evade = Int32.Parse(xmlr.GetAttribute("evade"));
+
+                                        if (xmlr.GetAttribute("changing") != null)
+                                        {
+                                            trap.type = trap.type | TrapType.Changing;
+                                        }
+                                        if (xmlr.GetAttribute("hidden") != null)
+                                        {
+                                            trap.type = trap.type | TrapType.Hidden;
+                                        }
+                                        if (xmlr.GetAttribute("onlyonce") != null)
+                                        {
+                                            trap.type = trap.type | TrapType.OnlyOnce;
+                                        }
+                                        if (xmlr.GetAttribute("broken") != null)
+                                        {
+                                            trap.status = TrapState.Destroyed;
+                                        }
+                                        if (xmlr.GetAttribute("disabled") != null)
+                                        {
+                                            trap.status = TrapState.Disabled;
+                                        }
+                                        if (xmlr.GetAttribute("invisible") != null)
+                                        {
+                                            trap.status = TrapState.NoDisplay;
+                                        }
+                                        tile.Add(trap);
+                                        _updateTiles.Add(tile.coords);
+                                        break;
+                                    case "ReservedTile":
+                                        ReservedTile reserved = new ReservedTile(tile);
+
+                                        if (xmlr.GetAttribute("Enabled") != null)
+                                        { reserved.enabled = Boolean.Parse(xmlr.GetAttribute("Enabled")); }
+
+                                        if (xmlr.GetAttribute("CanEnter") != null)
+                                        { reserved.canEnter = Boolean.Parse(xmlr.GetAttribute("CanEnter")); }
+                                        if (xmlr.GetAttribute("Filename") != null)
+                                        { reserved.filename = xmlr.GetAttribute("Filename"); }
+                                        if (xmlr.GetAttribute("Index") != null)
+                                        { reserved.index = Int32.Parse(xmlr.GetAttribute("Index")); }
+
+                                        tile.Add(reserved);
+
+                                        break;
+
+                                    case "DoorTile":
+                                        DoorTile door = new DoorTile(tile);
+                                        if (xmlr.GetAttribute("locked") != null)
+                                        { door.open = Boolean.Parse(xmlr.GetAttribute("open")); }
+                                        if (xmlr.GetAttribute("key") != null)
+                                        { door.key = int.Parse(xmlr.GetAttribute("key")); }
+                                        tile.Add(door);
+                                        break;
+
+                                    case "TeleportTile":
+
+
+                                        TeleportTile transporter = new TeleportTile(tile, xmlr.GetAttribute("nextRoom"), new Backend.Coords(Int32.Parse(xmlr.GetAttribute("nextX")), Int32.Parse(xmlr.GetAttribute("nextY"))));
+                                        if (xmlr.GetAttribute("hidden") != null)
+                                        { transporter.hidden = Boolean.Parse(xmlr.GetAttribute("hidden")); }
+                                        if (xmlr.GetAttribute("enabled") != null)
+                                        { transporter.enabled = Boolean.Parse(xmlr.GetAttribute("enabled")); }
+                                        if (xmlr.GetAttribute("teleport") != null)
+                                        { transporter.teleport = Boolean.Parse(xmlr.GetAttribute("teleport")); }
+                                        if (xmlr.GetAttribute("down") != null)
+                                        { transporter.down = Boolean.Parse(xmlr.GetAttribute("down")); }
+
+                                        tile.Add(transporter);
+                                        break;
+
+                                    case "TriggerTile":
+                                        Backend.Coords target = new Backend.Coords(-1, -1);
+                                        if (xmlr.GetAttribute("affectX") != null) target.x = Int32.Parse(xmlr.GetAttribute("affectX"));
+
+                                        if (xmlr.GetAttribute("affectY") != null) target.y = Int32.Parse(xmlr.GetAttribute("affectY"));
+
+                                        TriggerTile trigger = new TriggerTile(tile, target);
+
+                                        if (xmlr.GetAttribute("explanation") != null) { trigger.explanationEnabled = xmlr.GetAttribute("explanation"); };
+                                        if (xmlr.GetAttribute("explanationdisabled") != null) { trigger.explanationDisabled = xmlr.GetAttribute("explanationdisabled"); };
+                                        if (xmlr.GetAttribute("enabled") != null) { trigger.enabled = Boolean.Parse(xmlr.GetAttribute("enabled")); };
+                                        if (xmlr.GetAttribute("repeat") != null) { trigger.repeat = Int32.Parse(xmlr.GetAttribute("repeat")); };
+
+                                        if (xmlr.GetAttribute("alwaysShowDisabled") != null) { trigger.alwaysShowDisabled = Boolean.Parse(xmlr.GetAttribute("alwaysShowDisabled")); };
+                                        if (xmlr.GetAttribute("alwaysShowEnabled") != null) { trigger.alwaysShowEnabled = Boolean.Parse(xmlr.GetAttribute("alwaysShowEnabled")); };
+
+
+                                        if (xmlr.GetAttribute("tileimage") != null) { trigger.tileimage = xmlr.GetAttribute("tileimage"); };
+                                        if (xmlr.GetAttribute("reactToEnemies") != null) { trigger.reactToEnemies = Boolean.Parse(xmlr.GetAttribute("reactToEnemies")); };
+                                        if (xmlr.GetAttribute("reactToObjects") != null) { trigger.reactToObjects = Boolean.Parse(xmlr.GetAttribute("reactToObjects")); };
+                                        if (xmlr.GetAttribute("reactToItem") != null)
+                                        {
+                                            trigger.reactToItem = Int32.Parse(xmlr.GetAttribute("reactToItem"));
+                                        }
+                                        tile.Add(trigger);
+                                        break;
+                                    case "CheckpointTile":
+                                        int bonusLifes = 0;
+                                        bool visited = false;
+
+                                        if (xmlr.GetAttribute("bonuslife") != null)
+                                            bonusLifes = Convert.ToInt32(xmlr.GetAttribute("bonuslife"));
+                                        if (xmlr.GetAttribute("visited") != null)
+                                            visited = Convert.ToBoolean(xmlr.GetAttribute("visited"));
+                                        tile.Add(new CheckpointTile(tile, visited, bonusLifes));
+                                        break;
+
+                                    case "ActorTile":
+                                        Actor actor;
+                                        xmlr.Read();
+                                        switch (xmlr.Name)
+                                        {
+                                            case "Enemy":
+                                                actor = new Enemy(_content);
+                                                actor.Load(xmlr);
+                                                break;
+                                            case "Player":
+                                                actor = new Player(_content);
+                                                actor.Load(xmlr);
+                                                break;
+                                            default:
+                                                actor = new NPC(_content);
+                                                actor.Load(xmlr);
+                                                break;
+                                        }
+
+                                        if (!(actor is Player))
+                                        {
+                                            ActorTile tile2 = new ActorTile(tile, actor);
+                                            actor.tile = tile2;
+                                            tile2.enabled = (actor.health > 0);
+                                            tile.Add(tile2);
+                                            _actors.Add(actor);
+                                            _updateTiles.Add(tile.coords);
+                                        }
+                                        else
+                                        {
+                                            if (!isReady)
+                                            {
+                                                _actors[0].copyFrom(actor);
+                                                player.x = tile.coords.x;
+                                                player.y = tile.coords.y;
+                                            }
+                                        }
+
+                                        break;
+                                }
+                                xmlr.Read();
+                            }
+                        }
+                        xmlr.ReadEndElement();
+                        break;
+                }
+            }
+
+            xmlr.Close();
 
             ActorTile actortile = new ActorTile(_tiles[player.y][player.x], actors[0]);
             _tiles[player.y][player.x].Add(actortile);
             actors[0].tile = actortile;
             actortile.parent = _tiles[player.y][player.x];
             _updateTiles.Add(player);
+            for (int i = 0; i < _actors.Count; ++i)
+            {
+                _actors[i].id = i;
+            }
+            Uncover(actors[0].tile.coords, actors[0].viewRange);
         }
-        
+
+        /// <summary>
+        /// Diese Methode bearbeitet die Karte.
+        /// </summary>
         public void DebugMap()
         {
             string output = "";
-            foreach (List<Tile> row in _tiles)
+            foreach (List<FloorTile> row in _tiles)
             {
-                foreach (Tile tile in row)
+                foreach (FloorTile tile in row)
                 {
                     if (tile.canEnter)
                     {
@@ -828,164 +1071,76 @@ namespace Gruppe22
                         output += " ";
                     }
                 }
-                System.Diagnostics.Debug.WriteLine(output);
+                // System.Diagnostics.Debug.WriteLine(output);
                 output = "";
 
             }
         }
 
-<<<<<<< HEAD
-=======
-        public bool FromString(string input)
-        {
-            int col = 0, row = 0;
-            foreach (char c in input)
-            {
-                switch (c)
-                {
-                    case '#':
-                        if ((col < _width) && (row < height))
-                            _tiles[row][col].canEnter = false;
-                        col += 1;
-                        break;
-                    case '\n':
-                        col = 0;
-                        row += 1;
-                        break;
-                    default:
-                        if ((col < _width) && (row < height))
-                            _tiles[row][col].canEnter = true;
-                        col += 1;
-
-                        break;
-                }
-
-            }
-            return true;
-        }
->>>>>>> origin/xml
         /// <summary>
         /// Write the current map to a file
         /// </summary>
         /// <param name="filename">The filename to write to</param>
-        /// <returns>true if writing was successful</returns>
-        public void Save(string filename)
+        public virtual void Save(string filename)
         {
             XmlWriter xmlw = XmlWriter.Create(filename);
             xmlw.WriteStartDocument();
             xmlw.WriteStartElement("GameMap");
             xmlw.WriteAttributeString("width", _width.ToString());
             xmlw.WriteAttributeString("height", _height.ToString());
-            //_tiles[0][0].overlay.Add(new TeleportTile("map2.xml", new Microsoft.Xna.Framework.Vector2(0,0)));//test
-            foreach (List<Tile> ltiles in _tiles)
+            xmlw.WriteAttributeString("name", _name);
+            xmlw.WriteAttributeString("level", _level.ToString());
+            xmlw.WriteAttributeString("dungeon", _dungeonname);
+            xmlw.WriteAttributeString("light", _light.ToString());
+            xmlw.WriteAttributeString("floor", _floorFile);
+            xmlw.WriteAttributeString("music", _music);
+            xmlw.WriteAttributeString("wall", _wallFile);
+
+            foreach (List<FloorTile> ltiles in _tiles)
             {
-<<<<<<< HEAD
-                xmlw.WriteStartElement("Row");
-                foreach (Tile tile in ltiles)
+                foreach (FloorTile tile in ltiles)
                 {
-                    tile.Save(xmlw);
+                    if (tile.overlay.Count > 0)
+                        tile.Save(xmlw);
                 }
-                xmlw.WriteEndElement();
-=======
-                target.WriteStartDocument();
-                target.WriteDocType("GameMap", null, null, null);
-
-                target.WriteStartElement("map");
-                target.WriteAttributeString("height", Convert.ToString(_height));
-                target.WriteAttributeString("width", Convert.ToString(_width));
-                target.WriteAttributeString("test", Convert.ToString(_test));
-
-                foreach (List<Tile> row in _tiles)
-                {
-                    target.WriteStartElement("row");
-                    foreach (Tile tile in row)
-                    {
-                        target.WriteStartElement("tile");
-                        result = tile.Save(target);
-                        target.WriteEndElement();
-                        if (result == false) break;
-                    }
-                    target.WriteEndElement();
-                    if (result == false) break;
-                };
-
-                target.WriteEndElement();
-                target.WriteEndDocument();
-                
-            }
-            finally
-            {
-                target.Close();
->>>>>>> origin/xml
             }
             xmlw.WriteEndElement();
             xmlw.WriteEndDocument();
             xmlw.Close();
         }
 
+
         #endregion
 
         #region Constructor
 
-        public Map()
+        public Map(ContentManager content)
         {
+            _content = content;
             _updateTiles = new List<Coords>();
             _actors = new List<Actor>();
             _items = new List<Item>();
-            _blankTile = new Tile();
-            _tiles = new List<List<Tile>>();
+            _blankTile = new FloorTile(this);
+            _blankTile.coords = new Backend.Coords(-1, -1);
+            _blankTile.Add(new GapTile(_blankTile));
+            _tiles = new List<List<FloorTile>>();
+            _exits = new List<Exit>();
 
         }
 
         /// <summary>
-        /// Create an empty map
-        /// </summary>
-        /// <param name="width">The width of the map</param>
-        /// <param name="height">The height of the map</param>
-        public Map(int width = 10, int height = 10, bool generate = false, Coords playerPos = null)
-            : this()
-        {
-            _width = width;
-            _height = height;
-            for (int y = 0; y < height; ++y)
-            {
-                _tiles.Add(new List<Tile>());
-                for (int x = 0; x < width; ++x)
-                {
-<<<<<<< HEAD
-                    _tiles[y].Add(new Tile(this, new Coords(x, y)));
-=======
-                    _tiles[y].Add(new FloorTile());
-                    //_test+=_tiles[y][x].AddToOverlay(new Tile());
->>>>>>> origin/xml
-                }
-            }
-            if (generate)
-            {
-                ClearMaze();
-                GenerateMaze();
-                ClearWalls();
-                AddPlayer(playerPos);
-                AddTraps();
-                AddDoors();
-                AddEnemies();
-                AddItems();
-            }
-        }
-
-        /// <summary>
-        /// Load a map from a file
+        /// Constructor for using a previously saved map
         /// </summary>
         /// <param name="filename"></param>
-        public Map(string filename = "", Coords playerPos = null)
-            : this()
+        public Map(ContentManager content, object parent, string filename = "", Backend.Coords playerPos = null)
+            : this(content)
         {
+            _parent = parent;
             Load(filename, playerPos);
         }
 
 
-
-        public void Dispose()
+        public virtual void Dispose()
         {
             while (_tiles.Count > 0)
             {
@@ -1001,6 +1156,183 @@ namespace Gruppe22
             _updateTiles.Clear();
             _actors.Clear();
             _items.Clear();
+        }
+        #endregion
+
+        #region Static Helpers
+        public static Direction WhichWayIs(Coords from, Backend.Coords to, bool DirectOnly = false)
+        {
+            if (from.x < to.x)
+            {
+                if (from.y < to.y)
+                {
+                    if (!DirectOnly)
+                        return Direction.UpLeft;
+                    else
+                        return Direction.Up;
+                }
+                else
+                {
+                    if (from.y > to.y)
+                    {
+                        if (!DirectOnly)
+                            return Direction.DownLeft;
+                        else
+                            return Direction.Left;
+                    }
+                    else
+                    {
+                        return Direction.Left;
+                    }
+                }
+            }
+            else
+            {
+                if (from.x > to.x)
+                {
+
+                    if (from.y < to.y)
+                    {
+                        if (!DirectOnly)
+                            return Direction.UpRight;
+                        else
+                            return Direction.Up;
+                    }
+                    else
+                    {
+                        if (from.y > to.y)
+                        {
+                            if (!DirectOnly)
+                                return Direction.DownRight;
+                            else
+                                return Direction.Right;
+                        }
+                        else
+                        {
+                            return Direction.Right;
+                        }
+                    }
+                }
+                else
+                {
+                    if (from.y < to.y)
+                    {
+                        return Direction.Up;
+                    }
+                    else
+                    {
+                        if (from.y > to.y)
+                        {
+                            return Direction.Down;
+                        }
+                    }
+                }
+            }
+            return Direction.None;
+        }
+
+        public static Direction OppositeDirection(Direction dir)
+        {
+            switch (dir)
+            {
+                case Direction.Down:
+                    return Direction.Up;
+                case Direction.Up:
+                    return Direction.Down;
+                case Direction.Left:
+                    return Direction.Right;
+                case Direction.Right:
+                    return Direction.Left;
+                case Direction.UpLeft:
+                    return Direction.DownRight;
+                case Direction.DownRight:
+                    return Direction.UpLeft;
+                case Direction.UpRight:
+                    return Direction.DownLeft;
+                case Direction.DownLeft:
+                    return Direction.UpRight;
+            }
+            return Direction.None;
+        }
+
+        public static Backend.Coords DirectionTile(Coords start, Direction dir)
+        {
+            switch (dir)
+            {
+                case Direction.Left:
+                    return new Backend.Coords(start.x - 1, start.y);
+
+                case Direction.Right:
+                    return new Backend.Coords(start.x + 1, start.y);
+
+                case Direction.Down:
+                    return new Backend.Coords(start.x, start.y + 1);
+
+                case Direction.Up:
+                    return new Backend.Coords(start.x, start.y - 1);
+
+                case Direction.DownLeft:
+                    return new Backend.Coords(start.x - 1, start.y + 1);
+
+                case Direction.UpRight:
+                    return new Backend.Coords(start.x + 1, start.y - 1);
+
+                case Direction.DownRight:
+                    return new Backend.Coords(start.x + 1, start.y + 1);
+
+                case Direction.UpLeft:
+                    return new Backend.Coords(start.x - 1, start.y - 1);
+            }
+            return start;
+        }
+
+        public static Direction NextDirection(Direction dir, bool directOnly = false)
+        {
+            switch (dir)
+            {
+                case Direction.Up:
+                    if (!directOnly)
+                        return Direction.UpRight;
+                    else
+                        return Direction.Right;
+                case Direction.UpRight:
+                    return Direction.Right;
+                case Direction.Right:
+                    if (!directOnly)
+                        return Direction.DownRight;
+                    else
+                        return Direction.Down;
+                case Direction.DownRight:
+                    return Direction.Down;
+                case Direction.Down:
+                    if (!directOnly)
+                        return Direction.DownLeft;
+                    else
+                        return Direction.Left;
+                case Direction.DownLeft:
+                    return Direction.Left;
+                case Direction.Left:
+                    if (!directOnly)
+                        return Direction.UpLeft;
+                    else
+                        return Direction.Up;
+                case Direction.UpLeft:
+                    return Direction.Up;
+            }
+            return Direction.None;
+        }
+
+        public static List<Exit> ExitToEntry(int ToRoom, List<Exit> exits)
+        {
+            List<Exit> result = new List<Exit>();
+            foreach (Exit exit in exits)
+            {
+                if (exit.toRoom.Contains("om" + ToRoom.ToString() + ".xml"))
+                {
+                    result.Add(new Exit(exit.to, exit.toRoom, exit.from, exit.fromRoom));
+                }
+            }
+            return result;
         }
         #endregion
     }

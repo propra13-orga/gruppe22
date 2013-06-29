@@ -65,8 +65,8 @@ namespace Gruppe22.Backend
         /// <summary>
         /// Konstruktor. Initialisieren der Struktur.
         /// </summary>
-        public Enemy(ContentManager content, int health = -1, int armour = -1, int damage = -1, int maxHealth = -1, string name = "", Random r = null, int level = 1)
-            : base(content, ActorType.Enemy, health, armour, damage, maxHealth, name, r)
+        public Enemy( int health = -1, int armour = -1, int damage = -1, int maxHealth = -1, string name = "", Random r = null, int level = 1)
+            : base(ActorType.Enemy, health, armour, damage, maxHealth, name, r)
         {
             if (r == null) { r = new Random(); }
             _actorType = ActorType.Enemy;
@@ -177,14 +177,14 @@ namespace Gruppe22.Backend
             }
             if (level > 0)
             {
-                Item item = new Item(_content, r, 0, _level, false);
+                Item item = new Item(r, 0, _level, false);
                 _inventory.Add(item);
                 item.owner = this;
             }
             _gold = _random.Next(10 + _level / 10) * _level;
             if (level > 10)
             {
-                Item item = new Item(_content, this, Backend.ItemType.Key, "Key to level " + (level % 10).ToString(), null, 0, level);
+                Item item = new Item(this, Backend.ItemType.Key, "Key to level " + (level % 10).ToString(), null, 0, level);
                 _inventory.Add(item);
                 item.owner = this;
             }

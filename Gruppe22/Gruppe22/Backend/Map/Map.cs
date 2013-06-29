@@ -12,17 +12,44 @@ namespace Gruppe22.Backend
     public class Map : IHandleEvent, IDisposable
     {
         #region Private Fields
-        protected ContentManager _content;
+
+        /// <summary>
+        /// Level of current map (used to determine difficulty etc.)
+        /// </summary>
         protected int _level;
+        /// <summary>
+        /// Descriptive name of current map
+        /// </summary>
         protected string _name;
+        /// <summary>
+        /// Descriptive name of current dungeon
+        /// </summary>
         protected string _dungeonname;
+        /// <summary>
+        /// XML-File containing tileset used in dungeon
+        /// </summary>
         protected string _wallFile = "wall1";
+        /// <summary>
+        /// XML-File containing floor used in dungeon
+        /// </summary>
         protected string _floorFile = "floor1";
+        /// <summary>
+        /// Ambient light in dungeon (higher value means increased radius)
+        /// </summary>
         protected int _light;
+        /// <summary>
+        /// Reference to music used in room
+        /// </summary>
         protected string _music = "level1";
+        /// <summary>
+        /// A unique ID-number for current room
+        /// </summary>
         protected int _id;
 
-        private object _parent = null;
+        /// <summary>
+        /// An event handler to pass events to (usually a logic object)
+        /// </summary>
+        private IHandleEvent _parent = null;
 
         /// <summary>
         /// A two dimensional list of tiles
@@ -50,12 +77,17 @@ namespace Gruppe22.Backend
         /// A list of Actors in the current room
         /// </summary>
         protected List<Actor> _actors = null;
-        protected List<Item> _items = null;
+        /// <summary>
+        /// A list of tiles to update each cycle (save ressources)
+        /// </summary>
         protected List<Coords> _updateTiles = null;
         #endregion
 
         #region Public Fields
 
+        /// <summary>
+        /// Current level (read/write)
+        /// </summary>
         public int level
         {
             get
@@ -69,25 +101,36 @@ namespace Gruppe22.Backend
         }
 
 
-
+        /// <summary>
+        /// Current XML-file used for floor-tileset (read/write)
+        /// </summary>
         public string floorFile
         {
             get { return _floorFile; }
             set { _floorFile = value; }
         }
 
+        /// <summary>
+        /// Music-file to play in current room (read/write)
+        /// </summary>
         public string music
         {
             get { return _music; }
             set { _music = value; }
         }
 
+        /// <summary>
+        /// Tileset to use for walls in current room (read/write)
+        /// </summary>
         public string wallFile
         {
             get { return _wallFile; }
             set { _wallFile = value; }
         }
 
+        /// <summary>
+        /// Ambient light in current room (read/write)
+        /// </summary>
         public int light
         {
             get
@@ -100,6 +143,9 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// Descriptive name of current room (read/write)
+        /// </summary>
         public string name
         {
             get
@@ -112,6 +158,9 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// Descriptive name of current dungeon (read/write)
+        /// </summary>
         public string dungeonname
         {
             get
@@ -123,6 +172,10 @@ namespace Gruppe22.Backend
                 _dungeonname = value;
             }
         }
+
+        /// <summary>
+        /// List of tiles to update (read/write)
+        /// </summary>
         public List<Coords> updateTiles
         {
             get
@@ -130,6 +183,10 @@ namespace Gruppe22.Backend
                 return _updateTiles;
             }
         }
+
+        /// <summary>
+        /// Unique ID-number of current room (read/write)
+        /// </summary>
         public int id
         {
             get
@@ -142,6 +199,9 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// List of actors in current room (read/write)
+        /// </summary>
         public List<Actor> actors
         {
             get
@@ -154,6 +214,9 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// List of exits to other rooms (read/write)
+        /// </summary>
         public List<Exit> exits
         {
             get
@@ -166,17 +229,6 @@ namespace Gruppe22.Backend
             }
         }
 
-        public List<Item> items
-        {
-            get
-            {
-                return _items;
-            }
-            set
-            {
-                _items = value;
-            }
-        }
 
         /// <summary>
         /// Current Width of the maze
@@ -286,15 +338,10 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Add an actor to a tile
+        /// Make a square-shaped area of a specified radius visible on minimap
         /// </summary>
-        /// <param name="item"></param>
-        /// <param name="from"></param>
-        public void AddActor(Item item, Backend.Coords from)
-        {
-
-        }
-
+        /// <param name="coords">Center point</param>
+        /// <param name="radius">steps to move up/left/right/down</param>
         public void Uncover(Coords coords, int radius = 4)
         {
             for (int i = 0; i < radius; ++i)
@@ -318,9 +365,8 @@ namespace Gruppe22.Backend
         /// <summary>
         /// Move an actor on the map in a specified direction (does not check for walls - use CanMove)
         /// </summary>
-        /// <param name="actor"></param>
-        /// <param name="from"></param>
-        /// <param name="dir"></param>
+        /// <param name="actor">The actor object to move</param>
+        /// <param name="dir">Direction to move to</param>
         public void MoveActor(Actor actor, Direction dir)
         {
             Backend.Coords source = actor.tile.coords;
@@ -340,40 +386,17 @@ namespace Gruppe22.Backend
             _updateTiles.Add(target);
         }
 
-        /// <summary>
-        /// Add an item to a tile
-        /// </summary>
-        /// <param name="actor"></param>
-        /// <param name="to"></param>
-        public void AddItem(Item item, Backend.Coords to)
-        {
-            // Create ItemTile (if non existant)
-            // or: Remove ItemTile from current tile
-            // Add ItemTile to new Tile
-        }
-
-        /// <summary>
-        /// Move an item on the map (not carried by an actor) in a specified direction 
-        /// </summary>
-        /// <param name="item">item to move</param>
-        /// <param name="from">square from which to move item</param>
-        /// <param name="dir">Direction to move to</param>
-        public void MoveItem(Item item, Backend.Coords from, Direction dir)
-        {
-            // or: Remove ItemTile from current tile specified by coords
-            // Add ItemTile to new Tile
-        }
 
 
         /// <summary>
         /// Get coordinates for closest enemy within a specified radius
         /// </summary>
-        /// <param name="coords"></param>
-        /// <param name="radius"></param>
-        /// <param name="includePlayer"></param>
-        /// <param name="includeNPC"></param>
-        /// <param name="includeEnemy"></param>
-        /// <returns></returns>
+        /// <param name="coords">Center point to start checking from</param>
+        /// <param name="radius">Number of squares to move up/left/right/down</param>
+        /// <param name="includePlayer">true if player should be an "enemy"</param>
+        /// <param name="includeNPC">true if NPCs should be "enemies"</param>
+        /// <param name="includeEnemy">true if monsters should be "enemies"</param>
+        /// <returns>Coordinates of first hostile target found</returns>
         public Backend.Coords ClosestEnemy(Coords coords, int radius = 4, bool includePlayer = true, bool includeNPC = true, bool includeEnemy = true)
         {
             for (int distance = 0; distance <= radius; ++distance)
@@ -423,7 +446,15 @@ namespace Gruppe22.Backend
             return new Backend.Coords(-1, -1);
         }
 
-        public void PathTo(Coords from, Backend.Coords to, out List<Coords> result, ref SortedSet<Coords> visited, int maxlength = 20, string indent = "")
+        /// <summary>
+        /// Find a path between two tiles (not necessarily only or shortest route!)
+        /// </summary>
+        /// <param name="from">Tile to start from</param>
+        /// <param name="to">Tile to move to </param>
+        /// <param name="result">List to put result path into</param>
+        /// <param name="visited">TIles visited on current path (avoid circles)</param>
+        /// <param name="maxlength">Maximum length of path</param>
+        public void PathTo(Coords from, Backend.Coords to, out List<Coords> result, ref SortedSet<Coords> visited, int maxlength = 20)
         {
             result = null;
             if (visited == null)
@@ -454,7 +485,7 @@ namespace Gruppe22.Backend
                     {
                         // System.Diagnostics.Debug.WriteLine(indent + "Looking " + dir + " of " + from + " to " + tmp);
 
-                        PathTo(tmp, to, out result, ref visited, maxlength - 1, indent + " ");
+                        PathTo(tmp, to, out result, ref visited, maxlength - 1);
                         if (result != null)
                         {
                             //   System.Diagnostics.Debug.WriteLine(indent + " - " + from.x + "/" + from.y);
@@ -636,12 +667,11 @@ namespace Gruppe22.Backend
             }
             else
             {
-                playerA = new Player(_content, 100, 0, 30);
+                playerA = new Player(100, 0, 30);
             }
             _actors.Add(playerA);
 
             _tiles.Clear();
-            _items.Clear();
             _updateTiles.Clear();
             XmlReaderSettings settings = new XmlReaderSettings();
             settings.IgnoreWhitespace = true;
@@ -707,7 +737,7 @@ namespace Gruppe22.Backend
                                         }
                                         break;
                                     case "ItemTile":
-                                        Item item = new Item(_content);
+                                        Item item = new Item();
                                         xmlr.Read();
                                         item.Load(xmlr);
                                         ItemTile itemTile = new ItemTile(tile, item);
@@ -838,15 +868,15 @@ namespace Gruppe22.Backend
                                         switch (xmlr.Name)
                                         {
                                             case "Enemy":
-                                                actor = new Enemy(_content);
+                                                actor = new Enemy();
                                                 actor.Load(xmlr);
                                                 break;
                                             case "Player":
-                                                actor = new Player(_content);
+                                                actor = new Player();
                                                 actor.Load(xmlr);
                                                 break;
                                             default:
-                                                actor = new NPC(_content);
+                                                actor = new NPC();
                                                 actor.Load(xmlr);
                                                 break;
                                         }
@@ -953,12 +983,14 @@ namespace Gruppe22.Backend
 
         #region Constructor
 
-        public Map(ContentManager content)
+        /// <summary>
+        /// Basic constructor (creating an empty map)
+        /// </summary>
+
+        public Map()
         {
-            _content = content;
             _updateTiles = new List<Coords>();
             _actors = new List<Actor>();
-            _items = new List<Item>();
             _blankTile = new FloorTile(this);
             _blankTile.coords = new Backend.Coords(-1, -1);
             _blankTile.Add(new GapTile(_blankTile));
@@ -968,17 +1000,22 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Constructor for using a previously saved map
+        /// 
         /// </summary>
+        /// <param name="content"></param>
+        /// <param name="parent"></param>
         /// <param name="filename"></param>
-        public Map(ContentManager content, object parent, string filename = "", Backend.Coords playerPos = null)
-            : this(content)
+        /// <param name="playerPos"></param>
+        public Map(IHandleEvent parent, string filename = "", Backend.Coords playerPos = null)
+            : this()
         {
             _parent = parent;
             Load(filename, playerPos);
         }
 
-
+        /// <summary>
+        /// Clean up: Remove all List objects manually (avoid garbage collection)
+        /// </summary>
         public virtual void Dispose()
         {
             while (_tiles.Count > 0)
@@ -994,11 +1031,18 @@ namespace Gruppe22.Backend
             _tiles.Clear();
             _updateTiles.Clear();
             _actors.Clear();
-            _items.Clear();
         }
         #endregion
 
         #region Static Helpers
+
+        /// <summary>
+        /// Determine which way one square is from another
+        /// </summary>
+        /// <param name="from">Source square</param>
+        /// <param name="to">Target Square</param>
+        /// <param name="DirectOnly">false (default) if diagonals are allowed</param>
+        /// <returns>Direction to look</returns>
         public static Direction WhichWayIs(Coords from, Backend.Coords to, bool DirectOnly = false)
         {
             if (from.x < to.x)
@@ -1070,6 +1114,11 @@ namespace Gruppe22.Backend
             return Direction.None;
         }
 
+        /// <summary>
+        /// Find the exact opposite facing of a direction
+        /// </summary>
+        /// <param name="dir">Direction to start</param>
+        /// <returns>Direction which is the other way</returns>
         public static Direction OppositeDirection(Direction dir)
         {
             switch (dir)
@@ -1094,6 +1143,12 @@ namespace Gruppe22.Backend
             return Direction.None;
         }
 
+        /// <summary>
+        /// Get coordinates for next tile in a certain direction
+        /// </summary>
+        /// <param name="start">Current tile</param>
+        /// <param name="dir">Direction to look at</param>
+        /// <returns>Coordinates of next tile in specified direction</returns>
         public static Backend.Coords DirectionTile(Coords start, Direction dir)
         {
             switch (dir)
@@ -1125,6 +1180,12 @@ namespace Gruppe22.Backend
             return start;
         }
 
+        /// <summary>
+        /// Turns around clockwise (i.e. Up->Right->Down->Left->Up)
+        /// </summary>
+        /// <param name="dir">Start direction</param>
+        /// <param name="directOnly">true if diagonals should not be allowed</param>
+        /// <returns>Next direction (clockwise)</returns>
         public static Direction NextDirection(Direction dir, bool directOnly = false)
         {
             switch (dir)
@@ -1161,6 +1222,12 @@ namespace Gruppe22.Backend
             return Direction.None;
         }
 
+        /// <summary>
+        /// Switch Entrance and Exit in a list of exit-objects (for corresponding rooms)
+        /// </summary>
+        /// <param name="ToRoom">Which room to switch</param>
+        /// <param name="exits">List of exits</param>
+        /// <returns>List of entrances</returns>
         public static List<Exit> ExitToEntry(int ToRoom, List<Exit> exits)
         {
             List<Exit> result = new List<Exit>();

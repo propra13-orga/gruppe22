@@ -195,7 +195,7 @@ namespace Gruppe22.Backend
             {
                 pos = new Backend.Coords(1, 1);
             }
-            Player player = new Player(_content, 100, 0, 30);
+            Player player = new Player(100, 0, 30);
             ActorTile playerTile = new ActorTile(_tiles[pos.y][pos.x], player);
             player.tile = playerTile;
             _tiles[pos.y][pos.x].Add(playerTile);
@@ -270,7 +270,7 @@ namespace Gruppe22.Backend
 
                 if ((pos.x >= 0) && (pos.x < _width) && (pos.y < _height) && (pos.y >= 0))
                 {
-                    Enemy enemy = new Enemy(_content, -1, -1, -1, -1, "", r, (_id == 1) ? 0 : _level);
+                    Enemy enemy = new Enemy(-1, -1, -1, -1, "", r, (_id == 1) ? 0 : _level);
                     ActorTile enemyTile = new ActorTile(_tiles[pos.y][pos.x], enemy);
                     enemy.tile = enemyTile;
                     _tiles[pos.y][pos.x].Add(enemyTile);
@@ -314,7 +314,7 @@ namespace Gruppe22.Backend
 
                 if ((pos.x >= 0) && (pos.x < _width) && (pos.y < _height) && (pos.y >= 0))
                 {
-                    NPC npc = new NPC(_content, -1, -1, -1, -1, "", r, _level);
+                    NPC npc = new NPC(-1, -1, -1, -1, "", r, _level);
                     npc.gold = 50000;
                     npc.hasShop = false;
                     npc.hasDialogue = true;
@@ -349,7 +349,7 @@ namespace Gruppe22.Backend
                 }
             }
 
-            Enemy boss = new Enemy(_content, -1, -1, -1, -1, "", r, 10 + _level);
+            Enemy boss = new Enemy(-1, -1, -1, -1, "", r, 10 + _level);
             ActorTile BossTile = new ActorTile(_tiles[pos.y][pos.x], boss);
             boss.tile = BossTile;
             _tiles[pos.y][pos.x].Add(BossTile);
@@ -375,12 +375,12 @@ namespace Gruppe22.Backend
             _tiles[1][x - 1].overlay.Clear();
             _tiles[1][x + 1].overlay.Clear();
 
-            NPC npc = new NPC(_content, -1, -1, -1, -1, "", r, _level, true);
+            NPC npc = new NPC(-1, -1, -1, -1, "", r, _level, true);
             npc.gold = 50000;
             npc.hasShop = true;
             for (int count = 0; count < 25; ++count)
             {
-                npc.inventory.Add(new Item(_content, r, 0, _level, false));
+                npc.inventory.Add(new Item(r, 0, _level, false));
             }
             ActorTile NPCTile = new ActorTile(_tiles[2][x], npc);
             npc.tile = NPCTile;
@@ -656,11 +656,10 @@ namespace Gruppe22.Backend
 
                 if ((pos.x >= 0) && (pos.x < _width) && (pos.y < _height) && (pos.y >= 0))
                 {
-                    Item item = new Item(_content, r, 0, _level);
+                    Item item = new Item(r, 0, _level);
                     ItemTile itemTile = new ItemTile(_tiles[pos.y][pos.x], item);
                     item.tile = itemTile;
                     _tiles[pos.y][pos.x].Add(itemTile);
-                    _items.Add(item);
                 }
             }
         }
@@ -1027,7 +1026,7 @@ namespace Gruppe22.Backend
                     case 'F':
                         _tiles[row].Add(new GeneratorTile(this, new Backend.Coords(col, row), false, r));
 
-                        Enemy enemy = new Enemy(_content, -1, -1, -1, -1, "", r);
+                        Enemy enemy = new Enemy(-1, -1, -1, -1, "", r);
                         ActorTile enemyTile = new ActorTile(_tiles[row][col], enemy);
                         enemy.tile = enemyTile;
                         _tiles[row][col].Add(enemyTile);
@@ -1056,8 +1055,8 @@ namespace Gruppe22.Backend
             return true;
         }
 
-        public Generator(ContentManager content, object parent, string pattern, int roomNr = 1, int maxRoom = 3, List<Exit> exits = null, Random rnd = null)
-            : base(content)
+        public Generator(object parent, string pattern, int roomNr = 1, int maxRoom = 3, List<Exit> exits = null, Random rnd = null)
+            : base()
         {
             if (rnd == null) r = new Random(); else r = rnd;
             _tiles = new List<List<GeneratorTile>>();
@@ -1323,8 +1322,8 @@ namespace Gruppe22.Backend
         /// </summary>
         /// <param name="width">The width of the map</param>
         /// <param name="height">The height of the map</param>
-        public Generator(ContentManager content, object parent = null, int width = 10, int height = 10, bool generate = false, Backend.Coords playerPos = null, int roomNr = 1, int maxRoom = 3, Random rnd = null, string dungeonname = "", int level = 0, bool hasShop = false, bool hasNPC = false, bool hasBoss = false)
-            : base(content)
+        public Generator(object parent = null, int width = 10, int height = 10, bool generate = false, Backend.Coords playerPos = null, int roomNr = 1, int maxRoom = 3, Random rnd = null, string dungeonname = "", int level = 0, bool hasShop = false, bool hasNPC = false, bool hasBoss = false)
+            : base()
         {
             if (rnd == null) r = new Random(); else r = rnd;
             _tiles = new List<List<GeneratorTile>>();

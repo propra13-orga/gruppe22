@@ -237,7 +237,7 @@ namespace Gruppe22.Client
                     break;
                 }
             }
-            Backend.Ability r = new Backend.Ability(_content, cost, intensity, duration, cooldown, target, element, name, description);
+            Backend.Ability r = new Backend.Ability(cost, intensity, duration, cooldown, target, element, name, description);
             _abilities[id] = r;
         }
 

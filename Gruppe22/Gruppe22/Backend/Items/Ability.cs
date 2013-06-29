@@ -43,7 +43,6 @@ namespace Gruppe22.Backend
         private int _intensity;
         private int _duration;
         private int _cooldown;
-        private ContentManager _content;
         private int _currentCool;
         private AbilityTarget _target;
         private AbilityElement _element;
@@ -347,9 +346,8 @@ namespace Gruppe22.Backend
             }
         }
 
-        public Ability(ContentManager content, int cost = 2, int intensity = 1, int duration = 0, int cooldown = 5, AbilityTarget target = AbilityTarget.None, AbilityElement element = AbilityElement.None, string name = "", string description = "")
+        public Ability( int cost = 2, int intensity = 1, int duration = 0, int cooldown = 5, AbilityTarget target = AbilityTarget.None, AbilityElement element = AbilityElement.None, string name = "", string description = "")
         {
-            _content = content;
             _cost = cost;
             _intensity = intensity;
             _duration = duration;

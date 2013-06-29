@@ -88,8 +88,8 @@ namespace Gruppe22.Backend
         /// <param name="r">Randomobjekt für die Basisklasse.</param>
         /// <param name="_level">NPC aus dem Level _level.</param>
         /// <param name="shop">Legt fest ob der NPC ein Shop ist.</param>
-        public NPC(ContentManager content, int health = 10, int armor = 0, int damage = 0, int maxHealth = 10, string name = "", Random r = null, int _level = 1, bool shop = false)
-            : base(content, ActorType.NPC, health, armor, damage, maxHealth, name, r)
+        public NPC( int health = 10, int armor = 0, int damage = 0, int maxHealth = 10, string name = "", Random r = null, int _level = 1, bool shop = false)
+            : base(ActorType.NPC, health, armor, damage, maxHealth, name, r)
         {
             _actorType = ActorType.NPC;
             if (shop) _animationFile = ".\\content\\luigi.xml";

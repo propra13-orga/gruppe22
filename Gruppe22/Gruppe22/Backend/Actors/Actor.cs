@@ -101,7 +101,6 @@ namespace Gruppe22.Backend
         protected int _armor = 40;
         protected int _abilityPoints = 0;
         protected int _skills = 0;
-        protected ContentManager _content;
         protected int _viewRange = 4;
         protected string _animationFile = ".\\content\\player.xml";
         protected int _stunned = 0;
@@ -1025,7 +1024,7 @@ namespace Gruppe22.Backend
                 reader.Read();
                 while (reader.NodeType != XmlNodeType.EndElement)
                 {
-                    Item item = new Item(_content);
+                    Item item = new Item();
                     item.Load(reader);
                     item.owner = this;
                     _inventory.Add(item);
@@ -1049,7 +1048,7 @@ namespace Gruppe22.Backend
                     reader.Read();
                     while (reader.NodeType != XmlNodeType.EndElement)
                     {
-                        Ability ability = new Ability(_content);
+                        Ability ability = new Ability();
                         ability.Load(reader);
                         _abilities.Add(ability);
                         reader.Read();
@@ -1225,9 +1224,9 @@ namespace Gruppe22.Backend
         /// <param name="rnd">a random used to generate the actors starting values</param>
         /// <param name="animationFile">the file used to display the actor</param>
         /// <param name="level">the default starting level is 1</param>
-        public Actor(ContentManager content, ActorType actorType, int health, int armor, int damage, int maxHealth = -1, string name = "", Random rnd = null, string animationFile = "", int level = -1)
+        public Actor( ActorType actorType, int health, int armor, int damage, int maxHealth = -1, string name = "", Random rnd = null, string animationFile = "", int level = -1)
         {
-            _content = content;
+            
             _actorType = actorType;
             _abilities = new List<Ability>();
             _quicklist = new List<int>(10);

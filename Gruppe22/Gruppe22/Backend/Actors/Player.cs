@@ -12,8 +12,8 @@ namespace Gruppe22.Backend
         /// <summary>
         /// Konstruktor.
         /// </summary>
-        public Player(ContentManager content, int health = 100, int armour = 30, int damage = 20, int maxHealth = -1, string name = "")
-            : base(content, ActorType.Player, health, armour, damage, maxHealth, name)
+        public Player( int health = 100, int armour = 30, int damage = 20, int maxHealth = -1, string name = "")
+            : base(ActorType.Player, health, armour, damage, maxHealth, name)
         {
             _actorType = ActorType.Player;
             _viewRange = 4;

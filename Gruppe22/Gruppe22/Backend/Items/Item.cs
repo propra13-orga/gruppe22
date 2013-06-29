@@ -68,10 +68,7 @@ namespace Gruppe22.Backend
         /// Feld das beschreibt ob Item verbraucht/zerstört ist.
         /// </summary>
         private bool _destroyed = false;
-        /// <summary>
-        /// Ressourcen-Manager.
-        /// </summary>
-        private ContentManager _content = null;
+
         List<ItemEffect> _effects = null;
 
         /// <summary>
@@ -1216,8 +1213,8 @@ namespace Gruppe22.Backend
         /// <param name="value"></param>
         /// <param name="level"></param>
         /// <param name="gold"></param>
-        public Item(ContentManager content, Random r = null, int value = 0, int level = 1, bool gold = true)
-            : this(content)
+        public Item( Random r = null, int value = 0, int level = 1, bool gold = true)
+            : this()
         {
             if (r == null) r = new Random();
             _value = value;
@@ -1261,8 +1258,8 @@ namespace Gruppe22.Backend
         /// <param name="icon"></param>
         /// <param name="value"></param>
         /// <param name="level"></param>
-        public Item(ContentManager content, ItemType itemtype, string name = "", Random r = null, ImageData icon = null, int value = 0, int level = 1)
-            : this(content)
+        public Item( ItemType itemtype, string name = "", Random r = null, ImageData icon = null, int value = 0, int level = 1)
+            : this()
         {
             _level = level;
             _value = value;
@@ -1289,8 +1286,8 @@ namespace Gruppe22.Backend
         /// <param name="icon"></param>
         /// <param name="value"></param>
         /// <param name="level"></param>
-        public Item(ContentManager content, ItemTile parent, ItemType itemtype, string name = "", ImageData icon = null, int value = 0, int level = 1)
-            : this(content)
+        public Item( ItemTile parent, ItemType itemtype, string name = "", ImageData icon = null, int value = 0, int level = 1)
+            : this()
         {
             _level = level;
             _tile = parent;
@@ -1311,15 +1308,14 @@ namespace Gruppe22.Backend
         /// <summary>
         /// Ein weiterer Konstruktor.
         /// </summary>
-        /// <param name="content">Ressourcen-Manager.</param>
         /// <param name="owner">Der Besitzer-Actor des Items.</param>
         /// <param name="itemtype">Typ</param>
         /// <param name="name">Name</param>
         /// <param name="icon">Symbol</param>
         /// <param name="value">Wert</param>
         /// <param name="level">Level</param>
-        public Item(ContentManager content, Actor owner, ItemType itemtype, string name = "", ImageData icon = null, int value = 0, int level = 1)
-            : this(content)
+        public Item( Actor owner, ItemType itemtype, string name = "", ImageData icon = null, int value = 0, int level = 1)
+            : this()
         {
             _owner = owner;
             _value = value;
@@ -1340,11 +1336,9 @@ namespace Gruppe22.Backend
         /// <summary>
         /// Konstruktor.
         /// </summary>
-        /// <param name="content">Der Ressourcen-Manager.</param>
-        public Item(ContentManager content)
+        public Item()
         {
             _effects = new List<ItemEffect>();
-            _content = content;
         }
     }
 }

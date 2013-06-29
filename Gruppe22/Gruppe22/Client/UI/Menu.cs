@@ -118,6 +118,7 @@ namespace Gruppe22.Client
         /// 
         /// </summary>
         /// <param name="difference"></param>
+        /// <param name="_lastCheck"></param>
         public override void MoveContent(Vector2 difference, int _lastCheck = 0)
         {
             int temp = _startPos - (int)(Math.Abs(difference.Y) / difference.Y);

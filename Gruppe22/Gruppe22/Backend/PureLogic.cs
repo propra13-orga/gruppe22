@@ -252,7 +252,7 @@ namespace Gruppe22.Backend
 
                                     ItemTile tile = new ItemTile(((FloorTile)(_map.actors[FinishedID].tile.parent)));
 
-                                    Backend.Item item = new Backend.Item(null, tile, Backend.ItemType.Gold, "", null, _map.actors[FinishedID].gold);
+                                    Backend.Item item = new Backend.Item(tile, Backend.ItemType.Gold, "", null, _map.actors[FinishedID].gold);
                                     item.value = _map.actors[FinishedID].gold;
                                     tile.item = item;
                                     ((FloorTile)(_map.actors[FinishedID].tile.parent)).Add(tile);
@@ -673,7 +673,7 @@ namespace Gruppe22.Backend
                 for (int i = 0; i < totalRooms; ++i)
                 {
 
-                    rooms.Add(new Generator(null, this, 10 + _random.Next(8) + ((i == totalRooms) ? 5 : 0), 10 + _random.Next(8) + ((i == totalRooms) ? 5 : 0), true, null, LevelStart + i + 1, totalRooms, _random, _name, level));
+                    rooms.Add(new Generator(this, 10 + _random.Next(8) + ((i == totalRooms) ? 5 : 0), 10 + _random.Next(8) + ((i == totalRooms) ? 5 : 0), true, null, LevelStart + i + 1, totalRooms, _random, _name, level));
                     if (_name == null) _name = rooms[i].dungeonname;
                     if (i == 0)
                     {
