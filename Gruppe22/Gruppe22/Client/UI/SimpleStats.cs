@@ -40,12 +40,12 @@ namespace Gruppe22.Client
 
         public override bool OnMouseDown(int button)
         {
-            if (_button) {
+           /* if (_button) {
                 ((GameWin)_parent).ShowCharacterWindow(_actor);
                 _button = false;
 
                 return true;
-            }
+            }*/
             return false;
         }
         /// <summary>

@@ -661,39 +661,38 @@ namespace Gruppe22.Backend
         /// </summary>
         /// <param name="filename">The filename to read from</param>
         /// <param name="player">The starting position on the loaded map</param>
-        public void Load(string filename, Backend.Coords player = null)
+        public void Load(string filename, Backend.Coords targetCoords = null, bool resetPlayer = false)
         {
             Regex re = new Regex(@"\d+");
             Match m = re.Match(filename);
             _id = Convert.ToInt32(m.Value);
-            bool isReady = false;
-            Player playerA = null;
+            Coords tempTarget = targetCoords;
 
-            if (player == null)
+            List<Player> players = new List<Player>();
+
+            if (targetCoords == null)
             {
-                player = new Backend.Coords(1, 1);
+                targetCoords = new Backend.Coords(1, 1);
             }
+
+            // Move all players to the new map
             if (_actors.Count > 0)
             {
                 for (int i = 0; i < _actors.Count; ++i)
                 {
                     if (_actors[i] is Player)
                     {
-                        playerA = (Player)_actors[i];
-                        playerA.tile = null;
-                        isReady = true;
+                        players.Add(_actors[i] as Player);
+                        players[players.Count - 1].tile = null;
                         break;
                     }
                 }
                 _actors.Clear();
             }
-            else
-            {
-                playerA = new Player(100, 0, 30);
-            }
-            _actors.Add(playerA);
+
 
             _tiles.Clear();
+            _actors.Clear();
             _updateTiles.Clear();
             XmlReaderSettings settings = new XmlReaderSettings();
             settings.IgnoreWhitespace = true;
@@ -914,12 +913,35 @@ namespace Gruppe22.Backend
                                         }
                                         else
                                         {
-                                            if (!isReady)
+                                            if ((players.Count > 0) && !resetPlayer)
                                             {
-                                                _actors[0].copyFrom(actor);
-                                                player.x = tile.coords.x;
-                                                player.y = tile.coords.y;
+                                                actor.copyFrom(players[0]);
+                                                players.RemoveAt(0);
                                             }
+                                            if (targetCoords != null)
+                                            {
+                                                ActorTile actortile = new ActorTile(this[targetCoords], actor);
+                                                actor.tile = actortile;
+                                                actortile.enabled = (actor.health > 0);
+                                                actortile.parent = this[targetCoords];
+                                                this[targetCoords].Add(actortile);
+
+                                                _actors.Add(actor);
+
+                                                _updateTiles.Add(targetCoords);
+                                            }
+                                            else
+                                            {
+                                                tempTarget = tile.coords;
+                                                ActorTile actortile = new ActorTile(tile, actor);
+                                                actor.tile = actortile;
+                                                actortile.enabled = (actor.health > 0);
+                                                actortile.parent = tile;
+                                                tile.Add(actortile);
+                                                _actors.Add(actor);
+                                                _updateTiles.Add(tile.coords);
+                                            }
+
                                         }
 
                                         break;
@@ -934,11 +956,22 @@ namespace Gruppe22.Backend
 
             xmlr.Close();
 
-            ActorTile actortile = new ActorTile(_tiles[player.y][player.x], actors[0]);
-            _tiles[player.y][player.x].Add(actortile);
-            actors[0].tile = actortile;
-            actortile.parent = _tiles[player.y][player.x];
-            _updateTiles.Add(player);
+
+            while (players.Count > 0)
+            {
+
+                ActorTile actortile = new ActorTile(this[tempTarget], players[0]);
+                players[0].tile = actortile;
+                actortile.enabled = (players[0].health > 0);
+                actortile.parent = this[tempTarget];
+                this[tempTarget].Add(actortile);
+
+                _actors.Add(players[0]);
+
+                _updateTiles.Add(tempTarget);
+                players.RemoveAt(0);
+            }
+
             for (int i = 0; i < _actors.Count; ++i)
             {
                 _actors[i].id = i;

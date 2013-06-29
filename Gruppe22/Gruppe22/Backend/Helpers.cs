@@ -212,7 +212,8 @@ namespace Gruppe22.Backend
         ChangeMap = 0,
         Pickup = 1,
         Checkpoint = 2,
-        Damage = 4
+        Damage = 4,
+        Trap = 5
     }
     public enum Buttons
     {

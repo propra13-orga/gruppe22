@@ -16,6 +16,33 @@ namespace Gruppe22.Backend
     public class PureLogic : Logic, IHandleEvent
     {
 
+        public override void ChangeMap(string filename, Coords pos)
+        {
+            map.Save("savedroom" + map.id + ".xml");
+            if (File.Exists("saved" + filename))
+                map.Load("saved" + filename, pos);
+            else
+                map.Load(filename, pos);
+            File.WriteAllText("GameData", filename);
+        }
+
+        public void Restart()
+        {
+            _DeleteSavedRooms();
+            map.Load("room1.xml");
+        }
+
+        /// <summary>
+        /// Method to delete old saved rooms
+        /// </summary>
+        private void _DeleteSavedRooms()
+        {
+            if (File.Exists("GameData")) File.Delete("GameData");
+            while (Directory.GetFiles(".", "savedroom*.xml").Length > 0)
+            {
+                File.Delete(Directory.GetFiles(".", "savedroom*.xml")[0]);
+            }
+        }
 
         /// <summary>
         /// methode to evaluate the damage in a combat between two actors
@@ -312,7 +339,7 @@ namespace Gruppe22.Backend
                             _map[target.x, target.y].checkpoint.visited = true;
                             _map.actors[id].health = _map.actors[id].maxhealth;
                             _map.actors[id].mana = _map.actors[id].maxMana;
-                            if (_map.actors[id].lives== -1)
+                            if (_map.actors[id].lives == -1)
                                 _map.actors[id].lives = 3;
                             if (_map[target.x, target.y].checkpoint.bonuslife > 0)
                                 _map.actors[id].lives += (uint)_map[target.x, target.y].checkpoint.bonuslife;
@@ -406,7 +433,7 @@ namespace Gruppe22.Backend
                 case Backend.Events.MoveProjectile:
                     if (data[0] == null)
                     {
-                        _parent.HandleEvent(false, Backend.Events.AddProjectile, ((FloorTile)data[1]).coords,  (Direction)data[2], new ProjectileTile((FloorTile)data[1], (Direction)data[2]));
+                        _parent.HandleEvent(false, Backend.Events.AddProjectile, ((FloorTile)data[1]).coords, (Direction)data[2], new ProjectileTile((FloorTile)data[1], (Direction)data[2]));
                     }
                     else
                     {
@@ -439,7 +466,7 @@ namespace Gruppe22.Backend
                                     ((FloorTile)_map.actors[id].tile.parent).trap.status = TrapState.NoDisplay;
                             }
                             Backend.Coords target = Map.DirectionTile(_map.actors[id].tile.coords, dir);
-                            _parent.HandleEvent(false, Backend.Events.RotateActor, id, _map.actors[id].tile.coords,dir);
+                            _parent.HandleEvent(false, Backend.Events.RotateActor, id, _map.actors[id].tile.coords, dir);
 
                             Actor a = _map[target.x, target.y].firstActor;
                             if ((a is NPC) && (_map.actors[id] is Player))
@@ -657,7 +684,7 @@ namespace Gruppe22.Backend
         /// </summary>
         public override void GenerateMaps()
         {
-
+            _DeleteSavedRooms();
             List<Generator> rooms = new List<Generator>();
             int maxLevel = 3;
             int LevelStart = 0;
@@ -812,6 +839,21 @@ namespace Gruppe22.Backend
         public PureLogic(IHandleEvent parent, Map map = null, Random _random = null)
             : base(parent, map, _random)
         {
+            if (!System.IO.File.Exists("room1.xml"))
+            {
+                GenerateMaps();
+            }
+            string path = "room1.xml";
+            if (File.Exists("GameData"))
+                path = File.ReadAllText("GameData");
+            if (path.IndexOf(Environment.NewLine) > 0)
+            {
+                path = path.Substring(0, path.IndexOf(Environment.NewLine));
+            }
+            if (File.Exists("saved" + (string)path))
+                map = new Map(this, "saved" + (string)path);
+            else
+                map = new Map(this, (string)path);
         }
     }
 }

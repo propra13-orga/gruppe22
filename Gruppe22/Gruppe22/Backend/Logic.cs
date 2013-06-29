@@ -30,6 +30,11 @@ namespace Gruppe22.Backend
 
         }
 
+        public virtual void ChangeMap(string filename, Coords pos)
+        {
+
+        }
+
         public Logic(IHandleEvent parent, Map map = null, Random _random = null)
         {
             _parent = parent;
