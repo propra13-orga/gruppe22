@@ -16,7 +16,7 @@ namespace DungeonServer
     /// This class represents the main console application
     /// Current version copied almost verbatim from http://www.indiedev.de/wiki/Netzwerk-Basics_mit_Lidgren/Erstellen_des_Servers 
     /// </summary>
-    public class Server
+    public class Server:IHandleEvent
     {
         #region Private Fields
         /// <summary>
@@ -37,6 +37,8 @@ namespace DungeonServer
         /// A thread to separate user interface and network activity
         /// </summary>
         private static Thread _serverThread;
+        private static PureLogic _logic;
+
         #endregion
 
         #region Private Methods
