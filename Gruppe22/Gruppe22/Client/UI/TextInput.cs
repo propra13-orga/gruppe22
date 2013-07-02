@@ -58,7 +58,7 @@ namespace Gruppe22.Client
                         return true;
 
                     case Keys.Space:
-                        _text = _text.Insert(_cursor, " ");
+                        _text = _text.Insert(_cursor++, " ");
                         return true;
 
                     case Keys.Insert:
