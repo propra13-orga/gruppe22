@@ -14,30 +14,34 @@ namespace DungeonServer
 {
     /// <summary>
     /// This class represents the main console application
-    /// Current version copied almost verbatim from http://www.indiedev.de/wiki/Netzwerk-Basics_mit_Lidgren/Erstellen_des_Servers 
     /// </summary>
-    public class Server:IHandleEvent
+    public class Server : IHandleEvent
     {
         #region Private Fields
         /// <summary>
         /// Configuration info used by Lidgren
         /// </summary>
-        private static NetPeerConfiguration _config;
+        private NetPeerConfiguration _config;
         /// <summary>
         /// Server object provided by Lidgren
         /// </summary>
-        private static NetServer _server;
-        private static string _servername = "Crawler 2000";
+        private NetServer _server;
+        private string _servername = "Crawler 2000";
         /// <summary>
         /// A List of CLients and their respective data
         /// </summary>
-        private static Dictionary<IPEndPoint, ClientData> _clients;
-        private static List<string> discoveredBy;
+        private Dictionary<IPEndPoint, ClientData> _clients;
+        private List<string> discoveredBy;
         /// <summary>
         /// A thread to separate user interface and network activity
         /// </summary>
-        private static Thread _serverThread;
-        private static PureLogic _logic;
+        private Thread _serverThread;
+        private PureLogic _logic;
+        private Random _random;
+        private bool _updating = true;
+        private DateTime _lastUpdate = DateTime.Now;
+        Microsoft.Xna.Framework.GameTime _gameTime;
+        public static bool error = false;
 
         #endregion
 
@@ -49,39 +53,50 @@ namespace DungeonServer
         /// <param name="message"></param>
         /// <param name="method"></param>
         /// <param name="impossibleClients"></param>
-        private static void SendMessageToAll(NetOutgoingMessage message, NetDeliveryMethod method, params IPEndPoint[] impossibleClients)
+        public void SendMessageToAll(PacketType type, NetDeliveryMethod method, IPEndPoint exclude, params object[] data)
         {
-            if (impossibleClients == null)
+            if (_clients.Count == 0)
+                return;
+            NetOutgoingMessage response = _server.CreateMessage((byte)type);
+
+            foreach (object element in data)
             {
-                if (_clients.Count == 0)
-                    return;
-                List<NetConnection> connections = (from client in _clients select client.Value.Connection).ToList();
-                _server.SendMessage(message, connections, method, 0);
+                if (element is int) response.Write((int)element);
+                else response.Write(element.ToString());
             }
-            else
+
+            foreach (KeyValuePair<IPEndPoint, ClientData> client in _clients)
             {
-                foreach (KeyValuePair<IPEndPoint, ClientData> client in _clients)
-                {
-                    if (!impossibleClients.Contains(client.Key))
-                        _server.SendMessage(message, client.Value.Connection, method);
-                }
+                if (client.Key != exclude)
+                    _server.SendMessage(response, client.Value.Connection, method);
             }
+        }
+
+        public void SendMessage(PacketType type, NetConnection target, params object[] data)
+        {
+            NetOutgoingMessage response = _server.CreateMessage((byte)type);
+            foreach (object element in data)
+            {
+                if (element is int) response.Write((int)element);
+                else response.Write(element.ToString());
+            }
+            _server.SendMessage(response, target, NetDeliveryMethod.ReliableUnordered);
         }
 
         /// <summary>
         /// Work on the message queue (reacting to all incoming messages)
         /// </summary>
         /// <param name="param"></param>
-        private static void WorkMessages(object param)
+        private void WorkMessages(object param)
         {
-
+            _updating = false;
             NetServer server = (NetServer)param;
 
             //Message-Cycle: Dauerhaft Messages verarbeiten, bis das Programm beendet wird bzw. ein Fehler auftritt
             NetIncomingMessage message;
-            NetOutgoingMessage response;
             while (_serverThread.ThreadState != ThreadState.AbortRequested)
             {
+                Update();
                 if ((message = server.ReadMessage()) == null)
                     continue;
                 switch (message.MessageType)
@@ -97,10 +112,7 @@ namespace DungeonServer
                         Log(message.ReadString(), ConsoleColor.Red);
                         break;
                     case NetIncomingMessageType.DiscoveryRequest:
-
-                        response = server.CreateMessage(_servername);
-
-                        server.SendDiscoveryResponse(response, message.SenderEndpoint);
+                        server.SendDiscoveryResponse(server.CreateMessage(_servername), message.SenderEndpoint);
                         if (!discoveredBy.Contains(message.SenderEndpoint.Address.ToString()))
                         {
                             Log(message.SenderEndpoint + " has discovered the server!");
@@ -111,7 +123,6 @@ namespace DungeonServer
                         //Clients die Connecten wollen dies erlauben
                         message.SenderConnection.Approve();
                         Log(message.SenderEndpoint + " approved.");
-
                         break;
                     case NetIncomingMessageType.Data:
                         //Sämtliche Daten die Clients senden annehmen
@@ -126,14 +137,8 @@ namespace DungeonServer
                         {
                             if (!_clients.ContainsKey(message.SenderEndpoint))
                                 break;
-
-                            response = server.CreateMessage();
-                            response.Write((byte)PacketType.Disconnect);
-                            response.Write(_clients[message.SenderEndpoint].ID); //ID mitteilen
-                            SendMessageToAll(response, NetDeliveryMethod.ReliableUnordered, message.SenderEndpoint);
+                            SendMessageToAll(PacketType.Disconnect, NetDeliveryMethod.ReliableUnordered, message.SenderEndpoint, _clients[message.SenderEndpoint].ID);
                             Log("Sent Disconnect to all except " + _clients[message.SenderEndpoint].ID, ConsoleColor.Cyan);
-                            //Allen anderen dies mitteilen
-
                             _clients.Remove(message.SenderEndpoint);
                             Log(message.SenderEndpoint + " disconnected!");
                         }
@@ -145,19 +150,12 @@ namespace DungeonServer
                             //Nun fügen wir den Client zur Liste hinzu (IP, ClienData):
                             _clients.Add(message.SenderEndpoint, newClient);
                             Console.WriteLine("Created client with id '" + newClient.ID + "'!");
-                            response = server.CreateMessage();
-                            response.Write((byte)PacketType.Connect); //0x02: Clientinformation um neuen Clienten seine ID mitzuteilen
-                            response.Write(newClient.ID);
-                            response.Write((short)_clients.Count); //Anzahl aktueller Clients senden
-                            server.SendMessage(response, message.SenderConnection, NetDeliveryMethod.ReliableUnordered);
+                            SendMessage(PacketType.Connect, message.SenderConnection, NetDeliveryMethod.ReliableUnordered, newClient.ID, (short)_clients.Count);
                             Log("Sent Connect to " + newClient.ID, ConsoleColor.Cyan);
 
                             //Nun alle aktiven Clients informieren, dass ein neuer Client connected ist
-                            response = server.CreateMessage();
-                            response.Write((byte)PacketType.UpdateClients); //0x00: Neuer Client connected
-                            response.Write(newClient.ID); //Seine ID mitteilen
-                            // response.Write(newClient.Position);
-                            SendMessageToAll(response, NetDeliveryMethod.ReliableUnordered, message.SenderEndpoint);
+
+                            SendMessageToAll(PacketType.UpdateClients, NetDeliveryMethod.ReliableUnordered, message.SenderEndpoint, newClient.ID);
                             Log("Sent UpdateClients to all", ConsoleColor.Cyan);
 
                             Log(message.SenderEndpoint + " connected!");
@@ -176,60 +174,20 @@ namespace DungeonServer
         /// </summary>
         /// <param name="id"></param>
         /// <param name="message"></param>
-        private static void ProcessMessage(byte id, NetIncomingMessage message)
+        private void ProcessMessage(byte id, NetIncomingMessage message)
         {
             short senderID = _clients[message.SenderEndpoint].ID;
-            NetOutgoingMessage response;
             switch ((PacketType)id)
             {
-
-
-
                 case PacketType.Chat:
-                    response = _server.CreateMessage();
-                    response.Write((byte)PacketType.Chat); //0x10: Positionsänderung eines Clients
-                    response.Write(senderID); //Dessen ID
-                    response.Write(message.ReadString());
-                    SendMessageToAll(response, NetDeliveryMethod.Unreliable, message.SenderEndpoint);
+                    Log("Chat");
+                    SendMessageToAll(PacketType.Chat, NetDeliveryMethod.Unreliable, null, senderID, message.ReadString());
                     break;
-
-
-
 
                 case PacketType.Move: //0x0 steht für Positions-Informationen eines Clienten
-                    //  Vector2 _position = message.ReadVector2();
-                    //_clients[message.SenderEndpoint].Position = _position;
-                    //  Vector2 _direction = message.ReadVector2();
-                    // _clients[message.SenderEndpoint].Direction = _direction;
-
-                    //Wir haben die Position, also an alle anderen Clients senden
-                    response = _server.CreateMessage();
-                    response.Write((byte)0x10); //0x10: Positionsänderung eines Clients
-                    response.Write(senderID); //Dessen ID
-                    //   response.Write(_position); //Seine neue Position
-                    //    response.Write(_direction);
-                    //    response.Write(_clients[message.SenderEndpoint].Speed);
-                    SendMessageToAll(response, NetDeliveryMethod.Unreliable, message.SenderEndpoint);
-                    break;
-                case PacketType.UpdateClients:
-                    //Client fordert eine komplette Liste aller Clients mit deren ID und Position
-                    List<ClientData> clients =
-                        (from client in _clients
-                         where (client).Value.ID != _clients[message.SenderEndpoint].ID
-                         select client.Value).ToList();
-
-                    foreach (ClientData client in clients)
-                    {
-                        response = _server.CreateMessage();
-                        response.Write((byte)PacketType.UpdateClients);
-                        response.Write(client.ID);
-                        //     response.Write(client.Position);
-                        //     response.Write(client.Direction);
-                        //   response.Write(client.Speed);
-                        _server.SendMessage(response, _clients[message.SenderEndpoint].Connection,
-                                            NetDeliveryMethod.ReliableUnordered);
-                    }
-                    Log("Sent UpdateClients to " + _clients[message.SenderEndpoint].ID, ConsoleColor.Cyan);
+                    int actorID = message.ReadInt32();
+                    Direction dir = (Direction)message.ReadInt32();
+                    _logic.HandleEvent(true, Events.MoveActor, actorID, dir);
                     break;
             }
         }
@@ -249,12 +207,20 @@ namespace DungeonServer
         /// <summary>
         /// Main loop used for console UI
         /// </summary>
-        private static void WaitForInput()
+        private void WaitForInput()
         {
             Console.WriteLine("Enter exit to quit; clear to clear screen or stats for statistics.");
             while (true)
             {
+                while (!Console.KeyAvailable)
+                {
+                    Console.CursorLeft = 0;
+                    Console.CursorTop = 4;
+                    Console.CursorVisible = false;
+                    Console.WriteLine(_logic.map.ToString());
+                }
                 string input = Console.ReadLine();
+                Console.CursorVisible = true;
                 switch (input)
                 {
                     case "exit":
@@ -262,29 +228,64 @@ namespace DungeonServer
                     case "clear":
                         Console.Clear();
                         break;
+                    case "map":
+                        Console.WriteLine("Displaying current map:");
+                        Console.WriteLine(_logic.map.ToString());
+                        Console.WriteLine("#: Wall - @: Player - X: Enemy - !: Trap - 0: NPC - >: Teleport - *: Treasure");
+                        break;
                     case "stats":
                         Log(_server.Statistics.ToString(), ConsoleColor.Magenta);
+                        break;
+                    case "new":
+                        _logic.GenerateMaps();
+                        Console.WriteLine("New Maps created.");
+                        // Karte laden!
+                        // Karte an Spieler pushen!
                         break;
                     default:
                         Console.WriteLine("Unknown command.");
                         break;
                 }
+                Console.ReadLine();
             }
         }
         #endregion
 
-        #region Main Method (public)
+        #region Event Handling (incoming / outgoing commands)
 
-        /// <summary>
-        /// Main method
-        /// </summary>
-        /// <param name="args"></param>
-        public static void Main(string[] args)
+
+        public void HandleEvent(bool outgoing, Events eventID, params object[] data)
         {
-            bool error = false;
-            Log("Setting up server ...");
+            if (outgoing)
+            {
+                switch (eventID)
+                {
+                    case Events.MoveActor:
+                        SendMessageToAll(PacketType.Move, NetDeliveryMethod.Unreliable, null, (int)data[0], (int)data[1]);
+                        break;
 
+                }
+            }
+            else
+            {
+                switch (eventID)
+                {
+
+                }
+            }
+
+        }
+
+        #endregion
+        #region Constructor
+        public Server(string[] args)
+        {
+            Log("Setting up server ...");
+            _random = new Random(Guid.NewGuid().GetHashCode());
+            _logic = new PureLogic(this, null, _random);
             _clients = new Dictionary<IPEndPoint, ClientData>();
+            _gameTime = new Microsoft.Xna.Framework.GameTime();
+
             discoveredBy = new List<string>();
             if (args.Length > 0)
             {
@@ -308,37 +309,76 @@ namespace DungeonServer
                 error = true;
             }
 
-            if (!error)
-            {
-                _serverThread = new Thread(WorkMessages);
-                _serverThread.Start(_server);
-                IPAddress mask;
-                Log("Server started successfully on " + NetUtility.GetMyAddress(out mask).ToString() + " (" + _server.UPnP.GetExternalIP() + ")");
-
-                while (!error)
-                {
-                    WaitForInput();
-                    Console.WriteLine("Press Enter to exit server or enter 'abort' to cancel.");
-                    if (Console.ReadLine() == "abort")
-                    {
-                        Console.WriteLine("Aborted exit.");
-                    }
-                    else
-                    {
-                        error = true;
-                    }
-                }
-                _serverThread.Abort();
-                _serverThread.Join();
-                _server.Shutdown("Server shutdown.");
-                Log("Server shutdown complete!", ConsoleColor.Yellow);
-            }
-
-            Console.WriteLine("Press any key to exit.");
-            Console.ReadLine();
-            Console.CursorVisible = false;
             Console.CursorTop = 0;
             Console.CursorLeft = 0;
+        }
+
+        private void Update()
+        {
+            if (!_updating)
+            {
+                _updating = true;
+                TimeSpan passed = DateTime.Now - _lastUpdate;
+
+                if (passed.Milliseconds > 100)
+                {
+                    _lastUpdate = DateTime.Now;
+                    _gameTime.ElapsedGameTime += passed;
+                    _gameTime.TotalGameTime += passed;
+                    _logic.Update(_gameTime);
+                }
+                _updating = false;
+            }
+
+        }
+
+        public void Run()
+        {
+
+            _serverThread = new Thread(WorkMessages);
+            _serverThread.Start(_server);
+            IPAddress mask;
+            Log("Server started successfully on " + NetUtility.GetMyAddress(out mask).ToString() + " (" + _server.UPnP.GetExternalIP() + ")");
+
+            while (!error)
+            {
+                WaitForInput();
+                Console.WriteLine("Press Enter to exit server or enter 'abort' to cancel.");
+                if (Console.ReadLine() == "abort")
+                {
+                    Console.WriteLine("Aborted exit.");
+                }
+                else
+                {
+                    error = true;
+                }
+            }
+            _serverThread.Abort();
+            _serverThread.Join();
+            _server.Shutdown("Server shutdown.");
+            Log("Server shutdown complete!", ConsoleColor.Yellow);
+        }
+        #endregion
+        #region Main Method (public)
+
+        /// <summary>
+        /// Main method
+        /// </summary>
+        /// <param name="args"></param>
+        public static void Main(string[] args)
+        {
+            Server tmp = new Server(args);
+
+            if (!error)
+            {
+                tmp.Run();
+            }
+
+
+            Console.WriteLine("Press any key to exit.");
+            Console.CursorVisible = false;
+            Console.ReadLine();
+
         }
         #endregion
 

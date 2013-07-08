@@ -242,28 +242,28 @@ namespace Gruppe22.Client
                         if ((_functions[9].id != 0) && (_functions[9].enabled) && (_functions[9].flash == 0))
                         {
                             _functions[9].flash = 5;
-                            _parent.HandleEvent(false, Backend.Events.ActivateAbility, _actor, _functions[9].id);
+                            _parent.HandleEvent(true, Backend.Events.ActivateAbility, _actor, _functions[9].id);
                         }
                         break;
                     case Keys.C:
                         _functions[10].check = !_functions[10].check;
-                        _parent.HandleEvent(false, Backend.Events.ShowCharacter, _actor);
+                        _parent.HandleEvent(true, Backend.Events.ShowCharacter, _actor);
                         break;
 
                     case Keys.I:
                         _functions[11].check = !_functions[11].check;
-                        _parent.HandleEvent(false, Backend.Events.ShowInventory, _actor);
+                        _parent.HandleEvent(true, Backend.Events.ShowInventory, _actor);
                         break;
 
 
                     case Keys.S:
                         _functions[12].check = !_functions[12].check;
-                        _parent.HandleEvent(false, Backend.Events.ShowAbilities, _actor);
+                        _parent.HandleEvent(true, Backend.Events.ShowAbilities, _actor);
                         break;
 
                     case Keys.Escape:
                         _functions[13].check = !_functions[13].check;
-                        _parent.HandleEvent(false, Backend.Events.ShowMenu);
+                        _parent.HandleEvent(true, Backend.Events.ShowMenu);
                         break;
 
 

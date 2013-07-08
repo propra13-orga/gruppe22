@@ -867,7 +867,7 @@ namespace Gruppe22.Backend
                 {
                     writer.WriteAttributeString("love", Convert.ToString(n.love));
                     writer.WriteAttributeString("hasShop", Convert.ToString(n.hasShop));
-                    writer.WriteAttributeString("hasDialogue", Convert.ToString(n.hasDialogue));
+                    writer.WriteAttributeString("hasDialogue", Convert.ToString(n.hasDialog));
                 }
             }
 
@@ -1050,7 +1050,7 @@ namespace Gruppe22.Backend
                 {
                     n.love = Convert.ToInt32(reader.GetAttribute("love"));
                     n.hasShop = Convert.ToBoolean(reader.GetAttribute("hasShop"));
-                    n.hasDialogue = Convert.ToBoolean(reader.GetAttribute("hasDialogue"));
+                    n.hasDialog = Convert.ToBoolean(reader.GetAttribute("hasDialogue"));
 
                 }
             }

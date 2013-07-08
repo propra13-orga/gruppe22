@@ -5,10 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 using Gruppe22.Client;
 using Microsoft.Xna.Framework;
+using Lidgren;
+using Lidgren.Network;
 
 namespace Gruppe22.Backend
 {
-    public class NetLogic : Logic
+    public class NetLogic : Logic, IHandleEvent
     {
 
         protected NetPlayer _network = null;
@@ -23,13 +25,35 @@ namespace Gruppe22.Backend
 
         }
 
+
+
         public virtual void SendChat(string text)
         {
-//            _network.SendMessage();
+            //            _network.SendMessage();
             _parent.HandleEvent(false, Events.ShowMessage, text, Color.Pink);
         }
-        public NetLogic(IHandleEvent parent, NetPlayer network, Map map = null, Random _random = null)
-            : base(parent, map, _random)
+
+        void IHandleEvent.HandleEvent(bool DownStream, Events eventID, params object[] data)
+        {
+            if (DownStream) // Received from Frontend
+            {
+                switch (eventID)
+                {
+                    case Events.MoveActor:
+                        _network.SendMessage(PacketType.Move, (int)data[0], (int)data[1]);
+                        break;
+
+                }
+            }
+            else // Received from Network
+            {
+
+            };
+        }
+
+
+        public NetLogic(IHandleEvent parent, NetPlayer network)
+            : base(parent, null, null)
         {
             _network = network;
         }

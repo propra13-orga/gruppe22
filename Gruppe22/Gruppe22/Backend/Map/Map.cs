@@ -982,26 +982,84 @@ namespace Gruppe22.Backend
         /// <summary>
         /// Display map & walls in text form
         /// </summary>
-        public void DebugMap()
+        public override string ToString()
         {
             string output = "";
             foreach (List<FloorTile> row in _tiles)
             {
                 foreach (FloorTile tile in row)
                 {
-                    if (tile.canEnter)
+                    if (tile.hasWall)
                     {
                         output += "#";
                     }
                     else
                     {
-                        output += " ";
+                        if (tile.hasPlayer)
+                        {
+                            output += "@";
+                        }
+                        else if (tile.hasEnemy)
+                        {
+                            output += "X";
+                        }
+                        else if (tile.hasTrap)
+                        {
+                            output += "!";
+                        }
+                        else if (tile.hasNPC)
+                        {
+                            output += "0";
+                        }
+                        else if (tile.hasTeleport)
+                        {
+                            output += ">";
+                        }
+                        else if (tile.hasTreasure)
+                        {
+                            output += "*";
+                        }
+                        else output += " ";
                     }
                 }
+                output += Environment.NewLine;
                 // System.Diagnostics.Debug.WriteLine(output);
-                output = "";
-
             }
+            return output;
+        }
+
+
+        /// <summary>
+        /// Get the current Map as an XML-String
+        /// </summary>
+        public virtual string ToXML()
+        {
+            StringBuilder output=new StringBuilder("");
+            XmlWriter xmlw = XmlWriter.Create(output);
+            xmlw.WriteStartDocument();
+            xmlw.WriteStartElement("GameMap");
+            xmlw.WriteAttributeString("width", _width.ToString());
+            xmlw.WriteAttributeString("height", _height.ToString());
+            xmlw.WriteAttributeString("name", _name);
+            xmlw.WriteAttributeString("level", _level.ToString());
+            xmlw.WriteAttributeString("dungeon", _dungeonname);
+            xmlw.WriteAttributeString("light", _light.ToString());
+            xmlw.WriteAttributeString("floor", _floorFile);
+            xmlw.WriteAttributeString("music", _music);
+            xmlw.WriteAttributeString("wall", _wallFile);
+
+            foreach (List<FloorTile> ltiles in _tiles)
+            {
+                foreach (FloorTile tile in ltiles)
+                {
+                    if (tile.overlay.Count > 0)
+                        tile.Save(xmlw);
+                }
+            }
+            xmlw.WriteEndElement();
+            xmlw.WriteEndDocument();
+            xmlw.Close();
+            return output.ToString();
         }
 
         /// <summary>

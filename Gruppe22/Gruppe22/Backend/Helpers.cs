@@ -172,7 +172,7 @@ namespace Gruppe22.Backend
         ShowInventory,
         ShowMenu,
         ShowAbilities,
-        Dialogue,
+        Dialog,
         Pause,
         Chat,
         Settings,
@@ -187,6 +187,8 @@ namespace Gruppe22.Backend
         // Communication between game logic and interface / clients
         TileEntered,
         Attack,
+        ActorText,
+        SetItemTiles,
         MoveActor,
         ChangeMap,
         NewMap,
@@ -204,7 +206,8 @@ namespace Gruppe22.Backend
         FinishedProjectileMove,
         FireProjectile,
         Shop,
-        GameOver
+        GameOver,
+        ChangeStats
     }
 
     public enum SoundFX
@@ -241,6 +244,22 @@ namespace Gruppe22.Backend
         FetchingData,
         GameOver,
         Loading
+    }
+
+    public class DialogLine
+    {
+        private string _response;
+        private int _nextLineID;
+        public string response
+        {
+            get { return _response; }
+        }
+        public int nextLineID { get { return _nextLineID; } }
+        public DialogLine(string response, int nextLineID)
+        {
+            _nextLineID = nextLineID;
+            _response = response;
+        }
     }
 
     /// <summary>

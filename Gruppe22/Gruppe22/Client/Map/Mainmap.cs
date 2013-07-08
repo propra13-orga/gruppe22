@@ -329,6 +329,16 @@ namespace Gruppe22.Client
         #endregion
 
         #region Public Fields
+        public Backend.Map map
+        {
+            set
+            {
+                _enabled = false;
+                _map = value;
+                resetActors();
+                _enabled = true;
+            }
+        }
 
         public List<ActorView> actors
         {

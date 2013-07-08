@@ -15,6 +15,7 @@ namespace Gruppe22.Backend
     /// </summary>
     public class PureLogic : Logic, IHandleEvent
     {
+        private bool _paused = false;
 
         public override void ChangeMap(string filename, Coords pos)
         {
@@ -29,7 +30,10 @@ namespace Gruppe22.Backend
 
         public override void Update(GameTime gametime)
         {
-            _map.Update(gametime);
+            if (!_paused)
+            {
+                _map.Update(gametime);
+            }
         }
 
         public void Restart()
@@ -60,8 +64,7 @@ namespace Gruppe22.Backend
             double _evadeChance = (0.02 * (_map.actors[defender].evade)) / (1 + 0.065 * (_map.actors[defender].evade)); // converges to ~25% for values from 0 to 100
             if (_random.NextDouble() < _evadeChance)
             {
-                if ((_map.actors[attacker] is Player) || (_map.actors[defender] is Player))
-                    _parent.HandleEvent(false, Events.FloatText, _map.actors[attacker].tile.coords, "Evade", (_map.actors[defender] is Player) ? Color.Green : Color.White);
+                _parent.HandleEvent(false, Events.ActorText, defender, _map.actors[defender].tile.coords, "Evade");
             }
             else
             {
@@ -75,64 +78,37 @@ namespace Gruppe22.Backend
                     int blockedValue = Math.Max(_map.actors[defender].block - _map.actors[attacker].penetrate, 0); // the amount of damage the defender can block
                     if (blockedValue >= damage) blockedValue = damage;
                     damage = Math.Max(damage - blockedValue, 0);
-                    if ((_map.actors[attacker] is Player) || (_map.actors[defender] is Player))
-                        _parent.HandleEvent(false, Events.FloatText, _map.actors[attacker].tile.coords, "Blocked " + blockedValue + "dmg", (_map.actors[defender] is Player) ? Color.Green : Color.White);
+                    _parent.HandleEvent(false, Events.ActorText, defender, _map.actors[defender].tile.coords, "Block" + blockedValue + "dmg");
                 }
 
                 damage = (int)(damage * (1 - dmgReduction)); // the damage the attacker will deal
 
-                if (damage > 0)
-                {
-                    _map.actors[defender].health -= damage;
-                    if (_map.actors[defender] is Player)
-                    {
-                        _parent.HandleEvent(false, Events.FloatText, _map.actors[defender].tile.coords, damage.ToString(), Color.DarkRed);
-                        _parent.HandleEvent(false, Events.DamageActor, defender, _map.actors[defender].health, _map.actors[defender].tile.coords, damage);
-                    }
-                    else
-                    {
-                        if (_map.actors[attacker] is Player)
-                        {
-                            _parent.HandleEvent(false, Events.FloatText, _map.actors[defender].tile.coords, damage.ToString(), Color.White);
-                            _map.actors[defender].aggro = true;
-                        }
-                    }
-                    if (_map.actors[defender].isDead)
-                    {
-                        _parent.HandleEvent(false, Backend.Events.AnimateActor, defender, Backend.Activity.Die);
-                        //_mainmap2.HandleEvent(true, Backend.Events.AnimateActor, defender, Activity.Die);
-                        _map.actors[attacker].exp += _map.actors[defender].exp;
-                        if (_map.actors[attacker].exp > _map.actors[attacker].expNeeded)
-                        {
-                            _map.actors[attacker].LevelUp();
+                _map.actors[defender].health -= damage;
 
-                            if (_map.actors[attacker] is Player)
-                                _parent.HandleEvent(false, Events.FloatText, _map.actors[attacker].tile.coords, "Level " + _map.actors[attacker].level.ToString(), Color.Gold);
-                            else
-                            {
-                                ((Enemy)_map.actors[attacker]).AssignSkillsAndAbilities();
-                            }
-                        }
-                        if (_map.actors[attacker] is Player)
-                            _parent.HandleEvent(false, Events.FloatText, _map.actors[attacker].tile.coords, "+" + _map.actors[defender].exp + " Exp", Color.Gold);
-                        _parent.HandleEvent(false, Events.ShowMessage, (_map.actors[defender] is Player ? "<red>" : "") + _map.actors[defender].name + " was killed by " + _map.actors[attacker].name + "  doing " + damage.ToString() + " points of damage.");
-                        if (_map.actors[defender] is Player)
-                            _parent.HandleEvent(false, Events.PlaySound, SoundFX.Damage); //SoundEffect damage
+                if (_map.actors[defender].isDead)
+                {
+                    _parent.HandleEvent(false, Events.KillActor, defender, _map.actors[defender].tile.coords, _map.actors[defender].health, damage);
+                    //_mainmap2.HandleEvent(true, Backend.Events.AnimateActor, defender, Activity.Die);
+                    _map.actors[attacker].exp += _map.actors[defender].exp;
+                    if (_map.actors[attacker].exp > _map.actors[attacker].expNeeded)
+                    {
+                        _map.actors[attacker].LevelUp();
+
+                        if (!(_map.actors[attacker] is Player))
+                            ((Enemy)_map.actors[attacker]).AssignSkillsAndAbilities(); // Auto-improve statistics of enemies
+                        _parent.HandleEvent(false, Events.ChangeStats, attacker, _map.actors[attacker]); // Update data on client
                     }
                     else
                     {
-                        _parent.HandleEvent(false, Backend.Events.AnimateActor, defender, Backend.Activity.Hit);
-                        //_mainmap2.HandleEvent(true, Backend.Events.AnimateActor, defender, Activity.Hit);
-                        _parent.HandleEvent(false, Events.ShowMessage, (_map.actors[defender] is Player ? "<red>" : "") + _map.actors[defender].name + " was hit by " + _map.actors[attacker].name + " for " + damage.ToString() + " points of damage.");
-                        if (_map.actors[defender] is Player)
-                            _parent.HandleEvent(false, Events.PlaySound, SoundFX.Damage); //SoundEffect damage
+                        _parent.HandleEvent(false, Events.ActorText, attacker, _map.actors[defender].tile.coords, "+" + _map.actors[defender].exp + " Exp", Color.Gold); // Update data on client
                     }
                 }
                 else
                 {
-                    if ((_map.actors[attacker] is Player) || (_map.actors[defender] is Player))
-                        _parent.HandleEvent(false, Events.FloatText, _map.actors[defender].tile.coords, "No damage", _map.actors[defender] is Player ? Color.Green : Color.White);
+                    _parent.HandleEvent(false, Events.DamageActor, defender, _map.actors[defender].tile.coords, _map.actors[defender].health, damage);
+                    _map.actors[defender].aggro = true;
                 }
+
             }
         }
 
@@ -142,65 +118,98 @@ namespace Gruppe22.Backend
         /// <param name="target">Coords of the actor which walked over the trap</param>
         protected void _TrapDamage(Coords target)
         {
-            Actor actor = _map[target].firstActor;
-            if (actor == null) return;
-            int trapDamage = _map[target].trap.Trigger();
-            double _evadeChance = (0.02 * (actor.evade)) / (1 + 0.065 * (actor.evade)); // same formula as in _CombatDamage
+            foreach (Actor actor in _map[target].actors)
+            {
+                if (actor == null) return;
+                int trapDamage = _map[target].trap.Trigger();
+                double _evadeChance = (0.02 * (actor.evade)) / (1 + 0.065 * (actor.evade)); // same formula as in _CombatDamage
 
-            if (_random.NextDouble() < _evadeChance)
-            {
-                if (actor is Player)
-                    _parent.HandleEvent(false, Events.FloatText, target, "Trap evaded", Color.Green);
-            }
-            else
-            {
-                //a trap can either be fully blocked or not blocked
-                double blockChance = Math.Max((0.02 * (actor.block - _map[target.x, target.y].trap.penetrate)) / (1 + 0.03 * (actor.block - _map[target.x, target.y].trap.penetrate)), 0);
-                if (_random.NextDouble() < blockChance)
+                if (_random.NextDouble() < _evadeChance)
                 {
                     if (actor is Player)
-                        _parent.HandleEvent(false, Events.FloatText, target, "Trap blocked", Color.Green);
+                        _parent.HandleEvent(false, Events.ActorText, actor.id, target, "Trap evaded");
                 }
                 else
                 {
-                    double dmgReduction = (0.06 * (actor.armor)) / (1 + 0.06 * (actor.armor));
-                    int damage = (int)(trapDamage * (1 - dmgReduction));
-                    if (damage > 0)
+                    //a trap can either be fully blocked or not blocked
+                    double blockChance = Math.Max((0.02 * (actor.block - _map[target.x, target.y].trap.penetrate)) / (1 + 0.03 * (actor.block - _map[target.x, target.y].trap.penetrate)), 0);
+                    if (_random.NextDouble() < blockChance)
                     {
-                        actor.health -= damage;
                         if (actor is Player)
-                        {
-                            _parent.HandleEvent(false, Events.DamageActor, actor.id, actor.health, target, damage);
-                        }
-                        else
-                        {
-                            //  _mainmap1.floatNumber(target, damage.ToString(), Color.White);
-                        };
-                        if (actor.isDead)
-                        {
-                            _parent.HandleEvent(false, Backend.Events.AnimateActor, actor.id, Activity.Die);
-                            //_mainmap2.HandleEvent(true, Backend.Events.AnimateActor, actor.id, Activity.Die);
-                            _parent.HandleEvent(false, Events.ShowMessage, (actor is Player ? "<red>" : "") + actor.name + " was killed by a trap  doing " + damage.ToString() + " points of damage.");
-                            if (actor is Player) _parent.HandleEvent(false, Events.PlaySound, SoundFX.Damage);
-                        }
-                        else
-                        {
-                            _parent.HandleEvent(false, Backend.Events.AnimateActor, actor.id, Activity.Hit);
-                            //_mainmap2.HandleEvent(true, Backend.Events.AnimateActor, actor.id, Activity.Hit);
-                            _parent.HandleEvent(false, Events.ShowMessage, (actor is Player ? "<red>" : "") + actor.name + " was hit for " + damage.ToString() + " points of damage by a trap.");
-                            if (actor is Player) _parent.HandleEvent(false, Events.PlaySound, SoundFX.Damage);
-                        }
+                            _parent.HandleEvent(false, Events.ActorText, actor.id, target, "Trap blocked");
                     }
                     else
                     {
-                        if (actor is Player)
-                            _parent.HandleEvent(false, Events.FloatText, target, "No damage", Color.Green);
+                        double dmgReduction = (0.06 * (actor.armor)) / (1 + 0.06 * (actor.armor));
+                        int damage = (int)(trapDamage * (1 - dmgReduction));
+
+                        actor.health -= damage;
+                        if (actor.isDead)
+                        {
+                            _parent.HandleEvent(false, Events.KillActor, actor.id, target, actor.health, damage);
+                        }
+                        else
+                        {
+                            _parent.HandleEvent(false, Events.DamageActor, actor.id, target, actor.health, damage);
+                        }
                     }
+
                 }
             }
         }
 
 
+
+        /// <summary>
+        /// A text displayed if the player died
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="title"></param>
+        public void GenericDialog(int from, int to, string message = "")
+        {
+            if (message == "")
+                switch (_random.Next(10))
+                {
+                    case 0:
+                        message = "This is a cursed place. Evil creatures are attacking everyone in sight.";
+                        break;
+                    case 1:
+                        message = "You should really get better equipment at a shop. My brother might help you out.\n He is over at the entrance.";
+                        break;
+                    case 2:
+                        message = "It is hopeless. We are all going to die...";
+                        break;
+
+                    case 3:
+                        message = "There are pests on the first level, undead on the second and unknown evil on the third...";
+                        break;
+
+                    case 4:
+                        message = "Nobody has ever found a way out of here...";
+                        break;
+
+                    case 5:
+                        message = "Are you sure you can take on the enemies around here?";
+                        break;
+
+                    case 6:
+                        message = "I haven't gotten any sleep for a week!";
+                        break;
+
+                    case 7:
+                        message = "It is rumored that there is a deadly beast on the lowest level...";
+                        break;
+
+                    case 8:
+                        message = "The lower levels are far darker than this level...";
+                        break;
+
+                    case 9:
+                        message = "If this were a real dungeon, someone might have a quest for you...";
+                        break;
+                }
+            _parent.HandleEvent(false, Events.Dialog, from, to, message, new Backend.DialogLine[] { new Backend.DialogLine("Goodbye", -1) });
+        }
 
         /// <summary>
         /// Handle events from UIElements and/or backend objects
@@ -213,18 +222,23 @@ namespace Gruppe22.Backend
 
             switch (eventID)
             {
+                // Client: Player used item/ability
+                // Map: NPC / Monster used item/ability
                 case Backend.Events.ActivateAbility:
                     {
-                        Actor actor = (Actor)data[0];
+                        Actor actor = _map.actors[(int)data[0]];
                         int id = (int)data[1];
+
+                        // Use Item from inventory
                         if (id < 0)
                         {
                             actor.Items(-id).UseItem();
-                            HandleEvent(false, Backend.Events.ShowMessage, "You used " + actor.Items(-id).name);
-                            if (actor.Items(-id).destroyed)
-                            {
-                                _parent.HandleEvent(false, Backend.Events.AddDragItem, id);
-                            }
+                            // 2 Events: 
+                            // 1. Item entfernen bzw. ausrüsten
+                            _parent.HandleEvent(false, Backend.Events.ActivateAbility, actor.id, id);
+                            // 2. Statistiken anpassen
+                            _parent.HandleEvent(false, Events.ChangeStats, actor.id, actor); // Update data on client
+
                         }
                         else
                         {
@@ -256,46 +270,43 @@ namespace Gruppe22.Backend
                                     _parent.HandleEvent(false, Events.FireProjectile, actor.id, AbilityElement.Stun);
                                     break;
                             }
+                            _parent.HandleEvent(false, Events.ChangeStats, actor.id, actor); // Update data on client
+                            _parent.HandleEvent(false, Backend.Events.ActivateAbility, actor.id, id);
+
                         }
                     }
                     break;
 
-                case Backend.Events.LoadFromCheckPoint:
-                    _parent.HandleEvent(false, Events.LoadFromCheckPoint, data);
-                    break;
-
-                case Backend.Events.ChangeMap: // Load another map
-                    _parent.HandleEvent(false, Events.ChangeMap, data);
-                    break;
-
+                // Client: Animation finished playing => Re-Enable Actor, continue game
                 case Backend.Events.FinishedAnimation:
                     int FinishedID = (int)data[0];
                     Activity FinishedActivity = (Activity)data[1];
-                    if (FinishedActivity == Activity.Die)
+                    switch (FinishedActivity)
                     {
-                        if (_map.actors[FinishedID] is Enemy)
-                        {
-                            if (_map.actors[FinishedID].tile.enabled)
+                        case Activity.Die:
+                            if (_map.actors[FinishedID] is Enemy)
                             {
-                                ((ActorTile)_map.actors[FinishedID].tile).enabled = false;
-                                _parent.HandleEvent(false, Events.ShowMessage, _map.actors[FinishedID].name + " is dead.");
-                                ((ActorTile)_map.actors[FinishedID].tile).DropItems();
-                                if (_map.actors[FinishedID].gold > 0)
+                                if (_map.actors[FinishedID].tile.enabled)
                                 {
-
-                                    ItemTile tile = new ItemTile(((FloorTile)(_map.actors[FinishedID].tile.parent)));
-
-                                    Backend.Item item = new Backend.Item(tile, Backend.ItemType.Gold, "", null, _map.actors[FinishedID].gold);
-                                    item.value = _map.actors[FinishedID].gold;
-                                    tile.item = item;
-                                    ((FloorTile)(_map.actors[FinishedID].tile.parent)).Add(tile);
+                                    ((ActorTile)_map.actors[FinishedID].tile).enabled = false;
+                                    _parent.HandleEvent(false, Events.KillActor, FinishedID);
+                                    ((ActorTile)_map.actors[FinishedID].tile).DropItems();
+                                    if (_map.actors[FinishedID].gold > 0)
+                                    {
+                                        ItemTile tile = new ItemTile(((FloorTile)(_map.actors[FinishedID].tile.parent)));
+                                        Backend.Item item = new Backend.Item(tile, Backend.ItemType.Gold, "", null, _map.actors[FinishedID].gold);
+                                        item.value = _map.actors[FinishedID].gold;
+                                        tile.item = item;
+                                        ((FloorTile)(_map.actors[FinishedID].tile.parent)).Add(tile);
+                                    }
+                                    _parent.HandleEvent(false, Events.SetItemTiles, _map.actors[FinishedID].tile, ((FloorTile)(_map.actors[FinishedID].tile.parent)).itemTiles);
                                 }
                             }
-                        }
-                        else
-                        {
-                            _parent.HandleEvent(false, Events.KillActor, FinishedID);
-                        }
+                            else
+                            {
+                                _parent.HandleEvent(false, Events.KillActor, FinishedID);
+                            }
+                            break;
                     }
                     break;
 
@@ -391,27 +402,11 @@ namespace Gruppe22.Backend
                         int id = (int)data[0];
                         Direction dir = (Direction)data[1];
                         Backend.Coords target = Map.DirectionTile(_map.actors[id].tile.coords, dir);
-
                         if (_map.CanMove(_map.actors[id].tile.coords, dir))
                         {
-                            _parent.HandleEvent(false, Backend.Events.AnimateActor, id, Activity.Attack, false, dir, true);
+                            _parent.HandleEvent(false, Backend.Events.Attack, id, Activity.Attack, dir);
                             _CombatDamage(id, _map[target.x, target.y].firstActor.id);
                         }
-
-
-                        /*
-                         *                                 _mainmap1.HandleEvent(null, Backend.Events.AnimateActor, _map.firstActorID(target.x, target.y), Activity.Die, false, Map.WhichWayIs(_map.actors[id].tile.coords, target));
-                                    AddMessage((_map.actors[id] is Player ? "<green>You" : _map.actors[id].name) + " killed " + (_map.actors[_map.firstActorID(target.x, target.y)] is Player ? "you" : _map.actors[_map.firstActorID(target.x, target.y)].name) + " doing " + _map.actors[id].damage.ToString() + " points of damage.");
-
-                                }
-                                else
-                                {
-                                    _mainmap1.HandleEvent(null, Backend.Events.AnimateActor, _map.firstActorID(target.x, target.y), Activity.Hit, false, Map.WhichWayIs(_map.actors[id].tile.coords, target));
-                                    AddMessage(((_map.actors[_map.firstActorID(target.x, target.y)] is Player) ? "<red>" : "") + (_map.actors[id] is Player ? "<green>You" : _map.actors[id].name) + " attacked " + (_map.actors[_map.firstActorID(target.x, target.y)] is Player ? "you" : _map.actors[_map.firstActorID(target.x, target.y)].name));
-                                    AddMessage(((_map.actors[_map.firstActorID(target.x, target.y)] is Player) ? "<red>" : "") + "The attack caused " + (_map[target.x, target.y].firstActor.armor - _map.actors[id].damage).ToString() + " points of damage (" + _map.actors[id].damage.ToString() + " attack strength - " + _map[target.x, target.y].firstActor.armor + " defense)");
-                                }
-    */
-
                     }
                     break;
 
@@ -455,30 +450,31 @@ namespace Gruppe22.Backend
                     _parent.HandleEvent(false, Events.Shop, _map.actors[0], (Actor)data[0]);
                     break;
 
-                case Backend.Events.Dialogue:
-                    GenericDialog();
+                case Backend.Events.Dialog:
+                    GenericDialog((int)data[0], _map[(Coords)data[1]].firstActor.id);
                     break;
 
                 case Backend.Events.MoveActor:
                     {
-                        int id = (int)data[0];
-                        Direction dir = (Direction)data[1];
-
                         if (data.Length > 1)
                         {
-                            if (((FloorTile)_map.actors[id].tile.parent).hasTrap)
-                            {
-                                if (((FloorTile)_map.actors[id].tile.parent).trap.status == TrapState.Disabled)
-                                    ((FloorTile)_map.actors[id].tile.parent).trap.status = TrapState.NoDisplay;
-                            }
+                            int id = (int)data[0];
+                            Direction dir = (Direction)data[1];
                             Backend.Coords target = Map.DirectionTile(_map.actors[id].tile.coords, dir);
                             _map.actors[id].direction = dir;
                             _parent.HandleEvent(false, Backend.Events.RotateActor, id, _map.actors[id].tile.coords, dir);
 
+                            if (((FloorTile)_map.actors[id].tile.parent).hasTrap)
+                            {
+                                if (((FloorTile)_map.actors[id].tile.parent).trap.status == TrapState.Disabled)
+                                    ((FloorTile)_map.actors[id].tile.parent).trap.status = TrapState.NoDisplay;
+                                // TODO: Update Tile on Client by event
+                            }
+
                             Actor a = _map[target.x, target.y].firstActor;
                             if ((a is NPC) && (_map.actors[id] is Player))
                             {
-                                (a as NPC).Interact();
+                                (a as NPC).Interact(_map.actors[id]);
                             }
                             if (((a is Enemy || a is Player) && !(_map.actors[id] is NPC))
                                 && ((a.id != id) && (!a.isDead)))
@@ -511,60 +507,41 @@ namespace Gruppe22.Backend
                         }
                     }
                     break;
+
+
+                case Backend.Events.Pause:
+                    _paused = true;
+                    _parent.HandleEvent(false, Backend.Events.Pause);
+                    break;
+
+                case Backend.Events.ContinueGame:
+                    _parent.HandleEvent(false, Backend.Events.ContinueGame);
+                    _paused = false;
+                    break;
+
+                case Backend.Events.LoadFromCheckPoint:
+                    HandleEvent(false, Backend.Events.Pause);
+                    //TODO: Add code to load Checkpoint and decreate lives here
+                    HandleEvent(false, Backend.Events.ContinueGame);
+
+                    break;
+
+                case Backend.Events.ChangeMap: // Load another map
+                    HandleEvent(false, Backend.Events.Pause);
+                    // TODO: Add code to load Map
+                    HandleEvent(false, Backend.Events.ContinueGame);
+                    break;
+
+                case Backend.Events.NewMap:
+                    HandleEvent(false, Backend.Events.Pause);
+                    GenerateMaps();
+                    HandleEvent(false, Backend.Events.ContinueGame);
+
+
+                    break;
             }
         }
 
-
-        /// <summary>
-        /// A text displayed if the player died
-        /// </summary>
-        /// <param name="message"></param>
-        /// <param name="title"></param>
-        public void GenericDialog(string message = "")
-        {
-            if (message == "")
-                switch (_random.Next(10))
-                {
-                    case 0:
-                        message = "This is a cursed place. Evil creatures are attacking everyone in sight.";
-                        break;
-                    case 1:
-                        message = "You should really get better equipment at a shop. My brother might help you out.\n He is over at the entrance.";
-                        break;
-                    case 2:
-                        message = "It is hopeless. We are all going to die...";
-                        break;
-
-                    case 3:
-                        message = "There are pests on the first level, undead on the second and unknown evil on the third...";
-                        break;
-
-                    case 4:
-                        message = "Nobody has ever found a way out of here...";
-                        break;
-
-                    case 5:
-                        message = "Are you sure you can take on the enemies around here?";
-                        break;
-
-                    case 6:
-                        message = "I haven't gotten any sleep for a week!";
-                        break;
-
-                    case 7:
-                        message = "It is rumored that there is a deadly beast on the lowest level...";
-                        break;
-
-                    case 8:
-                        message = "The lower levels are far darker than this level...";
-                        break;
-
-                    case 9:
-                        message = "If this were a real dungeon, someone might have a quest for you...";
-                        break;
-                }
-            _parent.HandleEvent(false, Events.ShowTextBox, message);
-        }
 
         #region Generator
 
@@ -843,7 +820,7 @@ namespace Gruppe22.Backend
             {
                 GenerateMaps();
             }
-            
+
             string path = "room1.xml";
             if (File.Exists("GameData"))
                 path = File.ReadAllText("GameData");

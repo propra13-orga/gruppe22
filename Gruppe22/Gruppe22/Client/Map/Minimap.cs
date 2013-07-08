@@ -15,6 +15,16 @@ namespace Gruppe22.Client
         private Backend.Map _map;
         private int _playerID = 0;
         #endregion
+        #region Public Fields
+
+        public Backend.Map map
+        {
+            set
+            {
+                _map = value;
+            }
+        }
+        #endregion
 
         #region Public Methods
 

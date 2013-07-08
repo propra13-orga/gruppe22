@@ -501,6 +501,7 @@ namespace Gruppe22.Client
         {
             if (DownStream)
             {
+                // Frontend to backend (send)
                 switch (eventID)
                 {
                     case Events.RotateActor:
@@ -509,249 +510,286 @@ namespace Gruppe22.Client
                     case Events.MoveActor:
                         _logic.HandleEvent(true, Events.MoveActor, data);
                         break;
+                    case Backend.Events.Chat:
+                        if (_logic is PureLogic)
+                        {
+                            _statusbox.AddLine((string)data[0], Color.Pink);
+                        }
+                        else
+                        {
+                            (_logic as NetLogic).SendChat((string)data[0]);
+                        }
+                        break;
+
+                    case Backend.Events.AddDragItem:
+                        _draggedObject = (GridElement)data[0];
+                        _toolbar.dragItem = _draggedObject;
+                        break;
+
+
+                    case Backend.Events.ShowMenu:
+                        _logic.HandleEvent(true, Events.Pause);
+                        if (_focus is CharacterWindow)
+                        {
+                            _focus.Dispose();
+                            _interfaceElements.Remove(_focus);
+                            _toolbar.HandleEvent(true, Backend.Events.ContinueGame, 13);
+                            _status = Backend.GameStatus.Running;
+                        }
+                        if (_status == Backend.GameStatus.Running)
+                        {
+                            _ShowMenu();
+                        }
+                        else HandleEvent(true, Backend.Events.ContinueGame, 0);
+                        break;
+                    case Backend.Events.ShowCharacter:
+                        _logic.HandleEvent(true, Events.Pause);
+                        if (_status == Backend.GameStatus.Running) _ShowCharacterWindow((Backend.Actor)data[0], 0);
+                        else
+                        {
+                            if (_focus is CharacterWindow)
+                            {
+                                if (((CharacterWindow)_focus).page != 0)
+                                {
+                                    ((CharacterWindow)_focus).page = 0;
+                                    _toolbar.HandleEvent(true, Backend.Events.ContinueGame, 10);
+                                    return;
+                                }
+                                HandleEvent(true, Backend.Events.ContinueGame, 0);
+                            }
+                            else
+                            {
+                                _focus.Dispose();
+                                _interfaceElements.Remove(_focus);
+                                _focus = null;
+                                _status = Backend.GameStatus.Running;
+                                _ShowCharacterWindow((Backend.Actor)data[0], 0);
+                                _toolbar.HandleEvent(true, Backend.Events.ContinueGame, 10);
+                            }
+                        }
+                        break;
+                    case Backend.Events.ShowAbilities:
+                        _logic.HandleEvent(true, Events.Pause);
+
+                        if (_status == Backend.GameStatus.Running) _ShowCharacterWindow((Backend.Actor)data[0], 2);
+                        else
+                        {
+                            if (_focus is CharacterWindow)
+                            {
+                                if (((CharacterWindow)_focus).page != 2)
+                                {
+                                    ((CharacterWindow)_focus).page = 2;
+                                    _toolbar.HandleEvent(true, Backend.Events.ContinueGame, 12);
+                                    return;
+                                }
+                                HandleEvent(true, Backend.Events.ContinueGame, 0);
+                            }
+                            else
+                            {
+                                _focus.Dispose();
+                                _interfaceElements.Remove(_focus);
+                                _focus = null;
+                                _toolbar.HandleEvent(true, Backend.Events.ContinueGame, 12);
+                                _status = Backend.GameStatus.Running;
+                                _ShowCharacterWindow((Backend.Actor)data[0], 2);
+                            }
+                        }
+                        break;
+                    case Backend.Events.ShowInventory:
+                        _logic.HandleEvent(true, Events.Pause);
+
+                        if (_status == Backend.GameStatus.Running) _ShowCharacterWindow((Backend.Actor)data[0], 1);
+                        else
+                        {
+                            if (_focus is CharacterWindow)
+                            {
+                                if (((CharacterWindow)_focus).page != 1)
+                                {
+                                    ((CharacterWindow)_focus).page = 1;
+                                    _toolbar.HandleEvent(true, Backend.Events.ContinueGame, 11);
+                                    return;
+                                }
+                                _focus.Dispose();
+                                _interfaceElements.Remove(_focus);
+                                _focus = null;
+                                _status = Backend.GameStatus.Running;
+                                HandleEvent(true, Backend.Events.ContinueGame, 0);
+                            }
+                            else
+                            {
+                                _toolbar.HandleEvent(true, Backend.Events.ContinueGame, 11);
+                                _focus.Dispose();
+                                _interfaceElements.Remove(_focus);
+                                _focus = null;
+                                _status = Backend.GameStatus.Running;
+                                _ShowCharacterWindow((Backend.Actor)data[0], 1);
+                            }
+                        }
+                        break;
+
+                    case Backend.Events.FetchFile:
+                        _logic.HandleEvent(true, Events.Pause);
+
+                        if (data.Length > 0)
+                        {
+                            string file = data[0].ToString();
+                            _files2fetch.Enqueue(file);
+                            if (_status != Backend.GameStatus.FetchingData)
+                            {
+                                _prevState = _status;
+                                _status = Backend.GameStatus.FetchingData;
+                                _LoadFile(file, wc_DownloadProgressChanged, wc_DownloadFileCompleted);
+                            }
+                        }
+                        break;
+
+                    case Backend.Events.LoadFromCheckPoint:
+
+                        _status = Backend.GameStatus.NoRedraw;
+                        _logic.map.actors[_playerID].lives--;
+                        string lastCheck = File.ReadAllText("CheckPoint");
+                        while (Directory.GetFiles(".", "savedroom*.xml").Length > 0)
+                        {
+                            File.Delete(Directory.GetFiles(".", "savedroom*.xml")[0]);
+                        }
+                        Regex re = new Regex(@"\d+");
+                        foreach (string file in Directory.GetFiles(".", "checkpoint*.xml"))
+                        {
+                            Match m = re.Match(file);
+                            File.Copy(file, "savedroom" + m.Value + ".xml");
+                        }
+                        _logic.map.actors.Clear();
+                        _logic.map.Load("savedroom" + lastCheck + ".xml", null);
+                        File.WriteAllText("GameData", "room" + _logic.map.id.ToString() + ".xml" + Environment.NewLine + _logic.map.actors[_playerID].ToString());
+                        _mainmap1.resetActors();
+                        //_mainmap2.resetActors();
+                        _mana.actor = _logic.map.actors[_playerID];
+                        _health.actor = _logic.map.actors[_playerID];
+                        _toolbar.actor = _logic.map.actors[_playerID];
+                        _status = Backend.GameStatus.Paused;
+                        HandleEvent(true, Backend.Events.ContinueGame);
+                        break;
+
+
+
+                    case Backend.Events.Network:
+                        _ShowLANWindow();
+
+                        /*  //_secondPlayer = true;
+                          _lan = true;
+                          foreach (UIElement element in _interfaceElements)
+                          {
+                              element.HandleEvent(true, Backend.Events.ToggleButton, Backend.Events.Player2, true);
+                              element.HandleEvent(true, Backend.Events.ToggleButton, Backend.Events.Player1, false);
+                              element.HandleEvent(true, Backend.Events.ToggleButton, Backend.Events.Local, false);
+                              element.HandleEvent(true, Backend.Events.ToggleButton, Backend.Events.LAN, true);
+                          }
+                          // _mainmap2.enabled = false;
+                          _mainmap1.Resize(new Rectangle(5, 5, _graphics.GraphicsDevice.Viewport.Width - 230, ((_graphics.GraphicsDevice.Viewport.Height - 20)) - 115));*/
+                        break;
+
+
+                    case Backend.Events.ContinueGame:
+
+                        if (_status != Backend.GameStatus.NoRedraw)
+                        {
+                            _logic.HandleEvent(true, Events.ContinueGame);
+                            if (_focus != null)
+                            {
+                                if (_focus is Lobby)
+                                {
+                                    _status = Backend.GameStatus.NoRedraw;
+                                    NetPlayer tmp = ((Lobby)_focus).network;
+                                    bool changeMode = false;
+                                    if (tmp.connected)
+                                    {
+                                        if (_logic is PureLogic)
+                                        {
+                                            tmp.parent = this;
+                                            _logic = new NetLogic(this, tmp);
+                                            changeMode = true;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (_logic is NetLogic)
+                                        {
+                                            _logic = new PureLogic(this);
+                                            changeMode = true;
+                                        }
+                                    }
+                                    _mainmap1.map = _logic.map;
+                                    _minimap1.map = _logic.map;
+                                    _health.actor = _logic.map.actors[_playerID];
+                                    _mana.actor = _logic.map.actors[_playerID];
+                                    _toolbar.actor = _logic.map.actors[_playerID];
+                                }
+                                _focus.Dispose();
+                                _interfaceElements.Remove(_focus);
+                            }
+                            _toolbar.HandleEvent(true, Backend.Events.ContinueGame, -1);
+                            if (Mouse.GetState().LeftButton == ButtonState.Pressed)
+                            {
+                                _mainmap1.noMove = true;
+                            }
+                            _status = GameStatus.Running;
+                            _focus = null;
+
+                        }
+                        break;
+
+                    case Backend.Events.About:
+                        _logic.HandleEvent(true, Events.Pause);
+
+                        _focus.Dispose();
+                        _interfaceElements.Remove(_focus);
+                        _focus = null;
+                        _ShowAbout();
+                        break;
+
+                    case Backend.Events.EndGame:
+                        _logic.HandleEvent(true, Events.EndGame);
+                        Exit();
+                        break;
+
+                    case Backend.Events.NewMap:
+                        _status = Backend.GameStatus.NoRedraw;
+                        _logic.HandleEvent(true, Backend.Events.NewMap);
+                        break;
+
+                    case Backend.Events.ResetGame:
+                        _status = Backend.GameStatus.NoRedraw;
+                        _logic.HandleEvent(true, Events.ResetGame);
+                        break;
                 }
             }
             else
             {
+                // Backend to Frontend (received)
                 switch (eventID)
                 {
+
+                    case Backend.Events.ShowMessage:
+                        _AddMessage(data[0].ToString());
+                        break;
+
                     case Events.RotateActor:
                         _mainmap1.HandleEvent(true, Events.RotateActor, data);
                         break;
+
                     case Events.MoveActor:
                         _mainmap1.HandleEvent(true, Events.MoveActor, data);
                         break;
-                }
-            }
 
-            switch (eventID)
-            {
-                case Backend.Events.ChangeMap:
-                    _status = Backend.GameStatus.NoRedraw; // prevent redraw (which would crash the game!)
-                    _logic.ChangeMap((string)data[0], (Coords)data[1]);
-                    _mainmap1.resetActors();
-                    _minimap1.MoveCamera(_logic.map.actors[_playerID].tile.coords);
-                    HandleEvent(false, Events.ShowMessage, "You entered room number " + data[0].ToString().Substring(4, 1) + ".");
-                    _status = Backend.GameStatus.Running;
-                    break;
-                case Backend.Events.Chat:
-                    if (_logic is PureLogic)
-                    {
-                        _statusbox.AddLine((string)data[0], Color.Pink);
-                    }
-                    else
-                    {
-                        (_logic as NetLogic).SendChat((string)data[0]);
-                    }
-                    break;
-                case Backend.Events.AddDragItem:
-                    _draggedObject = (GridElement)data[0];
-                    _toolbar.dragItem = _draggedObject;
-                    break;
-                case Backend.Events.ShowMenu:
-                    if (_focus is CharacterWindow)
-                    {
-                        _focus.Dispose();
-                        _interfaceElements.Remove(_focus);
-                        _toolbar.HandleEvent(true, Backend.Events.ContinueGame, 13);
-                        _status = Backend.GameStatus.Running;
-                    }
-                    if (_status == Backend.GameStatus.Running)
-                    {
-                        _ShowMenu();
-                    }
-                    else HandleEvent(true, Backend.Events.ContinueGame, 0);
-                    break;
-                case Backend.Events.ShowCharacter:
-                    if (_status == Backend.GameStatus.Running) _ShowCharacterWindow((Backend.Actor)data[0], 0);
-                    else
-                    {
-                        if (_focus is CharacterWindow)
-                        {
-                            if (((CharacterWindow)_focus).page != 0)
-                            {
-                                ((CharacterWindow)_focus).page = 0;
-                                _toolbar.HandleEvent(true, Backend.Events.ContinueGame, 10);
-                                return;
-                            }
-                            HandleEvent(true, Backend.Events.ContinueGame, 0);
-                        }
-                        else
-                        {
-                            _focus.Dispose();
-                            _interfaceElements.Remove(_focus);
-                            _focus = null;
-                            _status = Backend.GameStatus.Running;
-                            _ShowCharacterWindow((Backend.Actor)data[0], 0);
-                            _toolbar.HandleEvent(true, Backend.Events.ContinueGame, 10);
-                        }
-                    }
-                    break;
-                case Backend.Events.ShowAbilities: if (_status == Backend.GameStatus.Running) _ShowCharacterWindow((Backend.Actor)data[0], 2);
-                    else
-                    {
-                        if (_focus is CharacterWindow)
-                        {
-                            if (((CharacterWindow)_focus).page != 2)
-                            {
-                                ((CharacterWindow)_focus).page = 2;
-                                _toolbar.HandleEvent(true, Backend.Events.ContinueGame, 12);
-                                return;
-                            }
-                            HandleEvent(true, Backend.Events.ContinueGame, 0);
-                        }
-                        else
-                        {
-                            _focus.Dispose();
-                            _interfaceElements.Remove(_focus);
-                            _focus = null;
-                            _toolbar.HandleEvent(true, Backend.Events.ContinueGame, 12);
-                            _status = Backend.GameStatus.Running;
-                            _ShowCharacterWindow((Backend.Actor)data[0], 2);
-                        }
-                    }
-                    break;
-                case Backend.Events.ShowInventory:
-                    if (_status == Backend.GameStatus.Running) _ShowCharacterWindow((Backend.Actor)data[0], 1);
-                    else
-                    {
-                        if (_focus is CharacterWindow)
-                        {
-                            if (((CharacterWindow)_focus).page != 1)
-                            {
-                                ((CharacterWindow)_focus).page = 1;
-                                _toolbar.HandleEvent(true, Backend.Events.ContinueGame, 11);
-                                return;
-                            }
-                            _focus.Dispose();
-                            _interfaceElements.Remove(_focus);
-                            _focus = null;
-                            _status = Backend.GameStatus.Running;
-                            HandleEvent(true, Backend.Events.ContinueGame, 0);
-                        }
-                        else
-                        {
-                            _toolbar.HandleEvent(true, Backend.Events.ContinueGame, 11);
-                            _focus.Dispose();
-                            _interfaceElements.Remove(_focus);
-                            _focus = null;
-                            _status = Backend.GameStatus.Running;
-                            _ShowCharacterWindow((Backend.Actor)data[0], 1);
-                        }
-                    }
-                    break;
-
-                case Backend.Events.FetchFile:
-                    if (data.Length > 0)
-                    {
-                        string file = data[0].ToString();
-                        _files2fetch.Enqueue(file);
-                        if (_status != Backend.GameStatus.FetchingData)
-                        {
-                            _prevState = _status;
-                            _status = Backend.GameStatus.FetchingData;
-                            _LoadFile(file, wc_DownloadProgressChanged, wc_DownloadFileCompleted);
-                        }
-                    }
-                    break;
-
-                case Backend.Events.LoadFromCheckPoint:
-                    _status = Backend.GameStatus.NoRedraw;
-                    _logic.map.actors[_playerID].lives--;
-                    string lastCheck = File.ReadAllText("CheckPoint");
-                    while (Directory.GetFiles(".", "savedroom*.xml").Length > 0)
-                    {
-                        File.Delete(Directory.GetFiles(".", "savedroom*.xml")[0]);
-                    }
-                    Regex re = new Regex(@"\d+");
-                    foreach (string file in Directory.GetFiles(".", "checkpoint*.xml"))
-                    {
-                        Match m = re.Match(file);
-                        File.Copy(file, "savedroom" + m.Value + ".xml");
-                    }
-                    _logic.map.actors.Clear();
-                    _logic.map.Load("savedroom" + lastCheck + ".xml", null);
-                    File.WriteAllText("GameData", "room" + _logic.map.id.ToString() + ".xml" + Environment.NewLine + _logic.map.actors[_playerID].ToString());
-                    _mainmap1.resetActors();
-                    //_mainmap2.resetActors();
-                    _mana.actor = _logic.map.actors[_playerID];
-                    _health.actor = _logic.map.actors[_playerID];
-                    _toolbar.actor = _logic.map.actors[_playerID];
-                    _status = Backend.GameStatus.Paused;
-                    HandleEvent(true, Backend.Events.ContinueGame);
-                    break;
-
-
-
-                case Backend.Events.Network:
-                    _ShowLANWindow();
-
-                    /*  //_secondPlayer = true;
-                      _lan = true;
-                      foreach (UIElement element in _interfaceElements)
-                      {
-                          element.HandleEvent(true, Backend.Events.ToggleButton, Backend.Events.Player2, true);
-                          element.HandleEvent(true, Backend.Events.ToggleButton, Backend.Events.Player1, false);
-                          element.HandleEvent(true, Backend.Events.ToggleButton, Backend.Events.Local, false);
-                          element.HandleEvent(true, Backend.Events.ToggleButton, Backend.Events.LAN, true);
-                      }
-                      // _mainmap2.enabled = false;
-                      _mainmap1.Resize(new Rectangle(5, 5, _graphics.GraphicsDevice.Viewport.Width - 230, ((_graphics.GraphicsDevice.Viewport.Height - 20)) - 115));*/
-                    break;
-
-
-                case Backend.Events.ContinueGame:
-                    if (_status != Backend.GameStatus.NoRedraw)
-                    {
-                        if (_focus != null)
-                        {
-                            _focus.Dispose();
-                            _interfaceElements.Remove(_focus);
-                        }
-                        _toolbar.HandleEvent(true, Backend.Events.ContinueGame, -1);
-                        if (Mouse.GetState().LeftButton == ButtonState.Pressed)
-                        {
-                            _mainmap1.noMove = true;
-                        }
-                        _status = GameStatus.Running;
-                        _focus = null;
-
-                    }
-                    break;
-
-                case Backend.Events.About:
-                    _focus.Dispose();
-                    _interfaceElements.Remove(_focus);
-                    _focus = null;
-                    _ShowAbout();
-                    break;
-
-                case Backend.Events.EndGame:
-                    _logic.map.Save("savedroom" + _logic.map.id + ".xml");
-                    Exit();
-                    break;
-
-                case Backend.Events.NewMap:
-                    _status = Backend.GameStatus.NoRedraw;
-                    if (_logic is PureLogic)
-                        _logic.GenerateMaps();
-                    HandleEvent(true, Backend.Events.ResetGame);
-                    break;
-
-                case Backend.Events.ResetGame:
-                    _status = Backend.GameStatus.NoRedraw;
-                    if (_logic is PureLogic)
-                    {
-                        (_logic as PureLogic).Restart();
+                    case Backend.Events.ChangeMap:
+                        _status = Backend.GameStatus.NoRedraw; // prevent redraw (which would crash the game!)
+                        _logic.ChangeMap((string)data[0], (Coords)data[1]);
                         _mainmap1.resetActors();
-                    }
-                    _status = Backend.GameStatus.Paused;
-                    HandleEvent(true, Backend.Events.ContinueGame);
-                    break;
-
-                case Backend.Events.ShowMessage:
-                    _AddMessage(data[0].ToString());
-                    break;
+                        _minimap1.MoveCamera(_logic.map.actors[_playerID].tile.coords);
+                        HandleEvent(false, Events.ShowMessage, "You entered room number " + data[0].ToString().Substring(4, 1) + ".");
+                        _status = Backend.GameStatus.Running;
+                        break;
+                }
             }
         }
         #endregion

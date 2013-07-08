@@ -181,31 +181,31 @@ namespace Gruppe22.Client
                         switch ((Backend.Buttons)data[0])
                         {
                             case Backend.Buttons.Close:
-                                _parent.HandleEvent(false, Backend.Events.ContinueGame, null);
+                                _parent.HandleEvent(true, Backend.Events.ContinueGame, null);
                                 break;
                             case Backend.Buttons.Credits:
-                                _parent.HandleEvent(false, Backend.Events.About, null);
+                                _parent.HandleEvent(true, Backend.Events.About, null);
                                 break;
                             case Backend.Buttons.LAN:
-                                _parent.HandleEvent(false, Backend.Events.Network, null);
+                                _parent.HandleEvent(true, Backend.Events.Network, null);
                                 break;
                             case Backend.Buttons.Load:
-                                _parent.HandleEvent(false, Backend.Events.LoadFromCheckPoint, null);
+                                _parent.HandleEvent(true, Backend.Events.LoadFromCheckPoint, null);
                                 break;
                             case Backend.Buttons.NewMap:
-                                _parent.HandleEvent(false, Backend.Events.NewMap, null);
+                                _parent.HandleEvent(true, Backend.Events.NewMap, null);
                                 break;
                             case Backend.Buttons.Quit:
-                                _parent.HandleEvent(false, Backend.Events.EndGame, null);
+                                _parent.HandleEvent(true, Backend.Events.EndGame, null);
                                 break;
                             case Backend.Buttons.Reset:
-                                _parent.HandleEvent(false, Backend.Events.ResetGame, null);
+                                _parent.HandleEvent(true, Backend.Events.ResetGame, null);
                                 break;
                             case Backend.Buttons.Restart:
-                                _parent.HandleEvent(false, Backend.Events.ResetGame, null);
+                                _parent.HandleEvent(true, Backend.Events.ResetGame, null);
                                 break;
                             default:
-                                _parent.HandleEvent(false, eventID, data);
+                                _parent.HandleEvent(true, eventID, data);
                                 break;
                         }
                         break;

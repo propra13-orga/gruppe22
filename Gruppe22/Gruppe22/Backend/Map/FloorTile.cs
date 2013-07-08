@@ -61,6 +61,34 @@ namespace Gruppe22.Backend
             }
         }
 
+        public ItemTile[] itemTiles
+        {
+            get
+            {
+                List<ItemTile> result = new List<ItemTile>();
+                foreach (Tile tile in _overlay)
+                {
+                    if (tile is ItemTile) result.Add(((ItemTile)tile));
+                }
+                return result.ToArray();
+            }
+            set
+            {
+                for (int i = 0; i < _overlay.Count; ++i)
+                {
+                    if (_overlay[i] is ItemTile)
+                    {
+                        _overlay.RemoveAt(i);
+                        i -= 1;
+                    }
+                }
+                foreach(ItemTile itemTile in value){
+                    itemTile.parent = this;
+                }
+                _overlay.AddRange(value);
+            }
+        }
+
         /// <summary>
         /// Gibt eine Liste der Items zurück, die auf dem Boden liegen.
         /// </summary>

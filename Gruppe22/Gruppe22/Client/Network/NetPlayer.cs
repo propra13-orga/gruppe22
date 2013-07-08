@@ -19,9 +19,11 @@ namespace Gruppe22.Client
         private Dictionary<short, ClientData> _clients;
         private NetConnectionStatus _lastStatus;
         private Backend.IHandleEvent _parent;
-        private string _server;
+        private string _server = "";
         private string _playername;
         public Dictionary<string, string> _servers;
+
+
         public string server
         {
             get
@@ -30,16 +32,43 @@ namespace Gruppe22.Client
             }
             set
             {
-                _server = value;
-                NetOutgoingMessage outmsg = _client.CreateMessage();
-                outmsg.Write((byte)PacketType.Connect);
-                outmsg.Write(_playername);
-
-                _client.Connect(_server, 666, outmsg);
-
+                if (_server != "")
+                {
+                    _parent.HandleEvent(false, Backend.Events.ShowMessage, "Disconnecting from Server " + _server + "...");
+                    _client.Disconnect("Goodbye!");
+                    _server = "";
+                }
+                if (value != "")
+                {
+                    _parent.HandleEvent(false, Backend.Events.ShowMessage, "Connecting to Server " + value + "...");
+                    _server = value;
+                    NetOutgoingMessage outmsg = _client.CreateMessage();
+                    outmsg.Write((byte)PacketType.Connect);
+                    outmsg.Write(_playername);
+                    _client.Connect(_server, 666, outmsg);
+                }
             }
         }
 
+        public IHandleEvent parent
+        {
+            get
+            {
+                return _parent;
+            }
+            set
+            {
+                _parent = value;
+            }
+        }
+
+        public bool connected
+        {
+            get
+            {
+                return _client.ConnectionStatus == NetConnectionStatus.Connected;
+            }
+        }
 
         public string playername
         {
@@ -79,6 +108,11 @@ namespace Gruppe22.Client
             }
         }
 
+        public void Disconnect()
+        {
+            server = "";
+        }
+
         public void Update(GameTime gameTime)
         {
             NetIncomingMessage message;
@@ -109,27 +143,25 @@ namespace Gruppe22.Client
                         break;
                 }
             }
-            if (_client != null)
+            if ((_client != null) && (_lastStatus != _client.ConnectionStatus))
             {
                 switch (_client.ConnectionStatus)
                 {
                     case NetConnectionStatus.None:
                         break;
                     case NetConnectionStatus.InitiatedConnect:
+                        _parent.HandleEvent(false, Backend.Events.ShowMessage, "Asked for connection.", Color.Green);
+
                         break;
                     case NetConnectionStatus.RespondedConnect:
+                        _parent.HandleEvent(false, Backend.Events.ShowMessage, "Server responded to Connect Request.", Color.Green);
+
                         break;
                     case NetConnectionStatus.Connected:
-                        break;
-                    case NetConnectionStatus.Disconnecting:
-                        _clients.Clear();
+                        _parent.HandleEvent(false, Backend.Events.ShowMessage, "Connected.", Color.Green);
                         break;
                     case NetConnectionStatus.Disconnected:
-                        if (_lastStatus == NetConnectionStatus.None)
-                        {
-                            _parent.HandleEvent(false, Backend.Events.ShowMessage, "Connection lost.", Color.Red);
-                            _parent.HandleEvent(false, Backend.Events.Pause, true);
-                        }
+                        _parent.HandleEvent(false, Backend.Events.ShowMessage, "Disconnected.", Color.Red);
                         _client.DiscoverLocalPeers(666);
                         break;
                 }
@@ -140,23 +172,17 @@ namespace Gruppe22.Client
 
         }
 
-
-        public void DoMove(int CharID, Backend.Direction dir, Backend.Coords pos)
+        public void SendMessage(PacketType type, params object[] data)
         {
-            if (_client.ConnectionStatus == NetConnectionStatus.Connected)
+            NetOutgoingMessage response;
+            response = _client.CreateMessage((byte)type);
+            foreach (object element in data)
             {
-                NetOutgoingMessage message = _client.CreateMessage();
-                //Eine Message senden, dass die Position geändert wurde
-                message.Write((byte)PacketType.Move);
-                message.Write(CharID);
-
-                message.Write(pos.ToString());
-                message.Write((int)dir);
-
-                _client.SendMessage(message, NetDeliveryMethod.ReliableOrdered);
+                if (element is int) response.Write((int)element);
+                else response.Write(element.ToString());
             }
+            _client.SendMessage(response, NetDeliveryMethod.ReliableOrdered);
         }
-
 
 
         private void ProcessMessage(byte type, NetIncomingMessage message)
@@ -167,7 +193,7 @@ namespace Gruppe22.Client
                     short addClientId = message.ReadInt16();
                     if (!_clients.ContainsKey(addClientId))
                         _clients.Add(addClientId, null);
-                    _parent.HandleEvent(false, Backend.Events.ShowMessage, "Connected to " + message.SenderEndpoint.Address.ToString() + " as " +_playername+" (ID "+ addClientId.ToString()+")", Color.Orange);
+                    _parent.HandleEvent(false, Backend.Events.ShowMessage, "Connected to " + message.SenderEndpoint.Address.ToString() + " as " + _playername + " (ID " + addClientId.ToString() + ")", Color.Orange);
 
                     break;
                 case PacketType.Disconnect: //Client disconnect

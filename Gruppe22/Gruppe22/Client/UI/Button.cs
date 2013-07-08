@@ -86,6 +86,21 @@ namespace Gruppe22.Client
                 }
             }
         }
+
+
+
+        public string label
+        {
+            get
+            {
+                return _label;
+            }
+            set
+            {
+                _label = value;
+
+            }
+        }
         #endregion
 
         #region Public Methods
@@ -96,23 +111,25 @@ namespace Gruppe22.Client
         /// <param name="gameTime"></param>
         public override bool OnMouseDown(int button)
         {
-            if (!_hidden) { 
-            if (IsHit(Mouse.GetState().X, Mouse.GetState().Y))
+            if (!_hidden)
             {
-                _parent.HandleEvent(false, Backend.Events.ButtonPressed, _id);
-                return true;
-            }
+                if (IsHit(Mouse.GetState().X, Mouse.GetState().Y))
+                {
+                    _parent.HandleEvent(false, Backend.Events.ButtonPressed, _id);
+                    return true;
+                }
             }
             return false;
         }
         public override bool OnKeyDown(Keys k)
         {
-            if (!_hidden) { 
-            if (_focus && ((k == Keys.Space) || (k == Keys.Enter)))
+            if (!_hidden)
             {
-                _parent.HandleEvent(false, Backend.Events.ButtonPressed, _id);
-                return true;
-            }
+                if (_focus && ((k == Keys.Space) || (k == Keys.Enter)))
+                {
+                    _parent.HandleEvent(false, Backend.Events.ButtonPressed, _id);
+                    return true;
+                }
             }
             return false;
         }
@@ -120,10 +137,10 @@ namespace Gruppe22.Client
 
         public override void HandleEvent(bool downstream, Backend.Events eventID, params object[] data)
         {
-          /*  if ((eventID == Backend.Events.ToggleButton) && ((int)data[0] == _id))
-            {
-                stayDown = (bool)data[1];
-            } */
+            /*  if ((eventID == Backend.Events.ToggleButton) && ((int)data[0] == _id))
+              {
+                  stayDown = (bool)data[1];
+              } */
         }
 
         public bool hidden

@@ -26,6 +26,18 @@ namespace Gruppe22.Client
             base.Update(gameTime);
         }
 
+        public NetPlayer network
+        {
+            get
+            {
+                return _network;
+            }
+            set
+            {
+                _network = value;
+            }
+        }
+
         public override void HandleEvent(bool DownStream, Backend.Events eventID, params object[] data)
         {
             if (!DownStream)
@@ -36,22 +48,36 @@ namespace Gruppe22.Client
                         switch ((Backend.Buttons)data[0])
                         {
                             case Backend.Buttons.Close:
-                                _parent.HandleEvent(false, Backend.Events.Settings, _network);
-                                _parent.HandleEvent(false, Backend.Events.ContinueGame);
+                                _parent.HandleEvent(true, Backend.Events.ContinueGame);
                                 return;
                             case Backend.Buttons.StartServer:
                                 System.Diagnostics.Process.Start("DungeonServer.exe");
                                 return;
                             case Backend.Buttons.Cancel:
-                                _parent.HandleEvent(false, Backend.Events.ContinueGame);
+                                _network.Disconnect();
+                                _parent.HandleEvent(true, Backend.Events.ContinueGame);
                                 return;
                             case Backend.Buttons.Connect:
-                                _network.playername = _playerName.text;
-                                _network.server = _ipEntry.text;
+                                _connect.Hide();
+                                if (_connect.label == "Connect")
+                                {
+                                    _network.playername = _playerName.text;
+                                    _network.server = _ipEntry.text;
+                                    _connect.label = "Disconnect";
+                                }
+                                else
+                                {
+                                    _connect.label = "Connect";
+                                    _network.Disconnect();
+                                }
                                 return;
                         }
                         break;
                     case Backend.Events.ShowMessage:
+                        if (data[0].ToString().ToLower().Contains("connected"))
+                        {
+                            _connect.Show();
+                        }
                         _listPlayers.AddLine(data[0].ToString(), data.Length > 1 ? data[1] : null);
                         return;
                 }
@@ -62,8 +88,19 @@ namespace Gruppe22.Client
         public Lobby(Backend.IHandleEvent parent, SpriteBatch spriteBatch, ContentManager content, Rectangle displayRect)
             : base(parent, spriteBatch, content, displayRect)
         {
-            _ipEntry = new TextInput(this, spriteBatch, content, new Rectangle(_displayRect.Left + 5, _displayRect.Top + 5, 500, 30), "Server:", "localhost", "Enter a server to connect to or localhost to test locally", -1, true);
-            _playerName = new TextInput(this, spriteBatch, content, new Rectangle(_displayRect.Left + 5, _displayRect.Top + 50, _displayRect.Width - 250, 30), "Name:", "Player", "Enter a name to use on server", -1, true);
+
+            string myGUID = "";
+            if (Properties.Settings.Default.guid != "NONE")
+            {
+                myGUID = Properties.Settings.Default.guid;
+            }
+            else {
+                myGUID = Guid.NewGuid().ToString();
+            Properties.Settings.Default.guid = myGUID;
+            Properties.Settings.Default.Save();
+            }
+                _ipEntry = new TextInput(this, spriteBatch, content, new Rectangle(_displayRect.Left + 5, _displayRect.Top + 5, 500, 30), "Server:", "localhost", "Enter a server to connect to or localhost to test locally", -1, true);
+            _playerName = new TextInput(this, spriteBatch, content, new Rectangle(_displayRect.Left + 5, _displayRect.Top + 50, _displayRect.Width - 250, 30), "Computer-ID:", myGUID, "Enter a unique ID for your computer", -1, true);
             _listPlayers = new Statusbox(this, spriteBatch, content, new Rectangle(_displayRect.Left + 5, _displayRect.Top + 100, _displayRect.Width - 10, _displayRect.Height - 160), true, true);
             _ok = new Button(this, spriteBatch, content, new Rectangle(_displayRect.Right - 90, _displayRect.Bottom - 50, 80, 40), "Ok", (int)Backend.Buttons.Close);
             _launchServer = new Button(this, spriteBatch, content, new Rectangle(_displayRect.Right - 210, _displayRect.Top + 5, 200, 40), "Launch Server", (int)Backend.Buttons.StartServer);

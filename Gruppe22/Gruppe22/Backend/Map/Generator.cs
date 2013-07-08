@@ -317,7 +317,7 @@ namespace Gruppe22.Backend
                     NPC npc = new NPC(-1, -1, -1, -1, "", r, _level);
                     npc.gold = 50000;
                     npc.hasShop = false;
-                    npc.hasDialogue = true;
+                    npc.hasDialog = true;
                     ActorTile NPCTile = new ActorTile(_tiles[pos.y][pos.x], npc);
                     npc.tile = NPCTile;
                     _tiles[pos.y][pos.x].Add(NPCTile);

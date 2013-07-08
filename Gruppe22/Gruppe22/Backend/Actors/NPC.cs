@@ -15,7 +15,7 @@ namespace Gruppe22.Backend
         /// <summary>
         /// Ist true falls ein NPC ein Dialog (sprechen) besitzt.
         /// </summary>
-        private bool _hasDialogue = false;
+        private bool _hasDialog = false;
         /// <summary>
         /// Verhältnis des NPC's zum Spieler. Bei 0 ist es neutral, negative Werte stellen ein schlechtes Verhältnis dar und positive ein gutes. Dabei haben vom Betrag größere Zahlen eine größere Auswirkung.
         /// </summary>
@@ -37,17 +37,17 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Öffentliche Eigenschaft zu _hasDialogue.
+        /// Öffentliche Eigenschaft zu _hasDialog.
         /// </summary>
-        public bool hasDialogue
+        public bool hasDialog
         {
             get
             {
-                return _hasDialogue;
+                return _hasDialog;
             }
             set
             {
-                _hasDialogue = value;
+                _hasDialog = value;
             }
         }
 
@@ -70,10 +70,10 @@ namespace Gruppe22.Backend
         /// Interaktion des NPC. Aktion öffne Schop bzw. Dialog.
         /// Funktionsweise uber Eventaufruf.
         /// </summary>
-        public void Interact()
+        public void Interact(Actor With)
         {
-            if (_hasShop) ((Backend.IHandleEvent)_tile.parent).HandleEvent(false, Backend.Events.Shop, this);
-            if (_hasDialogue) ((Backend.IHandleEvent)_tile.parent).HandleEvent(false, Backend.Events.Dialogue, this);
+            if (_hasShop) ((Backend.IHandleEvent)_tile.parent).HandleEvent(false, Backend.Events.Shop, this, With);
+            if (_hasDialog) ((Backend.IHandleEvent)_tile.parent).HandleEvent(false, Backend.Events.Dialog, this, With);
         }
 
         /// <summary>
@@ -88,7 +88,7 @@ namespace Gruppe22.Backend
         /// <param name="r">Randomobjekt für die Basisklasse.</param>
         /// <param name="_level">NPC aus dem Level _level.</param>
         /// <param name="shop">Legt fest ob der NPC ein Shop ist.</param>
-        public NPC( int health = 10, int armor = 0, int damage = 0, int maxHealth = 10, string name = "", Random r = null, int _level = 1, bool shop = false)
+        public NPC(int health = 10, int armor = 0, int damage = 0, int maxHealth = 10, string name = "", Random r = null, int _level = 1, bool shop = false)
             : base(ActorType.NPC, health, armor, damage, maxHealth, name, r)
         {
             _actorType = ActorType.NPC;
