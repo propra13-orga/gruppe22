@@ -7,32 +7,29 @@ using System.Xml;
 
 namespace Gruppe22.Backend
 {
+    /// <summary>
+    /// A tile on the map used to represent an actor.
+    /// </summary>
     public class ActorTile : Tile
     {
         #region Private Fields
-        /// <summary>
-        /// Der Actor, der auf diesem Tile "steht".
-        /// </summary>
         private Actor _actor;
         /// <summary>
         /// Die verstrichene Zeit.
         /// </summary>
         private int _elapsed = 0;
         /// <summary>
-        /// Anzahl der Einheiten die ein Actor abwartet, bevor ein Kommando umgesetzt wird.
+        /// The number of clocks an actor waits before he can do the next action.
         /// </summary>
         private int _timeToThink = 50;
         /// <summary>
-        /// Kampfunfähig.
+        /// Determines if the actor is disabled.
         /// </summary>
         private bool _disabled = false;
         /// <summary>
-        /// Richtung des Actors. Siehe Aufzählung.
+        /// The last direction the actor faced.
         /// </summary>
         private Direction _lastDir = Direction.None;
-        /// <summary>
-        /// Hilfsfeld zur erzeugung von Pseudozufall.
-        /// </summary>
         private Random _random = null;
         /// <summary>
         /// Funktionsfähigkeit.
@@ -42,13 +39,19 @@ namespace Gruppe22.Backend
 
         #region Public Fields
         /// <summary>
-        /// Eigenschaft zu dem Actorfeld.
+        /// The actor connected with the actortile.
         /// </summary>
         public Actor actor
         {
-            get { return _actor; }
+            get 
+            { 
+                return _actor; 
+            }
         }
 
+        /// <summary>
+        /// The type of the to the tile connected actor.
+        /// </summary>
         public ActorType actorType
         {
             get
@@ -57,6 +60,9 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// Determines if the actor is activ and so do something.
+        /// </summary>
         public bool enabled
         {
             get
@@ -68,10 +74,12 @@ namespace Gruppe22.Backend
                 _disabled = !value;
             }
         }
+
         /// <summary>
-        /// Speichert das ActorTile in den XML-Strom.
+        /// Method to save the actortile.
+        /// Calls the save-method of the connected actor.
         /// </summary>
-        /// <param name="xmlw">Der zu verwendete XmlWriter.</param>
+        /// <param name="xmlw">The used XMLwriter</param>
         public override void Save(XmlWriter xmlw)
         {
             xmlw.WriteStartElement("ActorTile");
@@ -82,17 +90,19 @@ namespace Gruppe22.Backend
 
         #region Constructor
         /// <summary>
-        /// Konstruktor.
+        /// The constructor for the ActorTile
+        /// Calls the constructor of Tile.
         /// </summary>
-        /// <param name="parent">Elternobjekt.</param>
-        /// <param name="actor">Der Actor.</param>
+        /// <param name="parent">Just the parent object</param>
+        /// <param name="actor">The to the tile connected actor.</param>
         public ActorTile(object parent, Actor actor)
             : this(parent)
         {
             _actor = actor;
         }
+
         /// <summary>
-        /// Lässt den Actor sein gesamtes Item-Inventar auf den Boden (Eltern-Tile) fallen.
+        /// Method to drop the full inventory of the connected player to the tile he stands on.
         /// </summary>
         public void DropItems()
         {
@@ -106,7 +116,7 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Workout bewegnungen. Die Computer-KI.
+        /// Method to determine the next moves of a computer controlled actor.
         /// </summary>
         /// <returns>Ergebnis von asynchonen Task.</returns>
         public async Task WorkoutMoves()
@@ -236,9 +246,9 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Die Update-Routine des Spiels.
+        /// the update-routine for the ActorTile.
         /// </summary>
-        /// <param name="gameTime">Spielzeit. Wird für Physik des Spiels benötigt.</param>
+        /// <param name="gameTime">The Gametime</param>
         public override void Update(Microsoft.Xna.Framework.GameTime gameTime)
         {
             if (!actor.isDead)
@@ -258,10 +268,11 @@ namespace Gruppe22.Backend
             }
         }
         /// <summary>
-        /// Konstruktor.
+        /// The constructor for the ActorTile.
+        /// Calls the parent constructor.
         /// </summary>
-        /// <param name="parent">Elternobjekt.</param>
-        /// <param name="r">Hilfsobjekt.</param>
+        /// <param name="parent">Parent</param>
+        /// <param name="r">A random needed for some methods</param>
         public ActorTile(object parent, Random r = null)
             : base(parent)
         {

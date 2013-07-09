@@ -9,7 +9,7 @@ using Microsoft.Xna.Framework.Content;
 namespace Gruppe22.Backend
 {
     /// <summary>
-    /// Types of actors
+    /// The possible types of an actor
     /// </summary>
     public enum ActorType
     {
@@ -19,67 +19,31 @@ namespace Gruppe22.Backend
     }
 
     /// <summary>
-    /// A living entity (backend)
+    /// A living entity (backend) for example the player
     /// </summary>
     public class Actor
     {
         #region protected Fields
         /// <summary>
-        /// Zufallsgenerator.
+        /// A random.
         /// </summary>
         protected Random _random;
-        /// <summary>
-        /// Unique identifier used for network play
-        /// </summary>
         protected string _GUID="";
-        /// <summary>
-        /// Whether player is currently online
-        /// </summary>
         protected bool _online = false;
         /// <summary>
         /// Number of lives (ressurection)
         /// </summary>
         protected uint _lives = 1;
-        /// <summary>
-        /// Anzahl der neuen Items.
-        /// </summary>
         protected int _newItems = 0;
-        /// <summary>
-        /// Das Tile zu diesem Actor.
-        /// </summary>
         protected ActorTile _tile;
-        /// <summary>
-        /// Der typ des Actors, s. Aufzählung.
-        /// </summary>
         protected ActorType _actorType;
-        /// <summary>
-        /// Die ID.
-        /// </summary>
         protected int _id = 0;
-        /// <summary>
-        /// Name des Actors.
-        /// </summary>
         protected string _name = "";
-        /// <summary>
-        /// Die Inventarliste des Actors.
-        /// </summary>
         protected List<Item> _inventory = null;
         //protected int _deadcounter = 0;
-        /// <summary>
-        /// Mana.
-        /// </summary>
         protected int _mana = 50;
-        /// <summary>
-        /// Beschreibt wie gut der Actor einem Angriff ausweichen kann.
-        /// </summary>
         protected int _evade = 0;
-        /// <summary>
-        /// beschreibt wie gut/schlecht der Actor einen Angriff blockieren kann.
-        /// </summary>
         protected int _block = 0;
-        /// <summary>
-        /// TODO: hier weiter die Felder und zugehörigen Eigenschaften beschreiben, ich(Ruslan) weiß leider nicht genau was die tun deshalb konnte ich an der stelle nicht weitermachen.
-        /// </summary>
         protected int _penetrate = 0;
         protected int _healthReg = 0;
         protected int _stealHealth = 0;
@@ -92,22 +56,14 @@ namespace Gruppe22.Backend
         protected int _destroyArmor = 0;
         protected int _maxMana = 100;
         protected int _manaReg = 0;
-        /// <summary>
-        /// Das Budget des Actors.
-        /// </summary>
         protected int _gold = 0;
         protected bool _locked = false;
         protected int _level = 0;
-        /// <summary>
-        /// Die höhe des Schades den der Actor verursachen kann.
-        /// </summary>
         protected int _damage = 0;
         protected bool _aggro = true;
         protected bool _ranged = false;
-
         protected bool _crazy = false;
         protected bool _friendly = false;
-
         protected int _resist = 0;
         protected int _exp = 0;
         int regCounter = 0;
@@ -136,10 +92,11 @@ namespace Gruppe22.Backend
         }*/
 
         /// <summary>
-        /// Get-Methode für die Items des Actors.
+        /// Method to get the items an actor has.
         /// </summary>
-        /// <param name="i">ID zu dem Item.</param>
-        /// <returns>Item mit der id i des Actors, sonst null wenn nicht im Inventar des Actors.</returns>
+        /// <param name="i">The id of the item</param>
+        /// <returns>Return the position in the inventory-list of the item with the asked id.
+        /// Returns null if there is no item with this id.</returns>
         public Item Items(int i)
         {
             for (int count = 0; count < inventory.Count; ++count)
@@ -151,7 +108,7 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Unique identifier for players in LAN-mode
+        /// Unique identifier for players in LAN-mode.
         /// </summary>
         public string GUID
         {
@@ -166,7 +123,7 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Determines whether a player is online
+        /// Determines whether a player is online.
         /// </summary>
         public bool online
         {
@@ -181,7 +138,7 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Number of current lives (read/write)
+        /// Number of current lives (read/write).
         /// </summary>
         public uint lives
         {
@@ -196,7 +153,7 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// List of items which have changed since last viewing inventory
+        /// List of items which have changed since last viewing inventory.
         /// </summary>
         public int newItems
         {
@@ -211,7 +168,7 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Direction actor is currently facing (read/write)
+        /// Direction actor is currently facing (read/write).
         /// </summary>
         public Direction direction
         {
@@ -226,7 +183,7 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Aktiviert die Regenetarion des Actors nach speziellen Formeln.
+        /// Method to let the player regenerate mana and health.
         /// </summary>
         public void Regen()
         {
@@ -250,7 +207,9 @@ namespace Gruppe22.Backend
             }
         }
 
-
+        /// <summary>
+        /// 
+        /// </summary>
         public int viewRange
         {
             get
@@ -263,19 +222,42 @@ namespace Gruppe22.Backend
             }
         }
 
-
+        /// <summary>
+        /// Determines if the actor is scared of something.
+        /// Scared actors run away from their attacker.
+        /// </summary>
         public int scared
         {
-            get { return _scared; }
-            set { _scared = value; }
+            get 
+            { 
+                return _scared;
+            }
+            set 
+            { 
+                _scared = value;
+            }
         }
 
+        /// <summary>
+        /// Determines if the actor is stunned.
+        /// Stunned actors can not do anything.
+        /// </summary>
         public int stunned
         {
-            get { return _stunned; }
-            set { _stunned = value; }
+            get 
+            { 
+                return _stunned; 
+            }
+            set 
+            {
+                _stunned = value; 
+            }
         }
 
+        /// <summary>
+        /// Field to determine if an actor is charmed (temporary friendly).
+        /// Setting this just sets the friendly attribute.
+        /// </summary>
         public int charmed
         {
             get { return _charmed; }
@@ -286,6 +268,9 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public List<int> quickList
         {
             get
@@ -298,6 +283,10 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// True if the actor if friendly with the player.
+        /// Friendly actors do not attack the player.
+        /// </summary>
         public bool friendly
         {
             get
@@ -311,8 +300,7 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Eigenschaft legt fest ob Actor aggresiv ist oder nicht.
-        /// Dabei ändert sich das Angriffsverhalten (Bei Computergegnern).
+        /// Field to set if an actor attacks the player by default.
         /// </summary>
         public bool aggro
         {
@@ -326,6 +314,10 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// Field to determine if an actor is crazy.
+        /// A crazy actor attacks every other actor.
+        /// </summary>
         public bool crazy
         {
             get
@@ -337,6 +329,10 @@ namespace Gruppe22.Backend
                 _crazy = value;
             }
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
         public bool ranged
         {
             get
@@ -348,24 +344,49 @@ namespace Gruppe22.Backend
                 _ranged = value;
             }
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
         public bool locked
         {
-            get { return _locked; }
-            set { _locked = value; }
+            get 
+            { 
+                return _locked; 
+            }
+            set 
+            { 
+                _locked = value; 
+            }
         }
 
+        /// <summary>
+        /// The path to the graphics file for the actor.
+        /// </summary>
         public string animationFile
         {
-            get { return _animationFile; }
-            set { _animationFile = value; }
+            get 
+            { 
+                return _animationFile; 
+            }
+            set 
+            { 
+                _animationFile = value; 
+            }
         }
 
+        /// <summary>
+        /// A reference to the tile on the map which represents the actor.
+        /// </summary>
         public ActorTile tile
         {
             get { return _tile; }
             set { _tile = value; }
         }
 
+        /// <summary>
+        /// A list of items the actor has.
+        /// </summary>
         public List<Item> inventory
         {
             get
@@ -373,6 +394,10 @@ namespace Gruppe22.Backend
                 return _inventory;
             }
         }
+
+        /// <summary>
+        /// A list of abilities or skills the actor has.
+        /// </summary>
         public List<Ability> abilities
         {
             get
@@ -381,6 +406,10 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// The current amount of mana the actor has.
+        /// can not be less than zero
+        /// </summary>
         public int mana
         {
             get
@@ -393,6 +422,9 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// The amount of experience needed to reach the next level.
+        /// </summary>
         public int expNeeded
         {
             get
@@ -404,6 +436,10 @@ namespace Gruppe22.Backend
                 _expNeeded = value;
             }
         }
+
+        /// <summary>
+        /// The maximum amount of mana the actor can have.
+        /// </summary>
         public int maxMana
         {
             get
@@ -416,6 +452,9 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// How much mana the actor regenerates.
+        /// </summary>
         public int manaReg
         {
             get
@@ -428,6 +467,10 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// The amount of gold the actors has.
+        /// Gold is the currency used to buy items.
+        /// </summary>
         public int gold
         {
             get
@@ -440,6 +483,10 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// The type the actor is.
+        /// e.g. an enemy
+        /// </summary>
         public ActorType actorType
         {
             get
@@ -448,6 +495,10 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// The current health the player has.
+        /// Can not be less than zero.
+        /// </summary>
         public int health
         {
             get
@@ -460,6 +511,9 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// The maximum amount of health the actor has.
+        /// </summary>
         public int maxHealth
         {
             get
@@ -472,6 +526,10 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// The armor an actor has.
+        /// Should be values between 0 and 100.
+        /// </summary>
         public int armor
         {
             get
@@ -484,6 +542,9 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// The damage an actor deals with an attack.
+        /// </summary>
         public int damage
         {
             get
@@ -497,7 +558,7 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Eigenschaft die den Namen des Actors beschreibt.
+        /// Simply the name of the actor.
         /// </summary>
         public string name
         {
@@ -512,7 +573,9 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Eigenschaft (schreibgeschützt): Level des Actors
+        /// The current level of the actor.
+        /// By default starting at 0.
+        /// Can only be changed by a levelup
         /// </summary>
         public int level
         {
@@ -522,7 +585,9 @@ namespace Gruppe22.Backend
             }
         }
 
-
+        /// <summary>
+        /// The current experience points the actor has.
+        /// </summary>
         public int exp
         {
             get
@@ -536,7 +601,8 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Get-Eigenschaft zu dem Zustand (lebt/ist tot) des Actors.
+        /// Determines if the actor is alive or dead
+        /// by checking his current health
         /// </summary>
         public bool isDead
         {
@@ -547,7 +613,7 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// ID des Actors.
+        /// The actors ID.
         /// </summary>
         public int id
         {
@@ -561,13 +627,11 @@ namespace Gruppe22.Backend
             }
         }
 
-
-
-
-
-
         /// <summary>
-        /// Gibt die Eigenschaft bzw. den Faktor zum Ausweichen von Angriffen, bzw. setzt diese fest.
+        /// The evade value of the actor.
+        /// Evade is used to calculate the chance to evade an attack.
+        /// Evading an attack negates all the damage.
+        /// Values should range from 0 to 100.
         /// </summary>
         public int evade
         {
@@ -582,7 +646,10 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Eigenschaft: Blockzahl des Actors.
+        /// The block value.
+        /// Block is used to determine the chance to block an attack.
+        /// Blocking negates some damage.
+        /// Values should range from 0 to 100.
         /// </summary>
         public int block
         {
@@ -596,6 +663,11 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// Penetrate is the counterpart to block.
+        /// Penetrate lets an actor get through the block of an other actor.
+        /// Values should range from 0 to 100.
+        /// </summary>
         public int penetrate
         {
             get
@@ -608,6 +680,9 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// The amount of health an actor regenerates in one clock.
+        /// </summary>
         public int healthReg
         {
             get
@@ -620,6 +695,9 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// The amount of health an actor can steal from an other actor with an attack.
+        /// </summary>
         public int stealHealth
         {
             get
@@ -632,6 +710,9 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        ///The amount of mana an actor can steal from an other actor with an attack.
+        /// </summary>
         public int stealMana
         {
             get
@@ -644,6 +725,9 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// The amount of fire-type damage an actor deals with an attack.
+        /// </summary>
         public int fireDamage
         {
             get
@@ -656,6 +740,9 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// The amount of ice-type damage an actor deals with an attack.
+        /// </summary>
         public int iceDamage
         {
             get
@@ -668,6 +755,9 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// The "armor" against fire damage the actor has.
+        /// </summary>
         public int fireDefense
         {
             get
@@ -680,6 +770,9 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// The "armor" against fire damage the actor has.
+        /// </summary>
         public int iceDefense
         {
             get
@@ -692,6 +785,9 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public int destroyWeapon
         {
             get
@@ -704,6 +800,9 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public int destroyArmor
         {
             get
@@ -715,6 +814,10 @@ namespace Gruppe22.Backend
                 _destroyArmor = value;
             }
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
         public int resist
         {
             get
@@ -726,6 +829,10 @@ namespace Gruppe22.Backend
                 _resist = value;
             }
         }
+
+        /// <summary>
+        /// The max amount of health the actor has.
+        /// </summary>
         public int maxhealth
         {
             get
@@ -738,6 +845,9 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// The points an actor has left to spend on abilities or skills.
+        /// </summary>
         public int abilityPoints
         {
             get
@@ -749,6 +859,10 @@ namespace Gruppe22.Backend
                 _abilityPoints = value;
             }
         }
+        
+        /// <summary>
+        /// 
+        /// </summary>
         public int skills
         {
             get
@@ -765,7 +879,10 @@ namespace Gruppe22.Backend
         #region Public Methods
 
         /// <summary>
-        /// Methode zum Levelaufstieg des Actors.
+        /// Method called when the exp reach the needed exp.
+        /// Lets the player level up.
+        /// The actor gains abilitypoints, skills and his health is set to maxhealth.
+        /// Also the needed exp increase for the next level.
         /// </summary>
         public void LevelUp()
         {
@@ -777,9 +894,10 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Methode zum hinzufügen von Rüstung.
+        /// Method to increase the amount of armor an actor has.
+        /// Does not change anything if armor>amount
         /// </summary>
-        /// <param name="amount">Neue Rüstungszahl.</param>
+        /// <param name="amount">the new amount the armor the actor should have</param>
         public void AddProtection(int amount)
         {
             if (amount > _armor)
@@ -794,9 +912,9 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Lebenspunkte hinzufügen.
+        /// Method to let the player get some health back
         /// </summary>
-        /// <param name="amount">Neue Lebenspunkte.</param>
+        /// <param name="amount">The amount of healthpoints that should be added</param>
         public void AddHealth(int amount)
         {
             int temp = Math.Max(amount, _maxhealth - _health - amount);
@@ -812,9 +930,10 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// TODO: Versstehe ich nicht was die genau tut
+        /// Method to directly increase the damage an actor deals.
+        /// Does nothing if damage>amount.
         /// </summary>
-        /// <param name="amount">TODO: vo allem was ist das?</param>
+        /// <param name="amount">The new amount of damage the actor should deal</param>
         public void AddStrength(int amount)
         {
             if (amount > _damage)
@@ -830,9 +949,10 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Savemethode. Speichert die NPC-Daten im writer.
+        /// Method to save an actor in an XML-file.
+        /// Just writes every property to the file.
         /// </summary>
-        /// <param name="writer">Writer für die Kartendatei.</param>
+        /// <param name="writer">The writer which should be used to save the data</param>
         public void Save(XmlWriter writer)
         {
             switch (_actorType)
@@ -939,10 +1059,10 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Methode gibt an ob der Spieler den SChlüssel für Level level schon aufgehoben hat.
+        /// Methode to determine if the player has the key to the next level.
         /// </summary>
-        /// <param name="level">Level.</param>
-        /// <returns>True wenn Schlüssel aufgenommen wurde, sonst false.</returns>
+        /// <param name="level">The level for which the key is checked.</param>
+        /// <returns>True if the player got the key.</returns>
         public bool HasKey(int level)
         {
             for (int i = 0; i < _inventory.Count; ++i)
@@ -953,9 +1073,9 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Klont alle Actor-Eigenschaften von a.
+        /// Duplicates the properties of actor a to the current actor.
         /// </summary>
-        /// <param name="a">Das Actor-Objekt von dem die Eigenschaften übernommen werden sollen.</param>
+        /// <param name="a">The actor from which the properties should be cloned</param>
         public void copyFrom(Actor a)
         {
             _actorType = a.actorType;
@@ -1023,9 +1143,9 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Methode zum Lesen eines Actors aus einer (room-)Datei und setzen der Werte
+        /// Method to read actor properties from a XML-file.
         /// </summary>
-        /// <param name="reader">Der zu benutzende XmlReader.</param>
+        /// <param name="reader">The used XMLReader for reading the actor.</param>
         public void Load(XmlReader reader)
         {
             //            System.Diagnostics.Debug.WriteLine(reader.Name);
@@ -1170,17 +1290,18 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Anpassung der ToSting-Methode.
+        /// Changed ToString Method for the actor's name.
         /// </summary>
-        /// <returns>name des Actors.</returns>
+        /// <returns>Returns the name of the actor in brackets.</returns>
         public override string ToString()
         {
             return base.ToString() + " (" + _name + ")";
         }
 
         /// <summary>
-        /// Methode zum generieren von zufälligen Spieler-Namen
-        /// uses GenerateName() for files if possible
+        /// Method to generate a random actor name.
+        /// Uses GenerateName() for files if a file exists.
+        /// Otherwise chooses one of six random names.
         /// </summary>
         public void GenerateName()
         {
@@ -1274,10 +1395,10 @@ namespace Gruppe22.Backend
             }
         }
         /// <summary>
-        /// Methode zum generieren eines zufälligen Spieler-Namens aus einer Datei
+        /// Method to choose an random actor name from a file.
         /// </summary>
-        /// <param name="filename">Die Quelldatei. Ein Name je Zeile.</param>
-        /// <returns>Der ermittelte Name</returns>
+        /// <param name="filename">The file with one name per line</param>
+        /// <returns>The chosen name.</returns>
         public string GenerateName(string filename)
         {
             using (TextReader reader = new StreamReader(filename))
@@ -1293,7 +1414,8 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Konstruktor.
+        /// The constructor used for actors.
+        /// Sets default values for the most important properties.
         /// </summary>
         /// <param name="content"></param>
         /// <param name="actorType">Player, NPC oder Enemy</param>

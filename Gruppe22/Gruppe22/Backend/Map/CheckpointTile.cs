@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Gruppe22.Backend
 {
+    /// <summary>
+    /// A tile used as a saving point for the player.
+    /// </summary>
     public class CheckpointTile : Tile
     {
         /// <summary>

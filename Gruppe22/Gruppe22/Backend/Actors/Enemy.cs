@@ -6,11 +6,15 @@ using Microsoft.Xna.Framework.Content;
 
 namespace Gruppe22.Backend
 {
+    /// <summary>
+    /// The class used to generate computer controlled enemies in the game.
+    /// The enemies are a type of actors like the player is.
+    /// </summary>
     public class Enemy : Actor
     {
 
         /// <summary>
-        /// Zuweisung von Skills und Eigenschaften zu dem Enemy.
+        /// Method to increase random skills and abilities while there are skill-/ability-points.
         /// </summary>
         public void AssignSkillsAndAbilities()
         {
@@ -63,8 +67,18 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Konstruktor. Initialisieren der Struktur.
+        /// The constructor for an enemy.
+        /// Calls the contructor for an actor and sets enemy-specific properties.
+        /// Chooses a random graphic for the enemy suitable to the level the enemy is in.
+        /// For the params see actor.
         /// </summary>
+        /// <param name="health"></param>
+        /// <param name="armour"></param>
+        /// <param name="damage"></param>
+        /// <param name="maxHealth"></param>
+        /// <param name="name"></param>
+        /// <param name="r"></param>
+        /// <param name="level"></param>
         public Enemy( int health = -1, int armour = -1, int damage = -1, int maxHealth = -1, string name = "", Random r = null, int level = 1)
             : base(ActorType.Enemy, health, armour, damage, maxHealth, name, r)
         {

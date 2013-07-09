@@ -8,25 +8,28 @@ using System.Xml.Schema;
 
 namespace Gruppe22.Backend
 {
+    /// <summary>
+    /// A tile used to connect rooms.
+    /// If the player enters this tile he changes the room.
+    /// </summary>
     public class TeleportTile : Tile
     {
         #region Private Fields
-        /// <summary>
-        /// Path to the .xml for the next Room
-        /// </summary>
-        private string _nextRoom;
-        /// <summary>
-        /// Spawn position for the next room
-        /// </summary>
-        private Backend.Coords _nextPlayerPos;
 
+        private string _nextRoom;
+        private Backend.Coords _nextPlayerPos;
         private bool _hidden = false;
         private bool _enabled = true;
         private bool _teleport = false;
         private bool _down = false;
+
         #endregion
 
         #region Public Fields
+
+        /// <summary>
+        /// The path to the .xml file for the room the player enters.
+        /// </summary>
         public String nextRoom
         {
             get
@@ -39,6 +42,9 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// The coordinates the player stands on after entering the next room.
+        /// </summary>
         public Backend.Coords nextPlayerPos
         {
             get
@@ -46,10 +52,10 @@ namespace Gruppe22.Backend
                 return _nextPlayerPos;
             }
         }
-        #endregion
-
-        #region Constructor
-
+        
+        /// <summary>
+        /// Bool to determine if the teleporter is visible.
+        /// </summary>
         public bool hidden
         {
             get
@@ -62,6 +68,9 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public bool enabled
         {
             get
@@ -74,6 +83,9 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public bool teleport
         {
             get
@@ -86,6 +98,9 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public bool down
         {
             get
@@ -97,22 +112,15 @@ namespace Gruppe22.Backend
                 _down = value;
             }
         }
-
-
-        public TeleportTile(object parent, string nextXml, Backend.Coords pos, bool isTeleport = false, bool isHidden = false, bool isEnabled = true, bool isUp=false)
-            : base(parent)
-        {
-            _nextRoom = nextXml;
-            _nextPlayerPos = pos;
-            _teleport = isTeleport;
-            _hidden = isHidden;
-            _enabled = isEnabled;
-            _down = !isUp;
-        }
         #endregion
 
         #region Public Methods
 
+        /// <summary>
+        /// The method to save a TeleportTile in a XML-file.
+        /// Just writes all properties to the file.
+        /// </summary>
+        /// <param name="xmlw">A XMLwriter</param>
         public override void Save(XmlWriter xmlw)
         {
             xmlw.WriteStartElement("TeleportTile");
@@ -124,6 +132,31 @@ namespace Gruppe22.Backend
             xmlw.WriteAttributeString("down", Convert.ToString(_down));
             xmlw.WriteAttributeString("teleport", Convert.ToString(_teleport));
             xmlw.WriteEndElement();
+        }
+        #endregion
+
+        #region Constructor
+
+        /// <summary>
+        /// The constructor for the TeleportTile.
+        /// Setting default values.
+        /// </summary>
+        /// <param name="parent"></param>
+        /// <param name="nextXml"></param>
+        /// <param name="pos"></param>
+        /// <param name="isTeleport"></param>
+        /// <param name="isHidden"></param>
+        /// <param name="isEnabled"></param>
+        /// <param name="isUp"></param>
+        public TeleportTile(object parent, string nextXml, Backend.Coords pos, bool isTeleport = false, bool isHidden = false, bool isEnabled = true, bool isUp = false)
+            : base(parent)
+        {
+            _nextRoom = nextXml;
+            _nextPlayerPos = pos;
+            _teleport = isTeleport;
+            _hidden = isHidden;
+            _enabled = isEnabled;
+            _down = !isUp;
         }
         #endregion
     }

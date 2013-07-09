@@ -23,6 +23,7 @@ namespace Gruppe22.Backend
         /// </summary>
         Hidden = 4
     }
+
     /// <summary>
     /// Determines the State of a trap
     /// </summary>
@@ -48,7 +49,8 @@ namespace Gruppe22.Backend
 
     }
     /// <summary>
-    /// A tile containing a trap
+    /// A tile representing a trap in the game.
+    /// Traps deal damage to actors which stand on them.
     /// </summary>
     public class TrapTile : Tile
     {
@@ -121,6 +123,9 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// The penetrate rating the trap has.
+        /// </summary>
         public int penetrate
         {
             get
@@ -132,6 +137,11 @@ namespace Gruppe22.Backend
                 _penetrate = value;
             }
         }
+
+        /// <summary>
+        /// The type of the trap.
+        /// See Traptype enum.
+        /// </summary>
         public TrapType type
         {
             get
@@ -145,7 +155,7 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Current status of the trap
+        /// The current status of the trap
         /// </summary>
         public TrapState status
         {
@@ -159,6 +169,9 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// Bool if the trap is visible for a player.
+        /// </summary>
         public bool visible
         {
             get
@@ -171,6 +184,12 @@ namespace Gruppe22.Backend
         #endregion
 
         #region Public Methods
+
+        /// <summary>
+        /// Update method for the trap.
+        /// If the repeatTime passed since the last action the trap can again deal damage.
+        /// </summary>
+        /// <param name="gameTime"></param>
         public override void Update(Microsoft.Xna.Framework.GameTime gameTime)
         {
 
@@ -190,8 +209,10 @@ namespace Gruppe22.Backend
             }
         }
 
-
-
+        /// <summary>
+        /// A method to determine what happens to the trap after an actor entered the TrapTile.
+        /// </summary>
+        /// <returns>The damage the trap deals or 0.</returns>
         public int Trigger()
         {
             if (_state == TrapState.On)
@@ -209,11 +230,12 @@ namespace Gruppe22.Backend
             return 0;
         }
         #endregion
+
         #region Constructor
         /// <summary>
         /// A Constructor setting the damage of the trap
         /// </summary>
-        /// <param name="parent"></param>
+        /// <param name="parent">The parent</param>
         /// <param name="dmg">The damage the trap will deal</param>
         public TrapTile(object parent, int dmg)
             : base(parent)

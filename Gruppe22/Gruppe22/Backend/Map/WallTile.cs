@@ -6,6 +6,10 @@ using System.Xml;
 
 namespace Gruppe22.Backend
 {
+    /// <summary>
+    /// A tile representing a wall in the game.
+    /// A wall blocks actor movements.
+    /// </summary>
     public class WallTile : Tile
     {
         private bool _illusion = false;
@@ -14,6 +18,10 @@ namespace Gruppe22.Backend
         private bool _enabled = true;
         public WallType _type = Backend.WallType.Normal;
 
+        /// <summary>
+        /// The amount of health the wall has.
+        /// Some walls have health and get destroyed by an actor.
+        /// </summary>
         public int health
         {
             get
@@ -39,6 +47,10 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// Bool to determine if the wall can get destroyed.
+        /// Is true if the wall has more than 0 health.
+        /// </summary>
         public bool destructible
         {
             get
@@ -47,7 +59,10 @@ namespace Gruppe22.Backend
             }
         }
 
-
+        /// <summary>
+        /// A bool to determine if the trap is an illusion.
+        /// Illusionary walls can be passed by actors.
+        /// </summary>
         public bool illusion
         {
             get
@@ -60,6 +75,9 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// A bool for illusionary walls which tells if the illusion is activ.
+        /// </summary>
         public bool illusionVisible
         {
             get
@@ -72,12 +90,20 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// A constructor for the WallTile.
+        /// Just calls the base constructor.
+        /// </summary>
+        /// <param name="parent"></param>
         public WallTile(object parent)
             : base(parent)
         {
 
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public virtual WallType type
         {
             get
@@ -90,6 +116,12 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// Another constructor for the WallTile.
+        /// Chooses random decorations for the wall.
+        /// </summary>
+        /// <param name="parent"></param>
+        /// <param name="r">A random used to choose the deco.</param>
         public WallTile(object parent, Random r)
             : base(parent)
         {
@@ -106,6 +138,11 @@ namespace Gruppe22.Backend
                 _type = Backend.WallType.Deco2;
             }
         }
+
+        /// <summary>
+        /// The method to save a WallTile in a XML-file
+        /// </summary>
+        /// <param name="xmlw">A XMLwriter</param>
         public override void Save(XmlWriter xmlw)
         {
             xmlw.WriteStartElement("WallTile");

@@ -9,18 +9,16 @@ using Microsoft.Xna.Framework;
 
 namespace Gruppe22.Backend
 {
+    /// <summary>
+    /// A tile representing the floor of the world.
+    /// Everything is build on the floor and actors also move on the floor.
+    /// </summary>
     public class FloorTile : Tile, IDisposable
     {
         #region Private Fields
 
-        /// <summary>
-        /// Liste der Tiles die auf diesem FloorTile liegen.
-        /// </summary>
         protected List<Tile> _overlay;
 
-        /// <summary>
-        /// Die Koordinaten bezogene Position des Bodenstückes.
-        /// </summary>
         protected Backend.Coords _coords = null;
 
         /// <summary>
@@ -31,7 +29,7 @@ namespace Gruppe22.Backend
 
         #region Public Fields
         /// <summary>
-        /// Öffentliche Eigenschaft zu dem overlay.
+        /// A list with every tile above this FloorTile.
         /// </summary>
         public List<Tile> overlay
         {
@@ -46,7 +44,7 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Gibt eine Liste der Actors zurück die sich auf diesem Bodenstück befinden.
+        /// Method which returns a list of actors standing on this FloorTile.
         /// </summary>
         public List<Actor> actors
         {
@@ -61,6 +59,9 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
         public ItemTile[] itemTiles
         {
             get
@@ -90,7 +91,7 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Gibt eine Liste der Items zurück, die auf dem Boden liegen.
+        /// Returns an array of items laying on this FloorTile.
         /// </summary>
         public List<Item> items
         {
@@ -106,7 +107,8 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Gibt die erste Falle die auf dem Boden liegt zurück oder null.
+        /// If there is a trap on this FloorTile the method returns the lowest TrapTile.
+        /// Otherweise returns null.
         /// </summary>
         public TrapTile trap
         {
@@ -122,13 +124,13 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Gibt das CheckpointTile aus dem overlay zurück oder null.
+        /// Returns a CheckpointTile if there is one above this FloorTile.
+        /// Otherwise null.
         /// </summary>
         public CheckpointTile checkpoint
         {
             get
             {
-
                 foreach (Tile tile in _overlay)
                 {
                     if (tile is CheckpointTile) return (CheckpointTile)tile;
@@ -138,13 +140,13 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Gibt das TeleportTile das auf dem Boden steht oder null.
+        /// Returns a TeleportTile if there is one above this FloorTile.
+        /// Otherwise null.
         /// </summary>
         public TeleportTile teleport
         {
             get
             {
-
                 foreach (Tile tile in _overlay)
                 {
                     if (tile is TeleportTile) return tile as TeleportTile;
@@ -154,7 +156,8 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Gibt den ersten Actor der auf dem Boden steht zurück oder null.
+        /// If there is a enabled ActorTile above this FloorTile the method returns the associated Actor.
+        /// Otherwise null.
         /// </summary>
         public Actor firstActor
         {
@@ -170,7 +173,8 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Gibt das erste ReservedTile aus dem overlay zurück oder null.
+        /// Returns the lowest ReservedTile above this FloorTile.
+        /// If there is none the method returns null.
         /// </summary>
         public ReservedTile reserved
         {
@@ -186,7 +190,8 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Gibt die erste gefundene Tür aus dem overlay zurück oder null.
+        /// Returns the first DoorTile on this FloorTile.
+        /// If there is none the method returns null.
         /// </summary>
         public DoorTile door
         {
@@ -202,7 +207,7 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Gibt das erste gefundene Item zurück oder null.
+        /// Returns the lowest ItemTile on this Floortile.
         /// </summary>
         public ItemTile firstItem
         {
@@ -218,7 +223,7 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Koordinaten des Tiles.
+        /// The coordinates of the FloorTile.
         /// </summary>
         public new Backend.Coords coords
         {
@@ -233,7 +238,7 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// bestimmt ob auf diesem Tile ein Checkpoint ist.
+        /// Determines whether there is a checkpoint on this Floortile.
         /// </summary>
         public bool hasCheckpoint
         {
@@ -249,7 +254,7 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Bestimmt ob dieses Tile betreten werden kann.
+        /// Determines whether the tile can be entered by checking the overlay for blocking tiles.
         /// </summary>
         public bool canEnter
         {
@@ -267,7 +272,7 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Bestimmt ob hier eine Wand steht.
+        /// Determines whether there is a wall on this Floortile.
         /// </summary>
         public bool hasWall
         {
@@ -284,7 +289,7 @@ namespace Gruppe22.Backend
 
 
         /// <summary>
-        /// Wandtyp.
+        /// Returns the type of a wall on this FloorTile.
         /// </summary>
         public WallType wallType
         {
@@ -301,7 +306,7 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Bestimmt ob eine Tür auf diesem Tile ist.
+        /// Determines whether there is a door on this tile.
         /// </summary>
         public bool hasDoor
         {
@@ -318,7 +323,7 @@ namespace Gruppe22.Backend
 
 
         /// <summary>
-        /// Bestimmt ob das Tile einen speziellen Boden-Stil hat.
+        /// Determines whether this FloorTile has the style of a GapTile.
         /// </summary>
         public int floorStyle
         {
@@ -333,7 +338,7 @@ namespace Gruppe22.Backend
             }
         }
         /// <summary>
-        /// Bestimmt ob der Spieler sich auf diesem Tile befindet.
+        /// Determines whether there is a player on this tile.
         /// </summary>
         public bool hasPlayer
         {
@@ -351,7 +356,7 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Bestimmt ob auf dem aktuellen Tile ein NPC steht
+        /// Determines whether there is a NPC on this tile.
         /// </summary>
         public bool hasNPC
         {
@@ -367,8 +372,9 @@ namespace Gruppe22.Backend
                 return result;
             }
         }
+
         /// <summary>
-        /// Bestimmt ob auf dem aktuellen Tile ein Feind steht
+        /// Determines whether there is a enemy on this tile.
         /// </summary>
         public bool hasEnemy
         {
@@ -386,7 +392,7 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Bestimmt ob das aktuelle Tile einen Teleporter (Raumwechsel) beinhaltet
+        /// Determines whether there is a TeleportTile on this floor.
         /// </summary>
         public bool hasTeleport
         {
@@ -404,7 +410,7 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Bestimmt ob das aktuelle Tile eine Falle hat.
+        /// Determines whether there is a TrapTile on this floor.
         /// </summary>
         public bool hasTrap
         {
@@ -422,7 +428,7 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Bestimmt ob ein Schatz auf dem aktuellen Tile liegt.
+        /// Determines whether there is a item on this floor.
         /// </summary>
         public bool hasTreasure
         {
@@ -440,7 +446,7 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Öffentliche Eigenschaft der Sichtbarkeit der Tiles.
+        /// Bool to determine whether the tile is visible for the player.
         /// </summary>
         public bool visible
         {
@@ -455,7 +461,7 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Bestimmt ob das aktuelle Tile das 'Ende' des Spielfeldes
+        /// Determines whether there is the goal on this tile.
         /// </summary>
         public bool hasTarget
         {
@@ -630,8 +636,9 @@ namespace Gruppe22.Backend
         #endregion
 
         /// <summary>
-        /// Speichert das FloorTile und den zugehörigen overlay
+        /// Method to save the FloorTile and every tile in it's overlay in a XML-file
         /// </summary>
+        /// <param name="xmlw">XMLwriter</param>
         public override void Save(XmlWriter xmlw)
         {
             xmlw.WriteStartElement("Tile");
