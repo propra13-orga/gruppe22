@@ -8,7 +8,10 @@ using Microsoft.Xna.Framework;
 
 namespace Gruppe22.Backend
 {
-
+    /// <summary>
+    /// The types a tile can be.
+    /// For example a wall or a teleporter.
+    /// </summary>
     public enum TileType
     {
         Empty = 0,
@@ -34,6 +37,11 @@ namespace Gruppe22.Backend
 
         #region Public Fields
 
+        /// <summary>
+        /// The coordinates of the tile.
+        /// Returns the coords of the tile "under" this tile isn't the lowest.
+        /// The same principle for set.
+        /// </summary>
         public Backend.Coords coords
         {
             get
@@ -54,6 +62,10 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// The parent of a tile.
+        /// e.g. the floortile below a actortile.
+        /// </summary>
         public object parent
         {
             get
@@ -68,6 +80,11 @@ namespace Gruppe22.Backend
         #endregion
 
         #region Public methods
+
+        /// <summary>
+        /// Abstract update method.
+        /// </summary>
+        /// <param name="gameTime"></param>
         public virtual void Update(GameTime gameTime)
         {
 
@@ -84,9 +101,11 @@ namespace Gruppe22.Backend
 
         #region Constructors
 
+
         /// <summary>
         /// An empty constructor (setting default values)
         /// </summary>
+        /// <param name="parent">The parent for a tile.</param>
         public Tile(object parent)
             : base()
         {
@@ -94,6 +113,12 @@ namespace Gruppe22.Backend
         }
         #endregion
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="DownStream"></param>
+        /// <param name="eventID"></param>
+        /// <param name="data"></param>
         public virtual void HandleEvent(bool DownStream, Events eventID, params object[] data)
         {
             if (!DownStream)

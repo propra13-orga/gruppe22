@@ -7,8 +7,13 @@ using System.Xml;
 
 namespace Gruppe22.Backend
 {
+    /// <summary>
+    /// A tile used to represent a switch in the game.
+    /// e.g. a switch could open a door.
+    /// </summary>
     class SwitchTile:Tile
     {
+        #region Private Fields
         /// <summary>
         /// Whether the switch is active
         /// </summary>
@@ -22,8 +27,9 @@ namespace Gruppe22.Backend
         /// 1 based order in which switch status was changed; 0 for unchanged
         /// </summary>
         private int _order = 0;
+        #endregion
 
-
+        #region Public Fields
         /// <summary>
         /// Whether the switch is active
         /// </summary>        
@@ -32,21 +38,28 @@ namespace Gruppe22.Backend
         /// <summary>
         /// Unique ID of switch (may be used as reference to door or trap)
         /// </summary>
-
         public int id { get { return _id; } set { _id = value; } }
 
         
         /// <summary>
         /// 0 based order in which switch status was changed
         /// </summary>
-
         public int order { get { return _order; } set { _order = value; } }
+        #endregion
 
+        /// <summary>
+        /// Constructor.
+        /// </summary>
+        /// <param name="parent"></param>
         public SwitchTile(object parent)
             : base(parent)
         {
         }
 
+        /// <summary>
+        /// Saving method bla bla.
+        /// </summary>
+        /// <param name="xmlw"></param>
         public override void Save(XmlWriter xmlw)
         {
             xmlw.WriteStartElement("SwitchTile");
