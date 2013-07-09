@@ -48,7 +48,7 @@ namespace Gruppe22.Client
                         switch ((Backend.Buttons)data[0])
                         {
                             case Backend.Buttons.Close:
-                                _parent.HandleEvent(true, Backend.Events.ContinueGame);
+                                _parent.HandleEvent(true, Backend.Events.Settings);
                                 return;
                             case Backend.Buttons.StartServer:
                                 System.Diagnostics.Process.Start("DungeonServer.exe");

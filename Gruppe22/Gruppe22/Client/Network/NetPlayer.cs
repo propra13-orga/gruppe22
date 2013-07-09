@@ -174,11 +174,19 @@ namespace Gruppe22.Client
         public void SendMessage(PacketType type, params object[] data)
         {
             NetOutgoingMessage response;
-            response = _client.CreateMessage((byte)type);
+            response = _client.CreateMessage();
+            response.Write((byte)type);
             foreach (object element in data)
             {
                 if (element is int) response.Write((int)element);
-                else response.Write(element.ToString());
+                else if (element is bool) response.Write((bool)element);
+                else
+                {
+                    if (element is string) response.Write((string)element);
+                    else
+                        response.Write(element.ToString());
+                }
+
             }
             _client.SendMessage(response, NetDeliveryMethod.ReliableOrdered);
         }
@@ -192,7 +200,7 @@ namespace Gruppe22.Client
                 case PacketType.UpdateMap: //Client connected
                     string map = message.ReadString();
                     int addClientId = message.ReadInt16();
-                    _parent.HandleEvent(false, Backend.Events.ShowMessage, "Connected to " + message.SenderEndpoint.Address.ToString() + " as " + _playername + " (ID " + addClientId.ToString() + ")", Color.Orange);
+                    _parent.HandleEvent(true, Backend.Events.ChangeMap, map, addClientId);
                     System.Diagnostics.Debug.WriteLine(map);
                     break;
                 case PacketType.Chat:

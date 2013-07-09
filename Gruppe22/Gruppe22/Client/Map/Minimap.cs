@@ -24,6 +24,18 @@ namespace Gruppe22.Client
                 _map = value;
             }
         }
+
+        public int playerID
+        {
+            get
+            {
+                return _playerID;
+            }
+            set
+            {
+                _playerID = value;
+            }
+        }
         #endregion
 
         #region Public Methods

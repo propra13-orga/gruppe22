@@ -26,6 +26,7 @@ namespace DungeonServer
         /// Server object provided by Lidgren
         /// </summary>
         private NetServer _server;
+        private int _pausedCount = -1;
         private string _servername = "Crawler 2000";
         /// <summary>
         /// A List of CLients and their respective data
@@ -57,12 +58,18 @@ namespace DungeonServer
         {
             if (_clients.Count == 0)
                 return;
-            NetOutgoingMessage response = _server.CreateMessage((byte)type);
-
+            NetOutgoingMessage response = _server.CreateMessage();
+            response.Write((byte)type);
             foreach (object element in data)
             {
                 if (element is int) response.Write((int)element);
-                else response.Write(element.ToString());
+                else if (element is bool) response.Write((bool)element);
+                else
+                {
+                    if (element is string) response.Write((string)element);
+                    else
+                        response.Write(element.ToString());
+                }
             }
 
             foreach (KeyValuePair<IPEndPoint, ClientData> client in _clients)
@@ -78,8 +85,9 @@ namespace DungeonServer
             response.Write((byte)type);
             foreach (object element in data)
             {
-                if (element is int) response.Write((int)element);
 
+                if (element is int) response.Write((int)element);
+                else if (element is bool) response.Write((bool)element);
                 else
                 {
                     if (element is string) response.Write((string)element);
@@ -103,7 +111,8 @@ namespace DungeonServer
             NetIncomingMessage message;
             while (_serverThread.ThreadState != ThreadState.AbortRequested)
             {
-                Update();
+                if (_pausedCount == 0)
+                    Update();
                 if ((message = server.ReadMessage()) == null)
                     continue;
                 switch (message.MessageType)
@@ -146,6 +155,16 @@ namespace DungeonServer
                                     break;
                                 SendMessageToAll(PacketType.Disconnect, NetDeliveryMethod.ReliableUnordered, message.SenderEndpoint, _clients[message.SenderEndpoint].ID);
                                 Log("Sent Disconnect to all except " + _clients[message.SenderEndpoint].ID, ConsoleColor.Cyan);
+
+                                if (_clients[message.SenderEndpoint].paused)
+                                {
+                                    _pausedCount -= 1;
+                                }
+                                if (_clients.Count == 1)
+                                {
+                                    _pausedCount = -1;
+                                }
+
                                 _clients.Remove(message.SenderEndpoint);
                                 Log(message.SenderEndpoint + " disconnected!");
                                 break;
@@ -164,7 +183,14 @@ namespace DungeonServer
                                             return;
                                     }
                                     ClientData newClient = new ClientData(message.SenderConnection, ClientData.GetFreeID(_clients), guid);
-                                    //Nun fügen wir den Client zur Liste hinzu (IP, ClienData):
+                                    if (_pausedCount < 0)
+                                    {
+                                        _pausedCount = 1;
+                                    }
+                                    else
+                                    {
+                                        _pausedCount += 1;
+                                    }
                                     _clients.Add(message.SenderEndpoint, newClient);
                                     Log("Created client '" + guid + "' (ID:" + newClient.ID + ")!");
                                     newClient.actorID = _logic.map.AssignPlayer(guid);
@@ -177,6 +203,7 @@ namespace DungeonServer
                                     Log("Sent UpdateClients to all", ConsoleColor.Cyan);
 
                                     Log(message.SenderEndpoint + " connected!");
+
                                 }
                                 break;
                         }
@@ -196,18 +223,51 @@ namespace DungeonServer
         /// <param name="message"></param>
         private void ProcessMessage(byte id, NetIncomingMessage message)
         {
-            short senderID = _clients[message.SenderEndpoint].ID;
             switch ((PacketType)id)
             {
+                case PacketType.Pause:
+                    bool state= message.ReadBoolean();
+                    Log(_clients[message.SenderEndpoint].paused.ToString());
+                    if (_clients[message.SenderEndpoint].paused)
+                    {
+                        if (!state)
+                        {
+                            _pausedCount -= 1;
+                            Log("Client " + _clients[message.SenderEndpoint].guid + " unpaused game " + _pausedCount.ToString() + " request remaining", ConsoleColor.Green);
+                            _clients[message.SenderEndpoint].paused = false;
+                        } else
+                            Log("Client " + _clients[message.SenderEndpoint].guid + " needlessly asked to unpause game " + _pausedCount.ToString() + " request remaining", ConsoleColor.Green);
+
+                    }
+                    else
+                    {
+                        if (state)
+                        {
+                            _pausedCount += 1;
+                            _clients[message.SenderEndpoint].paused = true;
+                            Log("Client " + _clients[message.SenderEndpoint].guid + " paused game - "+_pausedCount.ToString()+" requests total",ConsoleColor.Red);
+                        }
+                        else
+                            Log("Client " + _clients[message.SenderEndpoint].guid + " needlessly asked to pause game " + _pausedCount.ToString() + " request remaining", ConsoleColor.Green);
+
+                    }
+                    break;
+                case PacketType.UpdateMap: //Client connected
+                    Log("Requested Map Update");
+                    SendMessage(PacketType.UpdateMap, message.SenderConnection, _logic.map.ToXML(), _clients[message.SenderEndpoint].actorID);
+                    break;
                 case PacketType.Chat:
                     Log("Chat");
-                    SendMessageToAll(PacketType.Chat, NetDeliveryMethod.Unreliable, null, senderID, message.ReadString());
+                    SendMessageToAll(PacketType.Chat, NetDeliveryMethod.Unreliable, null, message.ReadString());
                     break;
 
                 case PacketType.Move: //0x0 steht für Positions-Informationen eines Clienten
                     int actorID = message.ReadInt32();
                     Direction dir = (Direction)message.ReadInt32();
                     _logic.HandleEvent(true, Events.MoveActor, actorID, dir);
+                    break;
+                default:
+                    Log(((PacketType)id).ToString());
                     break;
             }
         }

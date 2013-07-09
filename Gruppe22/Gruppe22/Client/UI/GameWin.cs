@@ -228,128 +228,129 @@ namespace Gruppe22.Client
         {
             _logic.Update(gameTime);
 
-
-            if (_logic.map.actors[_playerID].health < 1)
+            if (_status != GameStatus.NoRedraw)
             {
-                _status = Backend.GameStatus.GameOver;
-                _ShowEndGame();
-            }
-            else
-                if (_status != Backend.GameStatus.GameOver)
+                if (_logic.map.actors[_playerID].health < 1)
                 {
-                    foreach (Keys k in _events.keys)
-                    {
-                        switch (k)
-                        {
-                            case Keys.T:
-                                _statusbox.focus = true;
-                                break;
-                            case Keys.Up:
-                                HandleEvent(true, Backend.Events.MoveActor, _playerID, Backend.Direction.Up);
-                                break;
-                            case Keys.Left:
-                                HandleEvent(true, Backend.Events.MoveActor, _playerID, Backend.Direction.Left);
-                                break;
-                            case Keys.Right:
-                                HandleEvent(true, Backend.Events.MoveActor, _playerID, Backend.Direction.Right);
-                                break;
-                            case Keys.Down:
-                                HandleEvent(true, Backend.Events.MoveActor, _playerID, Backend.Direction.Down);
-                                break;
-                            case Keys.Space:
-                                HandleEvent(true, Backend.Events.MoveProjectile, null, _logic.map.actors[_playerID].tile.parent, _logic.map.actors[_playerID].direction);
-                                break;
-
-                        }
-                    }
-
-                    if ((!_updating) && (_status != Backend.GameStatus.FetchingData))
-                    {
-                        {
-                            // _updating = true;
-
-                            _events.Update(gameTime);
-                            if (_backgroundcolor.R > 0) // Remove Red Tint
-                            {
-                                _backgroundcolor.R -= 1;
-                            };
-                            if (_backgroundcolor.G > 0) // Remove Green Tint
-                            {
-                                _backgroundcolor.G -= 1;
-                            };
-                            for (int i = 0; i < _interfaceElements.Count; ++i)
-                            {
-                                UIElement element = _interfaceElements[i];
-                                if (!_dragging)
-                                {
-                                    if (element.IsHit(Mouse.GetState().X, Mouse.GetState().Y))
-                                    {
-                                        if ((_focus == null) || (!_focus.holdFocus))
-                                        {
-                                            _focus = element;
-                                        }
-                                    }
-                                }
-
-                                if (_status == Backend.GameStatus.Running || ((_status == Backend.GameStatus.Paused) && (element.ignorePause)))
-                                    element.Update(gameTime);
-                            }
-
-                            if (_status == Backend.GameStatus.Running)
-                            {
-                                _logic.map.Update(gameTime);
-                            }
-
-                            if (_focus != null)
-                            {
-
-                                if (Mouse.GetState().ScrollWheelValue != _mouseWheel)
-                                {
-
-                                    int Difference = _mouseWheel - Mouse.GetState().ScrollWheelValue;
-                                    _mouseWheel = Mouse.GetState().ScrollWheelValue;
-                                    _focus.ScrollWheel(Difference / Math.Abs(Difference));
-                                }
-
-
-                                if (Mouse.GetState().LeftButton == ButtonState.Pressed)
-                                {
-                                    if (_mousepos.X != -1)
-                                    {
-                                        _dragging = true;
-                                        _focus.MoveContent(new Vector2(Mouse.GetState().X - _mousepos.X, Mouse.GetState().Y - _mousepos.Y));
-                                    }
-                                    _mousepos.X = Mouse.GetState().X;
-                                    _mousepos.Y = Mouse.GetState().Y;
-                                }
-                                else
-                                {
-                                    _mousepos.X = -1;
-                                    _mousepos.Y = -1;
-                                    _dragging = false;
-                                }
-
-
-
-
-
-                            }
-
-                            _updating = false;
-                        }
-                    }
-                    base.Update(gameTime);
+                    _status = Backend.GameStatus.GameOver;
+                    _ShowEndGame();
                 }
                 else
-                {
-                    _events.Update(gameTime);
-
-                    if (_focus != null)
+                    if (_status != Backend.GameStatus.GameOver)
                     {
-                        _focus.Update(gameTime);
-                    }
-                }
+                        foreach (Keys k in _events.keys)
+                        {
+                            switch (k)
+                            {
+                                case Keys.T:
+                                    _statusbox.focus = true;
+                                    break;
+                                case Keys.Up:
+                                    HandleEvent(true, Backend.Events.MoveActor, _playerID, Backend.Direction.Up);
+                                    break;
+                                case Keys.Left:
+                                    HandleEvent(true, Backend.Events.MoveActor, _playerID, Backend.Direction.Left);
+                                    break;
+                                case Keys.Right:
+                                    HandleEvent(true, Backend.Events.MoveActor, _playerID, Backend.Direction.Right);
+                                    break;
+                                case Keys.Down:
+                                    HandleEvent(true, Backend.Events.MoveActor, _playerID, Backend.Direction.Down);
+                                    break;
+                                case Keys.Space:
+                                    HandleEvent(true, Backend.Events.MoveProjectile, null, _logic.map.actors[_playerID].tile.parent, _logic.map.actors[_playerID].direction);
+                                    break;
 
+                            }
+                        }
+
+                        if ((!_updating) && (_status != Backend.GameStatus.FetchingData))
+                        {
+                            {
+                                // _updating = true;
+
+                                _events.Update(gameTime);
+                                if (_backgroundcolor.R > 0) // Remove Red Tint
+                                {
+                                    _backgroundcolor.R -= 1;
+                                };
+                                if (_backgroundcolor.G > 0) // Remove Green Tint
+                                {
+                                    _backgroundcolor.G -= 1;
+                                };
+                                for (int i = 0; i < _interfaceElements.Count; ++i)
+                                {
+                                    UIElement element = _interfaceElements[i];
+                                    if (!_dragging)
+                                    {
+                                        if (element.IsHit(Mouse.GetState().X, Mouse.GetState().Y))
+                                        {
+                                            if ((_focus == null) || (!_focus.holdFocus))
+                                            {
+                                                _focus = element;
+                                            }
+                                        }
+                                    }
+
+                                    if (_status == Backend.GameStatus.Running || ((_status == Backend.GameStatus.Paused) && (element.ignorePause)))
+                                        element.Update(gameTime);
+                                }
+
+                                if (_status == Backend.GameStatus.Running)
+                                {
+                                    _logic.map.Update(gameTime);
+                                }
+
+                                if (_focus != null)
+                                {
+
+                                    if (Mouse.GetState().ScrollWheelValue != _mouseWheel)
+                                    {
+
+                                        int Difference = _mouseWheel - Mouse.GetState().ScrollWheelValue;
+                                        _mouseWheel = Mouse.GetState().ScrollWheelValue;
+                                        _focus.ScrollWheel(Difference / Math.Abs(Difference));
+                                    }
+
+
+                                    if (Mouse.GetState().LeftButton == ButtonState.Pressed)
+                                    {
+                                        if (_mousepos.X != -1)
+                                        {
+                                            _dragging = true;
+                                            _focus.MoveContent(new Vector2(Mouse.GetState().X - _mousepos.X, Mouse.GetState().Y - _mousepos.Y));
+                                        }
+                                        _mousepos.X = Mouse.GetState().X;
+                                        _mousepos.Y = Mouse.GetState().Y;
+                                    }
+                                    else
+                                    {
+                                        _mousepos.X = -1;
+                                        _mousepos.Y = -1;
+                                        _dragging = false;
+                                    }
+
+
+
+
+
+                                }
+
+                                _updating = false;
+                            }
+                        }
+                        base.Update(gameTime);
+                    }
+                    else
+                    {
+                        _events.Update(gameTime);
+
+                        if (_focus != null)
+                        {
+                            _focus.Update(gameTime);
+                        }
+                    }
+            }
         }
 
         /// <summary>
@@ -526,7 +527,38 @@ namespace Gruppe22.Client
                         _toolbar.dragItem = _draggedObject;
                         break;
 
+                    case Backend.Events.Settings:
+                        if (_focus is Lobby)
+                        {
+                            _status = Backend.GameStatus.NoRedraw;
+                            NetPlayer tmp = ((Lobby)_focus).network;
+                            bool changeMode = false;
+                            if (tmp.connected)
+                            {
+                                if (_logic is PureLogic)
+                                {
+                                    _logic = new NetLogic(this, tmp);
+                                    tmp.parent = _logic;
 
+                                    changeMode = true;
+                                }
+                            }
+                            else
+                            {
+                                if (_logic is NetLogic)
+                                {
+                                    _logic = new PureLogic(this);
+                                    changeMode = true;
+                                    _health.actor = _logic.map.actors[_playerID];
+                                    _mana.actor = _logic.map.actors[_playerID];
+                                    _toolbar.actor = _logic.map.actors[_playerID];
+                                    _mainmap1.map = _logic.map;
+                                    _minimap1.map = _logic.map;
+
+                                }
+                            }
+                        }
+                        break;
                     case Backend.Events.ShowMenu:
                         _logic.HandleEvent(true, Events.Pause);
                         if (_focus is CharacterWindow)
@@ -666,8 +698,6 @@ namespace Gruppe22.Client
                         _mana.actor = _logic.map.actors[_playerID];
                         _health.actor = _logic.map.actors[_playerID];
                         _toolbar.actor = _logic.map.actors[_playerID];
-                        _status = Backend.GameStatus.Paused;
-                        HandleEvent(true, Backend.Events.ContinueGame);
                         break;
 
 
@@ -696,34 +726,6 @@ namespace Gruppe22.Client
                             _logic.HandleEvent(true, Events.ContinueGame);
                             if (_focus != null)
                             {
-                                if (_focus is Lobby)
-                                {
-                                    _status = Backend.GameStatus.NoRedraw;
-                                    NetPlayer tmp = ((Lobby)_focus).network;
-                                    bool changeMode = false;
-                                    if (tmp.connected)
-                                    {
-                                        if (_logic is PureLogic)
-                                        {
-                                            tmp.parent = this;
-                                            _logic = new NetLogic(this, tmp);
-                                            changeMode = true;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        if (_logic is NetLogic)
-                                        {
-                                            _logic = new PureLogic(this);
-                                            changeMode = true;
-                                        }
-                                    }
-                                    _mainmap1.map = _logic.map;
-                                    _minimap1.map = _logic.map;
-                                    _health.actor = _logic.map.actors[_playerID];
-                                    _mana.actor = _logic.map.actors[_playerID];
-                                    _toolbar.actor = _logic.map.actors[_playerID];
-                                }
                                 _focus.Dispose();
                                 _interfaceElements.Remove(_focus);
                             }
@@ -760,6 +762,22 @@ namespace Gruppe22.Client
                     case Backend.Events.ResetGame:
                         _status = Backend.GameStatus.NoRedraw;
                         _logic.HandleEvent(true, Events.ResetGame);
+                        break;
+
+                    case Backend.Events.ChangeMap:
+                        _status = Backend.GameStatus.NoRedraw;
+                        _playerID = (int)data[0];
+                        _mainmap1.playerID = _playerID;
+                        _minimap1.playerID = _playerID;
+                        _mainmap1.map = _logic.map;
+                        _minimap1.map = _logic.map;
+                        _health.actor = _logic.map.actors[_playerID];
+                        _mana.actor = _logic.map.actors[_playerID];
+                        _toolbar.actor = _logic.map.actors[_playerID];
+                        _mainmap1.resetActors();
+                        _status = Backend.GameStatus.Paused;
+                        HandleEvent(true, Backend.Events.ContinueGame);
+                        _logic.HandleEvent(true, Events.ContinueGame);
                         break;
                 }
             }

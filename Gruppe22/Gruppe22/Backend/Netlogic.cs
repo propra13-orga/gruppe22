@@ -12,14 +12,9 @@ namespace Gruppe22.Backend
 {
     public class NetLogic : Logic, IHandleEvent
     {
-
+        private bool _ready = false;
         protected NetPlayer _network = null;
 
-        public bool ready{
-            get{
-                return _map!=null;
-            }
-        }
 
         public override void Update(GameTime gameTime)
         {
@@ -42,7 +37,7 @@ namespace Gruppe22.Backend
             _parent.HandleEvent(false, Events.ShowMessage, text, Color.Pink);
         }
 
-        void IHandleEvent.HandleEvent(bool DownStream, Events eventID, params object[] data)
+        public override void HandleEvent(bool DownStream, Events eventID, params object[] data)
         {
             if (DownStream) // Received from Frontend
             {
@@ -50,11 +45,16 @@ namespace Gruppe22.Backend
                 {
                     case Events.ChangeMap:
                         _map.FromXML((string)data[0]);
+                        _ready = true;
                         _parent.HandleEvent(true, Events.ChangeMap, (int)data[1]);
                         break;
 
                     case Events.MoveActor:
-                        _network.SendMessage(PacketType.Move, (int)data[0], (int)data[1]);
+                        _network.SendMessage(PacketType.Move, (int)data[0], (Coords)data[1]);
+                        break;
+
+                    case Events.ContinueGame:
+                        _network.SendMessage(PacketType.Pause, false);
                         break;
 
                 }
@@ -62,6 +62,12 @@ namespace Gruppe22.Backend
             else // Received from Network
             {
 
+                switch (eventID)
+                {
+                    case Events.MoveActor:
+                        _parent.HandleEvent(true, Events.MoveActor, (int)data[0], (int)data[1]);
+                        break;
+                }
             };
         }
 
@@ -70,6 +76,8 @@ namespace Gruppe22.Backend
             : base(parent, null, null)
         {
             _network = network;
+            _map = new Map();
+            RequestMap();
         }
     }
 }

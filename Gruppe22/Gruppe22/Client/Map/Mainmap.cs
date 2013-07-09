@@ -382,6 +382,17 @@ namespace Gruppe22.Client
             _visibility = -100;
         }
 
+        public int playerID
+        {
+            get
+            {
+                return _playerID;
+            }
+            set
+            {
+                _playerID = value;
+            }
+        }
 
         public override void HandleEvent(bool DownStream, Backend.Events eventID, params object[] data)
         {

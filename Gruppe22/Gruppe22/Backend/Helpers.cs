@@ -21,6 +21,7 @@ namespace Gruppe22.Backend
 
     public enum PacketType
     {
+        Pause,
         Connect,
         Disconnect,
         Move,

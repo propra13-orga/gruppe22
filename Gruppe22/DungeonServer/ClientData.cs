@@ -13,8 +13,20 @@ namespace DungeonServer
         private string _guid = "";
         private short _id = 0;
         private int _actorID = 0;
+        private bool _paused = true;
         private NetConnection _connection = null;
 
+        public bool paused
+        {
+            get
+            {
+                return _paused;
+            }
+            set
+            {
+                _paused = value;
+            }
+        }
         public int actorID
         {
             get
@@ -73,6 +85,7 @@ namespace DungeonServer
             ID = id;
             _guid = guid;
             _actorID = actorID;
+            _paused = true;
         }
 
         public short ID { get; private set; }
@@ -87,7 +100,6 @@ namespace DungeonServer
             for (short id = 0; id <= usedIds.Count; id++)
                 if (!usedIds.Contains(id))
                     return id;
-
             return -1;
         }
     }
