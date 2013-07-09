@@ -3,18 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework.Content;
-//NPC Entwicklerdoku fertig!
+
 namespace Gruppe22.Backend
 {
+    /// <summary>
+    /// The class used to generate NPCs.
+    /// NPCs can either tell a story to the player or have a shop.
+    /// </summary>
     public class NPC : Actor
     {
-        /// <summary>
-        /// Markiert ob der NPC ein Shop ist.
-        /// </summary>
         private bool _hasShop = true;
-        /// <summary>
-        /// Ist true falls ein NPC ein Dialog (sprechen) besitzt.
-        /// </summary>
         private bool _hasDialog = false;
         /// <summary>
         /// Verhältnis des NPC's zum Spieler. Bei 0 ist es neutral, negative Werte stellen ein schlechtes Verhältnis dar und positive ein gutes. Dabei haben vom Betrag größere Zahlen eine größere Auswirkung.
@@ -22,7 +20,7 @@ namespace Gruppe22.Backend
         private int _love = 0;
 
         /// <summary>
-        /// Öffentliche Eigenschaft zu _hasShop.
+        /// Determines if the NPC has a shop.
         /// </summary>
         public bool hasShop
         {
@@ -37,7 +35,7 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Öffentliche Eigenschaft zu _hasDialog.
+        /// Determines if the NPC has something to say to the player.
         /// </summary>
         public bool hasDialog
         {
@@ -52,7 +50,7 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Öffentlcie Eigenschaft zu _love.
+        /// Field to discribe the relationship
         /// </summary>
         public int love
         {
@@ -67,9 +65,11 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Interaktion des NPC. Aktion öffne Schop bzw. Dialog.
-        /// Funktionsweise uber Eventaufruf.
+        /// Method to interact with a NPC.
+        /// Either opens the NPC's shop or his dialogue.
+        /// Calls the Eventhandler.
         /// </summary>
+        /// <param name="With">The actor with which should be interacted</param>
         public void Interact(Actor With)
         {
             if (_hasShop) ((Backend.IHandleEvent)_tile.parent).HandleEvent(false, Backend.Events.Shop, this, With);
@@ -77,17 +77,19 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Konstruktor. Initiallisierung der Grafikverweise.
+        /// The constructor for a NPC.
+        /// Initializes the standard properties and graphics for that NPC.
+        /// See actor for the params.
         /// </summary>
-        /// <param name="content">Resoursenverwaltung.</param>
-        /// <param name="health">Lebenspunkte, Standardwert ist 10.</param>
-        /// <param name="armor">Rüstung, Standardwert ist 0.</param>
-        /// <param name="damage">Schaden, Standardwert ist 0.</param>
-        /// <param name="maxHealth">Maximale Lebenspunkte, Standardwert ist 10.</param>
-        /// <param name="name">Name des NPCs.</param>
-        /// <param name="r">Randomobjekt für die Basisklasse.</param>
-        /// <param name="_level">NPC aus dem Level _level.</param>
-        /// <param name="shop">Legt fest ob der NPC ein Shop ist.</param>
+        /// <param name="content"></param>
+        /// <param name="health"></param>
+        /// <param name="armor"></param>
+        /// <param name="damage"></param>
+        /// <param name="maxHealth"></param>
+        /// <param name="name"></param>
+        /// <param name="r"></param>
+        /// <param name="_level"></param>
+        /// <param name="shop"></param>
         public NPC(int health = 10, int armor = 0, int damage = 0, int maxHealth = 10, string name = "", Random r = null, int _level = 1, bool shop = false)
             : base(ActorType.NPC, health, armor, damage, maxHealth, name, r)
         {
