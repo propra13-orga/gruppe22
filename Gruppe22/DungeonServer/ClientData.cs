@@ -10,15 +10,69 @@ namespace DungeonServer
 {
     public class ClientData
     {
-        public ClientData(NetConnection connection, short id)
+        private string _guid = "";
+        private short _id = 0;
+        private int _actorID = 0;
+        private NetConnection _connection = null;
+
+        public int actorID
         {
-            Connection = connection;
-            ID = id;
+            get
+            {
+                return _actorID;
+            }
+            set
+            {
+                _actorID = value;
+            }
+        }
+        public string guid
+        {
+            get
+            {
+                return _guid;
+            }
+            set
+            {
+                _guid = value;
+            }
         }
 
-        public ClientData(short id)
+        public short id
+        {
+            get
+            {
+                return _id;
+            }
+            set
+            {
+                _id = value;
+            }
+        }
+
+        public NetConnection connection
+        {
+            get
+            {
+                return _connection;
+            }
+            set
+            {
+                _connection = value;
+            }
+        }
+
+        public ClientData(NetConnection connection, short id, string guid, int actorID=0)
+            : this(id, guid, actorID)
+        {
+            Connection = connection;
+        }
+
+        public ClientData(short id, string guid, int actorID=0)
         {
             ID = id;
+            _guid = guid;
+            _actorID = actorID;
         }
 
         public short ID { get; private set; }

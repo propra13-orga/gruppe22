@@ -16,7 +16,6 @@ namespace Gruppe22.Client
 
         private NetPeerConfiguration _config;
         private NetClient _client;
-        private Dictionary<short, ClientData> _clients;
         private NetConnectionStatus _lastStatus;
         private Backend.IHandleEvent _parent;
         private string _server = "";
@@ -43,7 +42,7 @@ namespace Gruppe22.Client
                     _parent.HandleEvent(false, Backend.Events.ShowMessage, "Connecting to Server " + value + "...");
                     _server = value;
                     NetOutgoingMessage outmsg = _client.CreateMessage();
-                    outmsg.Write((byte)PacketType.Connect);
+                    // outmsg.Write((byte)PacketType.Connect);
                     outmsg.Write(_playername);
                     _client.Connect(_server, 666, outmsg);
                 }
@@ -187,20 +186,14 @@ namespace Gruppe22.Client
 
         private void ProcessMessage(byte type, NetIncomingMessage message)
         {
-            switch ((PacketType)type)
+            PacketType x = (PacketType)type;
+            switch (x)
             {
-                case PacketType.Connect: //Client connected
-                    short addClientId = message.ReadInt16();
-                    if (!_clients.ContainsKey(addClientId))
-                        _clients.Add(addClientId, null);
+                case PacketType.UpdateMap: //Client connected
+                    string map = message.ReadString();
+                    int addClientId = message.ReadInt16();
                     _parent.HandleEvent(false, Backend.Events.ShowMessage, "Connected to " + message.SenderEndpoint.Address.ToString() + " as " + _playername + " (ID " + addClientId.ToString() + ")", Color.Orange);
-
-                    break;
-                case PacketType.Disconnect: //Client disconnect
-                    short disconnectingClientID = message.ReadInt16();
-                    if (_clients.ContainsKey(disconnectingClientID))
-                        _clients.Remove(disconnectingClientID);
-                    _parent.HandleEvent(false, Backend.Events.ShowMessage, "Client " + disconnectingClientID + " has disconnected!", Color.Orange);
+                    System.Diagnostics.Debug.WriteLine(map);
                     break;
                 case PacketType.Chat:
                     _parent.HandleEvent(false, Backend.Events.ShowMessage, message.ReadString(), Color.Pink);
@@ -216,7 +209,6 @@ namespace Gruppe22.Client
             _config.EnableMessageType(NetIncomingMessageType.DiscoveryResponse);
             _parent = parent;
             _servers = new Dictionary<string, string>();
-            _clients = new Dictionary<short, ClientData>();
             Start();
         }
 

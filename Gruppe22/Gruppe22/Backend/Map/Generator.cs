@@ -216,6 +216,7 @@ namespace Gruppe22.Backend
             xmlw.WriteAttributeString("height", _height.ToString());
             xmlw.WriteAttributeString("name", _name);
             xmlw.WriteAttributeString("level", _level.ToString());
+            xmlw.WriteAttributeString("id", _id.ToString());
             xmlw.WriteAttributeString("dungeon", _dungeonname);
             xmlw.WriteAttributeString("music", _music);
             xmlw.WriteAttributeString("floor", _floorFile);

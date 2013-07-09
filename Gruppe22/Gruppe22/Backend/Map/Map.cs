@@ -656,16 +656,32 @@ namespace Gruppe22.Backend
             }
         }
 
+        public void Load(string filename, Backend.Coords targetCoords = null, bool resetPlayer = false)
+        {
+            XmlReaderSettings settings = new XmlReaderSettings();
+            settings.IgnoreWhitespace = true;
+            settings.IgnoreComments = true;
+            XmlReader xmlr = XmlReader.Create(filename, settings);
+            ReadXML(xmlr, targetCoords, resetPlayer);
+            xmlr.Close();
+        }
+
+        public void FromXML(string input, Backend.Coords targetCoords = null, bool resetPlayer = false)
+        {
+            XmlReaderSettings settings = new XmlReaderSettings();
+            settings.IgnoreWhitespace = true;
+            settings.IgnoreComments = true;
+            XmlReader xmlr = XmlReader.Create(new System.IO.StringReader(input));
+            ReadXML(xmlr, targetCoords, resetPlayer);
+            xmlr.Close();
+        }
         /// <summary>
         /// Load a map from a file
         /// </summary>
         /// <param name="filename">The filename to read from</param>
         /// <param name="player">The starting position on the loaded map</param>
-        public void Load(string filename, Backend.Coords targetCoords = null, bool resetPlayer = false)
+        public void ReadXML(XmlReader xmlr, Backend.Coords targetCoords = null, bool resetPlayer = false)
         {
-            Regex re = new Regex(@"\d+");
-            Match m = re.Match(filename);
-            _id = Convert.ToInt32(m.Value);
             Coords tempTarget = targetCoords;
 
             List<Player> players = new List<Player>();
@@ -694,10 +710,6 @@ namespace Gruppe22.Backend
             _tiles.Clear();
             _actors.Clear();
             _updateTiles.Clear();
-            XmlReaderSettings settings = new XmlReaderSettings();
-            settings.IgnoreWhitespace = true;
-            settings.IgnoreComments = true;
-            XmlReader xmlr = XmlReader.Create(filename, settings);
             xmlr.MoveToContent();//xml
             _width = int.Parse(xmlr.GetAttribute("width"));
             _height = int.Parse(xmlr.GetAttribute("height"));
@@ -706,6 +718,8 @@ namespace Gruppe22.Backend
             if (xmlr.GetAttribute("dungeon") != null) _dungeonname = xmlr.GetAttribute("dungeon");
             if (xmlr.GetAttribute("floor") != null) _floorFile = xmlr.GetAttribute("floor");
             if (xmlr.GetAttribute("wall") != null) _wallFile = xmlr.GetAttribute("wall");
+            if (xmlr.GetAttribute("id") != null) _id = Int32.Parse(xmlr.GetAttribute("id"));
+
             if (xmlr.GetAttribute("light") != null) _light = int.Parse(xmlr.GetAttribute("light"));
             if (xmlr.GetAttribute("music") != null) _music = xmlr.GetAttribute("music");
 
@@ -954,8 +968,6 @@ namespace Gruppe22.Backend
                 }
             }
 
-            xmlr.Close();
-
 
             while (players.Count > 0)
             {
@@ -1028,13 +1040,33 @@ namespace Gruppe22.Backend
             return output;
         }
 
+        public virtual int AssignPlayer(string GUID = "")
+        {
+            for (int i = 0; i < _actors.Count; ++i)
+            {
+                if ((_actors[i] is Player) && ((_actors[i].GUID == "") || (_actors[i].GUID == "")))
+                {
+                    _actors[i].GUID = GUID;
+                    _actors[i].online = true;
+                    return i;
+                }
+            }
+            Player temp=new Player();
+            _actors.Add(temp);
+            int newID = _actors.Count;
+            temp.online = true;
+            temp.tile = new ActorTile(this[1, 1]);
+            this[1, 1].Add(temp.tile);
+            return newID;
+            // Create New Player with specified GUID
+        }
 
         /// <summary>
         /// Get the current Map as an XML-String
         /// </summary>
         public virtual string ToXML()
         {
-            StringBuilder output=new StringBuilder("");
+            StringBuilder output = new StringBuilder("");
             XmlWriter xmlw = XmlWriter.Create(output);
             xmlw.WriteStartDocument();
             xmlw.WriteStartElement("GameMap");
@@ -1047,6 +1079,8 @@ namespace Gruppe22.Backend
             xmlw.WriteAttributeString("floor", _floorFile);
             xmlw.WriteAttributeString("music", _music);
             xmlw.WriteAttributeString("wall", _wallFile);
+            xmlw.WriteAttributeString("id", _id.ToString());
+
 
             foreach (List<FloorTile> ltiles in _tiles)
             {
@@ -1059,7 +1093,12 @@ namespace Gruppe22.Backend
             xmlw.WriteEndElement();
             xmlw.WriteEndDocument();
             xmlw.Close();
-            return output.ToString();
+            string result=output.ToString();
+            result = result.Trim();
+            result=result.Replace("  ", " ");
+            result = result.Replace(Environment.NewLine, " ");
+            result = result.Replace('\0', ' ');
+            return result;
         }
 
         /// <summary>
@@ -1080,6 +1119,8 @@ namespace Gruppe22.Backend
             xmlw.WriteAttributeString("floor", _floorFile);
             xmlw.WriteAttributeString("music", _music);
             xmlw.WriteAttributeString("wall", _wallFile);
+            xmlw.WriteAttributeString("id", _id.ToString());
+
 
             foreach (List<FloorTile> ltiles in _tiles)
             {

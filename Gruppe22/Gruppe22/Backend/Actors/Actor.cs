@@ -29,6 +29,14 @@ namespace Gruppe22.Backend
         /// </summary>
         protected Random _random;
         /// <summary>
+        /// Unique identifier used for network play
+        /// </summary>
+        protected string _GUID="";
+        /// <summary>
+        /// Whether player is currently online
+        /// </summary>
+        protected bool _online = false;
+        /// <summary>
         /// Number of lives (ressurection)
         /// </summary>
         protected uint _lives = 1;
@@ -140,6 +148,36 @@ namespace Gruppe22.Backend
             }
             return null;
 
+        }
+
+        /// <summary>
+        /// Unique identifier for players in LAN-mode
+        /// </summary>
+        public string GUID
+        {
+            get
+            {
+                return _GUID;
+            }
+            set
+            {
+                _GUID = value;
+            }
+        }
+
+        /// <summary>
+        /// Determines whether a player is online
+        /// </summary>
+        public bool online
+        {
+            get
+            {
+                return _online;
+            }
+            set
+            {
+                _online = value;
+            }
         }
 
         /// <summary>
@@ -852,6 +890,7 @@ namespace Gruppe22.Backend
             writer.WriteAttributeString("destroyArmor", Convert.ToString(_destroyArmor));
             writer.WriteAttributeString("animation", Convert.ToString(_animationFile));
             writer.WriteAttributeString("viewRange", Convert.ToString(_viewRange));
+            if (_GUID != "") writer.WriteAttributeString("GUID", Convert.ToString(GUID));
             if (_stunned != -1) writer.WriteAttributeString("stunned", Convert.ToString(_stunned));
             if (_charmed != -1) writer.WriteAttributeString("charmed", Convert.ToString(_charmed));
             if (_lives != 1) writer.WriteAttributeString("lives", Convert.ToString(_lives));
@@ -1001,6 +1040,7 @@ namespace Gruppe22.Backend
             _level = Convert.ToInt32(reader.GetAttribute("level"));
             _mana = Convert.ToInt32(reader.GetAttribute("mana"));
             _evade = Convert.ToInt32(reader.GetAttribute("evade"));
+            if (reader.GetAttribute("GUID") != null) _GUID = reader.GetAttribute("GUID");
             _block = Convert.ToInt32(reader.GetAttribute("block"));
             _penetrate = Convert.ToInt32(reader.GetAttribute("penetrate"));
             _healthReg = Convert.ToInt32(reader.GetAttribute("healthReg"));

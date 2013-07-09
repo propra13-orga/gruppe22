@@ -343,7 +343,7 @@ namespace Gruppe22.Backend
                 int count = 0;
                 while ((!result) && (count < _overlay.Count))
                 {
-                    result = ((_overlay[count] is ActorTile) && (((ActorTile)_overlay[count]).actor is Player));
+                    result = ((_overlay[count] is ActorTile) && (((ActorTile)_overlay[count]).actor is Player) && (((ActorTile)_overlay[count]).actor.online));
                     ++count;
                 }
                 return result;

@@ -74,11 +74,18 @@ namespace DungeonServer
 
         public void SendMessage(PacketType type, NetConnection target, params object[] data)
         {
-            NetOutgoingMessage response = _server.CreateMessage((byte)type);
+            NetOutgoingMessage response = _server.CreateMessage();
+            response.Write((byte)type);
             foreach (object element in data)
             {
                 if (element is int) response.Write((int)element);
-                else response.Write(element.ToString());
+
+                else
+                {
+                    if (element is string) response.Write((string)element);
+                    else
+                        response.Write(element.ToString());
+                }
             }
             _server.SendMessage(response, target, NetDeliveryMethod.ReliableUnordered);
         }
@@ -120,45 +127,58 @@ namespace DungeonServer
                         }
                         break;
                     case NetIncomingMessageType.ConnectionApproval:
-                        //Clients die Connecten wollen dies erlauben
                         message.SenderConnection.Approve();
                         Log(message.SenderEndpoint + " approved.");
                         break;
                     case NetIncomingMessageType.Data:
-                        //Sämtliche Daten die Clients senden annehmen
+                        Log("Data received", ConsoleColor.Red);
                         byte type = message.ReadByte();
-                        ProcessMessage(type, message); //Wir leiten die Message weiter und verarbeiten sie, je nach Typ
-
+                        ProcessMessage(type, message);
                         break;
                     case NetIncomingMessageType.StatusChanged:
-                        //Falls ein Client connected / disconnected
+                        Log("Status Changed", ConsoleColor.Magenta);
                         NetConnectionStatus state = (NetConnectionStatus)message.ReadByte();
-                        if (state == NetConnectionStatus.Disconnected || state == NetConnectionStatus.Disconnecting)
+                        switch (state)
                         {
-                            if (!_clients.ContainsKey(message.SenderEndpoint))
+                            case NetConnectionStatus.Disconnected:
+                            case NetConnectionStatus.Disconnecting:
+                                if (!_clients.ContainsKey(message.SenderEndpoint))
+                                    break;
+                                SendMessageToAll(PacketType.Disconnect, NetDeliveryMethod.ReliableUnordered, message.SenderEndpoint, _clients[message.SenderEndpoint].ID);
+                                Log("Sent Disconnect to all except " + _clients[message.SenderEndpoint].ID, ConsoleColor.Cyan);
+                                _clients.Remove(message.SenderEndpoint);
+                                Log(message.SenderEndpoint + " disconnected!");
                                 break;
-                            SendMessageToAll(PacketType.Disconnect, NetDeliveryMethod.ReliableUnordered, message.SenderEndpoint, _clients[message.SenderEndpoint].ID);
-                            Log("Sent Disconnect to all except " + _clients[message.SenderEndpoint].ID, ConsoleColor.Cyan);
-                            _clients.Remove(message.SenderEndpoint);
-                            Log(message.SenderEndpoint + " disconnected!");
-                        }
-                        else if (state == NetConnectionStatus.Connected)
-                        {
-                            if (_clients.ContainsKey(message.SenderEndpoint)) break;
+                            case NetConnectionStatus.Connected:
+                                if (_clients.ContainsKey(message.SenderEndpoint)) break;
+                                string guid = "";
+                                if (message.SenderConnection.RemoteHailMessage != null)
+                                {
+                                    guid = message.SenderConnection.RemoteHailMessage.ReadString();
+                                }
+                                if (guid != "")
+                                {
+                                    for (int i = 0; i < _clients.Count; ++i)
+                                    {
+                                        if (_clients.ElementAt(i).Value.guid == guid)
+                                            return;
+                                    }
+                                    ClientData newClient = new ClientData(message.SenderConnection, ClientData.GetFreeID(_clients), guid);
+                                    //Nun fügen wir den Client zur Liste hinzu (IP, ClienData):
+                                    _clients.Add(message.SenderEndpoint, newClient);
+                                    Log("Created client '" + guid + "' (ID:" + newClient.ID + ")!");
+                                    newClient.actorID = _logic.map.AssignPlayer(guid);
+                                    SendMessage(PacketType.Connect, message.SenderConnection, _logic.map.ToXML(), newClient.actorID); // Send map to client
+                                    Log("Sent Connect to " + newClient.ID, ConsoleColor.Cyan);
 
-                            ClientData newClient = new ClientData(message.SenderConnection, ClientData.GetFreeID(_clients)); //Neuen Clienten erstellen
-                            //Nun fügen wir den Client zur Liste hinzu (IP, ClienData):
-                            _clients.Add(message.SenderEndpoint, newClient);
-                            Console.WriteLine("Created client with id '" + newClient.ID + "'!");
-                            SendMessage(PacketType.Connect, message.SenderConnection, NetDeliveryMethod.ReliableUnordered, newClient.ID, (short)_clients.Count);
-                            Log("Sent Connect to " + newClient.ID, ConsoleColor.Cyan);
+                                    //Nun alle aktiven Clients informieren, dass ein neuer Client connected ist
 
-                            //Nun alle aktiven Clients informieren, dass ein neuer Client connected ist
+                                    SendMessageToAll(PacketType.UpdateClients, NetDeliveryMethod.ReliableUnordered, message.SenderEndpoint, newClient.ID);
+                                    Log("Sent UpdateClients to all", ConsoleColor.Cyan);
 
-                            SendMessageToAll(PacketType.UpdateClients, NetDeliveryMethod.ReliableUnordered, message.SenderEndpoint, newClient.ID);
-                            Log("Sent UpdateClients to all", ConsoleColor.Cyan);
-
-                            Log(message.SenderEndpoint + " connected!");
+                                    Log(message.SenderEndpoint + " connected!");
+                                }
+                                break;
                         }
                         break;
                     default:
@@ -214,10 +234,12 @@ namespace DungeonServer
             {
                 while (!Console.KeyAvailable)
                 {
-                    Console.CursorLeft = 0;
-                    Console.CursorTop = 4;
-                    Console.CursorVisible = false;
-                    Console.WriteLine(_logic.map.ToString());
+                    /*  Console.CursorLeft = 0;
+                      Console.CursorTop = 4;
+                      Console.CursorVisible = false;
+                      Console.WriteLine(_logic.map.ToString());
+                
+                     */
                 }
                 string input = Console.ReadLine();
                 Console.CursorVisible = true;
@@ -299,6 +321,7 @@ namespace DungeonServer
                 _config.Port = 666;
                 _config.UseMessageRecycling = true;
                 _config.EnableUPnP = true;
+                _config.AcceptIncomingConnections = false;
 
                 _server = new NetServer(_config);
                 _server.Start();

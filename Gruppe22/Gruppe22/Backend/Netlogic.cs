@@ -15,6 +15,12 @@ namespace Gruppe22.Backend
 
         protected NetPlayer _network = null;
 
+        public bool ready{
+            get{
+                return _map!=null;
+            }
+        }
+
         public override void Update(GameTime gameTime)
         {
 
@@ -25,7 +31,10 @@ namespace Gruppe22.Backend
 
         }
 
-
+        public void RequestMap()
+        {
+            _network.SendMessage(PacketType.UpdateMap);
+        }
 
         public virtual void SendChat(string text)
         {
@@ -39,6 +48,11 @@ namespace Gruppe22.Backend
             {
                 switch (eventID)
                 {
+                    case Events.ChangeMap:
+                        _map.FromXML((string)data[0]);
+                        _parent.HandleEvent(true, Events.ChangeMap, (int)data[1]);
+                        break;
+
                     case Events.MoveActor:
                         _network.SendMessage(PacketType.Move, (int)data[0], (int)data[1]);
                         break;
