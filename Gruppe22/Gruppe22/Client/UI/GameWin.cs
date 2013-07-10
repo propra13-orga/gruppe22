@@ -226,11 +226,12 @@ namespace Gruppe22.Client
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            _logic.Update(gameTime);
+            if ((_status == GameStatus.Running) || (_logic is NetLogic))
+                _logic.Update(gameTime);
 
             if (_status != GameStatus.NoRedraw)
             {
-                if (_logic.map.actors[_playerID].health < 1)
+                if ((_logic.map.actors[_playerID].health < 1) && (_status != Backend.GameStatus.GameOver))
                 {
                     _status = Backend.GameStatus.GameOver;
                     _ShowEndGame();
@@ -262,6 +263,7 @@ namespace Gruppe22.Client
                                     break;
 
                             }
+
                         }
 
                         if ((!_updating) && (_status != Backend.GameStatus.FetchingData))
@@ -718,7 +720,7 @@ namespace Gruppe22.Client
 
                     case Backend.Events.ContinueGame:
 
-                        if (_status != Backend.GameStatus.NoRedraw)
+                        if ((_status != Backend.GameStatus.NoRedraw) || (data.Count() > 0))
                         {
                             _logic.HandleEvent(true, Events.ContinueGame);
                             if (_focus != null)
@@ -1006,11 +1008,11 @@ namespace Gruppe22.Client
             Statusbox stat = new Statusbox(_gameOver, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width) / 2.0f) - 300 + 10, (int)(GraphicsDevice.Viewport.Height / 2.0f) - 70, 590, 110), false, true);
             stat.AddLine(title + "\n \n" + message);
             _gameOver.AddChild(stat);
-            _gameOver.AddChild(new Button(_gameOver, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width) / 2.0f) - 300 + 10, (int)(GraphicsDevice.Viewport.Height / 2.0f) + 30, 130, 40), "New Maps", (int)Backend.Buttons.Reset));
+            _gameOver.AddChild(new Button(_gameOver, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width) / 2.0f) - 300 + 10, (int)(GraphicsDevice.Viewport.Height / 2.0f) + 30, 130, 40), "New Maps", (int)Backend.Buttons.NewMap));
 
             if (_logic.map.actors[_playerID].lives > 0)
             {
-                _gameOver.AddChild(new Button(_gameOver, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width) / 2.0f) - 300 + 170, (int)(GraphicsDevice.Viewport.Height / 2.0f) + 30, 160, 40), "Restore (" + _logic.map.actors[_playerID].ToString() + " left)", (int)Backend.Buttons.Load));
+                _gameOver.AddChild(new Button(_gameOver, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width) / 2.0f) - 300 + 170, (int)(GraphicsDevice.Viewport.Height / 2.0f) + 30, 160, 40), "Restore (" + _logic.map.actors[_playerID].lives.ToString() + " left)", (int)Backend.Buttons.Load));
             }
             _gameOver.AddChild(new Button(_gameOver, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width) / 2.0f) - 300 + 600 - 190, (int)(GraphicsDevice.Viewport.Height / 2.0f) + 30, 100, 40), "Restart", (int)Backend.Buttons.Restart));
             _gameOver.AddChild(new Button(_gameOver, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width) / 2.0f) - 300 + 600 - 80, (int)(GraphicsDevice.Viewport.Height / 2.0f) + 30, 70, 40), "Quit", (int)Backend.Buttons.Quit));

@@ -500,7 +500,7 @@ namespace Gruppe22.Backend
                                 if (_map.CanMove(_map.actors[id].tile.coords, dir))
                                 {
                                     _map.MoveActor(_map.actors[id], dir);
-                                    _parent.HandleEvent(false, Backend.Events.MoveActor, id, _map.actors[id].tile.coords,dir);
+                                    _parent.HandleEvent(false, Backend.Events.MoveActor, id, _map.actors[id].tile.coords, dir);
                                     _map.actors[id].locked = true;
                                 }
                             }
@@ -511,33 +511,37 @@ namespace Gruppe22.Backend
 
                 case Backend.Events.Pause:
                     _paused = true;
-                    _parent.HandleEvent(false, Backend.Events.Pause);
+                    _parent.HandleEvent(true, Backend.Events.Pause);
                     break;
 
                 case Backend.Events.ContinueGame:
-                    _parent.HandleEvent(false, Backend.Events.ContinueGame);
+                    if (!DownStream)
+                        _parent.HandleEvent(true, Backend.Events.ContinueGame, true);
                     _paused = false;
                     break;
 
                 case Backend.Events.LoadFromCheckPoint:
                     HandleEvent(false, Backend.Events.Pause);
                     //TODO: Add code to load Checkpoint and decreate lives here
-                    HandleEvent(false, Backend.Events.ContinueGame);
+                    HandleEvent(false, Backend.Events.ContinueGame, true);
 
                     break;
 
                 case Backend.Events.ChangeMap: // Load another map
                     HandleEvent(false, Backend.Events.Pause);
                     // TODO: Add code to load Map
-                    HandleEvent(false, Backend.Events.ContinueGame);
+                    HandleEvent(false, Backend.Events.ContinueGame, true);
                     break;
 
                 case Backend.Events.NewMap:
                     HandleEvent(false, Backend.Events.Pause);
                     GenerateMaps();
-                    HandleEvent(false, Backend.Events.ContinueGame);
-
-
+                    HandleEvent(false, Backend.Events.ContinueGame, true);
+                    break;
+                case Backend.Events.ResetGame:
+                    _DeleteSavedRooms();
+                    _map.Load("room1.xml", null, true);
+                    HandleEvent(false, Events.ContinueGame, true);
                     break;
             }
         }

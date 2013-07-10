@@ -117,17 +117,11 @@ namespace Gruppe22.Backend
         Up = 1,
         Right = 2,
         Down = 4,
-
         Left = 8,
-
         DownLeft = 16,
         UpRight = 32,
         DownRight = 64,
-
         UpLeft = 128,
-
-
-
         None = 0
     }
     public enum WallType

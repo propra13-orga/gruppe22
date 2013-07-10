@@ -43,9 +43,9 @@ namespace Gruppe22.Backend
         /// </summary>
         public Actor actor
         {
-            get 
-            { 
-                return _actor; 
+            get
+            {
+                return _actor;
             }
         }
 
@@ -89,20 +89,7 @@ namespace Gruppe22.Backend
                 xmlw.WriteEndElement();
             }
         }
-        #endregion
 
-        #region Constructor
-        /// <summary>
-        /// The constructor for the ActorTile
-        /// Calls the constructor of Tile.
-        /// </summary>
-        /// <param name="parent">Just the parent object</param>
-        /// <param name="actor">The to the tile connected actor.</param>
-        public ActorTile(object parent, Actor actor)
-            : this(parent)
-        {
-            _actor = actor;
-        }
 
         /// <summary>
         /// Method to drop the full inventory of the connected player to the tile he stands on.
@@ -124,9 +111,7 @@ namespace Gruppe22.Backend
         /// <returns>Ergebnis von asynchonen Task.</returns>
         public async Task WorkoutMoves()
         {
-            bool canAttack = false;
-            bool finished = false;
-            Map map = (Map)((FloorTile)_parent).parent;
+            Direction selected = Direction.None;
 
             if (_actor.stunned > 0) _actor.stunned -= 1;
             if (_actor.charmed > 0)
@@ -134,118 +119,135 @@ namespace Gruppe22.Backend
                 _actor.charmed -= 1;
                 if (_actor.charmed == 0) _actor.friendly = false;
             }
+
             if (_actor.stunned == 0)
             {
+                HashSet<Direction> attackDir = new HashSet<Direction>();
+                HashSet<Direction> validDir = new HashSet<Direction>();
+                Map map = (Map)((FloorTile)_parent).parent;
 
-                Direction dir = Direction.None;
-                Backend.Coords closestEnemy = map.ClosestEnemy(coords, actor.viewRange, !(actor is NPC) && (actor.aggro) && (!actor.friendly), !(actor is NPC) && !(actor.aggro) && (!actor.friendly), (actor.friendly) || actor.crazy);
-
-                if (closestEnemy.x > -1) // There is an enemy close by
+                foreach (Direction direction in Enum.GetValues(typeof(Direction)).Cast<Direction>())
                 {
-
-                    if ((Math.Abs(closestEnemy.x - coords.x) < 2) &&
-                        (Math.Abs(closestEnemy.y - coords.y) < 2) &&
-                        (map.CanMove(coords, Map.WhichWayIs(closestEnemy, coords))))
+                    if (map.CanMove(coords, direction))
                     {
-                        dir = Map.WhichWayIs(closestEnemy, coords);
-                        //System.Diagnostics.Debug.WriteLine("Attack -> " + coords.x + "/" + coords.y + "->" + closestEnemy.x + "/" + closestEnemy.y + "=>" + dir);
-                        canAttack = true;
-                    }
-                    else
-                    {
-                        //System.Diagnostics.Debug.WriteLine("==============================");
-                        //System.Diagnostics.Debug.WriteLine(actor.ToString() + " (" + coords.ToString() + ") tries to catch " + map[closestEnemy].firstActor.ToString() + " (" + closestEnemy.ToString() + ")");
-                        //System.Diagnostics.Debug.WriteLine("------------------------------");
-
-                        List<Coords> path = null;
-                        SortedSet<Coords> temp = null;
-
-                        map.PathTo(coords, closestEnemy, out path, ref temp, 10);
-                        if ((path != null) && (path.Count > 0))
+                        FloorTile tile = map[Map.DirectionTile(coords, direction)];
+                        bool allow = true;
+                        if (!(tile.hasTeleport))
                         {
-                            dir = Map.WhichWayIs(path[1], coords);
-                            // System.Diagnostics.Debug.WriteLine("=> Path found:" + path[1] + " (" + dir + ")");
+                            if ((actor.friendly) || (!actor.aggro) || (actor.actorType == ActorType.NPC))
+                            {
+                                allow = allow && !tile.hasNPC && !tile.hasPlayer;
+                            }
+                            if ((!actor.crazy) && (!actor.friendly))
+                            {
+                                allow = allow && !tile.hasEnemy;
+                            }
+                            else
+                            {
+                                if (tile.hasEnemy) attackDir.Add(direction);
+                            }
+                            if ((actor.actorType == ActorType.Enemy)
+                                && (!actor.friendly)
+                                && (actor.aggro)
+                                && (tile.hasPlayer))
+                                attackDir.Add(direction);
+                            if (allow) validDir.Add(direction);
                         }
                     }
+                }
+                if (validDir.Count > 0)
+                {
 
                     if ((actor.health < actor.maxHealth / 4) || (actor.scared != 0))
                     {
-                        // Low health => try to flee
-                        //System.Diagnostics.Debug.WriteLine("=> Flee!");
 
-                        if ((!canAttack) || ((actor.health > 10) && (_random.Next(100) > 50)))
+                        if (attackDir.Count > 0)
                         {
-                            dir = Map.OppositeDirection(dir);
-                            // TODO: Versuche Pfade zu finden, die ABstand vergrößern (insb. wenn geblockt)
-                            finished = true;
-                        }
-                    }
-                    int count = 1;
-                    if (!finished)
-                    {
-                        while ((!map.TileByCoords(Map.DirectionTile(coords, dir)).canEnter) && (count < 9))
-                        {
-                            //System.Diagnostics.Debug.WriteLine("Rotate");
-                            dir = Map.NextDirection(dir);
-                            count += 1;
-                        }
-                        if (!map.TileByCoords(Map.DirectionTile(coords, dir)).canEnter) dir = Direction.None;
-                    }
-                }
-                else
-
-                    if (dir == Direction.None)
-                    {
-                        // Nobody close by, just wander aimlessly
-                        // TODO: Try to grab nearby items
-                        if (_random.Next(10) > 5)
-                        {
-                            dir = (Direction)_random.Next(4);
-                            int count = 1;
-                            while (((dir == Map.OppositeDirection(_lastDir)) || (!map.TileByCoords(Map.DirectionTile(coords, dir)).canEnter)) && (count < 9))
+                            // Flee if attacked
+                            if (validDir.Contains(Map.OppositeDirection(attackDir.ToArray()[0])))
                             {
-                                dir = Map.NextDirection(dir);
-                                count += 1;
+                                selected = Map.OppositeDirection(attackDir.ToArray()[0]);
+                                // Easy way out: Move in exact opposite direction
                             }
-                            if ((dir == Map.OppositeDirection(_lastDir)) || (!map.TileByCoords(Map.DirectionTile(coords, dir)).canEnter))
+                            else
                             {
-                                dir = Direction.None;
-                                _lastDir = Direction.None;
+                                validDir.ExceptWith(attackDir);
+                                if (validDir.Count > 0)
+                                {
+                                    selected = validDir.ToArray()[_random.Next(validDir.Count)];
+                                    // Move in any way leading away from attacker
+                                }
+                                else
+                                {
+                                    selected = attackDir.ToArray()[_random.Next(attackDir.Count) ];
+                                    // Attack if cornered
+                                }
                             }
-
+                        }
+                        else
+                        {
+                            // if no attacker in sight: Move around randomly
+                            // TODO: Implement walking away from enemies
+                            selected = validDir.ToArray()[_random.Next(validDir.Count) ];
                         }
                     }
+                    else
+                    {
+                        // Normal mode: Attack if possible
 
-                // Do not attack friendly units!
-                if ((map.TileByCoords(Map.DirectionTile(coords, dir)).hasEnemy) && (!map.TileByCoords(Map.DirectionTile(coords, dir)).firstActor.isDead)
-                    && (!actor.crazy) && (!actor.friendly))
-                    dir = Direction.None;
+                        if (attackDir.Count > 0)
+                        {
+                            // Pick any target to attack
+                            selected = attackDir.ToArray()[_random.Next(attackDir.Count)];
+                        }
+                        else
+                        {
+                            // Find closest enemy
+                            Backend.Coords closestEnemy = map.ClosestEnemy(coords, actor.viewRange, !(actor is NPC) && (actor.aggro) && (!actor.friendly), !(actor is NPC) && !(actor.aggro) && (!actor.friendly), (actor.friendly) || actor.crazy);
+                            if (closestEnemy.x > -1) // There is an enemy close by
+                            {
+                                List<Coords> shortestPath = null;
+                                foreach (Direction dir in validDir)
+                                {
+                                    List<Coords> path = null;
+                                    SortedSet<Coords> temp = null;
 
-                if ((map.TileByCoords(Map.DirectionTile(coords, dir)).hasNPC) && (!map.TileByCoords(Map.DirectionTile(coords, dir)).firstActor.isDead))
-                    dir = Direction.None;
+                                    map.PathTo(Map.DirectionTile(coords, dir), closestEnemy, out path, ref temp, 10);
+                                    if ((shortestPath == null) || (shortestPath.Count > path.Count))
+                                    {
+                                        selected = dir;
+                                        shortestPath = path;
+                                    };
+                                }
+                            }
+                            else
+                            {
+                                // Pick any direction at random
+                                selected = validDir.ToArray()[_random.Next(validDir.Count) ];
+                            }
+                        }
+                    }
+                    _working = false;
 
-
-                if ((map.TileByCoords(Map.DirectionTile(coords, dir)).hasPlayer) && (!map.TileByCoords(Map.DirectionTile(coords, dir)).firstActor.isDead)
-                    && ((!actor.aggro) || (actor.friendly)))
-                    dir = Direction.None;
-
-                if ((dir != Direction.None) && ((!map.TileByCoords(Map.DirectionTile(coords, dir)).hasTeleport) || (map.TileByCoords(Map.DirectionTile(coords, dir)).hasPlayer)))
-                {
-                    ((Backend.IHandleEvent)parent).HandleEvent(false, Backend.Events.MoveActor, actor.id, dir);
-                    //System.Diagnostics.Debug.WriteLine("#####" + dir + "######");
+                    ((Backend.IHandleEvent)parent).HandleEvent(false, Backend.Events.MoveActor, actor.id, selected);
                 }
             }
 
         }
+
+
+
         /// <summary>
         /// Die in erwägung gezogene Bewegung.
         /// </summary>
         /// <returns>Ergenbnis.</returns>
         public async Task ConsiderMoves()
         {
-            _working = true;
-            await WorkoutMoves();
-            _working = false;
+            if (!_working)
+            {
+                _working = true;
+                await WorkoutMoves();
+            }
         }
 
         /// <summary>
@@ -270,6 +272,21 @@ namespace Gruppe22.Backend
                 }
             }
         }
+        #endregion
+
+        #region Constructor
+        /// <summary>
+        /// The constructor for the ActorTile
+        /// Calls the constructor of Tile.
+        /// </summary>
+        /// <param name="parent">Just the parent object</param>
+        /// <param name="actor">The to the tile connected actor.</param>
+        public ActorTile(object parent, Actor actor)
+            : this(parent)
+        {
+            _actor = actor;
+        }
+
         /// <summary>
         /// The constructor for the ActorTile.
         /// Calls the parent constructor.
