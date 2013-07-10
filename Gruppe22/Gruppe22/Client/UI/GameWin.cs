@@ -505,9 +505,6 @@ namespace Gruppe22.Client
                 // Frontend to backend (send)
                 switch (eventID)
                 {
-                    case Events.RotateActor:
-                        _logic.HandleEvent(true, Events.RotateActor, data);
-                        break;
                     case Events.MoveActor:
                         _logic.HandleEvent(true, Events.MoveActor, data);
                         break;
@@ -788,11 +785,7 @@ namespace Gruppe22.Client
                 {
 
                     case Backend.Events.ShowMessage:
-                        _AddMessage(data[0].ToString());
-                        break;
-
-                    case Events.RotateActor:
-                        _mainmap1.HandleEvent(true, Events.RotateActor, data);
+                        _AddMessage(data[0].ToString(), data.Length > 1 ? data[1] : null);
                         break;
 
                     case Events.MoveActor:
@@ -890,9 +883,9 @@ namespace Gruppe22.Client
         /// Add text to status box
         /// </summary>
         /// <param name="s"></param>
-        private void _AddMessage(string s)
+        private void _AddMessage(string s, object color = null)
         {
-            _statusbox.AddLine(s);
+            _statusbox.AddLine(s, color);
         }
 
         /// <summary>

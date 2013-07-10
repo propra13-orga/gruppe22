@@ -53,7 +53,7 @@ namespace Gruppe22.Client
                     case Keys.Enter:
                         if (_input.text.Trim() != "")
                         {
-                            _parent.HandleEvent(false, Backend.Events.Chat, _input.text.Trim());
+                            _parent.HandleEvent(true, Backend.Events.Chat, _input.text.Trim());
                             _input.text = "";
                         }
                         return true;

@@ -208,6 +208,9 @@ namespace Gruppe22.Client
                     break;
                 case PacketType.UpdateClients:
                     break;
+                case PacketType.Move:
+                    _parent.HandleEvent(false, Backend.Events.MoveActor, message.ReadInt32(), new Coords(message.ReadInt32(), message.ReadInt32()),(Direction)message.ReadInt32());
+                    break;
             }
         }
 

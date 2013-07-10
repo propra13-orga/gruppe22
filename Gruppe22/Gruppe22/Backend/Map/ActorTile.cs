@@ -82,9 +82,12 @@ namespace Gruppe22.Backend
         /// <param name="xmlw">The used XMLwriter</param>
         public override void Save(XmlWriter xmlw)
         {
-            xmlw.WriteStartElement("ActorTile");
-            actor.Save(xmlw);
-            xmlw.WriteEndElement();
+            if (actor != null)
+            {
+                xmlw.WriteStartElement("ActorTile");
+                actor.Save(xmlw);
+                xmlw.WriteEndElement();
+            }
         }
         #endregion
 

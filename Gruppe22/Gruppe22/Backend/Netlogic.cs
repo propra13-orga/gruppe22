@@ -34,7 +34,7 @@ namespace Gruppe22.Backend
         public virtual void SendChat(string text)
         {
             //            _network.SendMessage();
-            _parent.HandleEvent(false, Events.ShowMessage, text, Color.Pink);
+            _network.SendMessage(PacketType.Chat, text);
         }
 
         public override void HandleEvent(bool DownStream, Events eventID, params object[] data)
@@ -50,9 +50,11 @@ namespace Gruppe22.Backend
                         break;
 
                     case Events.MoveActor:
-                        _network.SendMessage(PacketType.Move, (int)data[0], (Coords)data[1]);
+                        _network.SendMessage(PacketType.Move, (int)data[0], (Direction)data[1]);
                         break;
-
+                    case Events.Chat:
+                        _network.SendMessage(PacketType.Chat, (string)data[0]);
+                        break;
                     case Events.ContinueGame:
                         _network.SendMessage(PacketType.Pause, false);
                         break;
@@ -64,8 +66,16 @@ namespace Gruppe22.Backend
 
                 switch (eventID)
                 {
+
+                    case Events.Chat:
+                        _parent.HandleEvent(false, Backend.Events.ShowMessage, data);
+                        break;
+                    case Events.ShowMessage:
+                        _parent.HandleEvent(false, Backend.Events.ShowMessage, data);
+                        break;
                     case Events.MoveActor:
-                        _parent.HandleEvent(true, Events.MoveActor, (int)data[0], (int)data[1]);
+                        _map.actors[(int)data[0]].direction = (Direction)data[2];
+                        _parent.HandleEvent(false, Events.MoveActor, data);
                         break;
                 }
             };

@@ -201,7 +201,6 @@ namespace Gruppe22.Backend
         AddProjectile,
         TrapActivate,
         AnimateActor,
-        RotateActor,
         FinishedAnimation,
         Checkpoint,
         FinishedProjectileMove,

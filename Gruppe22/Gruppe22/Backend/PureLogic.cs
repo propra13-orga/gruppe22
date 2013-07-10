@@ -462,7 +462,7 @@ namespace Gruppe22.Backend
                             Direction dir = (Direction)data[1];
                             Backend.Coords target = Map.DirectionTile(_map.actors[id].tile.coords, dir);
                             _map.actors[id].direction = dir;
-                            _parent.HandleEvent(false, Backend.Events.RotateActor, id, _map.actors[id].tile.coords, dir);
+                            _parent.HandleEvent(false, Backend.Events.MoveActor, id, _map.actors[id].tile.coords, dir);
 
                             if (((FloorTile)_map.actors[id].tile.parent).hasTrap)
                             {
@@ -500,7 +500,7 @@ namespace Gruppe22.Backend
                                 if (_map.CanMove(_map.actors[id].tile.coords, dir))
                                 {
                                     _map.MoveActor(_map.actors[id], dir);
-                                    _parent.HandleEvent(false, Backend.Events.MoveActor, id, _map.actors[id].tile.coords);
+                                    _parent.HandleEvent(false, Backend.Events.MoveActor, id, _map.actors[id].tile.coords,dir);
                                     _map.actors[id].locked = true;
                                 }
                             }

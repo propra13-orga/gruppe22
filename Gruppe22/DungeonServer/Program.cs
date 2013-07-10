@@ -226,7 +226,7 @@ namespace DungeonServer
             switch ((PacketType)id)
             {
                 case PacketType.Pause:
-                    bool state= message.ReadBoolean();
+                    bool state = message.ReadBoolean();
                     Log(_clients[message.SenderEndpoint].paused.ToString());
                     if (_clients[message.SenderEndpoint].paused)
                     {
@@ -235,7 +235,8 @@ namespace DungeonServer
                             _pausedCount -= 1;
                             Log("Client " + _clients[message.SenderEndpoint].guid + " unpaused game " + _pausedCount.ToString() + " request remaining", ConsoleColor.Green);
                             _clients[message.SenderEndpoint].paused = false;
-                        } else
+                        }
+                        else
                             Log("Client " + _clients[message.SenderEndpoint].guid + " needlessly asked to unpause game " + _pausedCount.ToString() + " request remaining", ConsoleColor.Green);
 
                     }
@@ -245,7 +246,7 @@ namespace DungeonServer
                         {
                             _pausedCount += 1;
                             _clients[message.SenderEndpoint].paused = true;
-                            Log("Client " + _clients[message.SenderEndpoint].guid + " paused game - "+_pausedCount.ToString()+" requests total",ConsoleColor.Red);
+                            Log("Client " + _clients[message.SenderEndpoint].guid + " paused game - " + _pausedCount.ToString() + " requests total", ConsoleColor.Red);
                         }
                         else
                             Log("Client " + _clients[message.SenderEndpoint].guid + " needlessly asked to pause game " + _pausedCount.ToString() + " request remaining", ConsoleColor.Green);
@@ -258,7 +259,7 @@ namespace DungeonServer
                     break;
                 case PacketType.Chat:
                     Log("Chat");
-                    SendMessageToAll(PacketType.Chat, NetDeliveryMethod.Unreliable, null, message.ReadString());
+                    SendMessageToAll(PacketType.Chat, NetDeliveryMethod.Unreliable, null, _logic.map.actors[_clients[message.SenderEndpoint].actorID].name + ": " + message.ReadString());
                     break;
 
                 case PacketType.Move: //0x0 steht für Positions-Informationen eines Clienten
@@ -336,22 +337,16 @@ namespace DungeonServer
         #region Event Handling (incoming / outgoing commands)
 
 
-        public void HandleEvent(bool outgoing, Events eventID, params object[] data)
+        public void HandleEvent(bool incoming, Events eventID, params object[] data)
         {
-            if (outgoing)
+            if (!incoming)
             {
+                // pass along to client
                 switch (eventID)
                 {
                     case Events.MoveActor:
-                        SendMessageToAll(PacketType.Move, NetDeliveryMethod.Unreliable, null, (int)data[0], (int)data[1]);
+                        SendMessageToAll(PacketType.Move, NetDeliveryMethod.Unreliable, null, (int)data[0], ((Coords)data[1]).x, ((Coords)data[1]).y, (int)((Direction)data[2]));
                         break;
-
-                }
-            }
-            else
-            {
-                switch (eventID)
-                {
 
                 }
             }
