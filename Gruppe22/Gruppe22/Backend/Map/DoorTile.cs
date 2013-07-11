@@ -7,30 +7,32 @@ using System.Xml;
 
 namespace Gruppe22.Backend
 {
+    /// <summary>
+    /// This tile is used to seperate the different levels.
+    /// A boss enemy in one level should have the key to the next level.
+    /// </summary>
     public class DoorTile : WallTile
     {
-        /// <summary>
-        /// Tür offen oder nicht
-        /// </summary>
         private bool _open = false;
-        /// <summary>
-        /// Die ID des Schlüssels mit dem diese Tür geöffnet werden kann; 0 bedeutet man braucht kein Schlüssel
-        /// </summary>
         private int _key = 0;
         /// <summary>
-        /// Öffentliche Eigenschaft für den Zustand der Tür
+        /// True if the door can be passed /is opened
         /// </summary>        
         public bool open { get { return _open; } set { _open = value; } }
         /// <summary>
-        /// Öffentliche Eigenschaft für die Schlüssel-ID
+        /// The id of the key for this door.
+        /// The player needs this key to open the door.
+        /// 0 if no key is needed.
         /// </summary>
         public int key { get { return _key; } set { _key = value; } }
+
         /// <summary>
-        /// Konstruktor.
+        /// Constructor.
+        /// Gets the number of the key and if the door is locked
         /// </summary>
-        /// <param name="parent">Elternobjekt.</param>
-        /// <param name="locked">Verschlossen?</param>
-        /// <param name="key">Schlüssel-ID</param>
+        /// <param name="parent">parent.</param>
+        /// <param name="locked">Status of the door</param>
+        /// <param name="key">int id of the key</param>
         public DoorTile(object parent, bool locked = true, int key = 0)
             : base(parent)
         {
@@ -39,7 +41,7 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Neue öffentliche Eigenschaft s. WallType.
+        /// The DoorTile is a type of WallTile
         /// </summary>
         new public WallType type
         {
@@ -49,10 +51,11 @@ namespace Gruppe22.Backend
                 else return Backend.WallType.ClosedDoor;
             }
         }
+
         /// <summary>
-        /// Speichert das WallTile in die XML.
+        /// Method to save the DoorTile in a .xml file
         /// </summary>
-        /// <param name="xmlw">Der zu verwendete XmlWriter.</param>
+        /// <param name="xmlw">XmlWriter.</param>
         public override void Save(XmlWriter xmlw)
         {
             xmlw.WriteStartElement("DoorTile");

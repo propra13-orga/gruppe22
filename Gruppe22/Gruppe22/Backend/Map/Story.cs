@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace Gruppe22.Backend
 {
+    /// <summary>
+    /// A story is a sequence of quests
+    /// </summary>
     public class Story
     {
         private NPC _questgiver;

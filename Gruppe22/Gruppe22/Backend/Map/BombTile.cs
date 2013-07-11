@@ -6,12 +6,15 @@ using System.Threading.Tasks;
 
 namespace Gruppe22.Backend
 {
+    /// <summary>
+    /// A tile which could be used to manage something like a bomb.
+    /// </summary>
     class BombTile:Tile
     {
         /// <summary>
-        /// Konstruktor zu dem BombTile (Bombe).
+        /// Constructor for a bomb.
         /// </summary>
-        /// <param name="parent">Elternobjekt.</param>
+        /// <param name="parent">parentobject.</param>
         public BombTile(object parent)
             : base(parent)
         {

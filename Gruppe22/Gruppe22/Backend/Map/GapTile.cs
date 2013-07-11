@@ -7,18 +7,18 @@ using System.Xml;
 
 namespace Gruppe22.Backend
 {
+    /// <summary>
+    /// A tile to have something like a hole in the floor.
+    /// </summary>
     class GapTile : Tile
     {
         #region Private Fields
-        /// <summary>
-        /// Stil der Spalt-Tiles
-        /// </summary>
         private int _style = 0;
         #endregion
 
         #region Public Fields
         /// <summary>
-        /// Öffentliche Eigenschaft 
+        /// The style of the gap
         /// </summary>
         public int style
         {
@@ -35,9 +35,9 @@ namespace Gruppe22.Backend
 
         #region Public Methods
         /// <summary>
-        /// Speichert dieses Tile in die XML.
+        /// Method to save the GapTile in a .xml file
         /// </summary>
-        /// <param name="xmlw">Der zu verwendete XmlWriter.</param>
+        /// <param name="xmlw">XmlWriter.</param>
         public override void Save(XmlWriter xmlw)
         {
             xmlw.WriteStartElement("GapTile");
@@ -48,9 +48,9 @@ namespace Gruppe22.Backend
 
         #region Constructor
         /// <summary>
-        /// Konstruktor.
+        /// A empty constructor.
         /// </summary>
-        /// <param name="parent">Elternobjekt.</param>
+        /// <param name="parent">parent.</param>
         public GapTile(object parent):base(parent)
         {
         }

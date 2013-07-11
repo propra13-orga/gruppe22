@@ -11,21 +11,16 @@ namespace Gruppe22.Backend
     /// </summary>
     public class CheckpointTile : Tile
     {
-        /// <summary>
-        /// Legt fest ob dieser Checkpoint schon besucht wurde.
-        /// </summary>
         private bool _visited = false;
-        /// <summary>
-        /// Bonusleben für den Spieler.
-        /// </summary>
         private int _bonuslife = 0;
 
         /// <summary>
-        /// Konstruktor.
+        /// Constructor for the Checkpoint.
+        /// Can get passed the bonuslifes and if it was visited before
         /// </summary>
-        /// <param name="parent">Elternobjekt.</param>
-        /// <param name="visited">Besuchtfeld.</param>
-        /// <param name="bonuslife">Bonusleben.</param>
+        /// <param name="parent">parentobject.</param>
+        /// <param name="visited">Set the visited attribute</param>
+        /// <param name="bonuslife">Set the bonuslifes</param>
         public CheckpointTile(object parent, bool visited, int bonuslife) :
             base(parent)
         {
@@ -34,7 +29,7 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Öffentliche Eigenschaft des Feldes
+        /// True if the checkpoint was activated before
         /// </summary>
         public bool visited
         {
@@ -49,7 +44,7 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Öffentliche Eigenschaft zu den Bonusleben.
+        /// A number of bonus lifes the player could be granted
         /// </summary>
         public int bonuslife
         {
@@ -62,10 +57,11 @@ namespace Gruppe22.Backend
                 _bonuslife = value;
             }
         }
+
         /// <summary>
-        /// Speichert das CheckpointTile in den Xml-Datenstrom.
+        /// Method to save the CheckpointTile in a .xml file
         /// </summary>
-        /// <param name="xmlw">Der zu verwendete XmlWriter.</param>
+        /// <param name="xmlw">XmlWriter.</param>
         public override void Save(System.Xml.XmlWriter xmlw)
         {
             xmlw.WriteStartElement("CheckpointTile");
