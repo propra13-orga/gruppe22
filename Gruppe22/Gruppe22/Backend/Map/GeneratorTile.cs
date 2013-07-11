@@ -6,21 +6,21 @@ using System.Threading.Tasks;
 
 namespace Gruppe22.Backend
 {
+    /// <summary>
+    /// A tile used to generate the rooms.
+    /// </summary>
     class GeneratorTile : FloorTile
     {
         #region Private Fields
-        /// <summary>
-        /// Used by map generator (determines whether tile can be reached from at least one other tile
-        /// </summary>
+        
         protected bool _connected = false;
-        /// <summary>
-        /// Direction of connection
-        /// </summary>
         protected Connection _connection = Connection.Invalid;
         #endregion
 
         #region Public Fields
-
+        /// <summary>
+        /// Used by map generator (determines whether tile can be reached from at least one other tile
+        /// </summary>
         public bool connected
         {
             get
@@ -32,7 +32,9 @@ namespace Gruppe22.Backend
                 _connected = value;
             }
         }
-
+        /// <summary>
+        /// Direction of connection
+        /// </summary>
         public Connection connection
         {
             get
@@ -44,13 +46,17 @@ namespace Gruppe22.Backend
                 _connection = value;
             }
         }
+        #endregion
 
+        #region Constructors
+        /// <summary>
+        /// Alternative constructor.
+        /// </summary>
+        /// <param name="parent"></param>
         public GeneratorTile(object parent)
             : base(parent)
         {
-
         }
-
 
         /// <summary>
         /// An empty constructor (setting default values)

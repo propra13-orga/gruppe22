@@ -17,6 +17,13 @@ namespace Gruppe22.Backend
     {
         private bool _paused = false;
 
+        /// <summary>
+        /// Method to change the "room"
+        /// Loads the saved (previously visited) version of the next room if possible
+        /// and the generated version if there is no saved one
+        /// </summary>
+        /// <param name="filename">The path to the .xml of the next room</param>
+        /// <param name="pos">The spawning position in the next room</param>
         public override void ChangeMap(string filename, Coords pos)
         {
             map.Save("savedroom" + map.id + ".xml");
@@ -27,7 +34,10 @@ namespace Gruppe22.Backend
             File.WriteAllText("GameData", filename);
         }
 
-
+        /// <summary>
+        /// Method to start the update-routine of the map
+        /// </summary>
+        /// <param name="gametime"></param>
         public override void Update(GameTime gametime)
         {
             if (!_paused)
@@ -36,6 +46,9 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// Method to for reseting the game to the generated version
+        /// </summary>
         public void Restart()
         {
             _DeleteSavedRooms();
@@ -55,60 +68,80 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// methode to evaluate the damage in a combat between two actors
+        /// Methode to evaluate the damage in a combat between two actors.
+        /// Calculates the percentage damage reduction based on armor and penetration.
+        /// Shows the floating combat text for the attack.
         /// </summary>
         /// <param name="attacker">the attacking actor</param>
         /// <param name="defender">the attacked actor</param>
         protected void _CombatDamage(int attacker, int defender)
         {
-            double _evadeChance = (0.02 * (_map.actors[defender].evade)) / (1 + 0.065 * (_map.actors[defender].evade)); // converges to ~25% for values from 0 to 100
-            if (_random.NextDouble() < _evadeChance)
+            if (_map.actors[attacker].damage > 0)
             {
-                _parent.HandleEvent(false, Events.ActorText, defender, _map.actors[defender].tile.coords, "Evade");
-            }
-            else
-            {
-                double dmgReduction = (0.06 * (_map.actors[defender].armor)) / (1 + 0.06 * (_map.actors[defender].armor)); //max ~85% at 100 armor
-                int damage = _map.actors[attacker].damage; // the damage the attacker can deal
-
-                // an actor can block some amount between 0 and the full damage
-                double blockChance = (0.02 * (_map.actors[defender].block)) / (1 + 0.03 * (_map.actors[defender].block)); // converges to ~50%
-                if (_random.NextDouble() < blockChance)
+                double _evadeChance = (0.02 * (_map.actors[defender].evade)) / (1 + 0.065 * (_map.actors[defender].evade)); // converges to ~25% for values from 0 to 100
+                if (_random.NextDouble() < _evadeChance) // show evade-message if the attack was evaded
                 {
-                    int blockedValue = Math.Max(_map.actors[defender].block - _map.actors[attacker].penetrate, 0); // the amount of damage the defender can block
-                    if (blockedValue >= damage) blockedValue = damage;
-                    damage = Math.Max(damage - blockedValue, 0);
-                    _parent.HandleEvent(false, Events.ActorText, defender, _map.actors[defender].tile.coords, "Block" + blockedValue + "dmg");
-                }
-
-                damage = (int)(damage * (1 - dmgReduction)); // the damage the attacker will deal
-
-                _map.actors[defender].health -= damage;
-
-                if (_map.actors[defender].isDead)
-                {
-                    _parent.HandleEvent(false, Events.KillActor, defender, _map.actors[defender].tile.coords, _map.actors[defender].health, damage);
-                    //_mainmap2.HandleEvent(true, Backend.Events.AnimateActor, defender, Activity.Die);
-                    _map.actors[attacker].exp += _map.actors[defender].exp;
-                    if (_map.actors[attacker].exp > _map.actors[attacker].expNeeded)
-                    {
-                        _map.actors[attacker].LevelUp();
-
-                        if (!(_map.actors[attacker] is Player))
-                            ((Enemy)_map.actors[attacker]).AssignSkillsAndAbilities(); // Auto-improve statistics of enemies
-                        _parent.HandleEvent(false, Events.ChangeStats, attacker, _map.actors[attacker]); // Update data on client
-                    }
-                    else
-                    {
-                        _parent.HandleEvent(false, Events.ActorText, attacker, _map.actors[defender].tile.coords, "+" + _map.actors[defender].exp + " Exp", Color.Gold); // Update data on client
-                    }
+                    _parent.HandleEvent(false, Events.ActorText, defender, _map.actors[defender].tile.coords, "Evade");
                 }
                 else
                 {
-                    _parent.HandleEvent(false, Events.DamageActor, defender, _map.actors[defender].tile.coords, _map.actors[defender].health, damage);
-                    _map.actors[defender].aggro = true;
-                }
+                    double dmgReduction = (0.06 * (_map.actors[defender].armor)) / (1 + 0.06 * (_map.actors[defender].armor)); // calculate damage reduction from armor; max 85% @100armor
+                    int damage = _map.actors[attacker].damage;
 
+                    // an actor can block some amount between 0 and the full damage
+                    double blockChance = (0.02 * (_map.actors[defender].block)) / (1 + 0.03 * (_map.actors[defender].block)); // converges to ~50% @100block
+                    if (_random.NextDouble() < blockChance)
+                    {
+                        int blockedValue = Math.Max(_map.actors[defender].block - _map.actors[attacker].penetrate, 0); // calculate blocked damage and show block-message
+                        if (blockedValue >= damage) blockedValue = damage;
+                        damage = Math.Max(damage - blockedValue, 0);
+                        _parent.HandleEvent(false, Events.ActorText, defender, _map.actors[defender].tile.coords, "Block" + blockedValue + "dmg");
+                    }
+
+                    damage = (int)(damage * (1 - dmgReduction)); // the damage the attacker will deal after armor, penetration etc
+                    _map.actors[defender].health -= damage;
+
+                    //check and calculate elemental (magic?) damage
+                    if (_map.actors[attacker].fireDamage > 0)
+                    {
+                        double firedmgreduction = (0.06 * (_map.actors[defender].fireDefense)) / (1 + 0.06 * (_map.actors[defender].fireDefense));
+                        int firedmg = (int)(_map.actors[attacker].fireDamage * (1 - firedmgreduction));
+                        _map.actors[defender].health -= firedmg;
+                    }
+                    if (_map.actors[attacker].iceDamage > 0)
+                    {
+                        double frostdmgreduction = (0.06 * (_map.actors[defender].iceDefense)) / (1 + 0.06 * (_map.actors[defender].iceDefense));
+                        int frostdmg = (int)(_map.actors[attacker].iceDamage * (1 - frostdmgreduction));
+                        _map.actors[defender].health -= frostdmg;
+                    }
+
+
+                    if (_map.actors[defender].isDead)
+                    {
+                        _parent.HandleEvent(false, Events.KillActor, defender, _map.actors[defender].tile.coords, _map.actors[defender].health, damage);
+                        //_mainmap2.HandleEvent(true, Backend.Events.AnimateActor, defender, Activity.Die);
+                        _map.actors[attacker].exp += _map.actors[defender].exp;
+                        // If the attacker killed the enemy and got enough exp he levels up
+                        if (_map.actors[attacker].exp > _map.actors[attacker].expNeeded)
+                        {
+                            _map.actors[attacker].LevelUp();
+
+                            if (!(_map.actors[attacker] is Player))
+                                ((Enemy)_map.actors[attacker]).AssignSkillsAndAbilities(); // Auto-improve statistics of enemies
+                            _parent.HandleEvent(false, Events.ChangeStats, attacker, _map.actors[attacker]); // Update data on client
+                        }
+                        else
+                        {
+                            _parent.HandleEvent(false, Events.ActorText, attacker, _map.actors[defender].tile.coords, "+" + _map.actors[defender].exp + " Exp", Color.Gold); // Update data on client
+                        }
+                    }
+                    else
+                    {
+                        _parent.HandleEvent(false, Events.DamageActor, defender, _map.actors[defender].tile.coords, _map.actors[defender].health, damage);
+                        _map.actors[defender].aggro = true;
+                    }
+
+                }
             }
         }
 
@@ -158,13 +191,10 @@ namespace Gruppe22.Backend
             }
         }
 
-
-
         /// <summary>
         /// A text displayed if the player died
         /// </summary>
-        /// <param name="message"></param>
-        /// <param name="title"></param>
+        /// <param name="message">A custom message that could be displayed</param>
         public void GenericDialog(int from, int to, string message = "")
         {
             if (message == "")
@@ -211,12 +241,12 @@ namespace Gruppe22.Backend
             _parent.HandleEvent(false, Events.Dialog, from, to, message, new Backend.DialogLine[] { new Backend.DialogLine("Goodbye", -1) });
         }
 
-        /// <summary>
+        /// /// <summary>
         /// Handle events from UIElements and/or backend objects
         /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="eventID"></param>
-        /// <param name="data"></param>
+        ///  <param name="DownStream"></param>
+        /// <param name="eventID">The ID of the event</param>
+        /// <param name="data">The parameters needed for that event</param>
         public override void HandleEvent(bool DownStream, Events eventID, params object[] data)
         {
 
@@ -834,6 +864,12 @@ namespace Gruppe22.Backend
         }
         #endregion
 
+        /// <summary>
+        /// The constructor for the logic behind the game
+        /// </summary>
+        /// <param name="parent"></param>
+        /// <param name="map">The map object which will contain the rooms</param>
+        /// <param name="_random">A random</param>
         public PureLogic(IHandleEvent parent, Map map = null, Random _random = null)
             : base(parent, map, _random)
         {

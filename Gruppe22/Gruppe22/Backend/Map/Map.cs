@@ -656,6 +656,12 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="filename"></param>
+        /// <param name="targetCoords"></param>
+        /// <param name="resetPlayer"></param>
         public void Load(string filename, Backend.Coords targetCoords = null, bool resetPlayer = false)
         {
             XmlReaderSettings settings = new XmlReaderSettings();
@@ -666,6 +672,12 @@ namespace Gruppe22.Backend
             xmlr.Close();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="targetCoords"></param>
+        /// <param name="resetPlayer"></param>
         public void FromXML(string input, Backend.Coords targetCoords = null, bool resetPlayer = false)
         {
             XmlReaderSettings settings = new XmlReaderSettings();
@@ -1043,6 +1055,11 @@ namespace Gruppe22.Backend
             return output;
         }
 
+        /// <summary>
+        /// Method to add the player character in the current map(room)
+        /// </summary>
+        /// <param name="GUID"></param>
+        /// <returns></returns>
         public virtual int AssignPlayer(string GUID = "")
         {
             for (int i = 0; i < _actors.Count; ++i)

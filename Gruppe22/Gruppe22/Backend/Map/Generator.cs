@@ -12,7 +12,7 @@ namespace Gruppe22.Backend
     public class Generator : Map
     {
         /// <summary>
-        /// Listenstruktur aus speziellen GeneratorTiles, als Hilfsmittle zum Generieren einer Karte.
+        /// A list of GeneratorTiles which are needed to generate the map
         /// </summary>
         private new List<List<GeneratorTile>> _tiles = null;
         /// <summary>
@@ -93,6 +93,9 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// True if there are stairs in this room to the next level.
+        /// </summary>
         public bool hasStairs
         {
             get
@@ -109,7 +112,9 @@ namespace Gruppe22.Backend
             }
         }
 
-
+        /// <summary>
+        /// Possible coords for a stair to the next level.
+        /// </summary>
         public Backend.Coords FindRoomForStairs
         {
             get
@@ -136,6 +141,13 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// Method to add the stairs to the next level to a room.
+        /// </summary>
+        /// <param name="srcCoords">The place where the stairs will get placed</param>
+        /// <param name="targetRoom">The number of the room the stairs lead to</param>
+        /// <param name="targetCoords">The coords of the stairs in the next room</param>
+        /// <param name="up">Upstairs or Downstairs</param>
         public void AddStairs(Coords srcCoords, int targetRoom, Backend.Coords targetCoords, bool up)
         {
 
@@ -189,6 +201,10 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// Method to add the player to a room.
+        /// </summary>
+        /// <param name="pos">The position at which the player will spawn, (1,1) by default</param>
         public void AddPlayer(Coords pos)
         {
             if (pos == null)
@@ -238,6 +254,11 @@ namespace Gruppe22.Backend
             xmlw.Close();
         }
 
+        /// <summary>
+        /// Method to generate the enemys for a room.
+        /// The method places enemys at free position and initializes them.
+        /// </summary>
+        /// <param name="amount">The number of enemys for a room, 5 by default</param>
         public void AddEnemies(int amount = -1)
         {
             if (amount < 0) amount = 5;
@@ -281,7 +302,11 @@ namespace Gruppe22.Backend
 
         }
 
-
+        /// <summary>
+        /// Method to add NPCs in a room.
+        /// By default the NPCs have some money and a dialogue.
+        /// </summary>
+        /// <param name="amount">1 by default</param>
         public void AddNPC(int amount = -1)
         {
             if (amount < 0) amount = 1;
@@ -328,6 +353,11 @@ namespace Gruppe22.Backend
 
         }
 
+        /// <summary>
+        /// Method to add a boss enemy to a room.
+        /// A boss is more powerful than a normal enemy
+        /// and the room gets a special sound if there is a boss in it.
+        /// </summary>
         public void AddBoss()
         {
             for (int x = 0; x < _width; ++x)
@@ -358,6 +388,10 @@ namespace Gruppe22.Backend
             if (_level == 1) _music = "boss1.wav"; else _music = "boss2.wav";
         }
 
+        /// <summary>
+        /// Method to add a shop to the map.
+        /// The method adds a NPC with a shop and some custom tiles around him.
+        /// </summary>
         public void AddShop()
         {
             int x = -1;
@@ -404,6 +438,9 @@ namespace Gruppe22.Backend
 
         }
 
+        /// <summary>
+        /// Method to add the CheckpointTiles to a room.
+        /// </summary>
         public void AddCheckpoint()
         {
             int count = 0;
@@ -439,10 +476,13 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// Method to add the TargetTile to a room (usually a room in the highest level).
+        /// The Target is surrounded by walls and a door.
+        /// </summary>
+        /// <param name="srcCoords">The coordinates for the TargetTile</param>
         public void AddTarget(Coords srcCoords)
         {
-
-
             for (int y = -1; y < 2; ++y)
             {
                 for (int x = -2; x < 2; ++x)
@@ -461,6 +501,12 @@ namespace Gruppe22.Backend
 
         }
 
+        /// <summary>
+        /// Method to add a door to the next level to a room.
+        /// </summary>
+        /// <param name="roomID"></param>
+        /// <param name="maxRoom"></param>
+        /// <param name="doors"></param>
         public void AddDoors(int roomID = 1, int maxRoom = 3, List<Exit> doors = null)
         {
             if (doors != null)
@@ -529,7 +575,7 @@ namespace Gruppe22.Backend
 
 
         /// <summary>
-        /// Find an appropriate place to pu an exit on the map
+        /// Find an appropriate place to put an exit on the map
         /// </summary>
         /// <param name="dir">Wall on which exit should be placed</param>
         /// <returns>Coordinates of the exit</returns>
@@ -592,6 +638,11 @@ namespace Gruppe22.Backend
             _tiles[from.y][from.x].overlay.Add(new TeleportTile(this, "room" + (Room + 1).ToString() + ".xml", to, isTeleport));
         }
 
+        /// <summary>
+        /// Method to check whether there is a connection to another room.
+        /// </summary>
+        /// <param name="dir"></param>
+        /// <returns>True if there is a exit in one outer wall.</returns>
         public bool HasExit(Direction dir)
         {
             switch (dir)
@@ -625,6 +676,10 @@ namespace Gruppe22.Backend
             return false;
         }
 
+        /// <summary>
+        /// Method to place some random items in a room.
+        /// </summary>
+        /// <param name="amount">5 by default.</param>
         public void AddItems(int amount = -1)
         {
             if (amount < 0) amount = 5;
@@ -801,7 +856,10 @@ namespace Gruppe22.Backend
             }
         }
 
-
+        /// <summary>
+        /// Method to add some TrapTiles to a room.
+        /// </summary>
+        /// <param name="amount">5 by default.</param>
         public void AddTraps(int amount = -1)
         {
             if (amount < 0) amount = 5;
@@ -849,8 +907,8 @@ namespace Gruppe22.Backend
                     _tiles[pos.y][pos.x].Add(trapTile);
                 }
             }
-
         }
+
         /// <summary>
         /// Get the next tile based on included Connection info
         /// </summary>
@@ -910,12 +968,8 @@ namespace Gruppe22.Backend
         /// <summary>
         /// Create a new maze
         /// </summary>
-        /// <param name="slow"></param>
         public void GenerateMaze()
         {
-
-
-
             Path originPos = new Path(1 + r.Next((_width - 3) / 2) * 2, 1 + r.Next((_height - 2) / 2) * 2);
             Path currentPos = new Path(1 + r.Next((_width - 3) / 2) * 2, 1 + r.Next((_height - 3) / 2) * 2);
 
@@ -975,6 +1029,13 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// Method to generate a room from a string (e.g. a .txt)
+        /// </summary>
+        /// <param name="input">The string from which the room will be constructed</param>
+        /// <param name="roomID">The number of the room.</param>
+        /// <param name="MaxRoom">The max number of rooms</param>
+        /// <returns>True.</returns>
         public bool FromString(string input, int roomID, int MaxRoom)
         {
             int col = 0, row = 0, maxcol = 0;
@@ -1056,6 +1117,15 @@ namespace Gruppe22.Backend
             return true;
         }
 
+        /// <summary>
+        /// The constructor for the Generator.
+        /// </summary>
+        /// <param name="parent"></param>
+        /// <param name="pattern"></param>
+        /// <param name="roomNr"></param>
+        /// <param name="maxRoom"></param>
+        /// <param name="exits"></param>
+        /// <param name="rnd"></param>
         public Generator(object parent, string pattern, int roomNr = 1, int maxRoom = 3, List<Exit> exits = null, Random rnd = null)
             : base()
         {
@@ -1065,6 +1135,9 @@ namespace Gruppe22.Backend
             FromString(pattern, roomNr, maxRoom);
         }
 
+        /// <summary>
+        /// Method to choose a name for the dungeon.
+        /// </summary>
         public void GenerateDungeon()
         {
             switch (r.Next(10))
@@ -1168,6 +1241,9 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// Method to choose a name for a room.
+        /// </summary>
         public void GenerateRoomName()
         {
             switch (r.Next(11))
@@ -1304,6 +1380,9 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// Method to add the outer walls to a room.
+        /// </summary>
         public void DrawWalls()
         {
             for (int x = 1; x < _width - 1; ++x)

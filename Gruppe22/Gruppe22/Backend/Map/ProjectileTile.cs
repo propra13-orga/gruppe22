@@ -7,6 +7,10 @@ using System.Xml;
 
 namespace Gruppe22
 {
+    /// <summary>
+    /// The tile for projectiles shot by actors
+    /// e.g. a arrow or a spell
+    /// </summary>
     public class ProjectileTile : Backend.Tile
     {
         private Backend.Direction _direction = Backend.Direction.None;
@@ -23,6 +27,13 @@ namespace Gruppe22
                 _id = value;
             }
         }
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="parent">parentobject</param>
+        /// <param name="dir">The direction in which the projectile will be shot</param>
+        /// <param name="id"></param>
         public ProjectileTile(Backend.FloorTile parent, Backend.Direction dir, uint id = 0)
             : base(parent)
         {
@@ -69,7 +80,10 @@ namespace Gruppe22
             }
         }
 
-
+        /// <summary>
+        /// Method to save the PrjectileTile in a .xml file
+        /// </summary>
+        /// <param name="xmlw"></param>
         public override void Save(XmlWriter xmlw)
         {
             xmlw.WriteStartElement("ProjectileTile");
