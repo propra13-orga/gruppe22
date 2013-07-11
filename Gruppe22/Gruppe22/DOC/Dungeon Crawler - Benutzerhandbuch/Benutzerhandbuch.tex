@@ -3,6 +3,7 @@
 \usepackage[ngerman]{babel}
 \usepackage[bookmarksnumbered]{hyperref}
 \usepackage{graphicx}
+\usepackage{keystroke} %Keyboardsymbole
 
 \begin{document}
 \begin{titlepage}
@@ -30,15 +31,61 @@
 \tableofcontents
 \chapter{Einleitung}
 \section{Vorwort und Systemanforderungen}
+\subsection*{Gesundheitsschutz}
+\begin{itemize}
+\item Legen Sie zum Schutz Ihrer Gesundheit eine Pause von 15 Minuten pro Spielstunde ein.
+\item Spielen Sie nicht wenn Sie müde sind oder nicht genug Schlaf hatten.
+\item Spielen Sie immer in einem gut beleuchteten Raum und setzen Sie sich so weit vom Bildschirm entfernt, wie es das Kabel Ihrer Eingabegeräte zulässt.
+\item Bei einem sehr kleinen Prozentsatz von Personen kann es zu epileptischen Anfällen kommen, wenn sie bestimmten Lichteffekten oder Lichtmustern in ihrer täglichen Umgebung ausgesetzt sind.
+\item Manchmal wird bei diesen Personen ein epileptischer Anfall ausgelöst, wenn sie Computerspiele spielen. Auch Spieler, die zuvor noch nie einen Anfall hatten, können an bisher nicht erkannter Epilepsie leiden. Falls Sie an Epilepsie leiden, suchen Sie Ihren Arzt auf, bevor Sie Computerspiele betreiben. Sollten bei Ihnen eines der folgenden Symptome auftreten (Schwindelgefühl, veränderte Sehkraft, Muskelzuckungen, jegliche Art von unkontrollierter Bewegung, Bewusstseinsverlust, Desorientierung und/oder Krämpfe), so brechen Sie das Spiel sofort ab und suchen einen Arzt auf.
+\end{itemize}
+\subsection*{Spielstart}
+Vielen Dank, dass Sie sich für unsere neuste Entwicklung des Computerspiele-Zeitalters entschieden haben. Ich darf stolz verkünden, dass Sie mit diese Entscheidung eine hervorragende Wahl getroffen haben. Dungeon Crawler 2013 (Gruppe 22) wird nach unseren Prognosen das beliebteste Spiel des Jahres 2013!\\
+\begin{enumerate}
+\item Beachten Sie zunächst die Systemanforderungen, bevor Sie das Spiel Installieren.
+\item Schalten Sie Ihren Computer ein und installieren das Spiel.
+\item Starten Sie das Spiel mit \textit{Gruppe22.exe} (Server: \textit{DungeonServer.exe}).
+\end{enumerate}
+\subsection*{Systemanforderungen}
+Bei der Entwicklung wurde besonders viel Wert auf Kompatibilität zu verschiedenen Geräten bzw. Systemen gelegt. Die hier zugrunde liegende Version ist jedoch nur unter Windows (ab XP bzw. unter .NET-Framework) lauffähig.\\
+Beachten Sie: Das Spiel nutzt die Grafikbibliotheken \textit{OpenGL} (und \textit{OpenAL}), Ihre Grafikkarte sollte dies also unbedingt unterstützen.\\\\
+Und sonst: Jedes halbwegs moderne Rechner tut's ;)
 \section{Befehlsliste und Steuerung}
+\textbf{\textit{Hinweis:}} Im folgenden wird mit dem Begriff \textit{Hauptmenü} das \textit{Pausenmenü} bezeichnet, da es sich in diesem GUI-System um das selbe Menü handelt.
+\begin{center}
+\begin{tabular}[here]{|l|l|}
+\hline
+Bewegen & \textit{Maus in Zielrichtung halten und linke Maustaste gedrückt halten}\\ \hline
+Aktion & \textit{linke Maustaste drücken und halten (auf aktionsfähigem Objekt)}\\ \hline
+Sekundärwaffe & \textit{Leertaste \Spacebar}\\ \hline
+\multicolumn{2}{|c|}{Menüsteuerung und sonstige Befehle}\\ \hline
+Pausenmenü & \Esc\\ \hline
+Chat & \keystroke{T}\\ \hline
+TODO & Ergänzen und vervollständigen!\\ \hline
+\end{tabular}
+\end{center}
+\clearpage
 \section{Prolog}
+Guten Tag, wir haben neue Abenteuer für Sie in diesem letzten Dungeon Crawler 2013.\\\\
+Sie befinden sich in einem Labyrinth, bestehend aus mehreren Räumen und Ebenen.\\
+Das Ziel ist es die höchste Ebene zu erreichen und damit in die Freiheit zu entkommen, denn Sie sind tief unter der Erde in einer gefährlichen Umgebung voller Irrwege. Es wird wichtig sein einen guten Orientierungssinn zu besitzen oder sich geschickt anzustellen, denn je mehr Sie herumirren desto gefährlicher wird es für Sie. Mit jedem Level bzw. jeder Ebene steigert sich der Schwierigkeitsgrad (z.B. werden die Gegner stärker, der Sichtradius immer kleiner) und auf jeder Ebene wartet eine besondere Überraschung! Ein spezieller Boss-Gegner, der alles unter Kontrolle hat und Acht darauf gibt das keiner die Ebene wechselt. Sie sollten auch auspassen wohin Sie treten, es gibt nämlich Fallen die nicht zu unterschätzen sind. Um erfolgreich zu sein ist es unbedingt erforderlich Erfahrung durch Kämpfe zu sammeln und achten Sie auch auf dinge die sonst so herumliegen. Ein ausgeklügeltes Gameplay-System erlaubt Ihnen zusätzlich die Übersicht und Verwaltung über Ihr Inventar und sonstigen Charaktereigenschaften. Sie sollten die Kraft der Magie nicht auf die leichte Schulter nehmen, diese kann sehr hilfreich sein und wenn es mal knapp wird gibt es keine bessere Hilfestellung. Schließlich runden einige interaktive NPCs das Spiel ab. Sie können zum Beispiel den Shop besuchen um sich dort auf die nächste Schlacht vorzubereiten. Und keine sorge falls Sie nicht genug Geld besitzen, die Moralentscheidungen sind ganz Ihnen überlassen.\\\\
+Viel Erfolg beim Kampf in die Freiheit
 \section{Besetzung}
+\subsection*{Hauptcharakter}
+\subsection*{NPCs}
+\subsection*{Skelett}
+\subsection*{Die Spinne}
+\subsection*{Der Kobold}
+\subsection*{Der Drache}
 \section{Schauplätze}
+Jeder Raum hat seinen eigenen Scharm, und auch wenn alle Räume ähnlich aussehen, gibt es doch ein paar Worte zu sagen.\\
+Die Räumen und Ihre gegenseitige Abhängigkeit sind zufällig, folgen jedoch gewissen Einschränkungen, die dazu dienen den Spielspaß zu sichern. Ihnen wird aufgefallen sein, das die Gestaltung der Umwelt äußerlich variiert (beachte Sie dazu auch die Größe der Grafiken von ca. 600MB), doch auch die Geometrie der Räume wird je nach Level angepasst. Je höher Sie kommen desto weniger Wände werden im Raum stören, das liegt daran das die Oberfläche immer näher kommt und das Labyrinth an dichte verliert. Jedoch sind Sie dadurch ein leichteres Ziel für die verbitterten Kreaturen der Unterwelt. Sie sollten das also in Ihrer Strategie unbedingt mit einbeziehen.
 \chapter{Einrichten des Spiels}
 \section{Hauptmenü}
-\begin{picture}(250,100)(50,50)
+\begin{figure}[h]
 \includegraphics[width=\textwidth]{img/menu}
-\end{picture}
+\caption{Hauptmenü des Spiels.}
+\end{figure}
 \section{Optionen}
 \chapter{Gameplay und Anzeigesysteme}
 \chapter{Multiplayer}
