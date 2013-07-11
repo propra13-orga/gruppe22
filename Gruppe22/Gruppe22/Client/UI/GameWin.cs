@@ -708,7 +708,6 @@ namespace Gruppe22.Client
 
                         if ((_status != Backend.GameStatus.NoRedraw) || (data.Count() > 0))
                         {
-                            _logic.map.actors[_playerID].online = true;
                             _logic.HandleEvent(true, Events.ContinueGame);
                             if (_logic is PureLogic)
                             {
@@ -733,6 +732,7 @@ namespace Gruppe22.Client
                             }
                             _mainmap1.playerID = _playerID;
                             _minimap1.playerID = _playerID;
+                            _logic.map.actors[_playerID].online = true;
                             _mainmap1.resetActors();
                             //_mainmap2.resetActors();
                             _mana.actor = _logic.map.actors[_playerID];
@@ -768,7 +768,6 @@ namespace Gruppe22.Client
                         _status = Backend.GameStatus.NoRedraw;
                         _logic.HandleEvent(true, Events.ResetGame);
                         break;
-
                     case Backend.Events.ChangeMap:
                         _status = Backend.GameStatus.NoRedraw;
                         _playerID = (int)data[0];
@@ -791,6 +790,38 @@ namespace Gruppe22.Client
                 // Backend to Frontend (received)
                 switch (eventID)
                 {
+                    case Backend.Events.Attack:
+                        _mainmap1.HandleEvent(true, Events.AnimateActor, data[0], Backend.Activity.Attack);
+                        // TODO: Play animation
+                        break;
+                    case Backend.Events.ActorText:
+                        // defender, _map.actors[defender].tile.coords, "Evade")
+                        break;
+                    case Backend.Events.DamageActor:
+                        // , defender, _map.actors[defender].tile.coords, _map.actors[defender].health, damage);
+                        _mainmap1.HandleEvent(true, Events.AnimateActor, data[0], Backend.Activity.Hit);
+                        break;
+                    case Backend.Events.KillActor:
+                        _mainmap1.HandleEvent(true, Events.AnimateActor, data[0], Backend.Activity.Die);
+                        break;
+                    case Backend.Events.ChangeStats:
+                        break;
+                    case Backend.Events.FireProjectile:
+                        break;
+                    case Backend.Events.PlaySound:
+                        break;
+                    case Backend.Events.ActivateAbility:
+                        break;
+                    case Backend.Events.Dialog:
+                        break;
+                    case Backend.Events.Shop:
+                        break;
+                    case Events.SetItemTiles:
+                        break;
+                    case Events.Checkpoint:
+                        break;
+                    case Events.GameOver:
+                        break;
 
                     case Backend.Events.ShowMessage:
                         _AddMessage(data[0].ToString(), data.Length > 1 ? data[1] : null);
@@ -802,6 +833,7 @@ namespace Gruppe22.Client
 
                     case Backend.Events.ChangeMap:
                         _status = Backend.GameStatus.NoRedraw; // prevent redraw (which would crash the game!)
+                        // TODO MUSIC
                         _logic.ChangeMap((string)data[0], (Coords)data[1]);
                         _mainmap1.resetActors();
                         _minimap1.MoveCamera(_logic.map.actors[_playerID].tile.coords);

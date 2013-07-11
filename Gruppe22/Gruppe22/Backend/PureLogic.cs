@@ -332,14 +332,14 @@ namespace Gruppe22.Backend
                         while (_map[target.x, target.y].hasTreasure)
                         {
                             _parent.HandleEvent(false, Events.PlaySound, SoundFX.Pickup); //SoundEffect pick items
-                            _parent.HandleEvent(false, Events.ShowMessage, ((id == 0) ? "You found " : _map.actors[id].name + " found ") + _map[target.x, target.y].firstItem.item.name + " .");
-                            if (id == 0)
-                                _parent.HandleEvent(false, Events.FloatText, target, "Found " + _map[target.x, target.y].firstItem.item.name, Color.DarkGreen);
+                            _parent.HandleEvent(false, Events.ShowMessage, ((_map.actors[id] is Player) ? "You found " : _map.actors[id].name + " found ") + _map[target.x, target.y].firstItem.item.name + " .");
+                            if (_map.actors[id] is Player)
+                                _parent.HandleEvent(false, Events.ActorText, _map[target].firstActor, target, "Found " + _map[target.x, target.y].firstItem.item.name, Color.DarkGreen);
                             _map[target.x, target.y].firstItem.item.Pickup(_map.actors[id]);
                             _map[target.x, target.y].Remove(_map[target.x, target.y].firstItem);
                         }
                         // Apply teleporter (move to next room)
-                        if ((id == 0) && (_map[target.x, target.y].hasTeleport))
+                        if ((_map.actors[id] is Player) && (_map[target.x, target.y].hasTeleport))
                         {
                             HandleEvent(true, Backend.Events.ChangeMap, ((TeleportTile)_map[target.x, target.y].overlay[0]).nextRoom, ((TeleportTile)_map[target.x, target.y].overlay[0]).nextPlayerPos);
 
@@ -352,7 +352,7 @@ namespace Gruppe22.Backend
                         }
 
                         //Checkpoint - save by entering
-                        if ((_map[target.x, target.y].hasCheckpoint) && (!_map[target.x, target.y].checkpoint.visited) && (id == 0))
+                        if ((_map[target.x, target.y].hasCheckpoint) && (!_map[target.x, target.y].checkpoint.visited) && (_map.actors[id] is Player))
                         {
                             _parent.HandleEvent(false, Events.PlaySound, SoundFX.Checkpoint);//SoundEffect checkpoint
                             _map[target.x, target.y].checkpoint.visited = true;
@@ -363,7 +363,7 @@ namespace Gruppe22.Backend
                             if (_map[target.x, target.y].checkpoint.bonuslife > 0)
                                 _map.actors[id].lives += (int)_map[target.x, target.y].checkpoint.bonuslife;
                             _map.Save("savedroom" + _map.id + ".xml");
-                            _parent.HandleEvent(false, Events.FloatText, target, "Checkpoint", Color.DarkOliveGreen);
+                            _parent.HandleEvent(false, Events.ActorText,_map[target].firstActor, target, "Checkpoint", Color.DarkOliveGreen);
                             File.WriteAllText("GameData", "room" + _map.id.ToString() + ".xml" + Environment.NewLine + _map.actors[id].lives.ToString());
                             File.WriteAllText("CheckPoint", _map.id.ToString());
                             Regex regex = new Regex(@"\d+");
@@ -383,7 +383,7 @@ namespace Gruppe22.Backend
                         }
 
                         // Trigger floor switches
-                        if ((_map[_map.actors[id].tile.coords.x, _map.actors[id].tile.coords.y].hasTarget) && (id == 0))
+                        if ((_map[_map.actors[id].tile.coords.x, _map.actors[id].tile.coords.y].hasTarget) && (_map.actors[id] is Player))
                         {
                             _parent.HandleEvent(false, Backend.Events.AnimateActor, id, Activity.Talk);
                             //_mainmap2.HandleEvent(true, Backend.Events.AnimateActor, id, Activity.Talk);
@@ -405,7 +405,7 @@ namespace Gruppe22.Backend
                         Backend.Coords target = Map.DirectionTile(_map.actors[id].tile.coords, dir);
                         if (_map.CanMove(_map.actors[id].tile.coords, dir))
                         {
-                            _parent.HandleEvent(false, Backend.Events.Attack, id, Activity.Attack, dir);
+                            _parent.HandleEvent(false, Backend.Events.Attack, id, dir);
                             _CombatDamage(id, _map[target.x, target.y].firstActor.id);
                         }
                     }
