@@ -160,6 +160,7 @@ namespace Gruppe22.Client
         {
             _interfaceElements = new List<UIElement>(); // Initialize the list of UI elements (but not the objects themselves, see LoadContent)
             _logic = new PureLogic(this, null); // Start in Client Mode
+            _logic.map.actors[_playerID].online = true;
             base.Initialize();
         }
 
@@ -537,8 +538,9 @@ namespace Gruppe22.Client
                                 if (_logic is PureLogic)
                                 {
                                     _logic = new NetLogic(this, tmp);
+                                    _playerID = 0;
                                     tmp.parent = _logic;
-
+                                    _logic.map.actors[_playerID].online = true;
                                     changeMode = true;
                                 }
                             }
@@ -557,6 +559,10 @@ namespace Gruppe22.Client
                                 }
                             }
                         }
+                        break;
+
+                    case Events.TileEntered:
+                        _logic.HandleEvent(true, Events.TileEntered, data);
                         break;
                     case Backend.Events.ShowMenu:
                         _logic.HandleEvent(true, Events.Pause);
@@ -675,28 +681,8 @@ namespace Gruppe22.Client
                         break;
 
                     case Backend.Events.LoadFromCheckPoint:
-
                         _status = Backend.GameStatus.NoRedraw;
-                        _logic.map.actors[_playerID].lives--;
-                        string lastCheck = File.ReadAllText("CheckPoint");
-                        while (Directory.GetFiles(".", "savedroom*.xml").Length > 0)
-                        {
-                            File.Delete(Directory.GetFiles(".", "savedroom*.xml")[0]);
-                        }
-                        Regex re = new Regex(@"\d+");
-                        foreach (string file in Directory.GetFiles(".", "checkpoint*.xml"))
-                        {
-                            Match m = re.Match(file);
-                            File.Copy(file, "savedroom" + m.Value + ".xml");
-                        }
-                        _logic.map.actors.Clear();
-                        _logic.map.Load("savedroom" + lastCheck + ".xml", null);
-                        File.WriteAllText("GameData", "room" + _logic.map.id.ToString() + ".xml" + Environment.NewLine + _logic.map.actors[_playerID].ToString());
-                        _mainmap1.resetActors();
-                        //_mainmap2.resetActors();
-                        _mana.actor = _logic.map.actors[_playerID];
-                        _health.actor = _logic.map.actors[_playerID];
-                        _toolbar.actor = _logic.map.actors[_playerID];
+                        _logic.HandleEvent(true, Events.LoadFromCheckPoint, _playerID);
                         break;
 
 
@@ -722,8 +708,20 @@ namespace Gruppe22.Client
 
                         if ((_status != Backend.GameStatus.NoRedraw) || (data.Count() > 0))
                         {
+                            _logic.map.actors[_playerID].online = true;
                             _logic.HandleEvent(true, Events.ContinueGame);
-                            if (_focus != null)
+                            if (_logic is PureLogic)
+                            {
+                                for (int i = 0; i < _logic.map.actors.Count; ++i)
+                                {
+                                    if (_logic.map.actors[i] is Player)
+                                    {
+                                        _playerID = i;
+                                        break;
+                                    }
+                                }
+                            }
+                            if (_focus is Window)
                             {
                                 _focus.Dispose();
                                 _interfaceElements.Remove(_focus);
@@ -733,6 +731,14 @@ namespace Gruppe22.Client
                             {
                                 _mainmap1.noMove = true;
                             }
+                            _mainmap1.playerID = _playerID;
+                            _minimap1.playerID = _playerID;
+                            _mainmap1.resetActors();
+                            //_mainmap2.resetActors();
+                            _mana.actor = _logic.map.actors[_playerID];
+                            _health.actor = _logic.map.actors[_playerID];
+                            _toolbar.actor = _logic.map.actors[_playerID];
+
                             _status = GameStatus.Running;
                             _focus = null;
 

@@ -682,7 +682,6 @@ namespace Gruppe22.Backend
         /// <param name="player">The starting position on the loaded map</param>
         public void ReadXML(XmlReader xmlr, Backend.Coords targetCoords = null, bool resetPlayer = false)
         {
-            Coords tempTarget = targetCoords;
 
             List<Player> players = new List<Player>();
 
@@ -690,6 +689,7 @@ namespace Gruppe22.Backend
             {
                 targetCoords = new Backend.Coords(1, 1);
             }
+            Coords tempTarget = targetCoords;
 
             // Move all players to the new map
             if (_actors.Count > 0)
@@ -927,11 +927,14 @@ namespace Gruppe22.Backend
                                         }
                                         else
                                         {
-                                            if ((players.Count > 0) && !resetPlayer)
+                                            if (players.Count > 0)
                                             {
-                                                actor.copyFrom(players[0]);
+                                                if (!resetPlayer)
+                                                    actor.copyFrom(players[0]);
                                                 players.RemoveAt(0);
+
                                             }
+
                                             if (targetCoords != null)
                                             {
                                                 ActorTile actortile = new ActorTile(this[targetCoords], actor);
@@ -1051,7 +1054,7 @@ namespace Gruppe22.Backend
                     return i;
                 }
             }
-            Player temp=new Player();
+            Player temp = new Player();
             _actors.Add(temp);
             int newID = _actors.Count;
             temp.online = true;
@@ -1093,9 +1096,9 @@ namespace Gruppe22.Backend
             xmlw.WriteEndElement();
             xmlw.WriteEndDocument();
             xmlw.Close();
-            string result=output.ToString();
+            string result = output.ToString();
             result = result.Trim();
-            result=result.Replace("  ", " ");
+            result = result.Replace("  ", " ");
             result = result.Replace(Environment.NewLine, " ");
             result = result.Replace('\0', ' ');
             return result;

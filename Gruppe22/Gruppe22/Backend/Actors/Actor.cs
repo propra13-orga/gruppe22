@@ -28,12 +28,19 @@ namespace Gruppe22.Backend
         /// A random.
         /// </summary>
         protected Random _random;
-        protected string _GUID="";
+
+        /// <summary>
+        /// A unique identity used in online games
+        /// </summary>
+        protected string _GUID = "";
+        /// <summary>
+        /// Determines whether player is available 
+        /// </summary>
         protected bool _online = false;
         /// <summary>
         /// Number of lives (ressurection)
         /// </summary>
-        protected uint _lives = 1;
+        protected int _lives = -1;
         protected int _newItems = 0;
         protected ActorTile _tile;
         protected ActorType _actorType;
@@ -82,6 +89,7 @@ namespace Gruppe22.Backend
         protected int _scared = 0;
         protected List<Ability> _abilities = null;
         private bool _regenerating = false;
+        protected int _lastCheckpoint = 1;
         #endregion
 
         #region Public Fields
@@ -140,7 +148,7 @@ namespace Gruppe22.Backend
         /// <summary>
         /// Number of current lives (read/write).
         /// </summary>
-        public uint lives
+        public int lives
         {
             get
             {
@@ -149,6 +157,22 @@ namespace Gruppe22.Backend
             set
             {
                 _lives = value;
+            }
+        }
+
+
+        /// <summary>
+        /// Number of current lives (read/write).
+        /// </summary>
+        public int lastCheckpoint
+        {
+            get
+            {
+                return _lastCheckpoint;
+            }
+            set
+            {
+                _lastCheckpoint = value;
             }
         }
 
@@ -228,12 +252,12 @@ namespace Gruppe22.Backend
         /// </summary>
         public int scared
         {
-            get 
-            { 
+            get
+            {
                 return _scared;
             }
-            set 
-            { 
+            set
+            {
                 _scared = value;
             }
         }
@@ -244,13 +268,13 @@ namespace Gruppe22.Backend
         /// </summary>
         public int stunned
         {
-            get 
-            { 
-                return _stunned; 
-            }
-            set 
+            get
             {
-                _stunned = value; 
+                return _stunned;
+            }
+            set
+            {
+                _stunned = value;
             }
         }
 
@@ -350,13 +374,13 @@ namespace Gruppe22.Backend
         /// </summary>
         public bool locked
         {
-            get 
-            { 
-                return _locked; 
+            get
+            {
+                return _locked;
             }
-            set 
-            { 
-                _locked = value; 
+            set
+            {
+                _locked = value;
             }
         }
 
@@ -365,13 +389,13 @@ namespace Gruppe22.Backend
         /// </summary>
         public string animationFile
         {
-            get 
-            { 
-                return _animationFile; 
+            get
+            {
+                return _animationFile;
             }
-            set 
-            { 
-                _animationFile = value; 
+            set
+            {
+                _animationFile = value;
             }
         }
 
@@ -859,7 +883,7 @@ namespace Gruppe22.Backend
                 _abilityPoints = value;
             }
         }
-        
+
         /// <summary>
         /// 
         /// </summary>
@@ -1002,8 +1026,8 @@ namespace Gruppe22.Backend
             writer.WriteAttributeString("exp", Convert.ToString(_exp));
             writer.WriteAttributeString("resist", Convert.ToString(_resist));
             writer.WriteAttributeString("damage", Convert.ToString(_damage));
-            writer.WriteAttributeString("locked", Convert.ToString(_locked));
             writer.WriteAttributeString("gold", Convert.ToString(_gold));
+            writer.WriteAttributeString("lastCheckpoint", Convert.ToString(_lastCheckpoint));
             writer.WriteAttributeString("manaReg", Convert.ToString(_manaReg));
             writer.WriteAttributeString("maxMana", Convert.ToString(_maxMana));
             writer.WriteAttributeString("destroyWeapon", Convert.ToString(_destroyWeapon));
@@ -1011,9 +1035,9 @@ namespace Gruppe22.Backend
             writer.WriteAttributeString("animation", Convert.ToString(_animationFile));
             writer.WriteAttributeString("viewRange", Convert.ToString(_viewRange));
             if (_GUID != "") writer.WriteAttributeString("GUID", Convert.ToString(GUID));
-            if (_stunned != -1) writer.WriteAttributeString("stunned", Convert.ToString(_stunned));
-            if (_charmed != -1) writer.WriteAttributeString("charmed", Convert.ToString(_charmed));
-            if (_lives != 1) writer.WriteAttributeString("lives", Convert.ToString(_lives));
+            if (_stunned != 0) writer.WriteAttributeString("stunned", Convert.ToString(_stunned));
+            if (_charmed != 0) writer.WriteAttributeString("charmed", Convert.ToString(_charmed));
+            if (_lives != -1) writer.WriteAttributeString("lives", Convert.ToString(_lives));
             if (_direction != Direction.None) writer.WriteAttributeString("direction", Convert.ToString(_lives));
 
             if (_charmed != 0) _friendly = true;
@@ -1178,16 +1202,19 @@ namespace Gruppe22.Backend
             _resist = Convert.ToInt32(reader.GetAttribute("resist"));
             _damage = Convert.ToInt32(reader.GetAttribute("damage"));
             _level = Convert.ToInt32(reader.GetAttribute("level"));
-            _locked = Convert.ToBoolean(reader.GetAttribute("locked"));
             _gold = Convert.ToInt32(reader.GetAttribute("gold"));
             _manaReg = Convert.ToInt32(reader.GetAttribute("manaReg"));
             _maxMana = Convert.ToInt32(reader.GetAttribute("maxMana"));
             _destroyWeapon = Convert.ToInt32(reader.GetAttribute("destroyWeapon"));
             _destroyArmor = Convert.ToInt32(reader.GetAttribute("destroyArmor"));
-            if (reader.GetAttribute("lives") != null) _lives = Convert.ToUInt32(reader.GetAttribute("lives"));
+            if (reader.GetAttribute("lastCheckPoint") != null)
+            {
+                _lastCheckpoint = Convert.ToInt32(reader.GetAttribute("lastCheckPoint"));
+            }
+            if (reader.GetAttribute("lives") != null) _lives = Convert.ToInt32(reader.GetAttribute("lives"));
             if (reader.GetAttribute("direction") != null)
                 _direction = (Direction)Enum.Parse(typeof(Direction), reader.GetAttribute("direction"));
-
+            if (_direction == Direction.None) _direction = Direction.Up;
 
             if (reader.GetAttribute("crazy") != null) _crazy = Convert.ToBoolean(reader.GetAttribute("crazy"));
             if (reader.GetAttribute("ranged") != null) _ranged = Convert.ToBoolean(reader.GetAttribute("ranged"));

@@ -204,7 +204,7 @@ namespace Gruppe22.Client
         {
             get
             {
-                if (_actor.direction != Backend.Direction.None)
+                if ((_actor.direction != Backend.Direction.None) && ((int)_actor.direction != -1))
                     return _actor.direction;
                 else return _prevDir;
             }
@@ -443,7 +443,7 @@ namespace Gruppe22.Client
             if (!_blockUpdates)
             {
                 Backend.Direction tmp = _actor.direction;
-                if ((tmp != Backend.Direction.None) && (tmp != _prevDir)) _prevDir = tmp;
+                if ((tmp != Backend.Direction.None) && ((int)tmp > -1) && (tmp != _prevDir)) _prevDir = tmp;
                 if (_effect != null)
                 {
                     if (_effect.finished)

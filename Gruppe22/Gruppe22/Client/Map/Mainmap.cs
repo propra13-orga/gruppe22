@@ -452,7 +452,7 @@ namespace Gruppe22.Client
             }
             else
             {
-                _parent.HandleEvent(false, eventID, data);
+                _parent.HandleEvent(true, eventID, data);
             }
 
         }
@@ -1348,6 +1348,7 @@ namespace Gruppe22.Client
                         _actors.Add(new ActorView(_camera, this, count, _content, _map2screen(_map.actorPositions[count]), _map.actors[count], _map.actors[count].animationFile, 12, _map.actors[count].health > 0));
                         break;
                 }
+                _map.actors[count].locked = false;
             }
             _camera.position = new Vector2(-38 - _actors[_playerID].position.x, -30 - _actors[_playerID].position.y);
             DisplaySubtitle(_map.name, "Level " + _map.level + " of " + _map.dungeonname);

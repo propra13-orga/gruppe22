@@ -179,7 +179,9 @@ namespace Gruppe22.Backend
                                 }
                                 else
                                 {
-                                    selected = attackDir.ToArray()[_random.Next(attackDir.Count) ];
+                                    if (attackDir.Contains(_lastDir))
+                                        selected = _lastDir;
+                                    else selected = attackDir.ToArray()[_random.Next(attackDir.Count)];
                                     // Attack if cornered
                                 }
                             }
@@ -188,7 +190,12 @@ namespace Gruppe22.Backend
                         {
                             // if no attacker in sight: Move around randomly
                             // TODO: Implement walking away from enemies
-                            selected = validDir.ToArray()[_random.Next(validDir.Count) ];
+
+                            if ((validDir.Count > 1) && (_random.Next(100) < 90))
+                            {
+                                validDir.Remove(_lastDir);
+                            }
+                            selected = validDir.ToArray()[_random.Next(validDir.Count)];
                         }
                     }
                     else
@@ -198,7 +205,11 @@ namespace Gruppe22.Backend
                         if (attackDir.Count > 0)
                         {
                             // Pick any target to attack
-                            selected = attackDir.ToArray()[_random.Next(attackDir.Count)];
+
+                            if (attackDir.Contains(_lastDir))
+                                selected = _lastDir;
+                            else
+                                selected = attackDir.ToArray()[_random.Next(attackDir.Count)];
                         }
                         else
                         {
@@ -223,13 +234,21 @@ namespace Gruppe22.Backend
                             else
                             {
                                 // Pick any direction at random
-                                selected = validDir.ToArray()[_random.Next(validDir.Count) ];
+                                if ((validDir.Count > 1) && (_random.Next(100) < 90))
+                                {
+                                    validDir.Remove(_lastDir);
+                                }
+                                selected = validDir.ToArray()[_random.Next(validDir.Count)];
                             }
                         }
                     }
                     _working = false;
+                    if (selected != Direction.None)
+                    {
+                        _lastDir = selected;
 
-                    ((Backend.IHandleEvent)parent).HandleEvent(false, Backend.Events.MoveActor, actor.id, selected);
+                        ((Backend.IHandleEvent)parent).HandleEvent(false, Backend.Events.MoveActor, actor.id, selected);
+                    }
                 }
             }
 
@@ -264,6 +283,7 @@ namespace Gruppe22.Backend
                     actor.Regen();
                     _elapsed -= _timeToThink;
                     if (enabled
+                        && (!actor.locked)
                         && !(actor is Player)
                         && (!_working))
                     {

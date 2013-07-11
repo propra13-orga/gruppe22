@@ -323,6 +323,8 @@ namespace Gruppe22.Backend
                 case Backend.Events.TileEntered:
                     {
                         int id = (int)data[0];
+                        _map.actors[id].locked = false;
+
                         Direction dir = (Direction)data[1];
                         Backend.Coords target = _map.actors[id].tile.coords;
 
@@ -359,7 +361,7 @@ namespace Gruppe22.Backend
                             if (_map.actors[id].lives == -1)
                                 _map.actors[id].lives = 3;
                             if (_map[target.x, target.y].checkpoint.bonuslife > 0)
-                                _map.actors[id].lives += (uint)_map[target.x, target.y].checkpoint.bonuslife;
+                                _map.actors[id].lives += (int)_map[target.x, target.y].checkpoint.bonuslife;
                             _map.Save("savedroom" + _map.id + ".xml");
                             _parent.HandleEvent(false, Events.FloatText, target, "Checkpoint", Color.DarkOliveGreen);
                             File.WriteAllText("GameData", "room" + _map.id.ToString() + ".xml" + Environment.NewLine + _map.actors[id].lives.ToString());
@@ -390,7 +392,6 @@ namespace Gruppe22.Backend
                         }
 
 
-                        _map.actors[id].locked = false;
 
                     }
                     // Allow to choose next turn
@@ -522,13 +523,28 @@ namespace Gruppe22.Backend
 
                 case Backend.Events.LoadFromCheckPoint:
                     HandleEvent(false, Backend.Events.Pause);
-                    //TODO: Add code to load Checkpoint and decreate lives here
+                    map.actors[(int)data[0]].lives--;
+                    string lastCheck = File.ReadAllText("CheckPoint");
+                    while (Directory.GetFiles(".", "savedroom*.xml").Length > 0)
+                    {
+                        File.Delete(Directory.GetFiles(".", "savedroom*.xml")[0]);
+                    }
+                    Regex re = new Regex(@"\d+");
+                    foreach (string file in Directory.GetFiles(".", "checkpoint*.xml"))
+                    {
+                        Match m = re.Match(file);
+                        File.Copy(file, "savedroom" + m.Value + ".xml");
+                    }
+                    map.Load("savedroom" + lastCheck + ".xml", null, true);
+                    map.actors[(int)data[0]].lives--;
+                    map.Save("savedroom" + lastCheck);
+                    map.Save("checkpoint" + lastCheck);
                     HandleEvent(false, Backend.Events.ContinueGame, true);
-
                     break;
 
                 case Backend.Events.ChangeMap: // Load another map
                     HandleEvent(false, Backend.Events.Pause);
+                    _map.Load((string)data[0], (Coords)data[1], false);
                     // TODO: Add code to load Map
                     HandleEvent(false, Backend.Events.ContinueGame, true);
                     break;
@@ -536,6 +552,7 @@ namespace Gruppe22.Backend
                 case Backend.Events.NewMap:
                     HandleEvent(false, Backend.Events.Pause);
                     GenerateMaps();
+                    map.Load("room1.xml", null, true);
                     HandleEvent(false, Backend.Events.ContinueGame, true);
                     break;
                 case Backend.Events.ResetGame:
