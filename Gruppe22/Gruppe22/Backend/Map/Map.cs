@@ -384,22 +384,49 @@ namespace Gruppe22.Backend
         {
             Backend.Coords source = actor.tile.coords;
             Backend.Coords target = DirectionTile(actor.tile.coords, dir);
-
-            // Remove ActorTile from current tile
-            ((FloorTile)actor.tile.parent).Remove(actor.tile);
-            // Add ActorTile to new Tile
-            _tiles[target.y][target.x].Add(actor.tile);
-            actor.tile.parent = _tiles[target.y][target.x];
-            // Remove old tile from updatelist (if no other actor or trap)
-            if (!((_tiles[source.y][source.x].hasEnemy)
-                || (_tiles[source.y][source.x].hasPlayer)
-                || (_tiles[source.y][source.x].hasTrap)))
-                _updateTiles.Remove(source);
-            // Add new tile to updatelist
-            _updateTiles.Add(target);
+            if (this[target].coords.x > -1)
+            {
+                // Remove ActorTile from current tile
+                ((FloorTile)actor.tile.parent).Remove(actor.tile);
+                // Add ActorTile to new Tile
+                _tiles[target.y][target.x].Add(actor.tile);
+                actor.tile.parent = _tiles[target.y][target.x];
+                // Remove old tile from updatelist (if no other actor or trap)
+                if (!((_tiles[source.y][source.x].hasEnemy)
+                    || (_tiles[source.y][source.x].hasPlayer)
+                    || (_tiles[source.y][source.x].hasTrap)))
+                    _updateTiles.Remove(source);
+                // Add new tile to updatelist
+                _updateTiles.Add(target);
+            }
         }
 
 
+        /// <summary>
+        /// Move an actor on the map in a specified direction (does not check for walls - use CanMove)
+        /// </summary>
+        /// <param name="actor">The actor object to move</param>
+        /// <param name="dir">Direction to move to</param>
+        public void PositionActor(Actor actor, Coords coords)
+        {
+            Backend.Coords source = actor.tile.coords;
+            Backend.Coords target = coords;
+            if (this[target].coords.x > -1)
+            {
+                // Remove ActorTile from current tile
+                ((FloorTile)actor.tile.parent).Remove(actor.tile);
+                // Add ActorTile to new Tile
+                _tiles[target.y][target.x].Add(actor.tile);
+                actor.tile.parent = _tiles[target.y][target.x];
+                // Remove old tile from updatelist (if no other actor or trap)
+                if (!((_tiles[source.y][source.x].hasEnemy)
+                    || (_tiles[source.y][source.x].hasPlayer)
+                    || (_tiles[source.y][source.x].hasTrap)))
+                    _updateTiles.Remove(source);
+                // Add new tile to updatelist
+                _updateTiles.Add(target);
+            }
+        }
 
         /// <summary>
         /// Get coordinates for closest enemy within a specified radius
@@ -478,7 +505,7 @@ namespace Gruppe22.Backend
 
             if ((
                 (from.x >= 0) &&
-                (to.x >= 0)) && 
+                (to.x >= 0)) &&
                 (from.y >= 0) &&
                 (to.y >= 0) &&
                 (to.x < _width) &&

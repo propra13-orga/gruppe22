@@ -95,7 +95,6 @@ namespace Gruppe22.Backend
                     case Events.MoveActor:
                         if (!_map.actors[(int)data[0]].locked)
                         {
-                            _map.actors[(int)data[0]].locked = true;
                             _network.SendMessage(PacketType.Move, (int)data[0], (int)(Direction)data[1]);
                         }
                         break;
@@ -126,6 +125,10 @@ namespace Gruppe22.Backend
                         break;
                     case Events.MoveActor:
                         _map.actors[(int)data[0]].direction = (Direction)data[2];
+                        if (data.Length > 4)
+                        {
+                            _map.PositionActor(_map.actors[(int)data[0]], new Coords((int)data[3], (int)data[4]));
+                        }
                         _parent.HandleEvent(false, Events.MoveActor, data);
                         break;
                 }

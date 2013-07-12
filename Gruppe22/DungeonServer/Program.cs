@@ -111,7 +111,8 @@ namespace DungeonServer
             NetIncomingMessage message;
             while (_serverThread.ThreadState != ThreadState.AbortRequested)
             {
-                if (_pausedCount == 0) { 
+                if (_pausedCount == 0)
+                {
                     Update();
                     _logic.paused = false;
                 }
@@ -266,7 +267,7 @@ namespace DungeonServer
                 case PacketType.Move: //0x0 steht für Positions-Informationen eines Clienten
                     int actorID = message.ReadInt32();
                     Direction dir = (Direction)message.ReadInt32();
-                    _logic.HandleEvent(true, Events.MoveActor, actorID, dir);
+                    _logic.HandleEvent(true, Events.MoveActor, actorID, dir, _logic.map.actors[actorID].tile.coords.x, _logic.map.actors[actorID].tile.coords.y);
                     break;
                 case PacketType.FinishedMove:
                     _logic.HandleEvent(true, Events.TileEntered, message.ReadInt32(), (Direction)message.ReadInt32());
