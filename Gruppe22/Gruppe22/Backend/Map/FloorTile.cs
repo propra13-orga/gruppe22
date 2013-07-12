@@ -83,7 +83,8 @@ namespace Gruppe22.Backend
                         i -= 1;
                     }
                 }
-                foreach(ItemTile itemTile in value){
+                foreach (ItemTile itemTile in value)
+                {
                     itemTile.parent = this;
                 }
                 _overlay.AddRange(value);
@@ -348,7 +349,7 @@ namespace Gruppe22.Backend
                 int count = 0;
                 while ((!result) && (count < _overlay.Count))
                 {
-                    result = ((_overlay[count] is ActorTile) && (((ActorTile)_overlay[count]).actor is Player) && (((ActorTile)_overlay[count]).actor.online));
+                    result = ((_overlay[count] is ActorTile) && (((ActorTile)_overlay[count]).actor is Player) && (((ActorTile)_overlay[count]).actor.online) && (!((ActorTile)_overlay[count]).actor.isDead));
                     ++count;
                 }
                 return result;
@@ -366,7 +367,7 @@ namespace Gruppe22.Backend
                 int count = 0;
                 while ((!result) && (count < _overlay.Count))
                 {
-                    result = ((_overlay[count] is ActorTile) && (((ActorTile)_overlay[count]).enabled) && (((ActorTile)_overlay[count]).actor is NPC));
+                    result = ((_overlay[count] is ActorTile) && (((ActorTile)_overlay[count]).enabled) && (((ActorTile)_overlay[count]).actor is NPC) && (!((ActorTile)_overlay[count]).actor.isDead));
                     ++count;
                 }
                 return result;
@@ -384,7 +385,8 @@ namespace Gruppe22.Backend
                 int count = 0;
                 while ((!result) && (count < _overlay.Count))
                 {
-                    result = ((_overlay[count] is ActorTile) && (((ActorTile)_overlay[count]).enabled) && (((ActorTile)_overlay[count]).actor is Enemy));
+                    result = ((_overlay[count] is ActorTile) && (((ActorTile)_overlay[count]).enabled) && (((ActorTile)_overlay[count]).actor is Enemy)
+                        && (!((ActorTile)_overlay[count]).actor.isDead));
                     ++count;
                 }
                 return result;
@@ -571,7 +573,7 @@ namespace Gruppe22.Backend
                 }
         }
 
-        
+
         /// <summary>
         /// Fügt den angegebenen Tile zu dem overlay hinzu. 
         /// </summary>

@@ -538,9 +538,7 @@ namespace Gruppe22.Client
                                 if (_logic is PureLogic)
                                 {
                                     _logic = new NetLogic(this, tmp);
-                                    _playerID = 0;
                                     tmp.parent = _logic;
-                                    _logic.map.actors[_playerID].online = true;
                                     changeMode = true;
                                 }
                             }
@@ -596,12 +594,16 @@ namespace Gruppe22.Client
                             }
                             else
                             {
-                                _focus.Dispose();
-                                _interfaceElements.Remove(_focus);
-                                _focus = null;
-                                _status = Backend.GameStatus.Running;
+                                if (_focus is Window)
+                                {
+                                    _focus.Dispose();
+                                    _interfaceElements.Remove(_focus);
+                                    _focus = null;
+                                    _status = Backend.GameStatus.Running;
+                                }
                                 _ShowCharacterWindow((Backend.Actor)data[0], 0);
                                 _toolbar.HandleEvent(true, Backend.Events.ContinueGame, 10);
+
                             }
                         }
                         break;
@@ -623,13 +625,18 @@ namespace Gruppe22.Client
                             }
                             else
                             {
-                                _focus.Dispose();
-                                _interfaceElements.Remove(_focus);
-                                _focus = null;
-                                _toolbar.HandleEvent(true, Backend.Events.ContinueGame, 12);
-                                _status = Backend.GameStatus.Running;
+                                if (_focus is Window)
+                                {
+                                    _focus.Dispose();
+                                    _interfaceElements.Remove(_focus);
+                                    _focus = null;
+                                    _status = Backend.GameStatus.Running;
+                                }
                                 _ShowCharacterWindow((Backend.Actor)data[0], 2);
+                                _toolbar.HandleEvent(true, Backend.Events.ContinueGame, 12);
+
                             }
+
                         }
                         break;
                     case Backend.Events.ShowInventory:
@@ -654,12 +661,16 @@ namespace Gruppe22.Client
                             }
                             else
                             {
-                                _toolbar.HandleEvent(true, Backend.Events.ContinueGame, 11);
-                                _focus.Dispose();
-                                _interfaceElements.Remove(_focus);
-                                _focus = null;
-                                _status = Backend.GameStatus.Running;
+                                if (_focus is Window)
+                                {
+                                    _focus.Dispose();
+                                    _interfaceElements.Remove(_focus);
+                                    _focus = null;
+                                    _status = Backend.GameStatus.Running;
+                                }
                                 _ShowCharacterWindow((Backend.Actor)data[0], 1);
+                                _toolbar.HandleEvent(true, Backend.Events.ContinueGame, 11);
+
                             }
                         }
                         break;
@@ -747,10 +758,12 @@ namespace Gruppe22.Client
 
                     case Backend.Events.About:
                         _logic.HandleEvent(true, Events.Pause);
-
-                        _focus.Dispose();
-                        _interfaceElements.Remove(_focus);
-                        _focus = null;
+                        if (_focus is Window)
+                        {
+                            _focus.Dispose();
+                            _interfaceElements.Remove(_focus);
+                            _focus = null;
+                        }
                         _ShowAbout();
                         break;
 
@@ -768,9 +781,11 @@ namespace Gruppe22.Client
                         _status = Backend.GameStatus.NoRedraw;
                         _logic.HandleEvent(true, Events.ResetGame);
                         break;
+
                     case Backend.Events.ChangeMap:
                         _status = Backend.GameStatus.NoRedraw;
                         _playerID = (int)data[0];
+                        _logic.map.actors[_playerID].online = true;
                         _mainmap1.playerID = _playerID;
                         _minimap1.playerID = _playerID;
                         _mainmap1.map = _logic.map;
@@ -779,9 +794,12 @@ namespace Gruppe22.Client
                         _mana.actor = _logic.map.actors[_playerID];
                         _toolbar.actor = _logic.map.actors[_playerID];
                         _mainmap1.resetActors();
+                        _minimap1.MoveCamera(_logic.map.actors[_playerID].tile.coords);
+                        HandleEvent(true, Events.ShowMessage, "You entered " + _logic.map.name + ".");
+
                         _status = Backend.GameStatus.Paused;
-                        HandleEvent(true, Backend.Events.ContinueGame);
-                        _logic.HandleEvent(true, Events.ContinueGame);
+
+                        _logic.HandleEvent(false, Events.ContinueGame);
                         break;
                 }
             }
@@ -792,29 +810,47 @@ namespace Gruppe22.Client
                 {
                     case Backend.Events.Attack:
                         _mainmap1.HandleEvent(true, Events.AnimateActor, data[0], Backend.Activity.Attack);
-                        // TODO: Play animation
                         break;
                     case Backend.Events.ActorText:
+                        if (data.Length > 3)
+                            _mainmap1.floatNumber((Coords)data[1], (string)data[2], (Color)data[3]);
+                        else
+                            _mainmap1.floatNumber((Coords)data[1], (string)data[2], Color.White);
+
                         // defender, _map.actors[defender].tile.coords, "Evade")
                         break;
                     case Backend.Events.DamageActor:
                         // , defender, _map.actors[defender].tile.coords, _map.actors[defender].health, damage);
                         _mainmap1.HandleEvent(true, Events.AnimateActor, data[0], Backend.Activity.Hit);
+                        if ((int)data[0] == _playerID)
+                        {
+                            _PlaySoundEffect(SoundFX.Damage);
+                        }
+                        _mainmap1.floatNumber((Coords)data[1], ((int)data[3]).ToString(), ((int)data[0] == _playerID) ? Color.Red : Color.White);
                         break;
                     case Backend.Events.KillActor:
                         _mainmap1.HandleEvent(true, Events.AnimateActor, data[0], Backend.Activity.Die);
+                        if ((int)data[0] == _playerID)
+                        {
+                            _PlaySoundEffect(SoundFX.Damage);
+                        }
+                        _mainmap1.floatNumber((Coords)data[1], ((int)data[3]).ToString(), ((int)data[0] == _playerID) ? Color.Red : Color.White);
                         break;
                     case Backend.Events.ChangeStats:
                         break;
                     case Backend.Events.FireProjectile:
                         break;
                     case Backend.Events.PlaySound:
+                        _PlaySoundEffect((Backend.SoundFX)data[0]);
                         break;
                     case Backend.Events.ActivateAbility:
                         break;
                     case Backend.Events.Dialog:
+                        //from, to, message, new Backend.DialogLine[] { new Backend.DialogLine("Goodbye", -1) }
+                        _ShowTextBox((string)data[2]);
                         break;
                     case Backend.Events.Shop:
+                        _ShowShopWindow((Actor)data[0], (Actor)data[1]);
                         break;
                     case Events.SetItemTiles:
                         break;
@@ -835,10 +871,6 @@ namespace Gruppe22.Client
                         _status = Backend.GameStatus.NoRedraw; // prevent redraw (which would crash the game!)
                         // TODO MUSIC
                         _logic.ChangeMap((string)data[0], (Coords)data[1]);
-                        _mainmap1.resetActors();
-                        _minimap1.MoveCamera(_logic.map.actors[_playerID].tile.coords);
-                        HandleEvent(false, Events.ShowMessage, "You entered room number " + data[0].ToString().Substring(4, 1) + ".");
-                        _status = Backend.GameStatus.Running;
                         break;
                 }
             }

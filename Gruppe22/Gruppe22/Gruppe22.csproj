@@ -122,6 +122,9 @@
     <Compile Include="Backend\Map\TriggerTile.cs" />
     <Compile Include="Backend\Map\WallTile.cs" />
     <Compile Include="Backend\PureLogic.cs" />
+    <Compile Include="Client\Map\FloatNumber.cs" />
+    <Compile Include="Client\Map\MapEffect.cs" />
+    <Compile Include="Client\Map\Projectile.cs" />
     <Compile Include="Client\Network\NetPlayer.cs" />
     <Compile Include="Client\Map\ActorView.cs" />
     <Compile Include="Client\Map\Camera.cs" />

@@ -482,7 +482,7 @@ namespace Gruppe22.Backend
                     break;
 
                 case Backend.Events.Dialog:
-                    GenericDialog((int)data[0], _map[(Coords)data[1]].firstActor.id);
+                    GenericDialog(((Actor)data[1]).id, ((Actor)data[0]).id);
                     break;
 
                 case Backend.Events.MoveActor:
@@ -575,8 +575,16 @@ namespace Gruppe22.Backend
                 case Backend.Events.ChangeMap: // Load another map
                     HandleEvent(false, Backend.Events.Pause);
                     _map.Load((string)data[0], (Coords)data[1], false);
-                    // TODO: Add code to load Map
-                    HandleEvent(false, Backend.Events.ContinueGame, true);
+                    int _playerID = 0;
+                    for (int i = 0; i < map.actors.Count; ++i)
+                    {
+                        if (map.actors[i] is Player)
+                        {
+                            _playerID = i;
+                            break;
+                        }
+                    }
+                    _parent.HandleEvent(true, Backend.Events.ChangeMap, _playerID);
                     break;
 
                 case Backend.Events.NewMap:

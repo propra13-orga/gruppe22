@@ -24,6 +24,7 @@ namespace Gruppe22.Client
         private bool _nomove = true;
         private Backend.Coords _cacheTarget = null;
         private Camera _camera = null;
+        
         /// <summary>
         /// Current animation played
         /// </summary>
@@ -69,11 +70,24 @@ namespace Gruppe22.Client
         /// Whether the actor was killed (i.e. should neither move nor animate)
         /// </summary>
         private bool _dead = false;
-        int _xpertick = 0;
-        int _ypertick = 0;
+        private int _xpertick = 0;
+        private int _ypertick = 0;
+        private bool _focussed=false;
         #endregion
 
         #region Public fields
+
+        public bool focussed
+        {
+            get
+            {
+                return _focussed;
+            }
+            set
+            {
+                _focussed = value;
+            }
+        }
 
         public MapEffect effect
         {
@@ -516,7 +530,7 @@ namespace Gruppe22.Client
                             {
                                 //  if (_id == 0) System.Diagnostics.Debug.WriteLine("/0");
                             }
-                        if (_id == 0)
+                        if (_focussed)
                             _camera.position = new Vector2(-38 - position.x, -30 - position.y);
 
                         if (_target == _position)

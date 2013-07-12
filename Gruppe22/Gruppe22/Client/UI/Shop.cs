@@ -440,7 +440,7 @@ namespace Gruppe22.Client
                             }
                             break;
                         case ShopButtons.Leave: // Cancel
-                            _parent.HandleEvent(false, Backend.Events.ContinueGame, null);
+                            _parent.HandleEvent(true, Backend.Events.ContinueGame, null);
                             break;
                         case ShopButtons.Modify:
                             if (_selected2 > -1)
