@@ -849,8 +849,9 @@ namespace Gruppe22.Backend
 
                                     case "DoorTile":
                                         DoorTile door = new DoorTile(tile);
-                                        if (xmlr.GetAttribute("locked") != null)
+                                        if (xmlr.GetAttribute("open") != null)
                                         { door.open = Boolean.Parse(xmlr.GetAttribute("open")); }
+
                                         if (xmlr.GetAttribute("key") != null)
                                         { door.key = int.Parse(xmlr.GetAttribute("key")); }
                                         tile.Add(door);
