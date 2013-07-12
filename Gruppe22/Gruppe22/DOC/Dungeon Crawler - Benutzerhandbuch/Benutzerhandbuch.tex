@@ -57,13 +57,17 @@ Und sonst: Jedes halbwegs moderne Rechner tut's ;)
 \hline
 Bewegen & \textit{Maus in Zielrichtung halten und linke Maustaste gedrückt halten}\\ \hline
 Aktion & \textit{linke Maustaste drücken und halten (auf aktionsfähigem Objekt)}\\ \hline
+Angriff & siehe Aktion\\ \hline
 Sekundärwaffe & \textit{Leertaste \Spacebar}\\ \hline
 \multicolumn{2}{|c|}{Menüsteuerung und sonstige Befehle}\\ \hline
 Pausenmenü & \Esc\\ \hline
-Chat & \keystroke{T}\\ \hline
-TODO & Ergänzen und vervollständigen!\\ \hline
+Chateingabe & \keystroke{T}\\ \hline
+Charakter & \keystroke{C}\\ \hline
+Inventar & \keystroke{I}\\ \hline
+Fähigkeiten & \keystroke{S}\\ \hline
 \end{tabular}
 \end{center}
+Außerdem stehen Ihnen Drag-and-Drop mit Maus für Objekte- und Minimap-Verwaltung bzw. Verschiebung zur Verfügung.
 \clearpage
 \section{Prolog}
 Guten Tag, wir haben neue Abenteuer für Sie in diesem letzten Dungeon Crawler 2013.\\\\
@@ -72,11 +76,19 @@ Das Ziel ist es die höchste Ebene zu erreichen und damit in die Freiheit zu ent
 Viel Erfolg beim Kampf in die Freiheit
 \section{Besetzung}
 \subsection*{Hauptcharakter}
+Der Hauptcharakter (Spieler) ist ein furchtloser Ritter, der immer zu kämpfen bereit ist.
 \subsection*{NPCs}
+Es gibt verschiedene NPCs, interaktive(Dialog/Quest) und Shop.
 \subsection*{Skelett}
+Der erste und älteste Gegner. Nicht sehr intelligent.
 \subsection*{Die Spinne}
+Eine beengstigende Kreatur, man sollte ihre Schnelligkeit und Intelligenz nicht unterschätzen.
 \subsection*{Der Kobold}
+Diese Art von Gegner können nervig sein.
 \subsection*{Der Drache}
+Achten Sie auf die großen Zähne.
+\subsection*{Bossgegner}
+In jedem Level erwartet Sie ein Raum mit dem Bossgegner, Sie müssen ihn bezwingen um an die Schlüssel heran zu kommen.
 \section{Schauplätze}
 Jeder Raum hat seinen eigenen Scharm, und auch wenn alle Räume ähnlich aussehen, gibt es doch ein paar Worte zu sagen.\\
 Die Räumen und Ihre gegenseitige Abhängigkeit sind zufällig, folgen jedoch gewissen Einschränkungen, die dazu dienen den Spielspaß zu sichern. Ihnen wird aufgefallen sein, das die Gestaltung der Umwelt äußerlich variiert (beachte Sie dazu auch die Größe der Grafiken von ca. 600MB), doch auch die Geometrie der Räume wird je nach Level angepasst. Je höher Sie kommen desto weniger Wände werden im Raum stören, das liegt daran das die Oberfläche immer näher kommt und das Labyrinth an dichte verliert. Jedoch sind Sie dadurch ein leichteres Ziel für die verbitterten Kreaturen der Unterwelt. Sie sollten das also in Ihrer Strategie unbedingt mit einbeziehen.
@@ -119,24 +131,58 @@ Vergessen Sie nicht sich mit Fähigkeiten auszurüsten, diese werden sich als gr
 \includegraphics[width=\textwidth]{img/shop_system}
 \caption{Der freundliche Shop.}
 \vspace{1cm}
-Erklärungstext.
+Das Shopsystem ist ein geben und nehmen. Ihnen stehen beide Möglichkeiten zu Verfügung. Entscheiden Sie selbst ob Sie mit dem Händler fair bleiben wollen oder nicht, wenn Sie ihn jedoch zu oft verärgern und bestehlen kann es böse für Sie enden. Entscheiden Sie!
 \end{figure}
 \begin{figure}[h]
 \includegraphics[width=\textwidth]{img/trap_enemy(dead)_transportarrow_objekt(blue)}
-\caption{Der freundliche Shop.}
+\caption{Fallen, Feinde(tot), Raumwechsel, Objekte(Minimap).}
 \vspace{1cm}
-Erklärungstext.
+In dieser Abbildung sieht man mehrere Dinge auf die ich eingehen möchte.
+\begin{enumerate}
+\item Fallen sind intelligenter als auf diesem unbewegten Bild zu erkennen, je öfter Sie ihnen auszuweichen versuchen, desto schneller werden sie. Das wichtigste Prinzip: Bleiben Sie auf keinen Fall auf einer Falle stehen, es sei den Sie möchten zum letzten Checkpoint zurückkehren.
+\item Wie sie sehen werden auch Ihre Feinde von Fallen verletzt und der Körper bleibt dann auch auf dem Boden liegen.
+\item Dabei lassen die Kreaturen das Inventar auf dem Boden fallen und Sie können die Objekte einsammeln.\\
+Achten Sie auch Auf die Minimap(oben rechts), die Ihnen bei der Orientierung hilft. Die weißen Vierecke sind Wände. An der Kreisen bzw. Farben erkennen Sie verschiedene Objekte. Rot steht für Gegner/anderer Spieler, Blau für ein Item, grün markiert ihren aktuellen Standort und die türkisfarbenden Pfeile stehen für den Raumwechsel.
+\end{enumerate}
 \end{figure}
 \begin{figure}[h]
-\includegraphics[width=\textwidth]{img/shop_system}
-\caption{Der freundliche Shop.}
+\includegraphics[width=\textwidth]{img/dialog_with_NPC}
+\label{fig:chat}
+\caption{Chatsystem und untere Anzeigeleiste, Dialog mit NPCs und Quests.}
 \vspace{1cm}
-Erklärungstext.
+Auf diesem Bild sehen Sie ein Dialog mit einem NPC. Auf diese Weise sollen nicht nur unterhaltsamer Texte vermittelt werden sondern auch die Quests. Außerdem soll an der Stelle das Anzeigesystem (unten) erläutert werden. Die zwei Kreise links und rechts zeigen den aktuellen Stand der Lebenspunkte und Mana. In der Mitte befindet sich der Schnellzugriff für die Optionsmenüs und ausgewählte Objekte die dynamisch (via Drop and Drag) verwaltet werden können. Direkt drunter ist ein Textfeld wo Nachrichten (Chat), Hinweise zum Spiel und Ereignisbeschreibungen angezeigt werden. ganz unten ist das Texteingabefeld für den Chat im Multiplayermodus.
 \end{figure}
 \chapter{Multiplayer}
 \section{Die Lobby}
-\section{Das Chatsystem}
+\begin{figure}[h]
+\includegraphics[width=\textwidth]{img/multiplayer}
+\caption{Lobby.}
+\vspace{1cm}
+Hier sehen Sie die Lobby für den Mehrspielermodus. Sie sehen dort intuitiv ob ein Server im lokalen Netzwerk gesichtet wurde. Sie können sich dann mit diesem verbinden um am Spiel teilzunehmen. Es gibt jedoch auch die Möglichkeit einen Server selbst zu starten, falls noch keiner im Netzwerk angemeldet ist.
+\end{figure}
+\subsection*{Das Chatsystem}
+Das Chatsystem wurde bereits in Kapitel 3, Abb. \ref{fig:chat} vorgestellt.
 \chapter{Speichern und Laden}
+\section*{Checkpoints}
+\begin{figure}[h]
+\includegraphics[width=0.3\textwidth]{img/checkpoint(unchecked)}
+\caption{Unchecked.}
+\end{figure}
+\begin{figure}[h]
+\includegraphics[width=0.3\textwidth]{img/checkpoint(checked)}
+\caption{Checked.}
+\end{figure}
+Sie haben in manchen Räumen die Checkpoints, wenn Sie sterben stehen insgesamt 3 Versuche zur Verfügung es ab dem letzten Checkpoint nochmal zu versuchen.\\
+Außerdem ist noch zu erwähnen, dass das Spiel automatisch (im Hintergrund) speichert, dies ist jedoch eher ein technisch relevantes Detail. Geladen wird beim Start des Spiels ebenfalls automatisch.
 \chapter{Lizenzbedingungen}
+Dungeon Crawler 2013\\\\
+Developed by Group 22\\\\
+*********************************\\\\
+Music: Video Dungeon Crawl by Kevin MacLeod is licensed under a CC Attribution 3.0\\\\
+\url{http://incompetech.com/music/royalty-free/index.html?collection=029}\\\\
+Graphics: Tile Graphics by Reiner Prokein\\\\
+\url{http://www.reinerstilesets.de/de/lizenz/}
 \chapter{Support}
+Aus finanziellen Gründen können wir leider keine Hotline zur Verfügung stellen, bei Fragen wenden Sie sich bitte an die Entwickler.\\\\
+\textbf{\textit{Hinweis:}} Das zugrunde liegende Bildmaterial kann von einer aktuelleren Version des Spiels abweichen, die Beschreibungen und Instruktionen bleiben jedoch richtig!
 \end{document}
