@@ -113,7 +113,6 @@
     <Compile Include="Backend\Map\ProjectileTile.cs" />
     <Compile Include="Backend\Map\Quest.cs" />
     <Compile Include="Backend\Map\ReservedTile.cs" />
-    <Compile Include="Backend\Map\Story.cs" />
     <Compile Include="Backend\Map\SwitchTile.cs" />
     <Compile Include="Backend\Map\TargetTile.cs" />
     <Compile Include="Backend\Map\TeleportTile.cs" />

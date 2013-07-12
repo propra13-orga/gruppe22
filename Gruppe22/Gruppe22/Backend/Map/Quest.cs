@@ -9,7 +9,7 @@ namespace Gruppe22.Backend
     /// <summary>
     /// A class to construct a quest in the game.
     /// </summary>
-    public class Quest
+    public class Quest //TODO: rewrite the class to useful structure, idea: different types of quests, anaged by NPC and stored in player
     {
         private int _rewardXP;
         private List<Item> _rewardItem;

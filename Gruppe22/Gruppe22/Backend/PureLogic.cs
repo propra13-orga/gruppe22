@@ -538,6 +538,7 @@ namespace Gruppe22.Backend
                     break;
 
                 case Backend.Events.Dialog:
+                    //TODO: Quest anzeigen an der stelle, jetzt können die "sinnlosen Dialogtexte durch Questziele ersetzt werden"
                     GenericDialog(((Actor)data[1]).id, ((Actor)data[0]).id);
                     break;
 
