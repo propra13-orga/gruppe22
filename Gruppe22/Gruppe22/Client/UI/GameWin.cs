@@ -508,6 +508,9 @@ namespace Gruppe22.Client
                 // Frontend to backend (send)
                 switch (eventID)
                 {
+                    case Events.FinishedAnimation:
+                        _logic.HandleEvent(true, Events.FinishedAnimation, data);
+                        break;
                     case Events.MoveActor:
                         _logic.HandleEvent(true, Events.MoveActor, data);
                         break;
@@ -795,7 +798,7 @@ namespace Gruppe22.Client
                         _toolbar.actor = _logic.map.actors[_playerID];
                         _mainmap1.resetActors();
                         _minimap1.MoveCamera(_logic.map.actors[_playerID].tile.coords);
-                        HandleEvent(true, Events.ShowMessage, "You entered " + _logic.map.name + ".");
+                        HandleEvent(false, Events.ShowMessage, "You entered " + _logic.map.name + ".");
 
                         _status = Backend.GameStatus.Paused;
 
@@ -835,6 +838,7 @@ namespace Gruppe22.Client
                             _PlaySoundEffect(SoundFX.Damage);
                         }
                         _mainmap1.floatNumber((Coords)data[1], ((int)data[3]).ToString(), ((int)data[0] == _playerID) ? Color.Red : Color.White);
+                        HandleEvent(false, Events.ShowMessage, _logic.map.actors[(int)data[0]].name + " was killed.");
                         break;
                     case Backend.Events.ChangeStats:
                         break;
@@ -848,9 +852,11 @@ namespace Gruppe22.Client
                     case Backend.Events.Dialog:
                         //from, to, message, new Backend.DialogLine[] { new Backend.DialogLine("Goodbye", -1) }
                         _ShowTextBox((string)data[2]);
+                        HandleEvent(false, Events.ShowMessage, _logic.map.actors[(int)data[1]].name + ":" + (string)data[2]);
                         break;
                     case Backend.Events.Shop:
                         _ShowShopWindow((Actor)data[0], (Actor)data[1]);
+                        HandleEvent(false, Events.ShowMessage, _logic.map.actors[(int)data[0]].name + " traded items.");
                         break;
                     case Events.SetItemTiles:
                         break;

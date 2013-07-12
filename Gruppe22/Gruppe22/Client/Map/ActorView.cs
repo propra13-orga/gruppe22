@@ -24,7 +24,7 @@ namespace Gruppe22.Client
         private bool _nomove = true;
         private Backend.Coords _cacheTarget = null;
         private Camera _camera = null;
-        
+
         /// <summary>
         /// Current animation played
         /// </summary>
@@ -37,7 +37,13 @@ namespace Gruppe22.Client
         /// Movement speed (nur relevant to animation, see _animationTime below)
         /// </summary>
         private int _speed = 3;
-
+        /// <summary>
+        /// Hide actor (when dead or hidden assassin)
+        /// </summary>
+        private bool _invisible = false;
+        /// <summary>
+        /// Aura or other effect on sprite
+        /// </summary>
         private MapEffect _effect = null;
         /// <summary>
         /// The unique ID of the actor
@@ -72,7 +78,7 @@ namespace Gruppe22.Client
         private bool _dead = false;
         private int _xpertick = 0;
         private int _ypertick = 0;
-        private bool _focussed=false;
+        private bool _focussed = false;
         #endregion
 
         #region Public fields
@@ -86,6 +92,18 @@ namespace Gruppe22.Client
             set
             {
                 _focussed = value;
+            }
+        }
+
+        public bool invisible
+        {
+            get
+            {
+                return _invisible;
+            }
+            set
+            {
+                _invisible = value;
             }
         }
 
@@ -210,6 +228,11 @@ namespace Gruppe22.Client
                         _activity = value;
                         _textures[(int)_activity * 8 + (int)Math.Log((double)direction, 2)].ResetAnimation();
                     }
+                    else
+                        if (value == Backend.Activity.Die)
+                        {
+                            _invisible = true;
+                        }
                 }
             }
         }
@@ -420,9 +443,9 @@ namespace Gruppe22.Client
             {
                 if (_textures[(int)_activity * 8 + (int)Math.Log((double)direction, 2)].NextAnimation())
                 {
+                    _parent.HandleEvent(false, Backend.Events.FinishedAnimation, _id, _activity);
                     if (_activity != Backend.Activity.Die)
                     {
-                        _parent.HandleEvent(false, Backend.Events.FinishedAnimation, _id, _activity);
                         this.activity = _playAfterMove;
                         if (_playAfterMove != Backend.Activity.Walk) _playAfterMove = Backend.Activity.Walk;
                         _lock = false;
@@ -433,7 +456,7 @@ namespace Gruppe22.Client
                         if (!_dead)
                         {
                             _dead = true;
-                            _parent.HandleEvent(false, Backend.Events.FinishedAnimation, _id, _activity);
+                            _lock = false;
 
                         }
                     }

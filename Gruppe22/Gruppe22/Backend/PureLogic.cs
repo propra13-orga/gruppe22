@@ -319,7 +319,6 @@ namespace Gruppe22.Backend
                                 if (_map.actors[FinishedID].tile.enabled)
                                 {
                                     ((ActorTile)_map.actors[FinishedID].tile).enabled = false;
-                                    _parent.HandleEvent(false, Events.KillActor, FinishedID);
                                     ((ActorTile)_map.actors[FinishedID].tile).DropItems();
                                     if (_map.actors[FinishedID].gold > 0)
                                     {
@@ -336,6 +335,9 @@ namespace Gruppe22.Backend
                             {
                                 _parent.HandleEvent(false, Events.KillActor, FinishedID);
                             }
+                            break;
+                        default:
+                            _map.actors[FinishedID].locked = false;
                             break;
                     }
                     break;

@@ -975,7 +975,7 @@ namespace Gruppe22.Backend
 
             _tiles[originPos.y][originPos.x].connected = true;
             _tiles[originPos.y][originPos.x].Remove(TileType.Wall);
-            int remaining = _width / 2 * _height / 2 - 2;
+            int remaining = _width / 2 * _height / 2 ;
 
             Path startPos = originPos;
             while ((currentPos.x > -1) && (remaining > 0))

@@ -8,7 +8,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace Gruppe22.Client
 {
-  
+
 
     /// <summary>
     /// The core display of the current part of the dungeon
@@ -310,14 +310,6 @@ namespace Gruppe22.Client
         /// <param name="transparent"></param>
         private void _drawWall(WallDir dir, Rectangle target, bool transparent, bool active, Backend.WallType special = Backend.WallType.Normal)
         {
-            if (special == Backend.WallType.OpenDoor)
-            {
-                System.Diagnostics.Debug.WriteLine("Door");
-            }
-            if (special == Backend.WallType.ClosedDoor)
-            {
-                System.Diagnostics.Debug.WriteLine("Door");
-            }
             if ((special != Backend.WallType.Normal) && (dir != WallDir.LeftRight) && (dir != WallDir.UpDown) && (dir != WallDir.UpLeftDiag)) special = Backend.WallType.Normal;
 
             switch (dir)
@@ -880,34 +872,38 @@ namespace Gruppe22.Client
                     }
                     foreach (ActorView actor in _actors)
                     {
-                        if ((_map.actors[actor.id].actorType != Backend.ActorType.Player) || (_map.actors[actor.id].online))
+                        if (!actor.invisible)
                         {
-                            Backend.Coords apos = _screen2map((int)actor.position.x, (int)actor.position.y);
-                            if (((int)apos.x == x) && ((int)apos.y == y))
+                            if ((_map.actors[actor.id].actorType != Backend.ActorType.Player) || (_map.actors[actor.id].online))
                             {
-                                Color tempColor=new Color(((_map.actors[actor.id].tile.coords.y == (int)_highlightedTile.y) && (_map.actors[actor.id].tile.coords.x == (int)_highlightedTile.x) && !(_map.actors[actor.id] is Backend.Player)) ? Color.Red : Color.White,1.0f);
-                                if((_map.actors[actor.id].actorType == Backend.ActorType.Player)&&(_map.actors[actor.id].id!=_playerID)){
-                                    tempColor.A=80;
-                                    tempColor.B=250;
-                                    tempColor.R=90;
-                                    tempColor.G=90;
-                                }
-
-                                if (actor.animationTexture != null)
-                                    _spriteBatch.Draw(actor.animationTexture, new Vector2((actor.position.x + actor.offsetX), (actor.position.y + actor.offsetY - 32)), actor.animationRect,tempColor );
-                                if (actor.effect != null)
+                                Backend.Coords apos = _screen2map((int)actor.position.x, (int)actor.position.y);
+                                if (((int)apos.x == x) && ((int)apos.y == y))
                                 {
-                                    actor.effect.position = new Backend.Coords((actor.position.x + actor.offsetX), (actor.position.y + actor.offsetY - 32));
-                                    actor.effect.Draw(_spriteBatch, gametime);
-                                }
-                                if (!_map.actors[actor.id].isDead)
-                                {
-                                    _spriteBatch.DrawString(_font, _map.actors[actor.id].name, new Vector2((actor.position.x + actor.offsetX + 25), (actor.position.y + actor.offsetY - 25)),Color.Black,0f,new Vector2(0,0),0.5f,SpriteEffects.None,0f);
-                                    _spriteBatch.DrawString(_font, _map.actors[actor.id].name, new Vector2((actor.position.x + actor.offsetX + 24), (actor.position.y + actor.offsetY - 26)), ((_map.actors[actor.id].actorType == Backend.ActorType.Enemy) ? Color.Red : Color.LightGreen), 0f, new Vector2(0, 0), 0.5f, SpriteEffects.None, 0f);
+                                    Color tempColor = new Color(((_map.actors[actor.id].tile.coords.y == (int)_highlightedTile.y) && (_map.actors[actor.id].tile.coords.x == (int)_highlightedTile.x) && !(_map.actors[actor.id] is Backend.Player)) ? Color.Red : Color.White, 1.0f);
+                                    if ((_map.actors[actor.id].actorType == Backend.ActorType.Player) && (_map.actors[actor.id].id != _playerID))
+                                    {
+                                        tempColor.A = 80;
+                                        tempColor.B = 250;
+                                        tempColor.R = 90;
+                                        tempColor.G = 90;
+                                    }
 
-                                    _spriteBatch.Draw(_background, new Rectangle((actor.position.x + actor.offsetX + 25), (actor.position.y + actor.offsetY - 10), actor.animationRect.Width, 5), new Rectangle(39, 6, 1, 1), Color.Black);
-                                    _spriteBatch.Draw(_background, new Rectangle((actor.position.x + actor.offsetX + 26), (actor.position.y + actor.offsetY - 9), (_map.actors[actor.id].health * (actor.animationRect.Width - 2)) / _map.actors[actor.id].maxHealth, 3), new Rectangle(39, 6, 1, 1), ((_map.actors[actor.id].actorType == Backend.ActorType.Enemy) ? Color.Red : Color.LightGreen));
+                                    if (actor.animationTexture != null)
+                                        _spriteBatch.Draw(actor.animationTexture, new Vector2((actor.position.x + actor.offsetX), (actor.position.y + actor.offsetY - 32)), actor.animationRect, tempColor);
+                                    if (actor.effect != null)
+                                    {
+                                        actor.effect.position = new Backend.Coords((actor.position.x + actor.offsetX), (actor.position.y + actor.offsetY - 32));
+                                        actor.effect.Draw(_spriteBatch, gametime);
+                                    }
+                                    if (!_map.actors[actor.id].isDead)
+                                    {
+                                        _spriteBatch.DrawString(_font, _map.actors[actor.id].name, new Vector2((actor.position.x + actor.offsetX + 25), (actor.position.y + actor.offsetY - 25)), Color.Black, 0f, new Vector2(0, 0), 0.5f, SpriteEffects.None, 0f);
+                                        _spriteBatch.DrawString(_font, _map.actors[actor.id].name, new Vector2((actor.position.x + actor.offsetX + 24), (actor.position.y + actor.offsetY - 26)), ((_map.actors[actor.id].actorType == Backend.ActorType.Enemy) ? Color.Red : Color.LightGreen), 0f, new Vector2(0, 0), 0.5f, SpriteEffects.None, 0f);
 
+                                        _spriteBatch.Draw(_background, new Rectangle((actor.position.x + actor.offsetX + 25), (actor.position.y + actor.offsetY - 10), actor.animationRect.Width, 5), new Rectangle(39, 6, 1, 1), Color.Black);
+                                        _spriteBatch.Draw(_background, new Rectangle((actor.position.x + actor.offsetX + 26), (actor.position.y + actor.offsetY - 9), (_map.actors[actor.id].health * (actor.animationRect.Width - 2)) / _map.actors[actor.id].maxHealth, 3), new Rectangle(39, 6, 1, 1), ((_map.actors[actor.id].actorType == Backend.ActorType.Enemy) ? Color.Red : Color.LightGreen));
+
+                                    }
                                 }
                             }
                         }
