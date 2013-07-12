@@ -169,7 +169,7 @@ namespace Gruppe22.Backend
         /// </summary>
         public virtual void UseItem()
         {
-            if (_owner != null)
+            if ((_owner != null) && (!_destroyed))
             {
                 _destroyed = true;
                 foreach (ItemEffect effect in _effects)
@@ -254,7 +254,7 @@ namespace Gruppe22.Backend
                     case ItemProperty.Mana:
                         if (enable)
                         {
-                            Math.Max(_owner.mana + effect.effect, _owner.maxMana);
+                            _owner.mana = Math.Min(_owner.mana + effect.effect, _owner.maxMana);
                         }
                         else
                         {
@@ -264,7 +264,7 @@ namespace Gruppe22.Backend
                     case ItemProperty.Health:
                         if (enable)
                         {
-                            _owner.health = Math.Max(_owner.health + effect.effect, _owner.maxhealth);
+                            _owner.health = Math.Min(_owner.health + effect.effect, _owner.maxhealth);
                         }
                         else
                         {

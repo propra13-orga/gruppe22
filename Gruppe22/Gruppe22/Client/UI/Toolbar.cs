@@ -132,7 +132,7 @@ namespace Gruppe22.Client
                             {
                                 if ((_actor.inventory[j].itemType == Backend.ItemType.Potion)
                                     && (_actor.inventory[j].effects[0].property == _actor.Items(-_functions[i].id).effects[0].property)
-                                    )
+                                    && (!_actor.inventory[j].destroyed))
                                 {
                                     bool duplicate = false;
                                     for (int k = 0; k < 10; ++k)
@@ -149,7 +149,7 @@ namespace Gruppe22.Client
                                         found = true;
                                         _actor.quickList[i] = -_actor.inventory[j].id;
                                         _parent.HandleEvent(true, Backend.Events.UpdateToolbar, i, _actor.quickList[i]);
-                                        _functions[i] = new GridElement(_actor.quickList[i], _actor.inventory[j].name, _actor.inventory[j].icon, _content, false, true, 0);
+                                        _functions[i] = new GridElement(_actor.quickList[i], _actor.inventory[j].name, _actor.inventory[j].icon, _content, false, true, 5);
                                         break;
                                     }
                                 }
