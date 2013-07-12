@@ -91,71 +91,74 @@ namespace Gruppe22.Backend
         /// <param name="defender">the attacked actor</param>
         protected void _CombatDamage(int attacker, int defender)
         {
-            if (_map.actors[attacker].damage > 0)
+            if (!_paused)
             {
-                double _evadeChance = (0.02 * (_map.actors[defender].evade)) / (1 + 0.065 * (_map.actors[defender].evade)); // converges to ~25% for values from 0 to 100
-                if (_random.NextDouble() < _evadeChance) // show evade-message if the attack was evaded
+                if (_map.actors[attacker].damage > 0)
                 {
-                    _parent.HandleEvent(false, Events.ActorText, defender, _map.actors[defender].tile.coords, "Evade");
-                }
-                else
-                {
-                    double dmgReduction = (0.06 * (_map.actors[defender].armor)) / (1 + 0.06 * (_map.actors[defender].armor)); // calculate damage reduction from armor; max 85% @100armor
-                    int damage = _map.actors[attacker].damage;
-
-                    // an actor can block some amount between 0 and the full damage
-                    double blockChance = (0.02 * (_map.actors[defender].block)) / (1 + 0.03 * (_map.actors[defender].block)); // converges to ~50% @100block
-                    if (_random.NextDouble() < blockChance)
+                    double _evadeChance = (0.02 * (_map.actors[defender].evade)) / (1 + 0.065 * (_map.actors[defender].evade)); // converges to ~25% for values from 0 to 100
+                    if (_random.NextDouble() < _evadeChance) // show evade-message if the attack was evaded
                     {
-                        int blockedValue = Math.Max(_map.actors[defender].block - _map.actors[attacker].penetrate, 0); // calculate blocked damage and show block-message
-                        if (blockedValue >= damage) blockedValue = damage;
-                        damage = Math.Max(damage - blockedValue, 0);
-                        _parent.HandleEvent(false, Events.ActorText, defender, _map.actors[defender].tile.coords, "Block" + blockedValue + "dmg");
-                    }
-
-                    damage = (int)(damage * (1 - dmgReduction)); // the damage the attacker will deal after armor, penetration etc
-                    _map.actors[defender].health -= damage;
-
-                    //check and calculate elemental (magic?) damage
-                    if (_map.actors[attacker].fireDamage > 0)
-                    {
-                        double firedmgreduction = (0.06 * (_map.actors[defender].fireDefense)) / (1 + 0.06 * (_map.actors[defender].fireDefense));
-                        int firedmg = (int)(_map.actors[attacker].fireDamage * (1 - firedmgreduction));
-                        _map.actors[defender].health -= firedmg;
-                    }
-                    if (_map.actors[attacker].iceDamage > 0)
-                    {
-                        double frostdmgreduction = (0.06 * (_map.actors[defender].iceDefense)) / (1 + 0.06 * (_map.actors[defender].iceDefense));
-                        int frostdmg = (int)(_map.actors[attacker].iceDamage * (1 - frostdmgreduction));
-                        _map.actors[defender].health -= frostdmg;
-                    }
-
-
-                    if (_map.actors[defender].isDead)
-                    {
-                        _parent.HandleEvent(false, Events.KillActor, defender, _map.actors[defender].tile.coords, _map.actors[defender].health, damage);
-                        //_mainmap2.HandleEvent(true, Backend.Events.AnimateActor, defender, Activity.Die);
-                        _map.actors[attacker].exp += _map.actors[defender].exp;
-                        // If the attacker killed the enemy and got enough exp he levels up
-                        if (_map.actors[attacker].exp > _map.actors[attacker].expNeeded)
-                        {
-                            _map.actors[attacker].LevelUp();
-
-                            if (!(_map.actors[attacker] is Player))
-                                ((Enemy)_map.actors[attacker]).AssignSkillsAndAbilities(); // Auto-improve statistics of enemies
-                            _parent.HandleEvent(false, Events.ChangeStats, attacker, _map.actors[attacker]); // Update data on client
-                        }
-                        else
-                        {
-                            _parent.HandleEvent(false, Events.ActorText, attacker, _map.actors[defender].tile.coords, "+" + _map.actors[defender].exp + " Exp", Color.Gold); // Update data on client
-                        }
+                        _parent.HandleEvent(false, Events.ActorText, defender, _map.actors[defender].tile.coords, "Evade");
                     }
                     else
                     {
-                        _parent.HandleEvent(false, Events.DamageActor, defender, _map.actors[defender].tile.coords, _map.actors[defender].health, damage);
-                        _map.actors[defender].aggro = true;
-                    }
+                        double dmgReduction = (0.06 * (_map.actors[defender].armor)) / (1 + 0.06 * (_map.actors[defender].armor)); // calculate damage reduction from armor; max 85% @100armor
+                        int damage = _map.actors[attacker].damage;
 
+                        // an actor can block some amount between 0 and the full damage
+                        double blockChance = (0.02 * (_map.actors[defender].block)) / (1 + 0.03 * (_map.actors[defender].block)); // converges to ~50% @100block
+                        if (_random.NextDouble() < blockChance)
+                        {
+                            int blockedValue = Math.Max(_map.actors[defender].block - _map.actors[attacker].penetrate, 0); // calculate blocked damage and show block-message
+                            if (blockedValue >= damage) blockedValue = damage;
+                            damage = Math.Max(damage - blockedValue, 0);
+                            _parent.HandleEvent(false, Events.ActorText, defender, _map.actors[defender].tile.coords, "Block" + blockedValue + "dmg");
+                        }
+
+                        damage = (int)(damage * (1 - dmgReduction)); // the damage the attacker will deal after armor, penetration etc
+                        _map.actors[defender].health -= damage;
+
+                        //check and calculate elemental (magic?) damage
+                        if (_map.actors[attacker].fireDamage > 0)
+                        {
+                            double firedmgreduction = (0.06 * (_map.actors[defender].fireDefense)) / (1 + 0.06 * (_map.actors[defender].fireDefense));
+                            int firedmg = (int)(_map.actors[attacker].fireDamage * (1 - firedmgreduction));
+                            _map.actors[defender].health -= firedmg;
+                        }
+                        if (_map.actors[attacker].iceDamage > 0)
+                        {
+                            double frostdmgreduction = (0.06 * (_map.actors[defender].iceDefense)) / (1 + 0.06 * (_map.actors[defender].iceDefense));
+                            int frostdmg = (int)(_map.actors[attacker].iceDamage * (1 - frostdmgreduction));
+                            _map.actors[defender].health -= frostdmg;
+                        }
+
+
+                        if (_map.actors[defender].isDead)
+                        {
+                            _parent.HandleEvent(false, Events.KillActor, defender, _map.actors[defender].tile.coords, _map.actors[defender].health, damage);
+                            //_mainmap2.HandleEvent(true, Backend.Events.AnimateActor, defender, Activity.Die);
+                            _map.actors[attacker].exp += _map.actors[defender].exp;
+                            // If the attacker killed the enemy and got enough exp he levels up
+                            if (_map.actors[attacker].exp > _map.actors[attacker].expNeeded)
+                            {
+                                _map.actors[attacker].LevelUp();
+
+                                if (!(_map.actors[attacker] is Player))
+                                    ((Enemy)_map.actors[attacker]).AssignSkillsAndAbilities(); // Auto-improve statistics of enemies
+                                _parent.HandleEvent(false, Events.ChangeStats, attacker, _map.actors[attacker]); // Update data on client
+                            }
+                            else
+                            {
+                                _parent.HandleEvent(false, Events.ActorText, attacker, _map.actors[defender].tile.coords, "+" + _map.actors[defender].exp + " Exp", Color.Gold); // Update data on client
+                            }
+                        }
+                        else
+                        {
+                            _parent.HandleEvent(false, Events.DamageActor, defender, _map.actors[defender].tile.coords, _map.actors[defender].health, damage);
+                            _map.actors[defender].aggro = true;
+                        }
+
+                    }
                 }
             }
         }
@@ -166,42 +169,45 @@ namespace Gruppe22.Backend
         /// <param name="target">Coords of the actor which walked over the trap</param>
         protected void _TrapDamage(Coords target)
         {
-            foreach (Actor actor in _map[target].actors)
+            if (!_paused)
             {
-                if (actor == null) return;
-                int trapDamage = _map[target].trap.Trigger();
-                double _evadeChance = (0.02 * (actor.evade)) / (1 + 0.065 * (actor.evade)); // same formula as in _CombatDamage
+                foreach (Actor actor in _map[target].actors)
+                {
+                    if (actor == null) return;
+                    int trapDamage = _map[target].trap.Trigger();
+                    double _evadeChance = (0.02 * (actor.evade)) / (1 + 0.065 * (actor.evade)); // same formula as in _CombatDamage
 
-                if (_random.NextDouble() < _evadeChance)
-                {
-                    if (actor is Player)
-                        _parent.HandleEvent(false, Events.ActorText, actor.id, target, "Trap evaded");
-                }
-                else
-                {
-                    //a trap can either be fully blocked or not blocked
-                    double blockChance = Math.Max((0.02 * (actor.block - _map[target.x, target.y].trap.penetrate)) / (1 + 0.03 * (actor.block - _map[target.x, target.y].trap.penetrate)), 0);
-                    if (_random.NextDouble() < blockChance)
+                    if (_random.NextDouble() < _evadeChance)
                     {
                         if (actor is Player)
-                            _parent.HandleEvent(false, Events.ActorText, actor.id, target, "Trap blocked");
+                            _parent.HandleEvent(false, Events.ActorText, actor.id, target, "Trap evaded");
                     }
                     else
                     {
-                        double dmgReduction = (0.06 * (actor.armor)) / (1 + 0.06 * (actor.armor));
-                        int damage = (int)(trapDamage * (1 - dmgReduction));
-
-                        actor.health -= damage;
-                        if (actor.isDead)
+                        //a trap can either be fully blocked or not blocked
+                        double blockChance = Math.Max((0.02 * (actor.block - _map[target.x, target.y].trap.penetrate)) / (1 + 0.03 * (actor.block - _map[target.x, target.y].trap.penetrate)), 0);
+                        if (_random.NextDouble() < blockChance)
                         {
-                            _parent.HandleEvent(false, Events.KillActor, actor.id, target, actor.health, damage);
+                            if (actor is Player)
+                                _parent.HandleEvent(false, Events.ActorText, actor.id, target, "Trap blocked");
                         }
                         else
                         {
-                            _parent.HandleEvent(false, Events.DamageActor, actor.id, target, actor.health, damage);
-                        }
-                    }
+                            double dmgReduction = (0.06 * (actor.armor)) / (1 + 0.06 * (actor.armor));
+                            int damage = (int)(trapDamage * (1 - dmgReduction));
 
+                            actor.health -= damage;
+                            if (actor.isDead)
+                            {
+                                _parent.HandleEvent(false, Events.KillActor, actor.id, target, actor.health, damage);
+                            }
+                            else
+                            {
+                                _parent.HandleEvent(false, Events.DamageActor, actor.id, target, actor.health, damage);
+                            }
+                        }
+
+                    }
                 }
             }
         }
@@ -212,48 +218,51 @@ namespace Gruppe22.Backend
         /// <param name="message">A custom message that could be displayed</param>
         public void GenericDialog(int from, int to, string message = "")
         {
-            if (message == "")
-                switch (_random.Next(10))
-                {
-                    case 0:
-                        message = "This is a cursed place. Evil creatures are attacking everyone in sight.";
-                        break;
-                    case 1:
-                        message = "You should really get better equipment at a shop. My brother might help you out.\n He is over at the entrance.";
-                        break;
-                    case 2:
-                        message = "It is hopeless. We are all going to die...";
-                        break;
+            if (!_paused)
+            {
+                if (message == "")
+                    switch (_random.Next(10))
+                    {
+                        case 0:
+                            message = "This is a cursed place. Evil creatures are attacking everyone in sight.";
+                            break;
+                        case 1:
+                            message = "You should really get better equipment at a shop. My brother might help you out.\n He is over at the entrance.";
+                            break;
+                        case 2:
+                            message = "It is hopeless. We are all going to die...";
+                            break;
 
-                    case 3:
-                        message = "There are pests on the first level, undead on the second and unknown evil on the third...";
-                        break;
+                        case 3:
+                            message = "There are pests on the first level, undead on the second and unknown evil on the third...";
+                            break;
 
-                    case 4:
-                        message = "Nobody has ever found a way out of here...";
-                        break;
+                        case 4:
+                            message = "Nobody has ever found a way out of here...";
+                            break;
 
-                    case 5:
-                        message = "Are you sure you can take on the enemies around here?";
-                        break;
+                        case 5:
+                            message = "Are you sure you can take on the enemies around here?";
+                            break;
 
-                    case 6:
-                        message = "I haven't gotten any sleep for a week!";
-                        break;
+                        case 6:
+                            message = "I haven't gotten any sleep for a week!";
+                            break;
 
-                    case 7:
-                        message = "It is rumored that there is a deadly beast on the lowest level...";
-                        break;
+                        case 7:
+                            message = "It is rumored that there is a deadly beast on the lowest level...";
+                            break;
 
-                    case 8:
-                        message = "The lower levels are far darker than this level...";
-                        break;
+                        case 8:
+                            message = "The lower levels are far darker than this level...";
+                            break;
 
-                    case 9:
-                        message = "If this were a real dungeon, someone might have a quest for you...";
-                        break;
-                }
-            _parent.HandleEvent(false, Events.Dialog, from, to, message, new Backend.DialogLine[] { new Backend.DialogLine("Goodbye", -1) });
+                        case 9:
+                            message = "If this were a real dungeon, someone might have a quest for you...";
+                            break;
+                    }
+                _parent.HandleEvent(false, Events.Dialog, from, to, message, new Backend.DialogLine[] { new Backend.DialogLine("Goodbye", -1) });
+            }
         }
 
         /// /// <summary>
@@ -270,7 +279,7 @@ namespace Gruppe22.Backend
                 // Client: Player used item/ability
                 // Map: NPC / Monster used item/ability
                 case Backend.Events.ActivateAbility:
-                    {                        
+                    {
                         Actor actor = _map.actors[(int)data[0]];
                         int id = (int)data[1];
 
@@ -368,7 +377,7 @@ namespace Gruppe22.Backend
                     break;
                 case Backend.Events.EndGame:
                     map.Save("savedroom" + map.id + ".xml");
-                    File.WriteAllText("GameData", "room" + map.id.ToString()+".xml");
+                    File.WriteAllText("GameData", "room" + map.id.ToString() + ".xml");
                     break;
                 case Backend.Events.TileEntered:
                     {

@@ -225,6 +225,7 @@ namespace Gruppe22.Client
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
+
             if ((_status == GameStatus.Running) || (_logic is NetLogic))
                 _logic.Update(gameTime);
 
@@ -297,11 +298,6 @@ namespace Gruppe22.Client
                                         element.Update(gameTime);
                                 }
 
-                                if (_status == Backend.GameStatus.Running)
-                                {
-                                    _logic.map.Update(gameTime);
-                                }
-
                                 if (_focus != null)
                                 {
 
@@ -324,17 +320,19 @@ namespace Gruppe22.Client
                                         _mousepos.X = Mouse.GetState().X;
                                         _mousepos.Y = Mouse.GetState().Y;
                                     }
-                                    else
-                                    {
-                                        _mousepos.X = -1;
-                                        _mousepos.Y = -1;
-                                        _dragging = false;
-                                    }
 
 
 
 
 
+                                }
+
+                                if (Mouse.GetState().LeftButton != ButtonState.Pressed)
+                                {
+                                    _mousepos.X = -1;
+                                    _mousepos.Y = -1;
+
+                                    _dragging = false;
                                 }
 
                                 _updating = false;

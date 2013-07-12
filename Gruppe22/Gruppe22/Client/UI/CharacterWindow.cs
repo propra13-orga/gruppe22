@@ -151,7 +151,7 @@ namespace Gruppe22.Client
                             _actor.resist = _resist.value;
                             _actor.maxHealth = _maxhealth.value;
                             _actor.armor = _armor.value;
-                            _parent.HandleEvent(false, Backend.Events.ContinueGame, null);
+                            _parent.HandleEvent(true, Backend.Events.ContinueGame, null);
                             break;
                         case Backend.Buttons.Reset:
                             _actor.skills -= 1;
@@ -228,17 +228,17 @@ namespace Gruppe22.Client
             Point pos = new Point(Mouse.GetState().X, Mouse.GetState().Y);
             if (new Rectangle(_displayRect.Left, _displayRect.Top - 37, 130, 37).Contains(pos))
             {
-                _parent.HandleEvent(false, Backend.Events.ShowCharacter);
+                _parent.HandleEvent(true, Backend.Events.ShowCharacter);
                 return true;
             }
             if (new Rectangle(_displayRect.Left + 135, _displayRect.Top - 37, 130, 37).Contains(pos))
             {
-                _parent.HandleEvent(false, Backend.Events.ShowInventory);
+                _parent.HandleEvent(true, Backend.Events.ShowInventory);
                 return true;
             }
             if (new Rectangle(_displayRect.Left + 270, _displayRect.Top - 37, 130, 37).Contains(pos))
             {
-                _parent.HandleEvent(false, Backend.Events.ShowAbilities);
+                _parent.HandleEvent(true, Backend.Events.ShowAbilities);
                 return true;
             }
             return base.OnMouseDown(button);
