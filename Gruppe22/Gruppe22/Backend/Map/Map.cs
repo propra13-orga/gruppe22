@@ -467,16 +467,25 @@ namespace Gruppe22.Backend
         /// <param name="result">List to put result path into</param>
         /// <param name="visited">TIles visited on current path (avoid circles)</param>
         /// <param name="maxlength">Maximum length of path</param>
-        public void PathTo(Coords from, Backend.Coords to, out List<Coords> result, ref SortedSet<Coords> visited, int maxlength = 20)
+        public void PathTo(Coords from, Backend.Coords to, out List<Coords> result, ref HashSet<Coords> visited, int maxlength = 20)
         {
             result = null;
             if (visited == null)
             {
-                visited = new SortedSet<Coords>();
+                visited = new HashSet<Coords>();
             }
             visited.Add(from);
 
-            if (maxlength > 0)
+            if ((
+                (from.x >= 0) &&
+                (to.x >= 0)) && 
+                (from.y >= 0) &&
+                (to.y >= 0) &&
+                (to.x < _width) &&
+                (from.x < _width) &&
+                (to.y < _height) &&
+                (from.y < _height)
+                && (maxlength > 0))
             {
                 if (from.Equals(to))
                 {

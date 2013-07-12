@@ -174,7 +174,26 @@ namespace Gruppe22.Backend
                                 validDir.ExceptWith(attackDir);
                                 if (validDir.Count > 0)
                                 {
-                                    selected = validDir.ToArray()[_random.Next(validDir.Count)];
+                                    int distance = 0;
+                                    foreach (Direction dir in validDir.ToArray())
+                                    {
+                                        Backend.Coords closestEnemy = map.ClosestEnemy(Map.DirectionTile(coords, dir), actor.viewRange, !(actor is NPC) && (actor.aggro) && (!actor.friendly), !(actor is NPC) && !(actor.aggro) && (!actor.friendly), (actor.friendly) || actor.crazy);
+                                        if (Math.Abs(closestEnemy.x - Map.DirectionTile(coords, dir).x) + Math.Abs(closestEnemy.y - Map.DirectionTile(coords, dir).y) > distance)
+                                        {
+                                            selected = dir;
+                                            distance = Math.Abs(closestEnemy.x - Map.DirectionTile(coords, dir).x) + Math.Abs(closestEnemy.y - Map.DirectionTile(coords, dir).y);
+                                        }
+                                    }
+                                    if (selected == Direction.None)
+                                    {
+
+                                        if ((validDir.Count > 1) && (_random.Next(100) < 90))
+                                        {
+                                            validDir.Remove(_lastDir);
+                                        }
+                                        selected = validDir.ToArray()[_random.Next(validDir.Count)];
+
+                                    }
                                     // Move in any way leading away from attacker
                                 }
                                 else
@@ -221,17 +240,21 @@ namespace Gruppe22.Backend
                                 foreach (Direction dir in validDir)
                                 {
                                     List<Coords> path = null;
-                                    SortedSet<Coords> temp = null;
-
-                                    map.PathTo(Map.DirectionTile(coords, dir), closestEnemy, out path, ref temp, 10);
-                                    if ((shortestPath == null) || (shortestPath.Count > path.Count))
+                                    HashSet<Coords> temp = null;
+                                    if (map[Map.DirectionTile(coords, dir)].coords.x > -1)
                                     {
-                                        selected = dir;
-                                        shortestPath = path;
-                                    };
+                                        map.PathTo(Map.DirectionTile(coords, dir), closestEnemy, out path, ref temp, 10);
+                                        if ((path != null) && ((shortestPath == null) || (shortestPath.Count > path.Count)))
+                                        {
+                                            selected = dir;
+                                            shortestPath = path;
+                                        };
+                                    }
                                 }
                             }
-                            else
+                        }
+                        if (selected == Direction.None)
+                        {
                             {
                                 // Pick any direction at random
                                 if ((validDir.Count > 1) && (_random.Next(100) < 90))
@@ -243,14 +266,17 @@ namespace Gruppe22.Backend
                         }
                     }
                     _working = false;
+
                     if (selected != Direction.None)
                     {
                         _lastDir = selected;
-
                         ((Backend.IHandleEvent)parent).HandleEvent(false, Backend.Events.MoveActor, actor.id, selected);
                     }
+                    _working = false;
+
                 }
             }
+            _working = false;
 
         }
 
@@ -266,6 +292,8 @@ namespace Gruppe22.Backend
             {
                 _working = true;
                 await WorkoutMoves();
+                _working = false;
+
             }
         }
 
