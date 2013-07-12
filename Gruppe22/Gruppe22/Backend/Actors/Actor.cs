@@ -1057,7 +1057,8 @@ namespace Gruppe22.Backend
             writer.WriteStartElement("Inventory");
             foreach (Item item in _inventory)
             {
-                item.Save(writer);
+                if (!item.destroyed)
+                    item.Save(writer);
             }
             writer.WriteEndElement();
 
