@@ -348,35 +348,39 @@ namespace Gruppe22.Backend
                 // Client: Animation finished playing => Re-Enable Actor, continue game
                 case Backend.Events.FinishedAnimation:
                     int FinishedID = (int)data[0];
-                    Activity FinishedActivity = (Activity)data[1];
-                    switch (FinishedActivity)
+                    if (_map.actors.Count >= FinishedID)
                     {
-                        case Activity.Die:
-                            if (_map.actors[FinishedID] is Enemy)
-                            {
-                                if (_map.actors[FinishedID].tile.enabled)
+                        Activity FinishedActivity = (Activity)data[1];
+                        switch (FinishedActivity)
+                        {
+                            case Activity.Die:
+                                if (_map.actors[FinishedID] is Enemy)
                                 {
-                                    ((ActorTile)_map.actors[FinishedID].tile).enabled = false;
-                                    ((ActorTile)_map.actors[FinishedID].tile).DropItems();
-                                    if (_map.actors[FinishedID].gold > 0)
+                                    if (_map.actors[FinishedID].tile.enabled)
                                     {
-                                        ItemTile tile = new ItemTile(((FloorTile)(_map.actors[FinishedID].tile.parent)));
-                                        Backend.Item item = new Backend.Item(tile, Backend.ItemType.Gold, "", null, _map.actors[FinishedID].gold);
-                                        item.value = _map.actors[FinishedID].gold;
-                                        tile.item = item;
-                                        ((FloorTile)(_map.actors[FinishedID].tile.parent)).Add(tile);
+                                        ((ActorTile)_map.actors[FinishedID].tile).enabled = false;
+                                        ((ActorTile)_map.actors[FinishedID].tile).DropItems();
+                                        if (_map.actors[FinishedID].gold > 0)
+                                        {
+                                            ItemTile tile = new ItemTile(((FloorTile)(_map.actors[FinishedID].tile.parent)));
+                                            Backend.Item item = new Backend.Item(tile, Backend.ItemType.Gold, "", null, _map.actors[FinishedID].gold);
+                                            item.value = _map.actors[FinishedID].gold;
+                                            tile.item = item;
+                                            ((FloorTile)(_map.actors[FinishedID].tile.parent)).Add(tile);
+                                        }
+                                        _parent.HandleEvent(false, Events.SetItemTiles, _map.actors[FinishedID].tile, ((FloorTile)(_map.actors[FinishedID].tile.parent)).itemTiles);
                                     }
-                                    _parent.HandleEvent(false, Events.SetItemTiles, _map.actors[FinishedID].tile, ((FloorTile)(_map.actors[FinishedID].tile.parent)).itemTiles);
                                 }
-                            }
-                            else
-                            {
-                                _parent.HandleEvent(false, Events.KillActor, FinishedID);
-                            }
-                            break;
-                        default:
-                            _map.actors[FinishedID].locked = false;
-                            break;
+                                else
+                                {
+                                    _parent.HandleEvent(false, Events.KillActor, FinishedID);
+                                }
+
+                                break;
+                            default:
+                                _map.actors[FinishedID].locked = false;
+                                break;
+                        }
                     }
                     break;
 
@@ -398,76 +402,83 @@ namespace Gruppe22.Backend
                 case Backend.Events.TileEntered:
                     {
                         int id = (int)data[0];
-                        _map.actors[id].locked = false;
-
-                        Direction dir = (Direction)data[1];
-                        Backend.Coords target = _map.actors[id].tile.coords;
-
-                        // Pickup any items
-                        while (_map[target.x, target.y].hasTreasure)
+                        if (id < _map.actors.Count)
                         {
-                            _parent.HandleEvent(false, Events.PlaySound, SoundFX.Pickup); //SoundEffect pick items
-                            _parent.HandleEvent(false, Events.ShowMessage, ((_map.actors[id] is Player) ? "You found " : _map.actors[id].name + " found ") + _map[target.x, target.y].firstItem.item.name + " .");
+                            _map.actors[id].locked = false;
+
+                            Direction dir = (Direction)data[1];
+                            Backend.Coords target = _map.actors[id].tile.coords;
+
+                            // Pickup any items
+                            while (_map[target.x, target.y].hasTreasure)
+                            {
+                                _parent.HandleEvent(false, Events.PlaySound, SoundFX.Pickup); //SoundEffect pick items
+                                _parent.HandleEvent(false, Events.ShowMessage, ((_map.actors[id] is Player) ? "You found " : _map.actors[id].name + " found ") + _map[target.x, target.y].firstItem.item.name + " .");
+                                if (_map.actors[id] is Player)
+                                    _parent.HandleEvent(false, Events.ActorText, _map[target].firstActor, target, "Found " + _map[target.x, target.y].firstItem.item.name, Color.DarkGreen);
+                                _map[target.x, target.y].firstItem.item.Pickup(_map.actors[id]);
+                                _map[target.x, target.y].Remove(_map[target.x, target.y].firstItem);
+                            }
+
+
+                            // Apply trap damage
+                            if (((_map[target.x, target.y].hasTrap) && _map[target.x, target.y].trap.status == TrapState.On) && !(_map.actors[id] is NPC))
+                            {
+                                _TrapDamage(target);
+                            }
+
                             if (_map.actors[id] is Player)
-                                _parent.HandleEvent(false, Events.ActorText, _map[target].firstActor, target, "Found " + _map[target.x, target.y].firstItem.item.name, Color.DarkGreen);
-                            _map[target.x, target.y].firstItem.item.Pickup(_map.actors[id]);
-                            _map[target.x, target.y].Remove(_map[target.x, target.y].firstItem);
-                        }
-                        // Apply teleporter (move to next room)
-                        if ((_map.actors[id] is Player) && (_map[target.x, target.y].hasTeleport))
-                        {
-                            HandleEvent(true, Backend.Events.ChangeMap, ((TeleportTile)_map[target.x, target.y].overlay[0]).nextRoom, ((TeleportTile)_map[target.x, target.y].overlay[0]).nextPlayerPos);
-
-                        }
-
-                        // Apply trap damage
-                        if (((_map[target.x, target.y].hasTrap) && _map[target.x, target.y].trap.status == TrapState.On) && !(_map.actors[id] is NPC))
-                        {
-                            _TrapDamage(target);
-                        }
-
-                        //Checkpoint - save by entering
-                        if ((_map[target.x, target.y].hasCheckpoint) && (!_map[target.x, target.y].checkpoint.visited) && (_map.actors[id] is Player))
-                        {
-                            _parent.HandleEvent(false, Events.PlaySound, SoundFX.Checkpoint);//SoundEffect checkpoint
-                            _map[target.x, target.y].checkpoint.visited = true;
-                            _map.actors[id].health = _map.actors[id].maxhealth;
-                            _map.actors[id].mana = _map.actors[id].maxMana;
-                            if (_map.actors[id].lives == -1)
-                                _map.actors[id].lives = 3;
-                            if (_map[target.x, target.y].checkpoint.bonuslife > 0)
-                                _map.actors[id].lives += (int)_map[target.x, target.y].checkpoint.bonuslife;
-                            _map.Save("savedroom" + _map.id + ".xml");
-                            _parent.HandleEvent(false, Events.ActorText, _map[target].firstActor, target, "Checkpoint", Color.DarkOliveGreen);
-                            File.WriteAllText("GameData", "room" + _map.id.ToString() + ".xml" + Environment.NewLine + _map.actors[id].lives.ToString());
-                            File.WriteAllText("CheckPoint", _map.id.ToString());
-                            Regex regex = new Regex(@"\d+");
-                            foreach (string file in Directory.GetFiles(".", "checkpoint*.xml"))
                             {
-                                File.Delete(file);
+
+                                //Checkpoint - save by entering
+                                if ((_map[target.x, target.y].hasCheckpoint) && (!_map[target.x, target.y].checkpoint.visited))
+                                {
+                                    _parent.HandleEvent(false, Events.PlaySound, SoundFX.Checkpoint);//SoundEffect checkpoint
+                                    _map[target.x, target.y].checkpoint.visited = true;
+                                    _map.actors[id].health = _map.actors[id].maxhealth;
+                                    _map.actors[id].mana = _map.actors[id].maxMana;
+                                    if (_map.actors[id].lives == -1)
+                                        _map.actors[id].lives = 3;
+                                    if (_map[target.x, target.y].checkpoint.bonuslife > 0)
+                                        _map.actors[id].lives += (int)_map[target.x, target.y].checkpoint.bonuslife;
+                                    _map.Save("savedroom" + _map.id + ".xml");
+                                    _parent.HandleEvent(false, Events.ActorText, _map[target].firstActor, target, "Checkpoint", Color.DarkOliveGreen);
+                                    File.WriteAllText("GameData", "room" + _map.id.ToString() + ".xml" + Environment.NewLine + _map.actors[id].lives.ToString());
+                                    File.WriteAllText("CheckPoint", _map.id.ToString());
+                                    Regex regex = new Regex(@"\d+");
+                                    foreach (string file in Directory.GetFiles(".", "checkpoint*.xml"))
+                                    {
+                                        File.Delete(file);
+                                    }
+
+                                    foreach (string file in Directory.GetFiles(".", "savedroom*.xml"))
+                                    {
+                                        Match m = regex.Match(file);
+                                        File.Copy(file, "checkpoint" + m.Value + ".xml");
+                                    }
+
+                                    _parent.HandleEvent(false, Events.ShowMessage, "Checkpoint reached (" + _map.actors[id].lives.ToString() + " lives remaining)");
+                                    _parent.HandleEvent(false, Events.Checkpoint);
+                                }
+
+                                // Trigger floor switches
+                                if (_map[_map.actors[id].tile.coords.x, _map.actors[id].tile.coords.y].hasTarget)
+                                {
+                                    _parent.HandleEvent(false, Backend.Events.AnimateActor, id, Activity.Talk);
+                                    //_mainmap2.HandleEvent(true, Backend.Events.AnimateActor, id, Activity.Talk);
+
+                                    _parent.HandleEvent(false, Events.GameOver, true);
+                                }
+
+                                // Apply teleporter (move to next room)
+                                if (_map[target.x, target.y].hasTeleport)
+                                {
+                                    HandleEvent(true, Backend.Events.ChangeMap, ((TeleportTile)_map[target.x, target.y].overlay[0]).nextRoom, ((TeleportTile)_map[target.x, target.y].overlay[0]).nextPlayerPos);
+
+                                }
                             }
 
-                            foreach (string file in Directory.GetFiles(".", "savedroom*.xml"))
-                            {
-                                Match m = regex.Match(file);
-                                File.Copy(file, "checkpoint" + m.Value + ".xml");
-                            }
-
-                            _parent.HandleEvent(false, Events.ShowMessage, "Checkpoint reached (" + _map.actors[id].lives.ToString() + " lives remaining)");
-                            _parent.HandleEvent(false, Events.Checkpoint);
                         }
-
-                        // Trigger floor switches
-                        if ((_map[_map.actors[id].tile.coords.x, _map.actors[id].tile.coords.y].hasTarget) && (_map.actors[id] is Player))
-                        {
-                            _parent.HandleEvent(false, Backend.Events.AnimateActor, id, Activity.Talk);
-                            //_mainmap2.HandleEvent(true, Backend.Events.AnimateActor, id, Activity.Talk);
-
-                            _parent.HandleEvent(false, Events.GameOver, true);
-                        }
-
-
-
                     }
                     // Allow to choose next turn
                     break;
@@ -532,7 +543,7 @@ namespace Gruppe22.Backend
 
                 case Backend.Events.MoveActor:
                     {
-                        if (data.Length > 1)
+                        if ((data.Length > 1) && (_map.actors.Count >= (int)data[0]) && (!_map.actors[(int)data[0]].locked))
                         {
                             int id = (int)data[0];
                             Direction dir = (Direction)data[1];
