@@ -150,6 +150,7 @@ namespace Gruppe22.Backend
     {
         // Central Game Events
         ContinueGame = 0,
+        Initialize,
         EndGame,
         ResetGame,
         LoadFromCheckPoint,

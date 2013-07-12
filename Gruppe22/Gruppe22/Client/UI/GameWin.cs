@@ -70,7 +70,7 @@ namespace Gruppe22.Client
         /// <summary>
         /// Whether the game is paused (for menus etc.)
         /// </summary>
-        private Backend.GameStatus _status = Backend.GameStatus.Running;
+        private Backend.GameStatus _status = Backend.GameStatus.NoRedraw;
 
         /// <summary>
         /// A list of files to download
@@ -160,7 +160,6 @@ namespace Gruppe22.Client
         {
             _interfaceElements = new List<UIElement>(); // Initialize the list of UI elements (but not the objects themselves, see LoadContent)
             _logic = new PureLogic(this, null); // Start in Client Mode
-            _logic.map.actors[_playerID].online = true;
             base.Initialize();
         }
 
@@ -169,7 +168,6 @@ namespace Gruppe22.Client
         /// </summary>
         private void SetupGame()
         {
-            _status = Backend.GameStatus.Paused;
 
             _toolbar = new Toolbar(this, _spriteBatch, Content, new Rectangle((_graphics.GraphicsDevice.Viewport.Width - 490) / 2, _graphics.GraphicsDevice.Viewport.Height - 140, (_graphics.GraphicsDevice.Viewport.Width - 490) / 2, 34), _logic.map.actors[_playerID]);
             _interfaceElements.Add(_toolbar);
@@ -189,7 +187,7 @@ namespace Gruppe22.Client
             _mana = new Orb(this, _spriteBatch, Content, new Rectangle(_graphics.GraphicsDevice.Viewport.Width - 380, _graphics.GraphicsDevice.Viewport.Height - 139, 90, 90), _logic.map.actors[_playerID], true);
             _interfaceElements.Add(_mana);
 
-            _status = Backend.GameStatus.Running;
+            _logic.HandleEvent(true, Events.Initialize);
         }
 
         /// <summary>
@@ -722,6 +720,7 @@ namespace Gruppe22.Client
 
                         if ((_status != Backend.GameStatus.NoRedraw) || (data.Count() > 0))
                         {
+                            _PlayMusic();
                             _logic.HandleEvent(true, Events.ContinueGame);
                             if (_logic is PureLogic)
                             {
@@ -799,9 +798,8 @@ namespace Gruppe22.Client
                         _mainmap1.resetActors();
                         _minimap1.MoveCamera(_logic.map.actors[_playerID].tile.coords);
                         HandleEvent(false, Events.ShowMessage, "You entered " + _logic.map.name + ".");
-
+                        _PlayMusic();
                         _status = Backend.GameStatus.Paused;
-
                         _logic.HandleEvent(false, Events.ContinueGame);
                         break;
                 }
@@ -874,8 +872,6 @@ namespace Gruppe22.Client
                         break;
 
                     case Backend.Events.ChangeMap:
-                        _status = Backend.GameStatus.NoRedraw; // prevent redraw (which would crash the game!)
-                        // TODO MUSIC
                         _logic.ChangeMap((string)data[0], (Coords)data[1]);
                         break;
                 }

@@ -198,7 +198,7 @@ namespace Gruppe22.Backend
                 _elapsed += (uint)gameTime.ElapsedGameTime.Milliseconds;
                 if (_elapsed > _repeatTime)
                 {
-                    _elapsed -= _repeatTime;
+                    _elapsed = 0;
                     if (_state == TrapState.Off)
                     {
                         _state = TrapState.On;

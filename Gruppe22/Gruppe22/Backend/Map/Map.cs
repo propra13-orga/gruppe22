@@ -5,6 +5,7 @@ using System.Xml;
 using Microsoft.Xna.Framework;
 using System.Text.RegularExpressions;
 using Microsoft.Xna.Framework.Content;
+using System.Linq;
 
 namespace Gruppe22.Backend
 {
@@ -85,7 +86,8 @@ namespace Gruppe22.Backend
         /// <summary>
         /// A list of tiles to update each cycle (save ressources)
         /// </summary>
-        protected List<Coords> _updateTiles = null;
+        protected HashSet<Coords> _updateTiles = null;
+        private bool _updating = false;
         #endregion
 
         #region Public Fields
@@ -181,7 +183,7 @@ namespace Gruppe22.Backend
         /// <summary>
         /// List of tiles to update (read/write)
         /// </summary>
-        public List<Coords> updateTiles
+        public HashSet<Coords> updateTiles
         {
             get
             {
@@ -336,9 +338,15 @@ namespace Gruppe22.Backend
         /// <param name="gameTime"></param>
         public void Update(GameTime gameTime)
         {
-            for (int i = 0; i < _updateTiles.Count; ++i)
+            if (!_updating)
             {
-                _tiles[_updateTiles[i].y][_updateTiles[i].x].Update(gameTime);
+                _updating = true;
+                Coords[] temp = _updateTiles.ToArray();
+                for (int i = 0; i < temp.Length; ++i)
+                {
+                    _tiles[temp[i].y][temp[i].x].Update(gameTime);
+                }
+                _updating = false;
             }
         }
 
@@ -697,12 +705,6 @@ namespace Gruppe22.Backend
 
             List<Player> players = new List<Player>();
 
-            if (targetCoords == null)
-            {
-                targetCoords = new Backend.Coords(1, 1);
-            }
-            Coords tempTarget = targetCoords;
-
             // Move all players to the new map
             if (_actors.Count > 0)
             {
@@ -948,8 +950,12 @@ namespace Gruppe22.Backend
 
                                             }
 
-                                            if (targetCoords != null)
+                                            if (!resetPlayer)
                                             {
+                                                if (targetCoords == null)
+                                                {
+                                                    targetCoords = tile.coords;
+                                                }
                                                 ActorTile actortile = new ActorTile(this[targetCoords], actor);
                                                 actor.tile = actortile;
                                                 actortile.enabled = (actor.health > 0);
@@ -962,7 +968,10 @@ namespace Gruppe22.Backend
                                             }
                                             else
                                             {
-                                                tempTarget = tile.coords;
+                                                if (targetCoords == null)
+                                                {
+                                                    targetCoords = tile.coords;
+                                                }
                                                 ActorTile actortile = new ActorTile(tile, actor);
                                                 actor.tile = actortile;
                                                 actortile.enabled = (actor.health > 0);
@@ -984,27 +993,31 @@ namespace Gruppe22.Backend
                 }
             }
 
-
+            if (targetCoords == null)
+            {
+                targetCoords = new Coords(1, 1);
+            }
             while (players.Count > 0)
             {
 
-                ActorTile actortile = new ActorTile(this[tempTarget], players[0]);
+                ActorTile actortile = new ActorTile(this[targetCoords], players[0]);
                 players[0].tile = actortile;
                 actortile.enabled = (players[0].health > 0);
-                actortile.parent = this[tempTarget];
-                this[tempTarget].Add(actortile);
+                actortile.parent = this[targetCoords];
+                this[targetCoords].Add(actortile);
 
                 _actors.Add(players[0]);
 
-                _updateTiles.Add(tempTarget);
+                _updateTiles.Add(targetCoords);
                 players.RemoveAt(0);
             }
 
             for (int i = 0; i < _actors.Count; ++i)
             {
                 _actors[i].id = i;
+                if (_actors[i] is Player) Uncover(actors[i].tile.coords, actors[i].viewRange);
+
             }
-            Uncover(actors[0].tile.coords, actors[0].viewRange);
         }
 
         /// <summary>
@@ -1167,7 +1180,7 @@ namespace Gruppe22.Backend
 
         public Map()
         {
-            _updateTiles = new List<Coords>();
+            _updateTiles = new HashSet<Coords>();
             _actors = new List<Actor>();
             _blankTile = new FloorTile(this);
             _blankTile.coords = new Backend.Coords(-1, -1);
@@ -1187,7 +1200,7 @@ namespace Gruppe22.Backend
             : this()
         {
             _parent = parent;
-            Load(filename, playerPos);
+            Load(filename, playerPos, true);
         }
 
         /// <summary>

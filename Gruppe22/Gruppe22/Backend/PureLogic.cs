@@ -15,7 +15,7 @@ namespace Gruppe22.Backend
     /// </summary>
     public class PureLogic : Logic, IHandleEvent
     {
-        private bool _paused = false;
+        private bool _paused = true;
 
         /// <summary>
         /// Method to change the "room"
@@ -28,10 +28,25 @@ namespace Gruppe22.Backend
         {
             map.Save("savedroom" + map.id + ".xml");
             if (File.Exists("saved" + filename))
-                map.Load("saved" + filename, pos);
+                map.Load("saved" + filename, pos, false);
             else
-                map.Load(filename, pos);
+                map.Load(filename, pos, false);
+            map.Save("saved" + filename);
             File.WriteAllText("GameData", filename);
+        }
+
+        public void ReassignPlayer()
+        {
+            int _playerID = 0;
+            for (int i = 0; i < map.actors.Count; ++i)
+            {
+                if (map.actors[i] is Player)
+                {
+                    _playerID = i;
+                    break;
+                }
+            }
+            _parent.HandleEvent(true, Backend.Events.ChangeMap, _playerID);
         }
 
         /// <summary>
@@ -255,7 +270,7 @@ namespace Gruppe22.Backend
                 // Client: Player used item/ability
                 // Map: NPC / Monster used item/ability
                 case Backend.Events.ActivateAbility:
-                    {
+                    {                        
                         Actor actor = _map.actors[(int)data[0]];
                         int id = (int)data[1];
 
@@ -351,7 +366,10 @@ namespace Gruppe22.Backend
                         }
                     }
                     break;
-
+                case Backend.Events.EndGame:
+                    map.Save("savedroom" + map.id + ".xml");
+                    File.WriteAllText("GameData", "room" + map.id.ToString()+".xml");
+                    break;
                 case Backend.Events.TileEntered:
                     {
                         int id = (int)data[0];
@@ -395,7 +413,7 @@ namespace Gruppe22.Backend
                             if (_map[target.x, target.y].checkpoint.bonuslife > 0)
                                 _map.actors[id].lives += (int)_map[target.x, target.y].checkpoint.bonuslife;
                             _map.Save("savedroom" + _map.id + ".xml");
-                            _parent.HandleEvent(false, Events.ActorText,_map[target].firstActor, target, "Checkpoint", Color.DarkOliveGreen);
+                            _parent.HandleEvent(false, Events.ActorText, _map[target].firstActor, target, "Checkpoint", Color.DarkOliveGreen);
                             File.WriteAllText("GameData", "room" + _map.id.ToString() + ".xml" + Environment.NewLine + _map.actors[id].lives.ToString());
                             File.WriteAllText("CheckPoint", _map.id.ToString());
                             Regex regex = new Regex(@"\d+");
@@ -541,7 +559,9 @@ namespace Gruppe22.Backend
                     }
                     break;
 
-
+                case Backend.Events.Initialize:
+                    ReassignPlayer();
+                    break;
                 case Backend.Events.Pause:
                     _paused = true;
                     _parent.HandleEvent(true, Backend.Events.Pause);
@@ -576,17 +596,8 @@ namespace Gruppe22.Backend
 
                 case Backend.Events.ChangeMap: // Load another map
                     HandleEvent(false, Backend.Events.Pause);
-                    _map.Load((string)data[0], (Coords)data[1], false);
-                    int _playerID = 0;
-                    for (int i = 0; i < map.actors.Count; ++i)
-                    {
-                        if (map.actors[i] is Player)
-                        {
-                            _playerID = i;
-                            break;
-                        }
-                    }
-                    _parent.HandleEvent(true, Backend.Events.ChangeMap, _playerID);
+                    ChangeMap((string)data[0], (Coords)data[1]);
+                    ReassignPlayer();
                     break;
 
                 case Backend.Events.NewMap:

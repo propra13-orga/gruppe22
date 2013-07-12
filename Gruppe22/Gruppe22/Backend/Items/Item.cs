@@ -432,12 +432,15 @@ namespace Gruppe22.Backend
             _name = reader.GetAttribute("name");
             _icon = new ImageData(reader.GetAttribute("iconfile"), new Rectangle(Convert.ToInt32(reader.GetAttribute("clipRectX")),
                 Convert.ToInt32(reader.GetAttribute("clipRectY")),
-                Convert.ToInt32(reader.GetAttribute("clipRectW")) + Convert.ToInt32(reader.GetAttribute("iconoffsetX")) + Convert.ToInt32(reader.GetAttribute("iconcropX")),
-                Convert.ToInt32(reader.GetAttribute("clipRectH")) + Convert.ToInt32(reader.GetAttribute("iconcropY")) + Convert.ToInt32(reader.GetAttribute("iconoffsetY"))),
+                Convert.ToInt32(reader.GetAttribute("clipRectW")),
+                Convert.ToInt32(reader.GetAttribute("clipRectH"))),
                 new Coords(Convert.ToInt32(reader.GetAttribute("iconoffsetX")),
             Convert.ToInt32(reader.GetAttribute("iconoffsetY"))),
             new Coords(Convert.ToInt32(reader.GetAttribute("iconcropX")),
                 Convert.ToInt32(reader.GetAttribute("iconcropY"))));
+
+
+
             _equipped = Convert.ToBoolean(reader.GetAttribute("equipped"));
             _destroyed = Convert.ToBoolean(reader.GetAttribute("destroyed"));
             if (reader.GetAttribute("level") != null) _level = Convert.ToInt32(reader.GetAttribute("level"));
@@ -1213,7 +1216,7 @@ namespace Gruppe22.Backend
         /// <param name="value"></param>
         /// <param name="level"></param>
         /// <param name="gold"></param>
-        public Item( Random r = null, int value = 0, int level = 1, bool gold = true)
+        public Item(Random r = null, int value = 0, int level = 1, bool gold = true)
             : this()
         {
             if (r == null) r = new Random();
@@ -1258,7 +1261,7 @@ namespace Gruppe22.Backend
         /// <param name="icon"></param>
         /// <param name="value"></param>
         /// <param name="level"></param>
-        public Item( ItemType itemtype, string name = "", Random r = null, ImageData icon = null, int value = 0, int level = 1)
+        public Item(ItemType itemtype, string name = "", Random r = null, ImageData icon = null, int value = 0, int level = 1)
             : this()
         {
             _level = level;
@@ -1286,7 +1289,7 @@ namespace Gruppe22.Backend
         /// <param name="icon"></param>
         /// <param name="value"></param>
         /// <param name="level"></param>
-        public Item( ItemTile parent, ItemType itemtype, string name = "", ImageData icon = null, int value = 0, int level = 1)
+        public Item(ItemTile parent, ItemType itemtype, string name = "", ImageData icon = null, int value = 0, int level = 1)
             : this()
         {
             _level = level;
@@ -1314,7 +1317,7 @@ namespace Gruppe22.Backend
         /// <param name="icon">Symbol</param>
         /// <param name="value">Wert</param>
         /// <param name="level">Level</param>
-        public Item( Actor owner, ItemType itemtype, string name = "", ImageData icon = null, int value = 0, int level = 1)
+        public Item(Actor owner, ItemType itemtype, string name = "", ImageData icon = null, int value = 0, int level = 1)
             : this()
         {
             _owner = owner;

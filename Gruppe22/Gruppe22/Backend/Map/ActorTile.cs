@@ -142,17 +142,17 @@ namespace Gruppe22.Backend
                             {
                                 allow = allow && !tile.hasEnemy;
                             }
-                            else
-                            {
-                                if (tile.hasEnemy) attackDir.Add(direction);
-                            }
-                            if ((actor.actorType == ActorType.Enemy)
-                                && (!actor.friendly)
-                                && (actor.aggro)
-                                && (tile.hasPlayer))
-                                attackDir.Add(direction);
-                            if (allow) validDir.Add(direction);
                         }
+                        if ((actor.crazy) || (actor.friendly))
+                        {
+                            if (tile.hasEnemy) attackDir.Add(direction);
+                        }
+                        if ((actor.actorType == ActorType.Enemy)
+                            && (!actor.friendly)
+                            && (actor.aggro)
+                            && (tile.hasPlayer))
+                            attackDir.Add(direction);
+                        if (allow) validDir.Add(direction);
                     }
                 }
                 if (validDir.Count > 0)
