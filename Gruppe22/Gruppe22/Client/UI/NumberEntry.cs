@@ -53,13 +53,17 @@ namespace Gruppe22.Client
 
         public override bool OnMouseDown(int button)
         {
-            Point pos = new Point(Mouse.GetState().X, Mouse.GetState().Y);
-            if (_displayRect.Contains(pos)) _parent.HandleEvent(false, Backend.Events.RequestFocus, this);
-            if ((_allowIncrease) && (new Rectangle(_displayRect.Left, _displayRect.Top, _displayRect.Width+2, _displayRect.Height / 2).Contains(pos))) { _value += 1; _parent.HandleEvent(false, Backend.Events.Settings, 1); return true; }
-            else
-                if ((_allowDecrease) && (new Rectangle(_displayRect.Left, _displayRect.Top + _displayRect.Height / 2, _displayRect.Width + 2, _displayRect.Height / 2).Contains(pos))) { _value -= 1; _parent.HandleEvent(false, Backend.Events.Settings, -1); return true; }
+            if (_visible)
+            {
+                Point pos = new Point(Mouse.GetState().X, Mouse.GetState().Y);
+                if (_displayRect.Contains(pos)) _parent.HandleEvent(false, Backend.Events.RequestFocus, this);
+                if ((_allowIncrease) && (new Rectangle(_displayRect.Left, _displayRect.Top, _displayRect.Width + 2, _displayRect.Height / 2).Contains(pos))) { _value += 1; _parent.HandleEvent(false, Backend.Events.Settings, 1); return true; }
                 else
-                    return base.OnMouseDown(button);
+                    if ((_allowDecrease) && (new Rectangle(_displayRect.Left, _displayRect.Top + _displayRect.Height / 2, _displayRect.Width + 2, _displayRect.Height / 2).Contains(pos))) { _value -= 1; _parent.HandleEvent(false, Backend.Events.Settings, -1); return true; }
+                    else
+                        return base.OnMouseDown(button);
+            }
+            return false;
         }
 
 

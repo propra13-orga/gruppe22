@@ -59,7 +59,7 @@ namespace Gruppe22.Client
                     {
                         if (_actor.quickList[i] > 0)
                         {
-                            _functions[i] = new GridElement(_actor.quickList[i], _actor.abilities[_actor.quickList[i]].name, _actor.abilities[_actor.quickList[i]].icon, _content,false, true, 0);
+                            _functions[i] = new GridElement(_actor.quickList[i], _actor.abilities[_actor.quickList[i]].name, _actor.abilities[_actor.quickList[i]].icon, _content, false, true, 0);
                         }
                         else
                         {
@@ -105,11 +105,70 @@ namespace Gruppe22.Client
         {
             if (!_updating)
             {
+                if ((_actor.newItems > 0) && (_functions[11].flash == 0))
+                {
+                    _functions[11].flash = 2;
+                }
+                if ((_actor.skills > 0) && (_functions[12].flash == 0))
+                {
+                    _functions[12].flash = 2;
+                }
+
+                if ((_actor.abilityPoints > 0) && (_functions[10].flash == 0))
+                {
+                    _functions[10].flash = 2;
+                }
                 _lastCheck += gameTime.ElapsedGameTime.Milliseconds;
                 _updating = true;
 
                 for (int i = 0; i < 10; ++i)
                 {
+                    if ((_functions[i].id < 0) && (_actor.Items(-_functions[i].id).destroyed))
+                    {
+                        if (_actor.Items(-_functions[i].id).itemType == Backend.ItemType.Potion)
+                        {
+                            bool found = false;
+                            for (int j = 0; j < _actor.inventory.Count; ++j)
+                            {
+                                if ((_actor.inventory[j].itemType == Backend.ItemType.Potion)
+                                    && (_actor.inventory[j].effects[0].property == _actor.Items(-_functions[i].id).effects[0].property)
+                                    )
+                                {
+                                    bool duplicate = false;
+                                    for (int k = 0; k < 10; ++k)
+                                    {
+                                        if (_actor.quickList[k] == -_actor.inventory[j].id)
+                                        {
+                                            duplicate = true;
+                                            break;
+                                        }
+
+                                    }
+                                    if (!duplicate)
+                                    {
+                                        found = true;
+                                        _actor.quickList[i] = -_actor.inventory[j].id;
+                                        _parent.HandleEvent(true, Backend.Events.UpdateToolbar, i, _actor.quickList[i]);
+                                        _functions[i] = new GridElement(_actor.quickList[i], _actor.inventory[j].name, _actor.inventory[j].icon, _content, false, true, 0);
+                                        break;
+                                    }
+                                }
+                            }
+                            if (!found)
+                            {
+                                _functions[i].id = 0;
+                                _functions[i].enabled = false;
+
+                            }
+                        }
+                        else
+                        {
+                            _functions[i].id = 0;
+                            _functions[i].enabled = false;
+                        }
+
+                    }
+
                     if (((_functions[i].id > 0) && ((_actor.mana > _actor.abilities[_functions[i].id - 1].cost) && (_actor.abilities[_functions[i].id - 1].currentCool <= 0)))
                         || (_functions[i].id < 0))
                         _functions[i].enabled = true;
@@ -119,9 +178,9 @@ namespace Gruppe22.Client
                         if ((_lastCheck > 70) && (_functions[i].id > 0) && (_actor.abilities[_functions[i].id - 1].currentCool > 0)) _actor.abilities[_functions[i].id - 1].currentCool -= 1;
                     }
                 }
-                if (_lastCheck > 70)
+                if (_lastCheck > 350)
                 {
-                    _lastCheck -= 70;
+                    _lastCheck = 0;
 
                     for (int i = 0; i < 13; ++i)
                     {
@@ -161,7 +220,7 @@ namespace Gruppe22.Client
                         if ((_functions[0].id != 0) && (_functions[0].enabled) && (_functions[0].flash == 0))
                         {
                             _functions[0].flash = 5;
-                            _parent.HandleEvent(false, Backend.Events.ActivateAbility, _actor, _functions[0].id);
+                            _parent.HandleEvent(true, Backend.Events.ActivateAbility, _actor, _functions[0].id);
 
                         }
                         break;
@@ -170,7 +229,7 @@ namespace Gruppe22.Client
                         if ((_functions[1].id != 0) && (_functions[1].enabled) && (_functions[1].flash == 0))
                         {
                             _functions[1].flash = 5;
-                            _parent.HandleEvent(false, Backend.Events.ActivateAbility, _actor, _functions[1].id);
+                            _parent.HandleEvent(true, Backend.Events.ActivateAbility, _actor, _functions[1].id);
 
                         }
                         break;
@@ -179,7 +238,7 @@ namespace Gruppe22.Client
                         if ((_functions[2].id != 0) && (_functions[2].enabled) && (_functions[2].flash == 0))
                         {
                             _functions[2].flash = 5;
-                            _parent.HandleEvent(false, Backend.Events.ActivateAbility, _actor, _functions[2].id);
+                            _parent.HandleEvent(true, Backend.Events.ActivateAbility, _actor, _functions[2].id);
 
                         }
                         break;
@@ -188,7 +247,7 @@ namespace Gruppe22.Client
                         if ((_functions[3].id != 0) && (_functions[3].enabled) && (_functions[3].flash == 0))
                         {
                             _functions[3].flash = 5;
-                            _parent.HandleEvent(false, Backend.Events.ActivateAbility, _actor, _functions[3].id);
+                            _parent.HandleEvent(true, Backend.Events.ActivateAbility, _actor, _functions[3].id);
 
                         }
                         break;
@@ -197,7 +256,7 @@ namespace Gruppe22.Client
                         if ((_functions[4].id != 0) && (_functions[4].enabled) && (_functions[4].flash == 0))
                         {
                             _functions[4].flash = 5;
-                            _parent.HandleEvent(false, Backend.Events.ActivateAbility, _actor, _functions[4].id);
+                            _parent.HandleEvent(true, Backend.Events.ActivateAbility, _actor, _functions[4].id);
 
                         }
                         break;
@@ -206,7 +265,7 @@ namespace Gruppe22.Client
                         if ((_functions[5].id != 0) && (_functions[5].enabled) && (_functions[5].flash == 0))
                         {
                             _functions[5].flash = 5;
-                            _parent.HandleEvent(false, Backend.Events.ActivateAbility, _actor, _functions[5].id);
+                            _parent.HandleEvent(true, Backend.Events.ActivateAbility, _actor, _functions[5].id);
 
                         }
                         break;
@@ -215,7 +274,7 @@ namespace Gruppe22.Client
                         if ((_functions[6].id != 0) && (_functions[6].enabled) && (_functions[6].flash == 0))
                         {
                             _functions[6].flash = 5;
-                            _parent.HandleEvent(false, Backend.Events.ActivateAbility, _actor, _functions[6].id);
+                            _parent.HandleEvent(true, Backend.Events.ActivateAbility, _actor, _functions[6].id);
 
                         }
                         break;
@@ -224,7 +283,7 @@ namespace Gruppe22.Client
                         if ((_functions[7].id != 0) && (_functions[7].enabled) && (_functions[7].flash == 0))
                         {
                             _functions[7].flash = 5;
-                            _parent.HandleEvent(false, Backend.Events.ActivateAbility, _actor, _functions[7].id);
+                            _parent.HandleEvent(true, Backend.Events.ActivateAbility, _actor, _functions[7].id);
 
                         }
                         break;
@@ -233,7 +292,7 @@ namespace Gruppe22.Client
                         if ((_functions[8].id != 0) && (_functions[8].enabled) && (_functions[8].flash == 0))
                         {
                             _functions[8].flash = 5;
-                            _parent.HandleEvent(false, Backend.Events.ActivateAbility, _actor, _functions[8].id);
+                            _parent.HandleEvent(true, Backend.Events.ActivateAbility, _actor, _functions[8].id);
 
                         }
                         break;
@@ -282,23 +341,23 @@ namespace Gruppe22.Client
                 {
                     case 10:
                         _functions[10].check = !_functions[10].check;
-                        _parent.HandleEvent(false, Backend.Events.ShowCharacter, _actor);
+                        _parent.HandleEvent(true, Backend.Events.ShowCharacter, _actor);
 
                         break;
 
                     case 11:
                         _functions[11].check = !_functions[11].check;
-                        _parent.HandleEvent(false, Backend.Events.ShowInventory, _actor);
+                        _parent.HandleEvent(true, Backend.Events.ShowInventory, _actor);
                         break;
 
                     case 12:
                         _functions[12].check = !_functions[12].check;
-                        _parent.HandleEvent(false, Backend.Events.ShowAbilities, _actor);
+                        _parent.HandleEvent(true, Backend.Events.ShowAbilities, _actor);
                         break;
 
                     case 13:
                         _functions[13].check = !_functions[13].check;
-                        _parent.HandleEvent(false, Backend.Events.ShowMenu);
+                        _parent.HandleEvent(true, Backend.Events.ShowMenu);
                         break;
 
 
@@ -316,6 +375,7 @@ namespace Gruppe22.Client
                             }
                             _functions[cursel] = _dragItem;
                             _actor.quickList[cursel] = _dragItem.id;
+                            _parent.HandleEvent(true, Backend.Events.UpdateToolbar, cursel, _dragItem.id);
 
                         }
                         else
@@ -323,7 +383,7 @@ namespace Gruppe22.Client
                             if ((_functions[cursel].id != 0) && (_functions[cursel].enabled) && (_functions[cursel].flash == 0))
                             {
                                 _functions[cursel].flash = 5;
-                                _parent.HandleEvent(false, Backend.Events.ActivateAbility, _actor, _functions[cursel].id);
+                                _parent.HandleEvent(true, Backend.Events.ActivateAbility, _actor, _functions[cursel].id);
                             }
 
 
@@ -355,9 +415,9 @@ namespace Gruppe22.Client
                 }
                 else
                 {
-                    if (_functions[i].flash > 0)
+                    if (_functions[i].flash != 0)
                     {
-                        _spriteBatch.Draw(_background, new Rectangle(_displayRect.Left + i * (_cellWidth + 1), _displayRect.Top, _cellWidth + 2, _cellWidth + 2), new Rectangle(39, 6, 1, 1), _functions[i].flash % 2 == 0 ? Color.DarkRed : Color.Black);
+                        _spriteBatch.Draw(_background, new Rectangle(_displayRect.Left + i * (_cellWidth + 1), _displayRect.Top, _cellWidth + 2, _cellWidth + 2), new Rectangle(39, 6, 1, 1), _functions[i].flash % 2 == 0 ? Color.Red : Color.Black);
 
                     }
                     else
@@ -493,7 +553,6 @@ namespace Gruppe22.Client
                     {
                         int icon = _actor.quickList[i] - 1;
                         string text = _actor.abilities[icon].name + "\n Strength:" + _actor.abilities[icon].intensity + "\n Cooldown:" + _actor.abilities[icon].cooldown + "\n Cost: " + _actor.abilities[icon].cost + "MP" + ((_actor.abilities[icon].duration > 1) ? ("\n Duration:" + _actor.abilities[icon].duration) : "");
-
                         _functions.Add(new GridElement(_actor.quickList[i], text, _actor.abilities[_actor.quickList[i] - 1].icon, _content, false, true, 0));
                     }
                     else

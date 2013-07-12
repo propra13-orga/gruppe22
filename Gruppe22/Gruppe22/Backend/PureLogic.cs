@@ -280,7 +280,7 @@ namespace Gruppe22.Backend
                 // Map: NPC / Monster used item/ability
                 case Backend.Events.ActivateAbility:
                     {
-                        Actor actor = _map.actors[(int)data[0]];
+                        Actor actor = (Actor)data[0];
                         int id = (int)data[1];
 
                         // Use Item from inventory
@@ -507,7 +507,7 @@ namespace Gruppe22.Backend
                     break;
 
                 case Backend.Events.Shop:
-                    _parent.HandleEvent(false, Events.Shop, _map.actors[0], (Actor)data[0]);
+                    _parent.HandleEvent(false, Events.Shop, (Actor)data[1], (Actor)data[0]);
                     break;
 
                 case Backend.Events.Dialog:
@@ -584,7 +584,6 @@ namespace Gruppe22.Backend
 
                 case Backend.Events.LoadFromCheckPoint:
                     HandleEvent(false, Backend.Events.Pause);
-                    map.actors[(int)data[0]].lives--;
                     string lastCheck = File.ReadAllText("CheckPoint");
                     while (Directory.GetFiles(".", "savedroom*.xml").Length > 0)
                     {
@@ -598,8 +597,8 @@ namespace Gruppe22.Backend
                     }
                     map.Load("savedroom" + lastCheck + ".xml", null, true);
                     map.actors[(int)data[0]].lives--;
-                    map.Save("savedroom" + lastCheck);
-                    map.Save("checkpoint" + lastCheck);
+                    map.Save("savedroom" + lastCheck + ".xml");
+                    map.Save("checkpoint" + lastCheck + ".xml");
                     HandleEvent(false, Backend.Events.ContinueGame, true);
                     break;
 

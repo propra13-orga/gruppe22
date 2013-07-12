@@ -192,14 +192,14 @@ namespace Gruppe22.Backend
             if (level > 0)
             {
                 Item item = new Item(r, 0, _level, false);
-                _inventory.Add(item);
+                AddItem(item);
                 item.owner = this;
             }
             _gold = _random.Next(10 + _level / 10) * _level;
             if (level > 10)
             {
                 Item item = new Item(this, Backend.ItemType.Key, "Key to level " + (level % 10).ToString(), null, 0, level);
-                _inventory.Add(item);
+                AddItem(item);
                 item.owner = this;
             }
         }

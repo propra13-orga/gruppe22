@@ -415,7 +415,7 @@ namespace Gruppe22.Backend
             npc.hasShop = true;
             for (int count = 0; count < 25; ++count)
             {
-                npc.inventory.Add(new Item(r, 0, _level, false));
+                npc.AddItem(new Item(r, 0, _level, false));
             }
             ActorTile NPCTile = new ActorTile(_tiles[2][x], npc);
             npc.tile = NPCTile;

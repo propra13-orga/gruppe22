@@ -30,23 +30,28 @@ namespace Gruppe22.Client
 
         public override bool OnMouseDown(int button)
         {
-            int clicked = Pos2Tile(Mouse.GetState().X, Mouse.GetState().Y);
-            if (clicked != -1)
+            if (_visible)
             {
-                if (_abilities[clicked].improveOver != -1)
+                int clicked = Pos2Tile(Mouse.GetState().X, Mouse.GetState().Y);
+                if (clicked != -1)
                 {
-                    _actor.abilities[_abilities[clicked].improveOver] = _abilities[clicked];
-                    GenerateAbility(0);
+                    if (_abilities[clicked].improveOver != -1)
+                    {
+                        _actor.abilities[_abilities[clicked].improveOver] = _abilities[clicked];
+                        GenerateAbility(0);
 
-                    GenerateAbility(1);
-                    GenerateAbility(2);
+                        GenerateAbility(1);
+                        GenerateAbility(2);
 
-                } else {
-                    _actor.abilities.Add(_abilities[clicked]);
+                    }
+                    else
+                    {
+                        _actor.abilities.Add(_abilities[clicked]);
+                    }
+                    GenerateAbility(clicked);
+                    _parent.HandleEvent(false, Backend.Events.ButtonPressed, Backend.Buttons.Reset);
+                    return true;
                 }
-                GenerateAbility(clicked);
-                _parent.HandleEvent(false, Backend.Events.ButtonPressed, Backend.Buttons.Reset);
-                return true;
             }
             return false;
         }
@@ -259,7 +264,7 @@ namespace Gruppe22.Client
                         _spriteBatch.Draw(_background, new Rectangle(_displayRect.Left + (_width * x) + 1, _displayRect.Top + 21, _width - 4, _displayRect.Height - 22), new Rectangle(39, 6, 1, 1), Color.Black);
 
 
-                    _spriteBatch.Draw(TextureFromData.Convert(_abilities[x].icon,_content), new Rectangle(_displayRect.Left + (_width * x) + (int)(((float)_width - (float)_abilities[x].icon.rect.Width) / 2f), _displayRect.Top + 29, _abilities[x].icon.rect.Width, _abilities[x].icon.rect.Height), _abilities[x].icon.rect, Color.White);
+                    _spriteBatch.Draw(TextureFromData.Convert(_abilities[x].icon, _content), new Rectangle(_displayRect.Left + (_width * x) + (int)(((float)_width - (float)_abilities[x].icon.rect.Width) / 2f), _displayRect.Top + 29, _abilities[x].icon.rect.Width, _abilities[x].icon.rect.Height), _abilities[x].icon.rect, Color.White);
                     _spriteBatch.DrawString(_font, _abilities[x].name, new Vector2(_displayRect.Left - 2 + (_width * x) + (_width - _font.MeasureString(_abilities[x].name).X * 1.1f) / 2, _displayRect.Top + 58), Color.DarkBlue, 0f, Vector2.Zero, 1.1f, SpriteEffects.None, 0f);
 
                     _spriteBatch.DrawString(_font, _abilities[x].name, new Vector2(_displayRect.Left + (_width * x) + (_width - _font.MeasureString(_abilities[x].name).X * 1.1f) / 2, _displayRect.Top + 60), Color.Orange, 0f, Vector2.Zero, 1.1f, SpriteEffects.None, 0f);

@@ -313,6 +313,10 @@ namespace Gruppe22.Client
 
                         if ((icon < _icons.Count) && (_icons[icon] != null))
                         {
+                            if (_icons[icon].flash % 2 != 0)
+                            {
+                                _spriteBatch.Draw(_background, new Rectangle(_displayRect.Left + x * (_width + 3) + 1, _displayRect.Top + y * (_height + 3) + 1, _width, _height), new Rectangle(39, 6, 1, 1), Color.Red);
+                            }
                             _spriteBatch.Draw(_icons[icon].icon.texture, new Rectangle(_displayRect.Left + x * (_width + 3) + 1, _displayRect.Top + y * (_height + 3) + 1, _width, _height), _icons[icon].icon.clipRect, Color.White);
                             if (_icons[icon].check)
                             {

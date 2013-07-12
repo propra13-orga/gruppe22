@@ -218,7 +218,7 @@ namespace Gruppe22.Client
                         }
                         break;
                     default:
-                        _parent.HandleEvent(false, eventID, data);
+                        _parent.HandleEvent(true, eventID, data);
                         break;
                 }
             }

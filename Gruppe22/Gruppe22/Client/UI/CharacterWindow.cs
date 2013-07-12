@@ -133,6 +133,7 @@ namespace Gruppe22.Client
                         case Backend.Buttons.Close:
                             _actor.skills = _skills.value;
                             _actor.evade = _evade.value;
+                            _actor.abilityPoints = _abilityPoints.value;
                             _actor.name = _name.text;
                             _actor.block = _block.value;
                             _actor.penetrate = _penetrate.value;
@@ -151,7 +152,8 @@ namespace Gruppe22.Client
                             _actor.resist = _resist.value;
                             _actor.maxHealth = _maxhealth.value;
                             _actor.armor = _armor.value;
-                            _parent.HandleEvent(true, Backend.Events.ContinueGame, null);
+                            
+                                _parent.HandleEvent(true, Backend.Events.ContinueGame, null);
                             break;
                         case Backend.Buttons.Reset:
                             _actor.skills -= 1;
@@ -185,7 +187,7 @@ namespace Gruppe22.Client
                 _block.allowIncrease = true;
                 _penetrate.allowIncrease = true;
                 _healthReg.allowIncrease = true;
-               // _stealHealth.allowIncrease = true;
+                // _stealHealth.allowIncrease = true;
                 // _stealMana.allowIncrease = true;
                 // _fireDamage.allowIncrease = true;
                 //_iceDamage.allowIncrease = true;

@@ -154,6 +154,7 @@ namespace Gruppe22.Backend
         EndGame,
         ResetGame,
         LoadFromCheckPoint,
+        UpdateToolbar,
         About,
         Network,
         FetchFile,

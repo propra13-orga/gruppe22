@@ -1038,7 +1038,7 @@ namespace Gruppe22.Backend
             if (_stunned != 0) writer.WriteAttributeString("stunned", Convert.ToString(_stunned));
             if (_charmed != 0) writer.WriteAttributeString("charmed", Convert.ToString(_charmed));
             if (_lives != -1) writer.WriteAttributeString("lives", Convert.ToString(_lives));
-            if (_direction != Direction.None) writer.WriteAttributeString("direction", Convert.ToString(_lives));
+            if (_direction != Direction.None) writer.WriteAttributeString("direction", Convert.ToString(direction));
 
             if (_charmed != 0) _friendly = true;
             writer.WriteAttributeString("scared", Convert.ToString(_scared));
@@ -1316,6 +1316,27 @@ namespace Gruppe22.Backend
             else return;
         }
 
+        /// <summary>
+        /// Add new item to inventory
+        /// </summary>
+        /// <param name="item">The item to add to inventory</param>
+        public void AddItem(Item item)
+        {
+            _newItems += 1;
+            int max = 0;
+            for (int i = 0; i < _inventory.Count; ++i)
+            {
+                if (_inventory[i].id > max)
+                {
+                    max = _inventory[i].id;
+                }
+            }
+            item.id = max + 1;
+            item.owner = this;
+            item.tile = null;
+            item.isNew = true;
+            _inventory.Add(item);
+        }
         /// <summary>
         /// Changed ToString Method for the actor's name.
         /// </summary>

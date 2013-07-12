@@ -179,6 +179,7 @@ namespace Gruppe22.Backend
             }
         }
 
+
         /// <summary>
         /// Verändert einen Effect.
         /// </summary>
@@ -253,7 +254,7 @@ namespace Gruppe22.Backend
                     case ItemProperty.Mana:
                         if (enable)
                         {
-                            _owner.mana += effect.effect;
+                            Math.Max(_owner.mana + effect.effect, _owner.maxMana);
                         }
                         else
                         {
@@ -263,7 +264,7 @@ namespace Gruppe22.Backend
                     case ItemProperty.Health:
                         if (enable)
                         {
-                            _owner.health += effect.effect;
+                            _owner.health = Math.Max(_owner.health + effect.effect, _owner.maxhealth);
                         }
                         else
                         {
@@ -942,7 +943,7 @@ namespace Gruppe22.Backend
                     temp = Math.Max(id, actor.inventory[i].id);
                 }
                 _id = temp + 1;
-                actor.inventory.Add(this);
+                actor.AddItem(this);
             }
             else
             {

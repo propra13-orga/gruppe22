@@ -782,6 +782,12 @@ namespace Gruppe22.Client
                         _logic.HandleEvent(true, Events.ResetGame);
                         break;
 
+                    case Backend.Events.ActivateAbility:
+                        _logic.HandleEvent(true, Events.ActivateAbility, data);
+
+                        break;
+
+
                     case Backend.Events.ChangeMap:
                         _status = Backend.GameStatus.NoRedraw;
                         _playerID = (int)data[0];
@@ -844,6 +850,21 @@ namespace Gruppe22.Client
                         _PlaySoundEffect((Backend.SoundFX)data[0]);
                         break;
                     case Backend.Events.ActivateAbility:
+                     /*   if ((int)data[0] == _playerID)
+                        {
+                            if ((int)data[1] < 0)
+                            {
+                                int item = (int)data[1] + 1;
+
+                            }
+                            else
+                            {
+                                if ((int)data[1] > 0)
+                                {
+                                    int ability = (int)data[1] - 1;
+                                }
+                            }
+                        }*/
                         break;
                     case Backend.Events.Dialog:
                         //from, to, message, new Backend.DialogLine[] { new Backend.DialogLine("Goodbye", -1) }
@@ -852,7 +873,7 @@ namespace Gruppe22.Client
                         break;
                     case Backend.Events.Shop:
                         _ShowShopWindow((Actor)data[0], (Actor)data[1]);
-                        HandleEvent(false, Events.ShowMessage, _logic.map.actors[(int)data[0]].name + " traded items.");
+                        HandleEvent(false, Events.ShowMessage, ((Actor)data[0]).name + " and "+((Actor)data[1]).name+" traded items.");
                         break;
                     case Events.SetItemTiles:
                         break;

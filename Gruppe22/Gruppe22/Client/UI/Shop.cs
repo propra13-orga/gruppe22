@@ -374,7 +374,7 @@ namespace Gruppe22.Client
                                 _sellergold.value = _seller.gold;
                                 if (tmp.equipped) tmp.EquipItem();
                                 _buyer.inventory.Remove(tmp);
-                                _seller.inventory.Add(tmp);
+                                _seller.AddItem(tmp);
                                 if (_selected2 + 1 > _buyer.inventory.Count)
                                 {
                                     if (_buyer.inventory.Count > 0)
@@ -414,7 +414,7 @@ namespace Gruppe22.Client
                                 _sellergold.value = _seller.gold;
                                 if (tmp.equipped) tmp.EquipItem();
                                 _seller.inventory.Remove(tmp);
-                                _buyer.inventory.Add(tmp);
+                                _buyer.AddItem(tmp);
                                 if (_selected1 + 1 > _seller.inventory.Count)
                                 {
                                     if (_seller.inventory.Count > 0)
@@ -455,7 +455,7 @@ namespace Gruppe22.Client
                                 Backend.Item tmp = _seller.inventory[_selected1];
                                 if (tmp.equipped) tmp.EquipItem();
                                 _seller.inventory.Remove(tmp);
-                                _buyer.inventory.Add(tmp);
+                                _buyer.AddItem(tmp);
                                 if (_selected1 + 1 > _seller.inventory.Count)
                                 {
                                     if (_seller.inventory.Count > 0)
