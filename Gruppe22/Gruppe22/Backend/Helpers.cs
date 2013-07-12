@@ -31,7 +31,9 @@ namespace Gruppe22.Backend
         ToggleItem,
         ChangeStats,
         UpdateClients,
-        Chat
+        Chat,
+        FinishedAnim,
+        FinishedMove
     }
     public class ImageData
     {

@@ -19,6 +19,7 @@ namespace Gruppe22.Client
         private Button _ok;
         private Statusbox _listPlayers;
         private TextInput _playerName;
+        private bool _connecting = false;
 
         public override void Update(GameTime gameTime)
         {
@@ -52,6 +53,10 @@ namespace Gruppe22.Client
                                 return;
                             case Backend.Buttons.StartServer:
                                 System.Diagnostics.Process.Start("DungeonServer.exe");
+                                _connecting = true;
+                                _network.playername = _playerName.text;
+                                _network.server = _ipEntry.text;
+                                _connect.label = "Disconnect";
                                 return;
                             case Backend.Buttons.Cancel:
                                 _network.Disconnect();
@@ -59,6 +64,7 @@ namespace Gruppe22.Client
                                 return;
                             case Backend.Buttons.Connect:
                                 _connect.Hide();
+                                _connecting = true;
                                 if (_connect.label == "Connect")
                                 {
                                     _network.playername = _playerName.text;
@@ -77,6 +83,8 @@ namespace Gruppe22.Client
                         if (data[0].ToString().ToLower().Contains("connected"))
                         {
                             _connect.Show();
+                            if (_connecting)
+                                _parent.HandleEvent(true, Backend.Events.Settings);
                         }
                         _listPlayers.AddLine(data[0].ToString(), data.Length > 1 ? data[1] : null);
                         return;
@@ -85,7 +93,7 @@ namespace Gruppe22.Client
             base.HandleEvent(DownStream, eventID, data);
         }
 
-        public Lobby(Backend.IHandleEvent parent, SpriteBatch spriteBatch, ContentManager content, Rectangle displayRect)
+        public Lobby(Backend.IHandleEvent parent, SpriteBatch spriteBatch, ContentManager content, Rectangle displayRect, NetPlayer netplayer = null)
             : base(parent, spriteBatch, content, displayRect)
         {
 
@@ -94,19 +102,25 @@ namespace Gruppe22.Client
             {
                 myGUID = Properties.Settings.Default.guid;
             }
-            else {
+            else
+            {
                 myGUID = Guid.NewGuid().ToString();
-            Properties.Settings.Default.guid = myGUID;
-            Properties.Settings.Default.Save();
+                Properties.Settings.Default.guid = myGUID;
+                Properties.Settings.Default.Save();
             }
-                _ipEntry = new TextInput(this, spriteBatch, content, new Rectangle(_displayRect.Left + 5, _displayRect.Top + 5, 500, 30), "Server:", "localhost", "Enter a server to connect to or localhost to test locally", -1, true);
+            _ipEntry = new TextInput(this, spriteBatch, content, new Rectangle(_displayRect.Left + 5, _displayRect.Top + 5, 500, 30), "Server:", "localhost", "Enter a server to connect to or localhost to test locally", -1, true);
             _playerName = new TextInput(this, spriteBatch, content, new Rectangle(_displayRect.Left + 5, _displayRect.Top + 50, _displayRect.Width - 250, 30), "Computer-ID:", myGUID, "Enter a unique ID for your computer", -1, true);
             _listPlayers = new Statusbox(this, spriteBatch, content, new Rectangle(_displayRect.Left + 5, _displayRect.Top + 100, _displayRect.Width - 10, _displayRect.Height - 160), true, true);
             _ok = new Button(this, spriteBatch, content, new Rectangle(_displayRect.Right - 90, _displayRect.Bottom - 50, 80, 40), "Ok", (int)Backend.Buttons.Close);
             _launchServer = new Button(this, spriteBatch, content, new Rectangle(_displayRect.Right - 210, _displayRect.Top + 5, 200, 40), "Launch Server", (int)Backend.Buttons.StartServer);
             _cancel = new Button(this, spriteBatch, content, new Rectangle(_displayRect.Left + 10, _displayRect.Bottom - 50, 80, 40), "Cancel", (int)Backend.Buttons.Cancel);
             _connect = new Button(this, spriteBatch, content, new Rectangle(_displayRect.Right - 160, _displayRect.Top + 50, 150, 40), "Connect", (int)Backend.Buttons.Connect);
-            _network = new NetPlayer(this);
+            if (netplayer == null) { _network = new NetPlayer(this); }
+            else
+            {
+                _network = netplayer;
+                _network.parent = this;
+            }
             _children.Add(_ipEntry);
             _children.Add(_launchServer);
             _children.Add(_playerName);

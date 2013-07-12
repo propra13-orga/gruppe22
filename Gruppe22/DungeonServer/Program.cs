@@ -111,8 +111,10 @@ namespace DungeonServer
             NetIncomingMessage message;
             while (_serverThread.ThreadState != ThreadState.AbortRequested)
             {
-                if (_pausedCount == 0)
+                if (_pausedCount == 0) { 
                     Update();
+                    _logic.paused = false;
+                }
                 if ((message = server.ReadMessage()) == null)
                     continue;
                 switch (message.MessageType)
@@ -227,7 +229,6 @@ namespace DungeonServer
             {
                 case PacketType.Pause:
                     bool state = message.ReadBoolean();
-                    Log(_clients[message.SenderEndpoint].paused.ToString());
                     if (_clients[message.SenderEndpoint].paused)
                     {
                         if (!state)
@@ -266,6 +267,14 @@ namespace DungeonServer
                     int actorID = message.ReadInt32();
                     Direction dir = (Direction)message.ReadInt32();
                     _logic.HandleEvent(true, Events.MoveActor, actorID, dir);
+                    break;
+                case PacketType.FinishedMove:
+                    _logic.HandleEvent(true, Events.TileEntered, message.ReadInt32(), (Direction)message.ReadInt32());
+
+                    break;
+                case PacketType.FinishedAnim:
+                    _logic.HandleEvent(true, Events.FinishedAnimation, message.ReadInt32(), (Activity)message.ReadInt32());
+
                     break;
                 default:
                     Log(((PacketType)id).ToString());

@@ -60,6 +60,20 @@ namespace Gruppe22.Backend
                 _map.Update(gametime);
             }
         }
+        /// <summary>
+        /// Pause / Unpause Game Logic
+        /// </summary>
+        public bool paused
+        {
+            get
+            {
+                return _paused;
+            }
+            set
+            {
+                _paused = value;
+            }
+        }
 
         /// <summary>
         /// Method to for reseting the game to the generated version
@@ -375,10 +389,12 @@ namespace Gruppe22.Backend
                         }
                     }
                     break;
+
                 case Backend.Events.EndGame:
                     map.Save("savedroom" + map.id + ".xml");
                     File.WriteAllText("GameData", "room" + map.id.ToString() + ".xml");
                     break;
+
                 case Backend.Events.TileEntered:
                     {
                         int id = (int)data[0];
@@ -571,6 +587,7 @@ namespace Gruppe22.Backend
                 case Backend.Events.Initialize:
                     ReassignPlayer();
                     break;
+
                 case Backend.Events.Pause:
                     _paused = true;
                     _parent.HandleEvent(true, Backend.Events.Pause);

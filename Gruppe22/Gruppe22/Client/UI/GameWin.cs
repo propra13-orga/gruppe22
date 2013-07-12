@@ -531,14 +531,21 @@ namespace Gruppe22.Client
                         {
                             _status = Backend.GameStatus.NoRedraw;
                             NetPlayer tmp = ((Lobby)_focus).network;
-                            bool changeMode = false;
+
+                            _focus.Dispose();
+                            _interfaceElements.Remove(_focus);
+                            _focus = null;
+
                             if (tmp.connected)
                             {
                                 if (_logic is PureLogic)
                                 {
                                     _logic = new NetLogic(this, tmp);
+                                    ((NetLogic)_logic).RequestMap();
+                                }
+                                else
+                                {
                                     tmp.parent = _logic;
-                                    changeMode = true;
                                 }
                             }
                             else
@@ -546,7 +553,6 @@ namespace Gruppe22.Client
                                 if (_logic is NetLogic)
                                 {
                                     _logic = new PureLogic(this);
-                                    changeMode = true;
                                     _health.actor = _logic.map.actors[_playerID];
                                     _mana.actor = _logic.map.actors[_playerID];
                                     _toolbar.actor = _logic.map.actors[_playerID];
@@ -698,8 +704,15 @@ namespace Gruppe22.Client
 
 
                     case Backend.Events.Network:
-                        _ShowLANWindow();
-
+                        if (_logic is NetLogic)
+                        {
+                            _logic.HandleEvent(true, Events.Pause);
+                            _ShowLANWindow(((NetLogic)_logic).network);
+                        }
+                        else
+                        {
+                            _ShowLANWindow();
+                        }
                         /*  //_secondPlayer = true;
                           _lan = true;
                           foreach (UIElement element in _interfaceElements)
@@ -850,21 +863,21 @@ namespace Gruppe22.Client
                         _PlaySoundEffect((Backend.SoundFX)data[0]);
                         break;
                     case Backend.Events.ActivateAbility:
-                     /*   if ((int)data[0] == _playerID)
-                        {
-                            if ((int)data[1] < 0)
-                            {
-                                int item = (int)data[1] + 1;
+                        /*   if ((int)data[0] == _playerID)
+                           {
+                               if ((int)data[1] < 0)
+                               {
+                                   int item = (int)data[1] + 1;
 
-                            }
-                            else
-                            {
-                                if ((int)data[1] > 0)
-                                {
-                                    int ability = (int)data[1] - 1;
-                                }
-                            }
-                        }*/
+                               }
+                               else
+                               {
+                                   if ((int)data[1] > 0)
+                                   {
+                                       int ability = (int)data[1] - 1;
+                                   }
+                               }
+                           }*/
                         break;
                     case Backend.Events.Dialog:
                         //from, to, message, new Backend.DialogLine[] { new Backend.DialogLine("Goodbye", -1) }
@@ -873,7 +886,7 @@ namespace Gruppe22.Client
                         break;
                     case Backend.Events.Shop:
                         _ShowShopWindow((Actor)data[0], (Actor)data[1]);
-                        HandleEvent(false, Events.ShowMessage, ((Actor)data[0]).name + " and "+((Actor)data[1]).name+" traded items.");
+                        HandleEvent(false, Events.ShowMessage, ((Actor)data[0]).name + " and " + ((Actor)data[1]).name + " traded items.");
                         break;
                     case Events.SetItemTiles:
                         break;
@@ -881,7 +894,8 @@ namespace Gruppe22.Client
                         break;
                     case Events.GameOver:
                         break;
-
+                    case Backend.Events.FinishedAnimation:
+                        break;
                     case Backend.Events.ShowMessage:
                         _AddMessage(data[0].ToString(), data.Length > 1 ? data[1] : null);
                         break;
@@ -1053,7 +1067,7 @@ namespace Gruppe22.Client
             }
         }
 
-        private void _ShowLANWindow()
+        private void _ShowLANWindow(NetPlayer network = null)
         {
             if (_focus is Window)
             {
@@ -1063,7 +1077,7 @@ namespace Gruppe22.Client
                 _status = Backend.GameStatus.Running;
             }
             _status = Backend.GameStatus.Paused;
-            Lobby _lobby = new Lobby(this, _spriteBatch, Content, new Rectangle(90, 90, GraphicsDevice.Viewport.Width - 180, GraphicsDevice.Viewport.Height - 180));
+            Lobby _lobby = new Lobby(this, _spriteBatch, Content, new Rectangle(90, 90, GraphicsDevice.Viewport.Width - 180, GraphicsDevice.Viewport.Height - 180), network);
             _interfaceElements.Add(_lobby);
             _focus = _interfaceElements[_interfaceElements.Count - 1];
         }
