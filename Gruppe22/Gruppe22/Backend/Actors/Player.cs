@@ -11,14 +11,14 @@ namespace Gruppe22.Backend
     /// </summary>
     public class Player : Actor
     {
-        #region private fields
+        #region Private Fields
         /// <summary>
-        /// A list of all quests the player get from NPC.
+        /// A list of current and finished quests
         /// </summary>
-        private List<Quest> _quests_obtained_from_NPC;
+        private List<Quest> _quests;
         #endregion
 
-        #region contructors
+        #region Constructor
         /// <summary>
         /// The constructor for a player.
         /// Sets the default values.
@@ -32,32 +32,28 @@ namespace Gruppe22.Backend
         public Player( int health = 100, int armour = 30, int damage = 20, int maxHealth = -1, string name = "")
             : base(ActorType.Player, health, armour, damage, maxHealth, name)
         {
-            this._quests_obtained_from_NPC = new List<Quest>();
+            _quests= new List<Quest>();
             _actorType = ActorType.Player;
             _viewRange = 4;
             _animationFile = ".\\content\\player.xml";
         }
         #endregion
 
-        #region public methods
-        /// <summary>
-        /// Count of quests obtained from NPC
-        /// </summary>
-        public int QuestsCount { get { return this._quests_obtained_from_NPC.Count; } }
+        #region Public Methods
 
         /// <summary>
-        /// This method update the status of all player quests and realise the rewards
+        /// This method update the status of all player quests and grants the rewards
         /// </summary>
         public void UpdateQuests()
         {
-            foreach (Quest quest in _quests_obtained_from_NPC)
+            foreach (Quest quest in _quests)
             {
-                if (quest.IsDone) continue;
-                switch (quest.GetQuestType())
+                if (quest.done) continue;
+                switch (quest.type)
                 {
                     case Quest.QuestType.CollectItems:
                         Quest.Reward reward = quest.TestTheGoal(_inventory.Count);
-                        _gold += reward.RewardXP;
+                        exp += reward.RewardXP;
                         break;
                     case Quest.QuestType.KillEnemys:
                         break;
@@ -66,10 +62,15 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// return the liste of all quests to be displayed by Dialogsystem
-        /// </summary>
+        /// return all quests assigned to the player/// </summary>
         /// <returns></returns>
-        public List<Quest> GetQuests() { return _quests_obtained_from_NPC; }
+        public Quest[] quests
+        {
+            get
+            {
+                return _quests.ToArray();
+            }
+        }
 
         /// <summary>
         /// Add quest to the player. This shoud be used from NPC(dialog).
@@ -77,7 +78,7 @@ namespace Gruppe22.Backend
         /// <param name="q">The quest.</param>
         public void AddQuest(Quest q)
         {
-            this._quests_obtained_from_NPC.Add(q);
+            _quests.Add(q);
         }
         #endregion
     }

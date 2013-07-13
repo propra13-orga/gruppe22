@@ -538,35 +538,33 @@ namespace Gruppe22.Backend
                     break;
 
                 case Backend.Events.Dialog:
-                    //TODO: Quest anzeigen an der stelle, jetzt können die "sinnlosen Dialogtexte durch Questziele ersetzt werden"
-                    Player cur_palyer = ((Player)data[1]); //player
+                    Player player = ((Player)data[1]); //player
                     string texttodisplay = "";
                     int queststodo = 0;
-                    //show all quests and show wether finished
-                    if (cur_palyer.QuestsCount <= 0)
-                        texttodisplay += "Willkommen, ich bin ein freundlicher NPC :) Da du noch keine Quests hast,\n folgendes ist zu beachten:  Also um neue Nebenmissionen (Quests) zu erhalten\n schaue bei mir vorbei.\n Wenn du eine Mission abgeschlossen hast werde ich dir die Belohnung geben.\n Viel Erfolg und hier dein erster Quest:\n\n";
+                    if (player.quests.Length <= 0)
+                        texttodisplay += "Welcome, hero. I offer you this quest:\n\n";
                     else
                     {
-                        texttodisplay += "Deine Quests:\n\n";
-                        cur_palyer.UpdateQuests(); //update quests and get reward
-                        foreach(Quest q in cur_palyer.GetQuests())
+                        texttodisplay += "Current Quests:\n\n";
+                        player.UpdateQuests(); //update quests and get reward
+                        foreach (Quest q in player.quests)
                         {
-                            texttodisplay += q.GetDescription();
-                            if(q.IsDone)
-                                texttodisplay += " [ABGESCHLOSSEN]\n\n";
-                            else 
+                            texttodisplay += q.text;
+                            if (q.done)
+                                texttodisplay += " [DONE]\n\n";
+                            else
                             {
-                                texttodisplay += " [NICHT ABGESCHLOSSEN]\n\n";
+                                texttodisplay += " [OPEN]\n\n";
                                 queststodo++;
                             }
                         }
                     }
                     //hand out a new quest under special perconditions
-                    if (queststodo < 3)
+                    if (queststodo < 1)
                     {
-                        Quest nq = new Quest(Quest.QuestType.CollectItems, "Sammeln Sie ein Item auf!", 1000, cur_palyer.inventory.Count + 1);
-                        cur_palyer.AddQuest(nq);
-                        texttodisplay += "Neues Quest:\n\n" + nq.GetDescription() + " [NEU]\n";
+                        Quest nq = new Quest(Quest.QuestType.CollectItems, "Find, buy or steal a new item!", 1000, null, player.inventory.Count + 1);
+                        player.AddQuest(nq);
+                        texttodisplay += "Quest received:\n\n" + nq.text + " [New]\n";
                     }
                     GenericDialog(((Actor)data[1]).id, ((Actor)data[0]).id, texttodisplay);
                     break;

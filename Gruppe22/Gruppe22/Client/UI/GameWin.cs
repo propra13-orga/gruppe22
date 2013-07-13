@@ -797,10 +797,9 @@ namespace Gruppe22.Client
 
                     case Backend.Events.ActivateAbility:
                         _logic.HandleEvent(true, Events.ActivateAbility, data);
-
                         break;
 
-
+                        
                     case Backend.Events.ChangeMap:
                         _status = Backend.GameStatus.NoRedraw;
                         _playerID = (int)data[0];
@@ -826,6 +825,9 @@ namespace Gruppe22.Client
                 // Backend to Frontend (received)
                 switch (eventID)
                 {
+                    case Backend.Events.Disconnect:
+                        HandleEvent(true, Events.Network);
+                        break;
                     case Backend.Events.Attack:
                         _mainmap1.HandleEvent(true, Events.AnimateActor, data[0], Backend.Activity.Attack);
                         break;

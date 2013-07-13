@@ -1019,6 +1019,13 @@ namespace Gruppe22.Backend
             writer.WriteAttributeString("ranged", Convert.ToString(_ranged));
             writer.WriteAttributeString("aggro", Convert.ToString(_aggro));
             writer.WriteAttributeString("friendly", Convert.ToString(_friendly));
+            bool hasQuests = false;
+            if (this is Player && (this as Player).quests.Length > 0)
+            {
+                writer.WriteAttributeString("hasQuests", "1");
+                hasQuests = true;
+
+            }
 
             writer.WriteAttributeString("fireDefense", Convert.ToString(_fireDefense));
             writer.WriteAttributeString("iceDefense", Convert.ToString(_iceDefense));
@@ -1070,7 +1077,31 @@ namespace Gruppe22.Backend
             }
             writer.WriteEndElement();
 
+            if (hasQuests)
+            {
+                writer.WriteStartElement("Quests");
 
+                foreach (Quest q in (this as Player).quests)
+                {
+                    if (!q.done)
+                    {
+                        writer.WriteStartElement("Quest");
+                        writer.WriteAttributeString("type", q.type.ToString());
+                        writer.WriteAttributeString("text", q.text.ToString());
+                        writer.WriteAttributeString("xp", q.xp.ToString());
+                        writer.WriteAttributeString("goal", q.goal.ToString());
+                        writer.WriteStartElement("Items");
+                        foreach (Item i in q.itemList)
+                        {
+                            i.Save(writer);
+                        }
+                        writer.WriteEndElement();
+                        writer.WriteEndElement();
+                    }
+                }
+                writer.WriteEndElement();
+
+            }
 
             writer.WriteStartElement("Toolbar");
             for (int i = 0; i < 10; ++i)
@@ -1112,6 +1143,14 @@ namespace Gruppe22.Backend
             _gold = a.gold;
             _health = a.health;
             _inventory = a.inventory;
+            if ((a is Player) && (this is Player))
+            {
+                Quest[] myQuests = (a as Player).quests;
+                foreach (Quest q in myQuests)
+                {
+                    (this as Player).AddQuest(q);
+                }
+            }
             foreach (Item i in _inventory)
             {
                 i.owner = this;
@@ -1230,17 +1269,22 @@ namespace Gruppe22.Backend
                 _charmed = Convert.ToInt32(reader.GetAttribute("charmed"));
             if (reader.GetAttribute("scared") != null)
                 _scared = Convert.ToInt32(reader.GetAttribute("scared"));
-
-            if (actorType == ActorType.NPC)
+            bool hasQuests = false;
+            switch (_actorType)
             {
-                NPC n = this as NPC;
-                if (n != null)
-                {
-                    n.love = Convert.ToInt32(reader.GetAttribute("love"));
-                    n.hasShop = Convert.ToBoolean(reader.GetAttribute("hasShop"));
-                    n.hasDialog = Convert.ToBoolean(reader.GetAttribute("hasDialogue"));
+                case ActorType.NPC:
+                    NPC n = this as NPC;
+                    if (n != null)
+                    {
+                        n.love = Convert.ToInt32(reader.GetAttribute("love"));
+                        n.hasShop = Convert.ToBoolean(reader.GetAttribute("hasShop"));
+                        n.hasDialog = Convert.ToBoolean(reader.GetAttribute("hasDialogue"));
 
-                }
+                    }
+                    break;
+                case ActorType.Player:
+                    if (reader.GetAttribute("hasQuests") != null) hasQuests = true;
+                    break;
             }
             reader.Read();
 
@@ -1284,6 +1328,51 @@ namespace Gruppe22.Backend
                     }
                     reader.ReadEndElement();
 
+                }
+
+                if (hasQuests)
+                {
+                    if (reader.IsEmptyElement)
+                    {
+                        reader.Read();
+                    }
+                    else
+                    {
+                        reader.Read();
+                        while (reader.NodeType != XmlNodeType.EndElement)
+                        {
+                            Quest.QuestType q1 = (Quest.QuestType)Enum.Parse(typeof(Quest.QuestType), reader.GetAttribute("type"));
+                            string text = Convert.ToString(reader.GetAttribute("text"));
+                            int xp = Convert.ToInt32(reader.GetAttribute("xp"));
+                            List<Item> itemList = new List<Item>();
+                            int goal = Convert.ToInt32(reader.GetAttribute("goal"));
+                            reader.Read();
+                            if (reader.IsEmptyElement)
+                            {
+                                reader.Read();
+                            }
+                            else
+                            {
+                                reader.Read();
+                                while (reader.NodeType != XmlNodeType.EndElement)
+                                {
+                                    Item item = new Item();
+                                    item.Load(reader);
+                                    item.owner = null;
+                                    item.tile = null;
+                                    itemList.Add(item);
+                                    reader.Read();
+                                }
+                                reader.ReadEndElement();
+                            }
+
+                            Quest q = new Quest(q1, text, xp, itemList, goal);
+                            (this as Player).AddQuest(q);
+                            reader.Read();
+                        }
+                        reader.ReadEndElement();
+
+                    }
                 }
 
                 // Read Quickbar / Common attacks (ranked by frequency)

@@ -125,9 +125,9 @@ namespace Gruppe22.Backend
                         break;
                     case Events.MoveActor:
                         _map.actors[(int)data[0]].direction = (Direction)data[2];
-                        if (data.Length > 4)
+                        if (data.Length > 2)
                         {
-                            _map.PositionActor(_map.actors[(int)data[0]], new Coords((int)data[3], (int)data[4]));
+                            _map.PositionActor(_map.actors[(int)data[0]], (Coords)data[1]);
                         }
                         _parent.HandleEvent(false, Events.MoveActor, data);
                         break;

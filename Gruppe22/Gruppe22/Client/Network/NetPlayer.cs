@@ -161,6 +161,8 @@ namespace Gruppe22.Client
                         break;
                     case NetConnectionStatus.Disconnected:
                         _parent.HandleEvent(false, Backend.Events.ShowMessage, "Disconnected.", Color.Red);
+                        _parent.HandleEvent(false, Backend.Events.Disconnect);
+
                         _client.DiscoverLocalPeers(666);
                         break;
                 }
@@ -209,7 +211,8 @@ namespace Gruppe22.Client
                 case PacketType.UpdateClients:
                     break;
                 case PacketType.Move:
-                    _parent.HandleEvent(false, Backend.Events.MoveActor, message.ReadInt32(), new Coords(message.ReadInt32(), message.ReadInt32()), (Direction)message.ReadInt32(), message.ReadInt32(), message.ReadInt32());
+                    _parent.HandleEvent(false, Backend.Events.MoveActor, message.ReadInt32(), 
+                        new Coords(message.ReadInt32(), message.ReadInt32()), (Direction)message.ReadInt32());
                     break;
             }
         }

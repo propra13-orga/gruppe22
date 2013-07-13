@@ -353,8 +353,15 @@ namespace DungeonServer
                 // pass along to client
                 switch (eventID)
                 {
+                    case Events.RejectMove:
+                        SendMessageToAll(PacketType.FinishedMove, NetDeliveryMethod.ReliableOrdered, null, (int)data[0], ((Coords)data[1]).x, ((Coords)data[1]).y);
+                        break;
                     case Events.MoveActor:
-                        SendMessageToAll(PacketType.Move, NetDeliveryMethod.Unreliable, null, (int)data[0], ((Coords)data[1]).x, ((Coords)data[1]).y, (int)((Direction)data[2]));
+                        SendMessageToAll(PacketType.Move, NetDeliveryMethod.ReliableOrdered, null, (int)data[0], ((Coords)data[1]).x, ((Coords)data[1]).y, (int)((Direction)data[2]));
+                        break;
+                    case Events.ChangeMap:
+                        // Todo: Remap actors / clients
+                    SendMessageToAll(PacketType.UpdateMap, NetDeliveryMethod.ReliableOrdered,null, _logic.map.ToXML(), 0);
                         break;
 
                 }

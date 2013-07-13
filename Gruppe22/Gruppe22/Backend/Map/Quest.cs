@@ -12,7 +12,7 @@ namespace Gruppe22.Backend
     public class Quest
     {
 
-#region public fields
+        #region Public Fields
         /// <summary>
         /// The reward stucture to return reward to player.
         /// </summary>
@@ -20,7 +20,7 @@ namespace Gruppe22.Backend
         {
             private int _xp;
             private List<Item> _items;
-            public int RewardXP { get{ return _xp;} }
+            public int RewardXP { get { return _xp; } }
             public List<Item> RewardItems { get { return _items; } } //unnecessary but whatever
             public Reward(int xp, List<Item> items)
             {
@@ -38,84 +38,81 @@ namespace Gruppe22.Backend
             KillEnemys
         };
 
-#endregion
+        #endregion
 
-#region private fields
+        #region Private Fields
         private int _rewardXP;
         private List<Item> _rewardItem;
         private string _description;
         private int _goal;
         private bool _done;
         private QuestType _qtype;
-#endregion
+        #endregion
 
-#region Constructors
+        #region Public Fields
         /// <summary>
-        /// The constructor for a quest
+        /// Get Experience Reward
         /// </summary>
-        /// <param name="text"></param>
-        /// <param name="xp">The amount of exp granted after completing the quest.</param>
-        /// <param name="itemlist">A list of items the player will be rewarded with for completing the quest</param>
-        public Quest(QuestType q, string text, int xp, List<Item> itemlist, int goal)
+        public int xp
         {
-            this._qtype = q;
-            this._done = false;
-            this._description = text;
-            this._rewardItem = itemlist;
-            this._rewardXP = xp;
-            this._goal = goal;
+            get
+            {
+                return _rewardXP;
+            }
         }
 
         /// <summary>
-        /// Constructor for quests without item-reward.
+        /// Get list of items granted as reward
         /// </summary>
-        /// <param name="text"></param>
-        /// <param name="xp"></param>
-        /// <param name="goal"></param>
-        public Quest(QuestType q,string text, int xp, int goal)
+        public Item[] itemList
         {
-            this._qtype = q;
-            this._done = false;
-            this._description = text;
-            this._rewardXP = xp;
-            this._rewardItem = null;
-            this._goal = goal;
+            get
+            {
+                return _rewardItem.ToArray();
+            }
         }
 
         /// <summary>
-        /// Constructor for quests without numeric-reward.
+        /// Description
         /// </summary>
-        /// <param name="text"></param>
-        /// <param name="itemlist"></param>
-        /// <param name="goal"></param>
-        public Quest(QuestType q, string text, List<Item> itemlist, int goal)
+        public string text
         {
-            this._qtype = q;
-            this._done = false;
-            this._description = text;
-            this._rewardXP = 0;
-            this._rewardItem = itemlist;
-            this._goal = goal;
+            get
+            {
+                return _description;
+            }
         }
-# endregion
 
-#region public methods
+        /// <summary>
+        /// Number of items to find / monsters to kill
+        /// </summary>
+        public int goal
+        {
+            get
+            {
+                return _goal;
+            }
+        }
+
+        /// <summary>
+        /// Type of quest (fetch or kill)
+        /// </summary>
+        public QuestType type
+        {
+            get
+            {
+                return _qtype;
+            }
+        }
+
         /// <summary>
         /// True if the quest is completed.
         /// </summary>
-        public bool IsDone { get { return _done; } }
+        public bool done { get { return _done; } }
+        #endregion
+  
 
-        /// <summary>
-        /// return the text whitch discribe the task of this quest
-        /// </summary>
-        /// <returns></returns>
-        public string GetDescription() { return _description; }
-
-        /// <summary>
-        /// return the questtype so that the player can chose the meaning of goal.
-        /// </summary>
-        /// <returns></returns>
-        public QuestType GetQuestType() { return this._qtype; }
+        #region Public Methods
 
         /// <summary>
         /// Testing if goal is already done.
@@ -130,7 +127,32 @@ namespace Gruppe22.Backend
             }
             else return new Reward(0, null); //empty Reward
         }
-#endregion
+        #endregion
 
+        #region Constructor
+        /// <summary>
+        /// The constructor for a quest
+        /// </summary>
+        /// <param name="text"></param>
+        /// <param name="xp">The amount of exp granted after completing the quest.</param>
+        /// <param name="itemlist">A list of items the player will be rewarded with for completing the quest</param>
+        public Quest(QuestType q = QuestType.CollectItems, string text = "Find an item", int xp = 100, List<Item> itemlist = null, int goal = 1)
+        {
+            _qtype = q;
+            _done = false;
+            _description = text;
+            if (_rewardItem != null)
+            {
+                _rewardItem = itemlist;
+            }
+            else
+            {
+                _rewardItem = new List<Item>();
+            }
+            _rewardXP = xp;
+            _goal = goal;
+        }
+
+        #endregion
     }
 }
