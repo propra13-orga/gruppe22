@@ -11,12 +11,14 @@ namespace Gruppe22.Backend
     /// </summary>
     public class Player : Actor
     {
-        private List<Quest> _quests_obtained_from_NPC;
+        #region private fields
         /// <summary>
-        /// Count of quests obtained from NPC
+        /// A list of all quests the player get from NPC.
         /// </summary>
-        public int QuestsCount { get{ return this._quests_obtained_from_NPC.Count; } }
+        private List<Quest> _quests_obtained_from_NPC;
+        #endregion
 
+        #region contructors
         /// <summary>
         /// The constructor for a player.
         /// Sets the default values.
@@ -35,6 +37,27 @@ namespace Gruppe22.Backend
             _viewRange = 4;
             _animationFile = ".\\content\\player.xml";
         }
+        #endregion
+
+        #region public methods
+        /// <summary>
+        /// Count of quests obtained from NPC
+        /// </summary>
+        public int QuestsCount { get { return this._quests_obtained_from_NPC.Count; } }
+
+        /// <summary>
+        /// This method update the status of all player quests and realise the rewards
+        /// </summary>
+        public void UpdateQuests()
+        {
+            throw new NotImplementedException("write code here");
+        }
+
+        /// <summary>
+        /// return the liste of all quests to be displayed by Dialogsystem
+        /// </summary>
+        /// <returns></returns>
+        public List<Quest> GetQuests() { return _quests_obtained_from_NPC; }
 
         /// <summary>
         /// Add quest to the player. This shoud be used from NPC(dialog).
@@ -44,5 +67,6 @@ namespace Gruppe22.Backend
         {
             this._quests_obtained_from_NPC.Add(q);
         }
+        #endregion
     }
 }

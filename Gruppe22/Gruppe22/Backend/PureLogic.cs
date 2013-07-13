@@ -227,13 +227,14 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// A text displayed if the player died
+        /// A text displayed if the player died or talk to NPC
         /// </summary>
         /// <param name="message">A custom message that could be displayed</param>
         public void GenericDialog(int from, int to, string message = "")
         {
             if (!_paused)
             {
+                //manage quests here!
                 if (message == "")
                     switch (_random.Next(10))
                     {
