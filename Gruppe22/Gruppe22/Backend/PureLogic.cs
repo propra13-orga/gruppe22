@@ -564,7 +564,7 @@ namespace Gruppe22.Backend
                     //hand out a new quest under special perconditions
                     if (queststodo < 3)
                     {
-                        Quest nq = new Quest(Quest.QuestType.CollectItems, "TEST", 1000, 1);
+                        Quest nq = new Quest(Quest.QuestType.CollectItems, "Sammeln Sie ein Item auf!", 1000, cur_palyer.inventory.Count + 1);
                         cur_palyer.AddQuest(nq);
                         texttodisplay += "Neues Quest:\n\n" + nq.GetDescription() + " [NEU]\n";
                     }

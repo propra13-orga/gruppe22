@@ -50,7 +50,19 @@ namespace Gruppe22.Backend
         /// </summary>
         public void UpdateQuests()
         {
-            //throw new NotImplementedException("write code here");
+            foreach (Quest quest in _quests_obtained_from_NPC)
+            {
+                if (quest.IsDone) continue;
+                switch (quest.GetQuestType())
+                {
+                    case Quest.QuestType.CollectItems:
+                        Quest.Reward reward = quest.TestTheGoal(_inventory.Count);
+                        _gold += reward.RewardXP;
+                        break;
+                    case Quest.QuestType.KillEnemys:
+                        break;
+                }
+            }
         }
 
         /// <summary>
