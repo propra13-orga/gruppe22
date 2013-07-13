@@ -266,7 +266,8 @@ namespace DungeonServer
                 case PacketType.Move: //0x0 steht für Positions-Informationen eines Clienten
                     int actorID = message.ReadInt32();
                     Direction dir = (Direction)message.ReadInt32();
-                    _logic.HandleEvent(true, Events.MoveActor, actorID, dir, _logic.map.actors[actorID].tile.coords.x, _logic.map.actors[actorID].tile.coords.y);
+                    if (actorID < _logic.map.actors.Count)
+                        _logic.HandleEvent(true, Events.MoveActor, actorID, dir, _logic.map.actors[actorID].tile.coords.x, _logic.map.actors[actorID].tile.coords.y);
                     break;
                 case PacketType.FinishedMove:
                     _logic.HandleEvent(true, Events.TileEntered, message.ReadInt32(), (Direction)message.ReadInt32());
@@ -361,7 +362,7 @@ namespace DungeonServer
                         break;
                     case Events.ChangeMap:
                         // Todo: Remap actors / clients
-                    SendMessageToAll(PacketType.UpdateMap, NetDeliveryMethod.ReliableOrdered,null, _logic.map.ToXML(), 0);
+                        SendMessageToAll(PacketType.UpdateMap, NetDeliveryMethod.ReliableOrdered, null, _logic.map.ToXML(), 0);
                         break;
 
                 }
