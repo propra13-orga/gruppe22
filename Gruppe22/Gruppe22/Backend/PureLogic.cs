@@ -547,6 +547,7 @@ namespace Gruppe22.Backend
                         if ((data.Length > 1) && (_map.actors.Count >= (int)data[0]) && (!_map.actors[(int)data[0]].locked))
                         {
                             int id = (int)data[0];
+                            _map.actors[id].locked = true;
                             Direction dir = (Direction)data[1];
                             Backend.Coords target = Map.DirectionTile(_map.actors[id].tile.coords, dir);
                             _map.actors[id].direction = dir;
@@ -556,7 +557,7 @@ namespace Gruppe22.Backend
                             {
                                 if (((FloorTile)_map.actors[id].tile.parent).trap.status == TrapState.Disabled)
                                     ((FloorTile)_map.actors[id].tile.parent).trap.status = TrapState.NoDisplay;
-                                // TODO: Update Tile on Client by event
+                                _parent.HandleEvent(false, Backend.Events.ChangeTrapState, _map.actors[id].tile.coords.x, _map.actors[id].tile.coords.y, TrapState.NoDisplay);
                             }
 
                             Actor a = _map[target.x, target.y].firstActor;
@@ -568,8 +569,6 @@ namespace Gruppe22.Backend
                                 && ((a.id != id) && (!a.isDead)))
                             {
                                 HandleEvent(true, Backend.Events.Attack, id, dir);
-                                _map.actors[id].locked = true;
-
                             }
                             else
                             {
@@ -589,7 +588,11 @@ namespace Gruppe22.Backend
                                 {
                                     _map.MoveActor(_map.actors[id], dir);
                                     _parent.HandleEvent(false, Backend.Events.MoveActor, id, _map.actors[id].tile.coords, dir);
-                                    _map.actors[id].locked = true;
+                                }
+                                else
+                                {
+                                    _parent.HandleEvent(false, Backend.Events.RejectMove, id, _map.actors[id].tile.coords, dir);
+                                    _map.actors[id].locked = false;
                                 }
                             }
                         }

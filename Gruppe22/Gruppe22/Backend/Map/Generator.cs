@@ -167,7 +167,7 @@ namespace Gruppe22.Backend
 
             if (!up)
             {
-                                _tiles[srcCoords.y][srcCoords.x - 1].overlay.Clear();
+                _tiles[srcCoords.y][srcCoords.x - 1].overlay.Clear();
 
                 _tiles[srcCoords.y][srcCoords.x - 1].overlay.Add(new DoorTile(_tiles[srcCoords.y][srcCoords.x - 1], true, _level));
             }
@@ -975,7 +975,7 @@ namespace Gruppe22.Backend
 
             _tiles[originPos.y][originPos.x].connected = true;
             _tiles[originPos.y][originPos.x].Remove(TileType.Wall);
-            int remaining = _width / 2 * _height / 2 ;
+            int remaining = _width / 2 * _height / 2 + 1;
 
             Path startPos = originPos;
             while ((currentPos.x > -1) && (remaining > 0))
@@ -1004,7 +1004,11 @@ namespace Gruppe22.Backend
                 currentPos = startPos;
                 while ((currentPos.x != endPos.x) || (currentPos.y != endPos.y))
                 {
-                    _tiles[currentPos.y][currentPos.x].connected = true;
+                    if (!_tiles[currentPos.y][currentPos.x].connected)
+                    {
+                        _tiles[currentPos.y][currentPos.x].connected = true;
+                        remaining--;
+                    }
                     switch (_tiles[currentPos.y][currentPos.x].connection)
                     {
                         case Connection.Left:
@@ -1023,7 +1027,6 @@ namespace Gruppe22.Backend
                     currentPos.dir = _tiles[currentPos.y][currentPos.x].connection;
                     _tiles[currentPos.y][currentPos.x].connection = Connection.Invalid;
                     currentPos = _Walk(currentPos);
-                    --remaining;
                 }
                 startPos = new Path(1 + r.Next((_width - 3) / 2) * 2, 1 + r.Next((_height - 2) / 2) * 2);
             }

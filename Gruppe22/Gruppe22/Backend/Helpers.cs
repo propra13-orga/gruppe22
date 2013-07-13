@@ -155,6 +155,8 @@ namespace Gruppe22.Backend
         Initialize,
         EndGame,
         ResetGame,
+        ChangeTrapState,
+        RejectMove,
         LoadFromCheckPoint,
         UpdateToolbar,
         About,

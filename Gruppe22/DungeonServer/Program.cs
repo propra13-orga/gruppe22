@@ -143,7 +143,6 @@ namespace DungeonServer
                         Log(message.SenderEndpoint + " approved.");
                         break;
                     case NetIncomingMessageType.Data:
-                        Log("Data received", ConsoleColor.Red);
                         byte type = message.ReadByte();
                         ProcessMessage(type, message);
                         break;
