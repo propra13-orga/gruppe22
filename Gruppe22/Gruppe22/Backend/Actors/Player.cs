@@ -50,7 +50,7 @@ namespace Gruppe22.Backend
         /// </summary>
         public void UpdateQuests()
         {
-            throw new NotImplementedException("write code here");
+            //throw new NotImplementedException("write code here");
         }
 
         /// <summary>

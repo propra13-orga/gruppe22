@@ -106,6 +106,12 @@ namespace Gruppe22.Backend
         public bool IsDone { get { return _done; } }
 
         /// <summary>
+        /// return the text whitch discribe the task of this quest
+        /// </summary>
+        /// <returns></returns>
+        public string GetDescription() { return _description; }
+
+        /// <summary>
         /// return the questtype so that the player can chose the meaning of goal.
         /// </summary>
         /// <returns></returns>

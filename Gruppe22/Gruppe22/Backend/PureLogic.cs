@@ -234,7 +234,6 @@ namespace Gruppe22.Backend
         {
             if (!_paused)
             {
-                //manage quests here!
                 if (message == "")
                     switch (_random.Next(10))
                     {
@@ -540,7 +539,36 @@ namespace Gruppe22.Backend
 
                 case Backend.Events.Dialog:
                     //TODO: Quest anzeigen an der stelle, jetzt können die "sinnlosen Dialogtexte durch Questziele ersetzt werden"
-                    GenericDialog(((Actor)data[1]).id, ((Actor)data[0]).id);
+                    Player cur_palyer = ((Player)data[1]); //player
+                    string texttodisplay = "";
+                    int queststodo = 0;
+                    //show all quests and show wether finished
+                    if (cur_palyer.QuestsCount <= 0)
+                        texttodisplay += "Willkommen, ich bin ein freundlicher NPC :) Da du noch keine Quests hast,\n folgendes ist zu beachten:  Also um neue Nebenmissionen (Quests) zu erhalten\n schaue bei mir vorbei.\n Wenn du eine Mission abgeschlossen hast werde ich dir die Belohnung geben.\n Viel Erfolg und hier dein erster Quest:\n\n";
+                    else
+                    {
+                        texttodisplay += "Deine Quests:\n\n";
+                        cur_palyer.UpdateQuests(); //update quests and get reward
+                        foreach(Quest q in cur_palyer.GetQuests())
+                        {
+                            texttodisplay += q.GetDescription();
+                            if(q.IsDone)
+                                texttodisplay += " [ABGESCHLOSSEN]\n\n";
+                            else 
+                            {
+                                texttodisplay += " [NICHT ABGESCHLOSSEN]\n\n";
+                                queststodo++;
+                            }
+                        }
+                    }
+                    //hand out a new quest under special perconditions
+                    if (queststodo < 3)
+                    {
+                        Quest nq = new Quest(Quest.QuestType.CollectItems, "TEST", 1000, 1);
+                        cur_palyer.AddQuest(nq);
+                        texttodisplay += "Neues Quest:\n\n" + nq.GetDescription() + " [NEU]\n";
+                    }
+                    GenericDialog(((Actor)data[1]).id, ((Actor)data[0]).id, texttodisplay);
                     break;
 
                 case Backend.Events.MoveActor:
