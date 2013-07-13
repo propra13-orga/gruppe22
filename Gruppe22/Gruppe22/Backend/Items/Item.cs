@@ -21,58 +21,29 @@ namespace Gruppe22.Backend
         Staff = 8,
         Ring = 9
     }
+
+    /// <summary>
+    /// Class to represent items ingame
+    /// e.g. weapons, armor
+    /// </summary>
     public class Item
     {
-        /// <summary>
-        /// ID des Items.
-        /// </summary>
         private int _id = 1;
-        /// <summary>
-        /// Level des Items. 
-        /// </summary>
         private int _level = 1;
-        /// <summary>
-        /// Typ des Items.
-        /// </summary>
         private ItemType _itemType = Backend.ItemType.Armor;
-        /// <summary>
-        /// Das Tile-Objekt zu dem Item.
-        /// </summary>
         private ItemTile _tile = null;
-        /// <summary>
-        /// Der Actor zu dem dieses Item gehört.
-        /// </summary>
         private Actor _owner = null;
         private ImageData _icon = null;
-        /// <summary>
-        /// Dieses Feld zeigt an, ob das Item von einem Actor aufgehoben wurde oder nicht.
-        /// </summary>
         private bool _equipped = false;
-        /// <summary>
-        /// Feld für den Namen des Items.
-        /// </summary>
         private string _name = "";
-        /// <summary>
-        /// Beschreibung des Items.
-        /// </summary>
         private string _description = "";
-        /// <summary>
-        /// Wert.
-        /// </summary>
         private int _value = 0;
-        /// <summary>
-        /// Feld welches markiert, ob Item neu ist.
-        /// </summary>
         private bool _new = false;
-        /// <summary>
-        /// Feld das beschreibt ob Item verbraucht/zerstört ist.
-        /// </summary>
         private bool _destroyed = false;
-
         List<ItemEffect> _effects = null;
 
         /// <summary>
-        /// Die Wert-Eigenschaft.
+        /// The gold value of an item
         /// </summary>
         public int value
         {
@@ -81,7 +52,7 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Eigenschaft der Effektliste.
+        /// A list of effects one item has
         /// </summary>
         public List<ItemEffect> effects
         {
@@ -92,7 +63,7 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Eigenschaft ob Item neu ist.
+        /// True if the item is a new item
         /// </summary>
         public bool isNew
         {
@@ -107,7 +78,8 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Eigenschaft Besitzer (Actor) zu dem Item.
+        /// The owner of an item
+        /// e.g. the player
         /// </summary>
         public Actor owner
         {
@@ -122,7 +94,8 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Item wird aufgehoben bzw. aktiviert.
+        /// Method to (un)equip an item
+        /// disables and enables the effects of the item
         /// </summary>
         public virtual void EquipItem()
         {
@@ -150,7 +123,7 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Eigenschaft zu der ID des Items.
+        /// The id of an item
         /// </summary>
         public int id
         {
@@ -165,7 +138,8 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Löst die Fähigkeiten des Items aus.
+        /// Method called when a item is used.
+        /// 
         /// </summary>
         public virtual void UseItem()
         {
@@ -181,10 +155,10 @@ namespace Gruppe22.Backend
 
 
         /// <summary>
-        /// Verändert einen Effect.
+        /// Method the activate the effects of an item for an owner
         /// </summary>
-        /// <param name="effect">Der Effekt.</param>
-        /// <param name="enable">Aktivieren/deaktivieren.</param>
+        /// <param name="effect">The effect which should be (de)activated</param>
+        /// <param name="enable">Whether the effect gets (de)activated</param>
         public void ChangeEffect(ItemEffect effect, bool enable)
         {
             if (_owner != null)
@@ -375,21 +349,24 @@ namespace Gruppe22.Backend
             }
 
         }
+
         /// <summary>
-        /// Eigenschaft Level.
+        /// The level of an item.
         /// </summary>
         public int level { get { return _level; } set { _level = value; } }
+
         /// <summary>
-        /// Eigenschaft zu der Symbol-Datei für das Item.
+        /// The icon for an item
         /// </summary>
         public ImageData icon { get { return _icon; } set { _icon = value; } }
+
         /// <summary>
-        /// Eigenschaft ob das Item ausgerüstet ist (d.h. einem Actor zugeordnet) oder nicht.
+        /// True if an actor has equipped the item
         /// </summary>
         public bool equipped { get { return _equipped; } set { _equipped = value; } }
 
         /// <summary>
-        /// Eigenschaft Tile zu diesem Item.
+        /// A tile where the item is placed in on the ground
         /// </summary>
         public ItemTile tile
         {
@@ -404,7 +381,7 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Effekt-Update-Methode.
+        /// The Update method for the itemeffect-duration
         /// </summary>
         public void Update()
         {
@@ -425,9 +402,10 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Liest ein Item aus dem XmlReader.
+        /// Saving method.
+        /// Parses the path to the item icon and all effects to xml
         /// </summary>
-        /// <param name="reader">Der entsprechende mlReader.</param>
+        /// <param name="reader">XmlReader.</param>
         public void Load(XmlReader reader)
         {
             _name = reader.GetAttribute("name");
@@ -472,9 +450,9 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Speichert den Item in eine xml-Datei (room..., o.ä.).
+        /// Saving method
         /// </summary>
-        /// <param name="xmlw">Der zu verwendete XmlWriter.</param>
+        /// <param name="xmlw">XmlWriter.</param>
         public void Save(XmlWriter xmlw)
         {
             xmlw.WriteStartElement("Item");
@@ -519,7 +497,7 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Eigenschaft: Gibt zurück oder setzt fest ob das Item zerstört ist.
+        /// True if the item is destroyed
         /// </summary>
         public bool destroyed
         {
@@ -534,7 +512,7 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Eigenschaft: Name des Items.
+        /// The name of one item
         /// </summary>
         public string name
         {
@@ -564,7 +542,8 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Eigenschaft: ItemType
+        /// The type of an item
+        /// e.g. armor
         /// </summary>
         public ItemType itemType
         {
@@ -575,10 +554,10 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Konvertierungsmethode von ItemProperty zu string.
+        /// Method to convert the name of a property to a string
         /// </summary>
-        /// <param name="property">Eigenschaft.</param>
-        /// <returns>Name der Eigenschaft als Zeichenkette.</returns>
+        /// <param name="property">The effect which should be parsed to a string</param>
+        /// <returns>The item effect as a string</returns>
         public static string PropertyToString(ItemProperty property)
         {
             switch (property)
@@ -648,7 +627,9 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Fähigkeitseigenschaft.
+        /// The item effects as a string
+        /// negative effects are displayed red
+        /// positive effects are displayed green
         /// </summary>
         public string abilityList
         {
@@ -684,7 +665,7 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Namenserzeugende Methode nach einer speziellen Struktur.
+        /// Method to generate a matching name for an item
         /// </summary>
         public void GenerateName()
         {
@@ -816,7 +797,7 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Hilfsmethode für GenerateName(). Setzt das Feld value.
+        /// Method to evaluate the (gold)value of an item based of the type of the item and the number of effects.
         /// </summary>
         public void EstimateValue()
         {
@@ -860,9 +841,9 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Eigenschaftserzeugende Funktion (nach Pseudozufall).
+        /// Method to create (random) effects for an item
         /// </summary>
-        /// <param name="r">Wird für die Erzeugung des Pseudozufalls benötigt.</param>
+        /// <param name="r">A dice used to create the effetcs</param>
         public void GenerateProperties(Random r = null)
         {
             if (r == null) r = new Random();
@@ -925,9 +906,10 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Item wird von einem Actor aufgehoben.
+        /// Method called when an actor picks up an item from the ground.
+        /// Replaces the old owner and deletes the itemtile from the map
         /// </summary>
-        /// <param name="actor">Spielfigur die das Item aufnimmt.</param>
+        /// <param name="actor">The actor which gains the item</param>
         public void Pickup(Actor actor)
         {
             if (_owner != null)
@@ -953,9 +935,10 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Das aktuelle Item fällt auf den Boden (FloorTile).
+        /// Method to drop an item from an actor to the ground.
+        /// Deletes the item from the inventory and creats an itemtile to place the item on the ground
         /// </summary>
-        /// <param name="tile">Das aktuelle Boden-Tile auf dem das Item (bzw. der Actor der es im Inventar hat) steht.</param>
+        /// <param name="tile">The tile on which the itemtile with the item will be added.</param>
         public void Drop(FloorTile tile)
         {
             if (_owner != null)
@@ -966,7 +949,7 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Erstellt ein Item-Symbol für das Inventar etc.
+        /// Method to determine the icon for an item based on what kind of item it is
         /// </summary>
         public void GenerateIcon()
         {
@@ -1210,13 +1193,13 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Konstruktor.
+        /// Constructor for an item.
         /// </summary>
         /// <param name="content"></param>
-        /// <param name="r"></param>
-        /// <param name="value"></param>
-        /// <param name="level"></param>
-        /// <param name="gold"></param>
+        /// <param name="r">by default null, gets generated in the constructor</param>
+        /// <param name="value">by default 0</param>
+        /// <param name="level">by default 1</param>
+        /// <param name="gold">True if the constructed item can be gold</param>
         public Item(Random r = null, int value = 0, int level = 1, bool gold = true)
             : this()
         {
@@ -1253,7 +1236,7 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// Konstruktor.
+        /// Another constructor for items
         /// </summary>
         /// <param name="content"></param>
         /// <param name="itemtype"></param>

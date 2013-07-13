@@ -337,7 +337,7 @@ namespace Gruppe22.Client
             _exp = new NumberEntry(this, _spriteBatch, _content, new Rectangle(_displayRect.Left
                 + (_displayRect.Width - 10) / 2 + 10, _displayRect.Top + 275, (_displayRect.Width - 10) / 2 - 10, 25), "Experience:", _actor.exp, "This determines your current amount of experience.", 2, false);
 
-            _expNeeded = new NumberEntry(this, _spriteBatch, _content, new Rectangle(_displayRect.Left + 5, _displayRect.Top + 305, (_displayRect.Width - 10) / 2 - 10, 25), "Block:", _actor.expNeeded, "This is the amount of experience needed for the next level.", 2, false);
+            _expNeeded = new NumberEntry(this, _spriteBatch, _content, new Rectangle(_displayRect.Left + 5, _displayRect.Top + 305, (_displayRect.Width - 10) / 2 - 10, 25), "Exp needed:", _actor.expNeeded, "This is the amount of experience needed for the next level.", 2, false);
             _maxhealth = new NumberEntry(this, _spriteBatch, _content, new Rectangle(_displayRect.Left
                 + (_displayRect.Width - 10) / 2 + 10, _displayRect.Top + 305, (_displayRect.Width - 10) / 2 - 10, 25), "Max. Health:", _actor.maxhealth, "This is the maximum amount of health achievable by healing.", 2, false);
 
