@@ -37,6 +37,9 @@ namespace Gruppe22.Backend
         Scare = 512
     }
 
+    /// <summary>
+    /// The class used to create 
+    /// </summary>
     public class Ability
     {
         private int _cost;
@@ -62,6 +65,11 @@ namespace Gruppe22.Backend
                 _improveOver = value;
             }
         }
+
+        /// <summary>
+        /// The duration of an ability
+        /// e.g. how long an enemy is stunned
+        /// </summary>
         public int duration
         {
             get
@@ -73,6 +81,10 @@ namespace Gruppe22.Backend
                 _duration = value;
             }
         }
+
+        /// <summary>
+        /// The description of an ability
+        /// </summary>
         public string description
         {
             get
@@ -85,7 +97,14 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// The icon which represents the ability
+        /// </summary>
         public ImageData icon { get { if (_icon == null)GetIcon(); return _icon; } set { _icon = value; } }
+        
+        /// <summary>
+        /// The name of an ability
+        /// </summary>
         public string name
         {
             get
@@ -97,6 +116,10 @@ namespace Gruppe22.Backend
                 _name = value;
             }
         }
+
+        /// <summary>
+        /// The current cooldown
+        /// </summary>
         public int currentCool
         {
             get
@@ -108,6 +131,10 @@ namespace Gruppe22.Backend
                 _currentCool = value;
             }
         }
+
+        /// <summary>
+        /// The amount of mana needed to active the ability
+        /// </summary>
         public int cost
         {
             get
@@ -120,6 +147,10 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// the streng of an ability
+        /// e.g. how much a healing spell heals the actor
+        /// </summary>
         public int intensity
         {
             get
@@ -132,6 +163,10 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// The cooldown of an ability
+        /// (the time between two uses of this ability in seconds)
+        /// </summary>
         public int cooldown
         {
             get
@@ -144,6 +179,10 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// The target of an ability
+        /// e.g. the casting actor himself
+        /// </summary>
         public AbilityTarget target
         {
             get
@@ -156,6 +195,10 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// Saving method
+        /// </summary>
+        /// <param name="xmlw"></param>
         public void Save(XmlWriter xmlw)
         {
             xmlw.WriteStartElement("Ability");
@@ -187,7 +230,7 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
-        /// 
+        /// Loading method
         /// </summary>
         /// <param name="reader"></param>
         public void Load(XmlReader reader)
@@ -228,6 +271,10 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// Method to generate the name of an ability
+        /// The name is determined by the target and element
+        /// </summary>
         public void GenerateName()
         {
             switch (target)
@@ -300,6 +347,9 @@ namespace Gruppe22.Backend
 
         }
 
+        /// <summary>
+        /// Method to get the icon for an ability from data
+        /// </summary>
         public void GetIcon()
         {
             switch (element)
@@ -346,6 +396,17 @@ namespace Gruppe22.Backend
             }
         }
 
+        /// <summary>
+        /// The constructor for an ability setting default values.
+        /// </summary>
+        /// <param name="cost">by default 2</param>
+        /// <param name="intensity">by default 1</param>
+        /// <param name="duration">by default 0</param>
+        /// <param name="cooldown">by default 5</param>
+        /// <param name="target"></param>
+        /// <param name="element"></param>
+        /// <param name="name"></param>
+        /// <param name="description"></param>
         public Ability( int cost = 2, int intensity = 1, int duration = 0, int cooldown = 5, AbilityTarget target = AbilityTarget.None, AbilityElement element = AbilityElement.None, string name = "", string description = "")
         {
             _cost = cost;

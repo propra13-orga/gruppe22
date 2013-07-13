@@ -18,12 +18,14 @@ namespace Gruppe22.Backend
         /// </summary>
         public struct Reward
         {
-            public int xp;
-            public List<Item> items;
+            private int _xp;
+            private List<Item> _items;
+            public int RewardXP { get{ return _xp;} }
+            public List<Item> RewardItems { get { return _items; } } //unnecessary but whatever
             public Reward(int xp, List<Item> items)
             {
-                this.xp = xp;
-                this.items = items;
+                this._xp = xp;
+                this._items = items;
             }
         }
 
@@ -44,6 +46,7 @@ namespace Gruppe22.Backend
         private string _description;
         private int _goal;
         private bool _done;
+        private QuestType _qtype;
 #endregion
 
 #region Constructors
@@ -53,8 +56,9 @@ namespace Gruppe22.Backend
         /// <param name="text"></param>
         /// <param name="xp">The amount of exp granted after completing the quest.</param>
         /// <param name="itemlist">A list of items the player will be rewarded with for completing the quest</param>
-        public Quest(string text, int xp, List<Item> itemlist, int goal)
+        public Quest(QuestType q, string text, int xp, List<Item> itemlist, int goal)
         {
+            this._qtype = q;
             this._done = false;
             this._description = text;
             this._rewardItem = itemlist;
@@ -68,8 +72,9 @@ namespace Gruppe22.Backend
         /// <param name="text"></param>
         /// <param name="xp"></param>
         /// <param name="goal"></param>
-        public Quest(string text, int xp, int goal)
+        public Quest(QuestType q,string text, int xp, int goal)
         {
+            this._qtype = q;
             this._done = false;
             this._description = text;
             this._rewardXP = xp;
@@ -83,8 +88,9 @@ namespace Gruppe22.Backend
         /// <param name="text"></param>
         /// <param name="itemlist"></param>
         /// <param name="goal"></param>
-        public Quest(string text, List<Item> itemlist, int goal)
+        public Quest(QuestType q, string text, List<Item> itemlist, int goal)
         {
+            this._qtype = q;
             this._done = false;
             this._description = text;
             this._rewardXP = 0;
@@ -98,6 +104,18 @@ namespace Gruppe22.Backend
         /// True if the quest is completed.
         /// </summary>
         public bool IsDone { get { return _done; } }
+
+        /// <summary>
+        /// return the text whitch discribe the task of this quest
+        /// </summary>
+        /// <returns></returns>
+        public string GetDescription() { return _description; }
+
+        /// <summary>
+        /// return the questtype so that the player can chose the meaning of goal.
+        /// </summary>
+        /// <returns></returns>
+        public QuestType GetQuestType() { return this._qtype; }
 
         /// <summary>
         /// Testing if goal is already done.

@@ -32,24 +32,17 @@ namespace Gruppe22.Backend
     }
 
     /// <summary>
-    /// Effekt eines Item auf einer bestimmten Charakter-Statistik
+    /// Class for the effects of items
+    /// e.g. increasing the health by 5
     /// </summary>
     public class ItemEffect
     {
-        /// <summary>
-        /// Item-Effekt-Eigenschaft aus der Aufzählung.
-        /// </summary>
         private ItemProperty _property = ItemProperty.Null;
-        /// <summary>
-        /// Effektwert.
-        /// </summary>
         private int _effect = 0;
-        /// <summary>
-        /// Dauer des Item-Effektes.
-        /// </summary>
         private int _duration = 0;
+
         /// <summary>
-        /// Eigenschaft des Effektes.
+        /// The intensity of the effect
         /// </summary>
         public int effect
         {
@@ -62,8 +55,10 @@ namespace Gruppe22.Backend
                 _effect = value;
             }
         }
+
         /// <summary>
-        /// Eigenschaft der Aufzählung Item-Eigenschaft.
+        /// The effect of the item
+        /// e.g. evade
         /// </summary>
         public ItemProperty property
         {
@@ -76,8 +71,9 @@ namespace Gruppe22.Backend
                 _property = value;
             }
         }
+
         /// <summary>
-        /// Eigenschaft zur Dauer.
+        /// The duration of the effect.
         /// </summary>
         public int duration
         {
@@ -90,12 +86,13 @@ namespace Gruppe22.Backend
                 _duration = value;
             }
         }
+
         /// <summary>
-        /// Konstruktor.
+        /// Constructor
         /// </summary>
-        /// <param name="property">Fähigkeit.</param>
-        /// <param name="effect">Wirkung.</param>
-        /// <param name="duration">Dauer.</param>
+        /// <param name="property">Which property this effect should be, no default value</param>
+        /// <param name="effect">The intensity of that property, by default 0</param>
+        /// <param name="duration">The duration of that property, by default 0</param>
         public ItemEffect(ItemProperty property = ItemProperty.Null, int effect = 0, int duration = 0)
         {
             _property = property;
