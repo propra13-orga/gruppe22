@@ -1023,8 +1023,12 @@ namespace Gruppe22.Backend
                                 }
                                 xmlr.Read();
                             }
+                            xmlr.ReadEndElement();
                         }
-                        xmlr.ReadEndElement();
+                        else
+                        {
+                            xmlr.Read();
+                        }
                         break;
                 }
             }
@@ -1114,7 +1118,7 @@ namespace Gruppe22.Backend
         {
             for (int i = 0; i < _actors.Count; ++i)
             {
-                if ((_actors[i] is Player) && ((_actors[i].GUID == "") || (_actors[i].GUID == "")))
+                if ((_actors[i] is Player) && ((_actors[i].GUID == "") || (_actors[i].GUID == GUID)))
                 {
                     _actors[i].GUID = GUID;
                     _actors[i].online = true;
@@ -1123,9 +1127,9 @@ namespace Gruppe22.Backend
             }
             Player temp = new Player();
             _actors.Add(temp);
-            int newID = _actors.Count;
+            int newID = _actors.Count - 1;
             temp.online = true;
-            temp.tile = new ActorTile(this[1, 1]);
+            temp.tile = new ActorTile(this[1, 1], temp);
             this[1, 1].Add(temp.tile);
             return newID;
             // Create New Player with specified GUID

@@ -116,6 +116,11 @@ namespace DungeonServer
                     Update();
                     _logic.paused = false;
                 }
+                else
+                {
+                    _lastUpdate = DateTime.Now;
+                    _logic.paused = true;
+                }
                 if ((message = server.ReadMessage()) == null)
                     continue;
                 switch (message.MessageType)
@@ -155,8 +160,6 @@ namespace DungeonServer
                             case NetConnectionStatus.Disconnecting:
                                 if (!_clients.ContainsKey(message.SenderEndpoint))
                                     break;
-                                SendMessageToAll(PacketType.Disconnect, NetDeliveryMethod.ReliableUnordered, message.SenderEndpoint, _clients[message.SenderEndpoint].ID);
-                                Log("Sent Disconnect to all except " + _clients[message.SenderEndpoint].ID, ConsoleColor.Cyan);
 
                                 if (_clients[message.SenderEndpoint].paused)
                                 {
@@ -200,10 +203,6 @@ namespace DungeonServer
                                     Log("Sent Connect to " + newClient.ID, ConsoleColor.Cyan);
 
                                     //Nun alle aktiven Clients informieren, dass ein neuer Client connected ist
-
-                                    SendMessageToAll(PacketType.UpdateClients, NetDeliveryMethod.ReliableUnordered, message.SenderEndpoint, newClient.ID);
-                                    Log("Sent UpdateClients to all", ConsoleColor.Cyan);
-
                                     Log(message.SenderEndpoint + " connected!");
 
                                 }
@@ -270,12 +269,24 @@ namespace DungeonServer
                         _logic.HandleEvent(true, Events.MoveActor, actorID, dir, _logic.map.actors[actorID].tile.coords.x, _logic.map.actors[actorID].tile.coords.y);
                     break;
                 case PacketType.FinishedMove:
-                    _logic.HandleEvent(true, Events.TileEntered, message.ReadInt32(), (Direction)message.ReadInt32());
-
+                    {
+                        int actor = message.ReadInt32();
+                        Direction direction = (Direction)message.ReadInt32();
+                        if (message.ReadInt32() == _logic.map.actors[actor].moveIndex)
+                        {
+                            _logic.HandleEvent(true, Events.TileEntered, actor, direction);
+                        }
+                    }
                     break;
                 case PacketType.FinishedAnim:
-                    _logic.HandleEvent(true, Events.FinishedAnimation, message.ReadInt32(), (Activity)message.ReadInt32());
-
+                    {
+                        int actor = message.ReadInt32();
+                        Activity activity = (Activity)message.ReadInt32();
+                        if (message.ReadInt32() == _logic.map.actors[actor].moveIndex)
+                        {
+                            _logic.HandleEvent(true, Events.FinishedAnimation, actor, activity);
+                        }
+                    }
                     break;
                 default:
                     Log(((PacketType)id).ToString());
@@ -303,15 +314,14 @@ namespace DungeonServer
             Console.WriteLine("Enter exit to quit; clear to clear screen or stats for statistics.");
             while (true)
             {
-                while (!Console.KeyAvailable)
+             /*    while (!Console.KeyAvailable)
                 {
-                    /*  Console.CursorLeft = 0;
+                     Console.CursorLeft = 0;
                       Console.CursorTop = 4;
                       Console.CursorVisible = false;
                       Console.WriteLine(_logic.map.ToString());
                 
-                     */
-                }
+                } */
                 string input = Console.ReadLine();
                 Console.CursorVisible = true;
                 switch (input)
@@ -355,10 +365,11 @@ namespace DungeonServer
                 switch (eventID)
                 {
                     case Events.RejectMove:
-                        SendMessageToAll(PacketType.FinishedMove, NetDeliveryMethod.ReliableOrdered, null, (int)data[0], ((Coords)data[1]).x, ((Coords)data[1]).y);
+                        SendMessageToAll(PacketType.FinishedMove, NetDeliveryMethod.ReliableOrdered, null, (int)data[0], ((Coords)data[1]).x, ((Coords)data[1]).y, _logic.map.actors[(int)data[0]].moveIndex);
                         break;
                     case Events.MoveActor:
-                        SendMessageToAll(PacketType.Move, NetDeliveryMethod.ReliableOrdered, null, (int)data[0], ((Coords)data[1]).x, ((Coords)data[1]).y, (int)((Direction)data[2]));
+                        _logic.map.actors[(int)data[0]].moveIndex += 1;
+                        SendMessageToAll(PacketType.Move, NetDeliveryMethod.ReliableOrdered, null, (int)data[0], ((Coords)data[1]).x, ((Coords)data[1]).y, (int)((Direction)data[2]), _logic.map.actors[(int)data[0]].moveIndex);
                         break;
                     case Events.ChangeMap:
                         // Todo: Remap actors / clients
@@ -415,7 +426,7 @@ namespace DungeonServer
                 _updating = true;
                 TimeSpan passed = DateTime.Now - _lastUpdate;
 
-                if (passed.Milliseconds > 100)
+                if (passed.Milliseconds > 200)
                 {
                     _lastUpdate = DateTime.Now;
                     _gameTime.ElapsedGameTime += passed;
@@ -469,10 +480,6 @@ namespace DungeonServer
                 tmp.Run();
             }
 
-
-            Console.WriteLine("Press any key to exit.");
-            Console.CursorVisible = false;
-            Console.ReadLine();
 
         }
         #endregion

@@ -558,6 +558,8 @@ namespace Gruppe22.Client
                                     _toolbar.actor = _logic.map.actors[_playerID];
                                     _mainmap1.map = _logic.map;
                                     _minimap1.map = _logic.map;
+                                    _logic.HandleEvent(true, Events.Initialize);
+                                    HandleEvent(true, Events.ContinueGame,true);
 
                                 }
                             }

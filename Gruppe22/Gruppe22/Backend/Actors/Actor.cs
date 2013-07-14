@@ -90,6 +90,7 @@ namespace Gruppe22.Backend
         protected List<Ability> _abilities = null;
         private bool _regenerating = false;
         protected int _lastCheckpoint = 1;
+        private int _moveIndex=0;
         #endregion
 
         #region Public Fields
@@ -99,6 +100,20 @@ namespace Gruppe22.Backend
             set { _deadcounter = value; }
         }*/
 
+        /// <summary>
+        /// Animation / Movement index (used in network play)
+        /// </summary>
+        public int moveIndex
+        {
+            get
+            {
+                return _moveIndex;
+            }
+            set
+            {
+                _moveIndex = value;
+            }
+        }
         /// <summary>
         /// Method to get the items an actor has.
         /// </summary>

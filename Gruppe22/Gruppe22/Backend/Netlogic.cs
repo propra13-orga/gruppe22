@@ -84,18 +84,21 @@ namespace Gruppe22.Backend
                         _parent.HandleEvent(true, Events.ChangeMap, (int)data[1]);
                         break;
                     case Events.FinishedAnimation:
-                        _network.SendMessage(PacketType.FinishedAnim, (int)data[0], (int)(Activity)data[1]);
+                        _network.SendMessage(PacketType.FinishedAnim, (int)data[0], (int)(Activity)data[1], (int)_map.actors[(int)data[0]].moveIndex);
                         _map.actors[(int)data[0]].locked = false;
                         break;
 
                     case Events.TileEntered:
-                        _network.SendMessage(PacketType.FinishedMove, (int)data[0], (int)(Direction)data[1]);
+                        _network.SendMessage(PacketType.FinishedMove, (int)data[0], (int)(Direction)data[1], (int)_map.actors[(int)data[0]].moveIndex);
                         _map.actors[(int)data[0]].locked = false;
                         break;
                     case Events.MoveActor:
                         if (!_map.actors[(int)data[0]].locked)
                         {
-                            _network.SendMessage(PacketType.Move, (int)data[0], (int)(Direction)data[1]);
+                            _network.SendMessage(PacketType.Move,
+                                (int)_map.actors[(int)data[0]].tile.coords.x,
+                                (int)_map.actors[(int)data[0]].tile.coords.y,
+                                (int)data[0], (int)(Direction)data[1], (int)0);
                         }
                         break;
                     case Events.Chat:
@@ -125,6 +128,8 @@ namespace Gruppe22.Backend
                         break;
                     case Events.MoveActor:
                         _map.actors[(int)data[0]].direction = (Direction)data[2];
+                        _map.actors[(int)data[0]].moveIndex = (int)data[3];
+                        _map.actors[(int)data[0]].locked = false;
                         if (data.Length > 2)
                         {
                             _map.PositionActor(_map.actors[(int)data[0]], (Coords)data[1]);

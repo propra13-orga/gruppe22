@@ -53,10 +53,13 @@ namespace Gruppe22.Client
                                 return;
                             case Backend.Buttons.StartServer:
                                 System.Diagnostics.Process.Start("DungeonServer.exe");
-                                _connecting = true;
-                                _network.playername = _playerName.text;
-                                _network.server = _ipEntry.text;
-                                _connect.label = "Disconnect";
+                                if ((!network.connecting) && !_connecting)
+                                {
+                                    _connecting = true;
+                                    _network.playername = _playerName.text;
+                                    _network.server = _ipEntry.text;
+                                    _connect.label = "Disconnect";
+                                }
                                 return;
                             case Backend.Buttons.Cancel:
                                 _network.Disconnect();
@@ -64,9 +67,9 @@ namespace Gruppe22.Client
                                 return;
                             case Backend.Buttons.Connect:
                                 _connect.Hide();
-                                _connecting = true;
                                 if (_connect.label == "Connect")
                                 {
+                                    _connecting = true;
                                     _network.playername = _playerName.text;
                                     _network.server = _ipEntry.text;
                                     _connect.label = "Disconnect";
@@ -115,12 +118,6 @@ namespace Gruppe22.Client
             _launchServer = new Button(this, spriteBatch, content, new Rectangle(_displayRect.Right - 210, _displayRect.Top + 5, 200, 40), "Launch Server", (int)Backend.Buttons.StartServer);
             _cancel = new Button(this, spriteBatch, content, new Rectangle(_displayRect.Left + 10, _displayRect.Bottom - 50, 80, 40), "Cancel", (int)Backend.Buttons.Cancel);
             _connect = new Button(this, spriteBatch, content, new Rectangle(_displayRect.Right - 160, _displayRect.Top + 50, 150, 40), "Connect", (int)Backend.Buttons.Connect);
-            if (netplayer == null) { _network = new NetPlayer(this); }
-            else
-            {
-                _network = netplayer;
-                _network.parent = this;
-            }
             _children.Add(_ipEntry);
             _children.Add(_launchServer);
             _children.Add(_playerName);
@@ -128,6 +125,29 @@ namespace Gruppe22.Client
             _children.Add(_listPlayers);
             _children.Add(_ok);
             _children.Add(_cancel);
+            if (netplayer == null)
+            {
+                _network = new NetPlayer(this);
+                _network.playername = _playerName.text;
+            }
+            else
+            {
+                _network = netplayer;
+                _network.parent = this;
+                _ipEntry.text = _network.server;
+                _playerName.text = _network.playername;
+                if (netplayer.connected)
+                {
+                    _connect.label = "Disconnect";
+                    _listPlayers.AddLine("Connected.", Color.Green);
+
+                }
+                else
+                {
+                    _connect.label = "Connect";
+                    _listPlayers.AddLine("Disconnected.", Color.Red);
+                }
+            }
             // IP-Entry-Field (Dropdown?)
             // Button to launch server
             // Entry fField for player name

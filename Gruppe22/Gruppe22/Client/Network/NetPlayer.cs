@@ -69,6 +69,14 @@ namespace Gruppe22.Client
             }
         }
 
+
+        public bool connecting
+        {
+            get
+            {
+                return _client.ConnectionStatus == NetConnectionStatus.InitiatedConnect;
+            }
+        }
         public string playername
         {
             get
@@ -109,7 +117,9 @@ namespace Gruppe22.Client
 
         public void Disconnect()
         {
-            server = "";
+            _parent.HandleEvent(false, Backend.Events.ShowMessage, "Disconnecting from Server " + _server + "...");
+            _client.Disconnect("Goodbye!");
+            _server = "";
         }
 
         public void Update(GameTime gameTime)
@@ -212,7 +222,7 @@ namespace Gruppe22.Client
                     break;
                 case PacketType.Move:
                     _parent.HandleEvent(false, Backend.Events.MoveActor, message.ReadInt32(), 
-                        new Coords(message.ReadInt32(), message.ReadInt32()), (Direction)message.ReadInt32());
+                        new Coords(message.ReadInt32(), message.ReadInt32()), (Direction)message.ReadInt32(),(int)message.ReadInt32());
                     break;
             }
         }

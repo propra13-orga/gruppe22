@@ -93,7 +93,8 @@ namespace Gruppe22.Client
         {
             for (int i = 0; i < _children.Count; ++i)
             {
-                if (_children[i].OnMouseDown(button)) return true;
+                if (_children[i].OnMouseDown(button))
+                    return true;
             }
             return true;
         }
