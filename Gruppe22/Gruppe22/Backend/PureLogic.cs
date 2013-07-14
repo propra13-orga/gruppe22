@@ -542,29 +542,36 @@ namespace Gruppe22.Backend
                     string texttodisplay = "";
                     int queststodo = 0;
                     if (player.quests.Length <= 0)
+                    {
                         texttodisplay += "Welcome, hero. I offer you this quest:\n\n";
+                        Quest nq = new Quest(Quest.QuestType.CollectItems, "Find, buy or steal a new item!", 100, null, player.inventory.Count + 1);
+                        player.AddQuest(nq);
+                        texttodisplay += nq.text;
+                    }
                     else
                     {
-                        texttodisplay += "Current Quests:\n\n";
+                        int exp = player.exp;
                         player.UpdateQuests(); //update quests and get reward
                         foreach (Quest q in player.quests)
                         {
                             texttodisplay += q.text;
                             if (q.done)
-                                texttodisplay += " [DONE]\n\n";
+                                texttodisplay = "You successfully performed my quest. I grant you " + q.xp.ToString() + " experience points.";
                             else
                             {
-                                texttodisplay += " [OPEN]\n\n";
+                                texttodisplay = "I am still waiting for you to perform my quest:\n\n" + q.text;
                                 queststodo++;
                             }
                         }
-                    }
-                    //hand out a new quest under special perconditions
-                    if (queststodo < 1)
-                    {
-                        Quest nq = new Quest(Quest.QuestType.CollectItems, "Find, buy or steal a new item!", 1000, null, player.inventory.Count + 1);
-                        player.AddQuest(nq);
-                        texttodisplay += "Quest received:\n\n" + nq.text + " [New]\n";
+                        if (player.exp - exp > 0)
+                            _parent.HandleEvent(false, Events.ActorText, player.id, player.tile.coords, "+" + (player.exp - exp).ToString() + " Exp", Color.Gold); // Update data on client
+
+                        while (player.exp > player.expNeeded)
+                        {
+                            player.LevelUp();
+                            _parent.HandleEvent(false, Events.ChangeStats, player.id, player); // Update data on client
+                        }
+                        player.CleanupQuests();
                     }
                     GenericDialog(((Actor)data[1]).id, ((Actor)data[0]).id, texttodisplay);
                     break;

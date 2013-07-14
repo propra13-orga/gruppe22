@@ -29,10 +29,10 @@ namespace Gruppe22.Backend
         /// <param name="damage"></param>
         /// <param name="maxHealth"></param>
         /// <param name="name"></param>
-        public Player( int health = 100, int armour = 30, int damage = 20, int maxHealth = -1, string name = "")
+        public Player(int health = 100, int armour = 30, int damage = 20, int maxHealth = -1, string name = "")
             : base(ActorType.Player, health, armour, damage, maxHealth, name)
         {
-            _quests= new List<Quest>();
+            _quests = new List<Quest>();
             _actorType = ActorType.Player;
             _viewRange = 4;
             _animationFile = ".\\content\\player.xml";
@@ -57,6 +57,29 @@ namespace Gruppe22.Backend
                         break;
                     case Quest.QuestType.KillEnemys:
                         break;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Reset the list of quests
+        /// </summary>
+        public void ClearQuests()
+        {
+            _quests.Clear();
+        }
+
+        /// <summary>
+        /// Remove all finished quests
+        /// </summary>
+        public void CleanupQuests()
+        {
+            for (int i = 0; i < quests.Length; ++i)
+            {
+                if (_quests[i].done)
+                {
+                    _quests.RemoveAt(i);
+                    i--;
                 }
             }
         }

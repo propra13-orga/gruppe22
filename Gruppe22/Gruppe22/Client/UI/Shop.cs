@@ -230,7 +230,7 @@ namespace Gruppe22.Client
             }
 
             y = 0;
-            for (int i = _top1; i < Math.Min(_seller.inventory.Count, _rows); ++i)
+            for (int i = _top1; i < Math.Min(_seller.inventory.Count, _top1 + _rows); ++i)
             {
                 _spriteBatch.Draw(TextureFromData.Convert(_seller.inventory[i].icon, _content), new Rectangle(_displayRect.Left + 6, 45 + _displayRect.Top + y * (_height + 3) + 3, 32, 32), _seller.inventory[i].icon.rect, Color.White);
                 string output = _seller.inventory[i].name;
@@ -246,7 +246,7 @@ namespace Gruppe22.Client
             }
 
             y = 0;
-            for (int i = _top2; i < Math.Min(_buyer.inventory.Count, _rows); ++i)
+            for (int i = _top2; i < Math.Min(_buyer.inventory.Count, _top2 + _rows); ++i)
             {
                 _spriteBatch.Draw(TextureFromData.Convert(_buyer.inventory[i].icon, _content), new Rectangle(_displayRect.Left + 9 + _displayRect.Width / 2, 45 + _displayRect.Top + y * (_height + 3) + 3, 32, 32), _buyer.inventory[i].icon.rect, Color.White);
                 string output = _buyer.inventory[i].name;
@@ -280,17 +280,29 @@ namespace Gruppe22.Client
             }
 
             // Scroll bars
-            //  if (_buyer.inventory.Count > _rows)
-            // {
-            _spriteBatch.Draw(_arrows, new Rectangle(_displayRect.Left + _displayRect.Width / 2 - 30, _displayRect.Top + 45, 22, 22), new Rectangle(32, 0, 28, 28), Color.White);
-            _spriteBatch.Draw(_arrows, new Rectangle(_displayRect.Left + _displayRect.Width / 2 - 30, _displayRect.Bottom - 80, 22, 22), new Rectangle(0, 0, 28, 28), Color.White);
-            //  }
+            if (_seller.inventory.Count > _rows)
+            {
+                if (_top1 > 0)
+                    _spriteBatch.Draw(_arrows, new Rectangle(_displayRect.Left + _displayRect.Width / 2 - 30, _displayRect.Top + 45, 22, 22), new Rectangle(32, 0, 28, 28), Color.White);
+                if (_top1 + _rows < _seller.inventory.Count)
+                    _spriteBatch.Draw(_arrows, new Rectangle(_displayRect.Left + _displayRect.Width / 2 - 30, _displayRect.Bottom - 80, 22, 22), new Rectangle(0, 0, 28, 28), Color.White);
+            }
+            else
+            {
+                _top1 = 0;
+            }
 
-            //if (_seller.inventory.Count > _rows)
-            //{
-            _spriteBatch.Draw(_arrows, new Rectangle(_displayRect.Right - 28, _displayRect.Top + 45, 22, 22), new Rectangle(32, 0, 28, 28), Color.White);
-            _spriteBatch.Draw(_arrows, new Rectangle(_displayRect.Right - 28, _displayRect.Bottom - 80, 22, 22), new Rectangle(0, 0, 28, 28), Color.White);
-            //}
+            if (_buyer.inventory.Count > _rows)
+            {
+                if (_top2 > 0)
+                    _spriteBatch.Draw(_arrows, new Rectangle(_displayRect.Right - 28, _displayRect.Top + 45, 22, 22), new Rectangle(32, 0, 28, 28), Color.White);
+                if (_top2 + _rows < _buyer.inventory.Count)
+                    _spriteBatch.Draw(_arrows, new Rectangle(_displayRect.Right - 28, _displayRect.Bottom - 80, 22, 22), new Rectangle(0, 0, 28, 28), Color.White);
+            }
+            else
+            {
+                _top2 = 0;
+            }
 
 
             _spriteBatch.End();
@@ -303,53 +315,79 @@ namespace Gruppe22.Client
 
         public override bool OnMouseDown(int button)
         {
-            int clicked = _hoveredItem;
-            if (clicked != 0)
+            if (new Rectangle(_displayRect.Left + _displayRect.Width / 2 - 30, _displayRect.Top + 45, 22, 22).Contains(Mouse.GetState().X, Mouse.GetState().Y))
             {
-                if (clicked < 0)
-                {
-                    if ((_selected1 != _top1 - clicked + 1) && (_top1 - clicked - 1 < _seller.inventory.Count))
-                    {
-                        _steal.Show();
-                        _selected1 = _top1 - clicked - 1;
-
-                        if (_buyer.gold > _seller.inventory[_selected1].value)
-                            _buy.Show();
-                        else
-                            _buy.Hide();
-
-                    }
-                    else
-                    {
-                        _selected1 = -1;
-                        _buy.Hide();
-                        _steal.Hide();
-                    }
-                }
-                else
-                {
-                    if ((_selected2 != _top2 + clicked - 1) && (_top1 + clicked - 1 < _buyer.inventory.Count))
-                    {
-                        _modify.Show();
-
-                        _selected2 = _top2 + clicked - 1;
-                        if (_seller.gold > _buyer.inventory[_selected2].value)
-                            _sell.Show();
-                        else
-                            _sell.Hide();
-
-                    }
-                    else
-                    {
-                        _sell.Hide();
-                        _modify.Hide();
-                        _selected2 = -1;
-                    }
-                }
+                if (_top1 > 0) _top1 -= 1;
                 return true;
             }
             else
-                return base.OnMouseDown(button);
+                if (new Rectangle(_displayRect.Left + _displayRect.Width / 2 - 30, _displayRect.Bottom - 80, 22, 22).Contains(Mouse.GetState().X, Mouse.GetState().Y))
+                {
+                    if (_top1 + _rows < _seller.inventory.Count) _top1 += 1;
+                    return true;
+                }
+                else
+                    if (new Rectangle(_displayRect.Right - 28, _displayRect.Top + 45, 22, 22).Contains(Mouse.GetState().X, Mouse.GetState().Y))
+                    {
+                        if (_top2 > 0) _top2 -= 1;
+                        return true;
+                    }
+
+            if (new Rectangle(_displayRect.Right - 28, _displayRect.Bottom - 80, 22, 22).Contains(Mouse.GetState().X, Mouse.GetState().Y))
+            {
+                if (_top2 + _rows < _buyer.inventory.Count) _top2 += 1;
+                return true;
+            }
+            else
+            {
+                int clicked = _hoveredItem;
+                if (clicked != 0)
+                {
+                    if (clicked < 0)
+                    {
+                        if ((_selected1 != _top1 - clicked + 1) && (_top1 - clicked - 1 < _seller.inventory.Count))
+                        {
+                            _steal.Show();
+                            _selected1 = _top1 - clicked - 1;
+
+                            if (_buyer.gold > _seller.inventory[_selected1].value)
+                                _buy.Show();
+                            else
+                                _buy.Hide();
+
+                        }
+                        else
+                        {
+                            _selected1 = -1;
+                            _buy.Hide();
+                            _steal.Hide();
+                        }
+                    }
+                    else
+                    {
+                        if ((_selected2 != _top2 + clicked - 1) && (_top1 + clicked - 1 < _buyer.inventory.Count))
+                        {
+                            _modify.Show();
+
+                            _selected2 = _top2 + clicked - 1;
+                            if (_seller.gold > _buyer.inventory[_selected2].value)
+                                _sell.Show();
+                            else
+                                _sell.Hide();
+
+                        }
+                        else
+                        {
+                            _sell.Hide();
+                            _modify.Hide();
+                            _selected2 = -1;
+                        }
+                    }
+                    return true;
+                }
+                else
+                    return base.OnMouseDown(button);
+            }
         }
 
         public override bool OnKeyDown(Microsoft.Xna.Framework.Input.Keys k)

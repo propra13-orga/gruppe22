@@ -1160,7 +1160,8 @@ namespace Gruppe22.Backend
             _inventory = a.inventory;
             if ((a is Player) && (this is Player))
             {
-                Quest[] myQuests = (a as Player).quests;
+                (this as Player).ClearQuests();
+     Quest[] myQuests = (a as Player).quests;
                 foreach (Quest q in myQuests)
                 {
                     (this as Player).AddQuest(q);
@@ -1298,6 +1299,8 @@ namespace Gruppe22.Backend
                     }
                     break;
                 case ActorType.Player:
+                    (this as Player).ClearQuests();
+
                     if (reader.GetAttribute("hasQuests") != null) hasQuests = true;
                     break;
             }

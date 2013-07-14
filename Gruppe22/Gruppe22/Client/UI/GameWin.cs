@@ -1092,7 +1092,7 @@ namespace Gruppe22.Client
             if (!(_focus is CharacterWindow))
             {
                 _status = Backend.GameStatus.Paused;
-                Shop c = new Shop(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 250) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) - 240, 500, 480), actor1, actor2);
+                Shop c = new Shop(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 250) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) - 200, 500, 300), actor1, actor2);
                 _interfaceElements.Add(c);
                 _focus = _interfaceElements[_interfaceElements.Count - 1];
             }
