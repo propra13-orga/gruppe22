@@ -218,13 +218,41 @@ namespace Gruppe22.Client
                 case PacketType.Chat:
                     _parent.HandleEvent(false, Backend.Events.ShowMessage, message.ReadString(), Color.Pink);
                     break;
-                case PacketType.UpdateClients:
-                    break;
                 case PacketType.Move:
-                    _parent.HandleEvent(false, Backend.Events.MoveActor, message.ReadInt32(), 
-                        new Coords(message.ReadInt32(), message.ReadInt32()), (Direction)message.ReadInt32(),(int)message.ReadInt32()
+                    _parent.HandleEvent(false, Backend.Events.MoveActor, message.ReadInt32(),
+                        new Coords(message.ReadInt32(), message.ReadInt32()), (Direction)message.ReadInt32(), (int)message.ReadInt32()
                         , new Coords(message.ReadInt32(), message.ReadInt32())
                         );
+                    break;
+
+                case PacketType.Animate:
+                    _parent.HandleEvent(false, Backend.Events.AnimateActor, message.ReadInt32(), (Activity)message.ReadInt32(), message.ReadInt32());
+                    break;
+                case PacketType.ActorText:
+                    _parent.HandleEvent(false, Backend.Events.ActorText, message.ReadInt32(), new Coords(message.ReadInt32(), message.ReadInt32()), message.ReadString());
+
+
+                    // defender, _map.actors[defender].tile.coords, "Evade")
+                    break;
+                case PacketType.DamageActor:
+                    // , defender, _map.actors[defender].tile.coords, _map.actors[defender].health, damage);
+                    _parent.HandleEvent(false, Backend.Events.DamageActor, message.ReadInt32(), new Coords(message.ReadInt32(), message.ReadInt32()), message.ReadInt32(), message.ReadInt32());
+                    break;
+                case PacketType.KillActor:
+                    _parent.HandleEvent(false, Backend.Events.KillActor, message.ReadInt32(), new Coords(message.ReadInt32(), message.ReadInt32()), message.ReadInt32(), message.ReadInt32());
+                    break;
+                case PacketType.PlaySound:
+                    _parent.HandleEvent(false, Backend.Events.PlaySound, message.ReadInt32(), (SoundFX)message.ReadInt32());
+                    break;
+                case PacketType.Dialog:
+                    //from, to, message, new Backend.DialogLine[] { new Backend.DialogLine("Goodbye", -1) }
+                    _parent.HandleEvent(false, Backend.Events.Dialog, message.ReadInt32(), message.ReadString());
+                    break;
+                case PacketType.Shop:
+                    _parent.HandleEvent(false, Backend.Events.Shop, message.ReadInt32(), message.ReadInt32());
+                    break;
+                case PacketType.GameOver:
+                    _parent.HandleEvent(false, Backend.Events.GameOver, message.ReadInt32(), message.ReadInt32());
                     break;
             }
         }

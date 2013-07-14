@@ -139,6 +139,46 @@ namespace Gruppe22.Backend
                             _parent.HandleEvent(false, Events.MoveActor, data);
                         }
                         break;
+
+
+
+
+                    case Events.AnimateActor:
+                        _map.actors[(int)data[0]].locked = false;
+                        _map.actors[(int)data[0]].moveIndex = (int)data[2];
+
+                        _parent.HandleEvent(false, Backend.Events.AnimateActor, data);
+                        break;
+                    case Events.ActorText:
+                        _parent.HandleEvent(false, Backend.Events.ActorText, _map.actors[(int)data[0]], data[1], data[2]);
+
+
+                        // defender, _map.actors[defender].tile.coords, "Evade")
+                        break;
+                    case Events.DamageActor:
+                        _map.actors[(int)data[0]].locked = false;
+                        _map.actors[(int)data[0]].moveIndex = (int)data[3];
+                        // , defender, _map.actors[defender].tile.coords, _map.actors[defender].health, damage);
+                        _parent.HandleEvent(false, Backend.Events.DamageActor, data);
+                        break;
+                    case Events.KillActor:
+                        _map.actors[(int)data[0]].locked = false;
+                        _map.actors[(int)data[0]].moveIndex = (int)data[3];
+                        _parent.HandleEvent(false, Backend.Events.KillActor, data);
+                        break;
+                    case Events.PlaySound:
+                        _parent.HandleEvent(false, Backend.Events.PlaySound, data);
+                        break;
+                    case Events.Dialog:
+                        //from, to, message, new Backend.DialogLine[] { new Backend.DialogLine("Goodbye", -1) }
+                        _parent.HandleEvent(false, Backend.Events.Dialog, data);
+                        break;
+                    case Events.Shop:
+                        _parent.HandleEvent(false, Backend.Events.Shop, data);
+                        break;
+                    case Events.GameOver:
+                        _parent.HandleEvent(false, Backend.Events.GameOver, data);
+                        break;
                 }
 
             };

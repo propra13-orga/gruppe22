@@ -33,7 +33,15 @@ namespace Gruppe22.Backend
         UpdateClients,
         Chat,
         FinishedAnim,
-        FinishedMove
+        FinishedMove,
+        KillActor,
+        DamageActor,
+        PlaySound,
+        Animate,
+        ActorText,
+        Dialog,
+        Shop,
+        GameOver
     }
     public class ImageData
     {

@@ -394,8 +394,76 @@ namespace DungeonServer
                         //      if ((int)data[0] == 1)
                         SendMessageToAll(PacketType.Move, NetDeliveryMethod.ReliableOrdered, null, (int)data[0], ((Coords)data[1]).x, ((Coords)data[1]).y, (int)((Direction)data[2]), _logic.map.actors[(int)data[0]].moveIndex, ((Coords)data[3]).x, ((Coords)data[3]).y);
                         break;
+                    case Events.Disconnect:
+                        HandleEvent(true, Events.Network);
+                        break;
+                    case Events.Attack:
+                        _logic.map.actors[(int)data[0]].moveIndex += 1;
+                        SendMessageToAll(PacketType.Animate, NetDeliveryMethod.ReliableOrdered, null, (int)data[0], (int)Activity.Attack, _logic.map.actors[(int)data[0]].moveIndex);
+                        break;
+                    case Events.ActorText:
+                        SendMessageToAll(PacketType.ActorText, NetDeliveryMethod.ReliableOrdered, null, ((Actor)data[0]).id,
+                            ((Coords)data[1]).x, ((Coords)data[1]).y, ((string)data[2]));
+
+                        // defender, _map.actors[defender].tile.coords, "Evade")
+                        break;
+                    case Events.DamageActor:
+                        _logic.map.actors[(int)data[0]].moveIndex += 1;
+                        // , defender, _map.actors[defender].tile.coords, _map.actors[defender].health, damage);
+                        SendMessageToAll(PacketType.DamageActor, NetDeliveryMethod.ReliableOrdered, null, (int)data[0], ((Coords)data[1]).x, ((Coords)data[1]).y, ((int)data[3]), _logic.map.actors[(int)data[0]].moveIndex);
+                        break;
+                    case Events.KillActor:
+                        _logic.map.actors[(int)data[0]].moveIndex += 1;
+                        SendMessageToAll(PacketType.KillActor, NetDeliveryMethod.ReliableOrdered, null, (int)data[0], ((Coords)data[1]).x, ((Coords)data[1]).y, ((int)data[3]), _logic.map.actors[(int)data[0]].moveIndex);
+                        break;
+                    case Events.ChangeStats:
+                        break;
+                    case Events.FireProjectile:
+                        break;
+                    case Events.PlaySound:
+                        SendMessageToAll(PacketType.PlaySound, NetDeliveryMethod.ReliableOrdered, null, (int)((SoundFX)data[0]));
+                        break;
+                    case Events.ActivateAbility:
+                        /*   if ((int)data[0] == _playerID)
+                           {
+                               if ((int)data[1] < 0)
+                               {
+                                   int item = (int)data[1] + 1;
+
+                               }
+                               else
+                               {
+                                   if ((int)data[1] > 0)
+                                   {
+                                       int ability = (int)data[1] - 1;
+                                   }
+                               }
+                           }*/
+                        break;
+                    case Events.Dialog:
+                        //from, to, message, new Backend.DialogLine[] { new Backend.DialogLine("Goodbye", -1) }
+                        SendMessageToAll(PacketType.Dialog, NetDeliveryMethod.ReliableOrdered, null, (int)data[1], (string)data[2]);
+                        break;
+                    case Events.Shop:
+                        SendMessageToAll(PacketType.Shop, NetDeliveryMethod.ReliableOrdered, null, (int)(((Actor)data[1]).id), (int)(((Actor)data[2]).id));
+                        break;
+                    case Events.SetItemTiles:
+                        break;
+                    case Events.Checkpoint:
+                        break;
+                    case Events.GameOver:
+                        SendMessageToAll(PacketType.GameOver, NetDeliveryMethod.ReliableOrdered, null);
+                        break;
+                    case Events.FinishedAnimation:
+                        break;
+                    case Events.ShowMessage:
+                        SendMessageToAll(PacketType.Chat, NetDeliveryMethod.ReliableOrdered, null, (string)(data[0]));
+                        break;
 
 
+                    case Events.ChangeMap:
+                        _logic.ChangeMap((string)data[0], (Coords)data[1]);
+                        break;
                 }
             }
             else
@@ -420,7 +488,7 @@ namespace DungeonServer
         #region Constructor
         public Server(string[] args)
         {
-            Log("Setting up server ...");
+            Log("Setting up server ..");
             _random = new Random(Guid.NewGuid().GetHashCode());
             _logic = new PureLogic(this, null, _random);
             _clients = new Dictionary<IPEndPoint, ClientData>();
