@@ -321,10 +321,10 @@ namespace Gruppe22.Backend
                                     _parent.HandleEvent(false, Events.FireProjectile, actor.id, AbilityElement.Fire);
                                     break;
                                 case AbilityElement.Health:
-                                    actor.health += actor.abilities[id - 1].intensity;
+                                    actor.health = Math.Min(actor.maxHealth,actor.health+actor.abilities[id - 1].intensity);
                                     break;
                                 case AbilityElement.HealthReg:
-                                    actor.health += actor.abilities[id - 1].intensity;
+                                    actor.health = Math.Min(actor.maxHealth,actor.health+actor.abilities[id - 1].intensity);
                                     break;
                                 case AbilityElement.Ice:
                                     _parent.HandleEvent(false, Events.FireProjectile, actor.id, AbilityElement.Ice);

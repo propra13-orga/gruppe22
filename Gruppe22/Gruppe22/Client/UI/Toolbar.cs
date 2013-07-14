@@ -57,10 +57,11 @@ namespace Gruppe22.Client
                     }
                     else
                     {
-                        if (_actor.quickList[i] > 0) // There is still a bug, just fixed the crashes
+                        if (_actor.quickList[i] > 0)
                         {
-                            // the "0" parameters where "_actor.quickList[i]" before but caused crashes when dragging an skill into the quicklist
-                            _functions[i] = new GridElement(_actor.quickList[i], _actor.abilities[0].name, _actor.abilities[0].icon, _content, false, true, 0);
+                            int icon = _actor.quickList[i] - 1;
+                            string text = _actor.abilities[icon].name + "\n Strength:" + _actor.abilities[icon].intensity + "\n Cooldown:" + _actor.abilities[icon].cooldown + "\n Cost: " + _actor.abilities[icon].cost + "MP" + ((_actor.abilities[icon].duration > 1) ? ("\n Duration:" + _actor.abilities[icon].duration) : "");
+                            _functions.Add(new GridElement(_actor.quickList[i], text, _actor.abilities[icon].icon, _content, false, true, 0));
                         }
                         else
                         {

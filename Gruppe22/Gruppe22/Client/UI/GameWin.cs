@@ -169,12 +169,12 @@ namespace Gruppe22.Client
         private void SetupGame()
         {
 
-            _toolbar = new Toolbar(this, _spriteBatch, Content, new Rectangle((_graphics.GraphicsDevice.Viewport.Width - 490) / 2, _graphics.GraphicsDevice.Viewport.Height - 140, (_graphics.GraphicsDevice.Viewport.Width - 490) / 2, 34), _logic.map.actors[_playerID]);
-            _interfaceElements.Add(_toolbar);
 
             _mainmap1 = new Mainmap(this, _spriteBatch, Content, new Rectangle(5, 5, _graphics.GraphicsDevice.Viewport.Width - 5, ((_graphics.GraphicsDevice.Viewport.Height - 20)) - 125), _logic.map, true);
             _interfaceElements.Add(_mainmap1);
 
+            _toolbar = new Toolbar(this, _spriteBatch, Content, new Rectangle((_graphics.GraphicsDevice.Viewport.Width - 490) / 2, _graphics.GraphicsDevice.Viewport.Height - 140, (_graphics.GraphicsDevice.Viewport.Width - 490) / 2, 34), _logic.map.actors[_playerID]);
+            _interfaceElements.Add(_toolbar);
             _minimap1 = new Minimap(this, _spriteBatch, Content, new Rectangle(_graphics.GraphicsDevice.Viewport.Width - 220, 5, 215, 215), _logic.map);
             _interfaceElements.Add(_minimap1);
 
