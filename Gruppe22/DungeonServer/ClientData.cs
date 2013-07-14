@@ -77,31 +77,17 @@ namespace DungeonServer
         public ClientData(NetConnection connection, short id, string guid, int actorID=0)
             : this(id, guid, actorID)
         {
-            Connection = connection;
+            _connection = connection;
         }
 
         public ClientData(short id, string guid, int actorID=0)
         {
-            ID = id;
             _guid = guid;
             _actorID = actorID;
             _paused = true;
         }
 
-        public short ID { get; private set; }
-        public NetConnection Connection { get; private set; }
 
-
-        public static short GetFreeID(IDictionary<IPEndPoint, ClientData> clients)
-        {
-            List<short> usedIds = (from client in clients select client.Value.ID).ToList();
-            if (usedIds.Count == 0) return 0;
-
-            for (short id = 0; id <= usedIds.Count; id++)
-                if (!usedIds.Contains(id))
-                    return id;
-            return -1;
-        }
     }
 
 }

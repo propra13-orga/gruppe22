@@ -95,10 +95,11 @@ namespace Gruppe22.Backend
                     case Events.MoveActor:
                         if (!_map.actors[(int)data[0]].locked)
                         {
+                            _map.actors[(int)data[0]].locked = true;
                             _network.SendMessage(PacketType.Move,
+                                (int)data[0], (int)(Direction)data[1],
                                 (int)_map.actors[(int)data[0]].tile.coords.x,
-                                (int)_map.actors[(int)data[0]].tile.coords.y,
-                                (int)data[0], (int)(Direction)data[1], (int)0);
+                                (int)_map.actors[(int)data[0]].tile.coords.y);
                         }
                         break;
                     case Events.Chat:
@@ -127,14 +128,16 @@ namespace Gruppe22.Backend
                         _parent.HandleEvent(false, Backend.Events.ShowMessage, data);
                         break;
                     case Events.MoveActor:
-                        _map.actors[(int)data[0]].direction = (Direction)data[2];
-                        _map.actors[(int)data[0]].moveIndex = (int)data[3];
-                        _map.actors[(int)data[0]].locked = false;
-                        if (data.Length > 2)
+                        if ((int)data[0] < _map.actors.Count)
                         {
+                            _map.actors[(int)data[0]].moveIndex = (int)data[3];
+                            _map.actors[(int)data[0]].locked = false;
+                            _map.actors[(int)data[0]].direction = (Direction)data[2];
+
                             _map.PositionActor(_map.actors[(int)data[0]], (Coords)data[1]);
+
+                            _parent.HandleEvent(false, Events.MoveActor, data);
                         }
-                        _parent.HandleEvent(false, Events.MoveActor, data);
                         break;
                 }
 

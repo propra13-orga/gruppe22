@@ -321,10 +321,10 @@ namespace Gruppe22.Backend
                                     _parent.HandleEvent(false, Events.FireProjectile, actor.id, AbilityElement.Fire);
                                     break;
                                 case AbilityElement.Health:
-                                    actor.health = Math.Min(actor.maxHealth,actor.health+actor.abilities[id - 1].intensity);
+                                    actor.health = Math.Min(actor.maxHealth, actor.health + actor.abilities[id - 1].intensity);
                                     break;
                                 case AbilityElement.HealthReg:
-                                    actor.health = Math.Min(actor.maxHealth,actor.health+actor.abilities[id - 1].intensity);
+                                    actor.health = Math.Min(actor.maxHealth, actor.health + actor.abilities[id - 1].intensity);
                                     break;
                                 case AbilityElement.Ice:
                                     _parent.HandleEvent(false, Events.FireProjectile, actor.id, AbilityElement.Ice);
@@ -578,7 +578,6 @@ namespace Gruppe22.Backend
                             Direction dir = (Direction)data[1];
                             Backend.Coords target = Map.DirectionTile(_map.actors[id].tile.coords, dir);
                             _map.actors[id].direction = dir;
-                            _parent.HandleEvent(false, Backend.Events.MoveActor, id, _map.actors[id].tile.coords, dir);
 
                             if (((FloorTile)_map.actors[id].tile.parent).hasTrap)
                             {
@@ -613,8 +612,9 @@ namespace Gruppe22.Backend
                                 }
                                 if (_map.CanMove(_map.actors[id].tile.coords, dir))
                                 {
+                                    Coords old = new Coords(_map.actors[id].tile.coords.x, _map.actors[id].tile.coords.y);
                                     _map.MoveActor(_map.actors[id], dir);
-                                    _parent.HandleEvent(false, Backend.Events.MoveActor, id, _map.actors[id].tile.coords, dir);
+                                    _parent.HandleEvent(false, Backend.Events.MoveActor, id, _map.actors[id].tile.coords, dir, old);
                                 }
                                 else
                                 {
