@@ -897,6 +897,7 @@ namespace Gruppe22.Client
                     case Events.Checkpoint:
                         break;
                     case Events.GameOver:
+                        _ShowEndGame("You escaped from the Dungeon!", "Game won");
                         break;
                     case Backend.Events.FinishedAnimation:
                         break;
