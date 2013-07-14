@@ -1634,6 +1634,8 @@ namespace Gruppe22.Backend
             if (armor < 0)
             {
                 armor = _random.Next(10);
+                fireDefense = _random.Next(10);
+                iceDefense = _random.Next(10);
             }
             this._armor = armor;
 
