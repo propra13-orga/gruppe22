@@ -1,0 +1,8 @@
+- Spieler bewegt sich nicht wenn das Spiel über den Server läuft
+- Anzahl der aktuellen Quests vervielfacht sich, nachdem man den Raum gespeichert hat.
+  Quests werden vermutlich falsch abgespeichert.
+- Scroll down in shop beim Verkäufer öffnet das Characterfenster des Spielers,
+  weil genau an der position und scrollen funktioniert garnicht (fokus auf falsche GUI? oder auf mehrere) (wtf^^)
+- Questbelohnung funktioniert nicht !?
+- Hintergrundmusiksteuerung unkonzeptioniert
+- 
