@@ -133,17 +133,27 @@ namespace Gruppe22.Backend
                         _map.actors[defender].health -= damage;
 
                         //check and calculate elemental (magic?) damage
+                        int firedmg = 0, frostdmg = 0;
                         if (_map.actors[attacker].fireDamage > 0)
                         {
                             double firedmgreduction = (0.06 * (_map.actors[defender].fireDefense)) / (1 + 0.06 * (_map.actors[defender].fireDefense));
-                            int firedmg = (int)(_map.actors[attacker].fireDamage * (1 - firedmgreduction));
+                            firedmg = (int)(_map.actors[attacker].fireDamage * (1 - firedmgreduction));
                             _map.actors[defender].health -= firedmg;
                         }
                         if (_map.actors[attacker].iceDamage > 0)
                         {
                             double frostdmgreduction = (0.06 * (_map.actors[defender].iceDefense)) / (1 + 0.06 * (_map.actors[defender].iceDefense));
-                            int frostdmg = (int)(_map.actors[attacker].iceDamage * (1 - frostdmgreduction));
+                            frostdmg = (int)(_map.actors[attacker].iceDamage * (1 - frostdmgreduction));
                             _map.actors[defender].health -= frostdmg;
+                        }
+                        if (_map.actors[attacker].stealHealth > 0) //stealhealth can "overcharge" the attackers health over the maximum amount
+                        {
+                            _map.actors[defender].health -= _map.actors[attacker].stealHealth;
+                            _map.actors[attacker].health += _map.actors[attacker].stealHealth;
+                        }
+                        if (_map.actors[attacker].destroyArmor > 0)
+                        {
+                            _map.actors[defender].armor = Math.Max(0, _map.actors[defender].armor - _map.actors[attacker].destroyArmor);
                         }
 
 
@@ -168,7 +178,7 @@ namespace Gruppe22.Backend
                         }
                         else
                         {
-                            _parent.HandleEvent(false, Events.DamageActor, defender, _map.actors[defender].tile.coords, _map.actors[defender].health, damage);
+                            _parent.HandleEvent(false, Events.DamageActor, defender, _map.actors[defender].tile.coords, _map.actors[defender].health, damage+firedmg+frostdmg);
                             _map.actors[defender].aggro = true;
                         }
 

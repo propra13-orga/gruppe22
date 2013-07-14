@@ -381,6 +381,16 @@ namespace Gruppe22.Backend
             }
 
             Enemy boss = new Enemy(-1, -1, -1, -1, "", r, 10 + _level);
+            if (r.NextDouble() >= 0.5)
+            {
+                boss.fireDefense = 70;
+                boss.fireDamage += r.Next(10);
+            }
+            else
+            {
+                boss.iceDefense = 70;
+                boss.iceDamage += r.Next(10);
+            }
             ActorTile BossTile = new ActorTile(_tiles[pos.y][pos.x], boss);
             boss.tile = BossTile;
             _tiles[pos.y][pos.x].Add(BossTile);
