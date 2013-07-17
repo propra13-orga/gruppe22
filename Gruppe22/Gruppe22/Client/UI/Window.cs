@@ -57,6 +57,7 @@ namespace Gruppe22.Client
             {
                 _children[i].Update(gameTime);
             }
+            base.Update(gameTime);
         }
 
         public override bool OnKeyDown(Keys k)

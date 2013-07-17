@@ -223,9 +223,19 @@ namespace Gruppe22.Backend
         /// </summary>
         /// <param name="filename">The filename to write to</param>
         /// <returns>true if writing was successful</returns>
-        public override void Save(string filename)
+        public override void Save(string filename, string subdir = "save\\auto\\")
         {
-            XmlWriter xmlw = XmlWriter.Create(filename);
+            if (!System.IO.Directory.Exists("save"))
+            {
+                System.IO.Directory.CreateDirectory("save");
+            }
+            if (!System.IO.Directory.Exists(subdir))
+            {
+                System.IO.Directory.CreateDirectory(subdir);
+            }
+
+
+            XmlWriter xmlw = XmlWriter.Create(subdir + filename);
             xmlw.WriteStartDocument();
             xmlw.WriteStartElement("GameMap");
             xmlw.WriteAttributeString("width", _width.ToString());

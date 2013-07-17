@@ -50,6 +50,7 @@ namespace Gruppe22.Client
         /// </summary>
         private bool _dragging = false;
 
+        private bool _hideUI = false;
         /// <summary>
         /// Current position of mouse on screen
         /// </summary>
@@ -546,6 +547,7 @@ namespace Gruppe22.Client
                                 else
                                 {
                                     tmp.parent = _logic;
+                                    HandleEvent(true, Events.ContinueGame, true);
                                 }
                             }
                             else
@@ -559,9 +561,11 @@ namespace Gruppe22.Client
                                     _mainmap1.map = _logic.map;
                                     _minimap1.map = _logic.map;
                                     _logic.HandleEvent(true, Events.Initialize);
-                                    HandleEvent(true, Events.ContinueGame,true);
+                                    HandleEvent(true, Events.ContinueGame, true);
 
                                 }
+                                else HandleEvent(true, Events.ContinueGame, true);
+
                             }
                         }
                         break;
@@ -797,11 +801,34 @@ namespace Gruppe22.Client
                         _logic.HandleEvent(true, Events.ResetGame);
                         break;
 
+                    case Backend.Events.ButtonPressed:
+                        switch ((Backend.Buttons)data[0])
+                        {
+                            case Backend.Buttons.Save:
+                                _ShowFileDialog(true);
+                                break;
+                            case Backend.Buttons.Restore:
+                                _ShowFileDialog(false);
+                                break;
+                        }
+                        break;
+
                     case Backend.Events.ActivateAbility:
                         _logic.HandleEvent(true, Events.ActivateAbility, data);
                         break;
 
-                        
+                    case Backend.Events.SaveLoad:
+                        if (_logic is PureLogic)
+                        {
+                            PureLogic tmp = _logic as PureLogic;
+                            if ((bool)data[0])
+                                tmp.Save((string)data[1]);
+                            else
+                                tmp.Restore((string)data[1]);
+                        }
+                        HandleEvent(true, Backend.Events.ContinueGame);
+                        break;
+
                     case Backend.Events.ChangeMap:
                         _status = Backend.GameStatus.NoRedraw;
                         _playerID = (int)data[0];
@@ -851,13 +878,16 @@ namespace Gruppe22.Client
                         _mainmap1.floatNumber((Coords)data[1], ((int)data[3]).ToString(), ((int)data[0] == _playerID) ? Color.Red : Color.White);
                         break;
                     case Backend.Events.KillActor:
-                        _mainmap1.HandleEvent(true, Events.AnimateActor, data[0], Backend.Activity.Die);
-                        if ((int)data[0] == _playerID)
+                        if ((int)data[0] < _logic.map.actors.Count)
                         {
-                            _PlaySoundEffect(SoundFX.Damage);
+                            _mainmap1.HandleEvent(true, Events.AnimateActor, data[0], Backend.Activity.Die);
+                            if ((int)data[0] == _playerID)
+                            {
+                                _PlaySoundEffect(SoundFX.Damage);
+                            }
+                            _mainmap1.floatNumber((Coords)data[1], ((int)data[3]).ToString(), ((int)data[0] == _playerID) ? Color.Red : Color.White);
+                            HandleEvent(false, Events.ShowMessage, _logic.map.actors[(int)data[0]].name + " was killed.");
                         }
-                        _mainmap1.floatNumber((Coords)data[1], ((int)data[3]).ToString(), ((int)data[0] == _playerID) ? Color.Red : Color.White);
-                        HandleEvent(false, Events.ShowMessage, _logic.map.actors[(int)data[0]].name + " was killed.");
                         break;
                     case Backend.Events.ChangeStats:
                         break;
@@ -900,6 +930,7 @@ namespace Gruppe22.Client
                         _ShowEndGame("You escaped from the Dungeon!", "Game won");
                         break;
                     case Backend.Events.FinishedAnimation:
+
                         break;
                     case Backend.Events.ShowMessage:
                         _AddMessage(data[0].ToString(), data.Length > 1 ? data[1] : null);
@@ -991,6 +1022,8 @@ namespace Gruppe22.Client
         }
 
 
+
+
         /// <summary>
         /// Add text to status box
         /// </summary>
@@ -1023,6 +1056,62 @@ namespace Gruppe22.Client
 
 
         #region Default subwindows
+
+
+
+        private void _screenshot()
+        {
+            RenderTarget2D renderTarget = new RenderTarget2D(
+_graphics.GraphicsDevice,
+_graphics.GraphicsDevice.PresentationParameters.BackBufferWidth,
+_graphics.GraphicsDevice.PresentationParameters.BackBufferHeight);
+            GameStatus temp = _status;
+            _status = GameStatus.NoRedraw;
+            _graphics.GraphicsDevice.SetRenderTarget(renderTarget);
+            _mainmap1.Draw(new GameTime());
+            _graphics.GraphicsDevice.SetRenderTarget(null);
+            _status = temp;
+
+            byte[] pixelData = new byte[renderTarget.Width * renderTarget.Height * 4];
+
+            renderTarget.GetData(pixelData);
+            for (int i = 0; i < pixelData.Length - 3; i += 4)
+            {
+                byte tmp = pixelData[i];
+                pixelData[i] = pixelData[i + 2];
+                pixelData[i + 2] = tmp;
+            }
+            System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(renderTarget.Width, renderTarget.Height, renderTarget.Width * 4, System.Drawing.Imaging.PixelFormat.Format32bppRgb, System.Runtime.InteropServices.Marshal.UnsafeAddrOfPinnedArrayElement(pixelData, 0));
+            int _width = renderTarget.Width - 5;
+            int _height = renderTarget.Height - 145;
+            int _left = 5;
+            int _top = 5;
+            if (_width > _height)
+            {
+                _left += (_width - _height) / 2;
+                _width = _height;
+            }
+            else
+            {
+                _top += (_height - _left) / 2;
+                _height = _width;
+            }
+            System.Drawing.Bitmap cropped = bitmap.Clone(new System.Drawing.Rectangle(_left, _top, _width, _height), bitmap.PixelFormat);
+
+            bitmap.Dispose();
+            bitmap = new System.Drawing.Bitmap(cropped, new System.Drawing.Size(200, 200));
+
+            //Unlock the pixels
+            //bmp.UnlockBits(bmpData);
+            bitmap.Save("save\\screen.png", System.Drawing.Imaging.ImageFormat.Png);
+            bitmap.Dispose();
+            cropped.Dispose();
+
+
+        }
+
+
+
         /// <summary>
         /// Display Main Menu
         /// </summary>
@@ -1030,17 +1119,30 @@ namespace Gruppe22.Client
         {
             _status = Backend.GameStatus.Paused;
             Window _mainMenu = new Window(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 180) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) - 250, 320, 500));
+            if (!(_logic is NetLogic))
+            {
+                _mainMenu.AddChild(new Button(_mainMenu, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) - 240, 300, 60), "Continue", (int)Backend.Buttons.Close));
+                _mainMenu.AddChild(new Button(_mainMenu, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) - 170, 140, 60), "Restart", (int)Backend.Buttons.Restart));
+                _mainMenu.AddChild(new Button(_mainMenu, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f) + 160, (int)(GraphicsDevice.Viewport.Height / 2.0f) - 170, 140, 60), "New Maps", (int)Backend.Buttons.NewMap));
 
-            _mainMenu.AddChild(new Button(_mainMenu, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) - 240, 300, 60), "Continue", (int)Backend.Buttons.Close));
-            _mainMenu.AddChild(new Button(_mainMenu, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) - 170, 140, 60), "Restart", (int)Backend.Buttons.Restart));
-            _mainMenu.AddChild(new Button(_mainMenu, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f) + 160, (int)(GraphicsDevice.Viewport.Height / 2.0f) - 170, 140, 60), "New Maps", (int)Backend.Buttons.NewMap));
-            /*
-            _mainMenu.AddChild(new Button(_mainMenu, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) - 100, 140, 60), "1 Player", (int)Buttons.SinglePlayer, !_secondPlayer));
-            _mainMenu.AddChild(new Button(_mainMenu, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f) + 160, (int)(GraphicsDevice.Viewport.Height / 2.0f) - 100, 140, 60), "2 Players", (int)Buttons.TwoPlayers, _secondPlayer));
-
-            _mainMenu.AddChild(new Button(_mainMenu, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) - 30, 140, 60), "Local", (int)Buttons.Local, !_lan));
-            */
-            _mainMenu.AddChild(new Button(_mainMenu, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) - 30, 300, 60), "LAN", (int)Backend.Buttons.LAN, _lan));
+                _mainMenu.AddChild(new Button(_mainMenu, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) - 100, 140, 60), "Save", (int)Backend.Buttons.Save));
+                bool hasSave = false;
+                foreach (string dir in Directory.GetDirectories(".\\save"))
+                {
+                    string tmp = dir.ToLower().Trim();
+                    if (tmp.Substring(tmp.LastIndexOf('\\') + 1) != "auto")
+                    {
+                        hasSave = true;
+                        break;
+                    }
+                }
+                if (hasSave)
+                    _mainMenu.AddChild(new Button(_mainMenu, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f) + 160, (int)(GraphicsDevice.Viewport.Height / 2.0f) - 100, 140, 60), "Restore", (int)Backend.Buttons.Restore));
+                /*
+                            _mainMenu.AddChild(new Button(_mainMenu, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) - 30, 140, 60), "Local", (int)Buttons.Local, !_lan));
+                            */
+            }
+            _mainMenu.AddChild(new Button(_mainMenu, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) - 30, 300, 60), "LAN " + ((_logic is NetLogic) ? "(online)" : "(offline)"), (int)Backend.Buttons.LAN, _lan));
             /*
             _mainMenu.AddChild(new Button(_mainMenu, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) + 40, 300, 60), "Settings", (int)Buttons.Settings));
 */
@@ -1082,7 +1184,7 @@ namespace Gruppe22.Client
                 _status = Backend.GameStatus.Running;
             }
             _status = Backend.GameStatus.Paused;
-            Lobby _lobby = new Lobby(this, _spriteBatch, Content, new Rectangle(90, 90, GraphicsDevice.Viewport.Width - 180, GraphicsDevice.Viewport.Height - 180), network);
+            Lobby _lobby = new Lobby(this, _spriteBatch, Content, new Rectangle((GraphicsDevice.Viewport.Width - 340) / 2, (GraphicsDevice.Viewport.Height - 200) / 2, 680, 400), network);
             _interfaceElements.Add(_lobby);
             _focus = _interfaceElements[_interfaceElements.Count - 1];
         }
@@ -1113,7 +1215,7 @@ namespace Gruppe22.Client
                 _status = Backend.GameStatus.Running;
             }
             _status = Backend.GameStatus.GameOver;
-            _logic.map.Save("savedroom" + _logic.map.id + ".xml");
+            //            _logic.map.Save("savedroom" + _logic.map.id + ".xml");
             Window _gameOver = new Window(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width) / 2.0f) - 300, (int)(GraphicsDevice.Viewport.Height / 2.0f) - 100, 600, 200));
             Statusbox stat = new Statusbox(_gameOver, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width) / 2.0f) - 300 + 10, (int)(GraphicsDevice.Viewport.Height / 2.0f) - 70, 590, 110), false, true);
             stat.AddLine(title + "\n \n" + message);
@@ -1159,6 +1261,27 @@ namespace Gruppe22.Client
                 "http://www.reinerstilesets.de/de/lizenz/ ");
             _about.AddChild(stat);
             _interfaceElements.Add(_about);
+            _focus = _interfaceElements[_interfaceElements.Count - 1];
+
+        }
+
+
+        /// <summary>
+        /// Setup and display a window used for saving / loading files
+        /// </summary>
+        private void _ShowFileDialog(bool save)
+        {
+            if (_focus is Window)
+            {
+                _focus.Dispose();
+                _interfaceElements.Remove(_focus);
+                _toolbar.HandleEvent(true, Backend.Events.ContinueGame, 13);
+                _status = Backend.GameStatus.Running;
+            }
+            _status = Backend.GameStatus.Paused;
+            _screenshot();
+            FileDialog _fileDialog = new FileDialog(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width) / 2.0f) - 300, (int)(GraphicsDevice.Viewport.Height / 2.0f) - 200, 600, 400), save);
+            _interfaceElements.Add(_fileDialog);
             _focus = _interfaceElements[_interfaceElements.Count - 1];
 
         }

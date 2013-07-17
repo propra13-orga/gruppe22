@@ -16,9 +16,9 @@ namespace Gruppe22.Client
 
         private NetPeerConfiguration _config;
         private NetClient _client;
-        private NetConnectionStatus _lastStatus;
         private Backend.IHandleEvent _parent;
         private string _server = "";
+        private bool _connecting = false;
         private string _playername;
         public Dictionary<string, string> _servers;
 
@@ -34,7 +34,8 @@ namespace Gruppe22.Client
                 if (_server != "")
                 {
                     _parent.HandleEvent(false, Backend.Events.ShowMessage, "Disconnecting from Server " + _server + "...");
-                    _client.Disconnect("Goodbye!");
+                    if (_client.ConnectionStatus == NetConnectionStatus.Connected)
+                        _client.Disconnect("Goodbye!");
                     _server = "";
                 }
                 if (value != "")
@@ -44,6 +45,7 @@ namespace Gruppe22.Client
                     NetOutgoingMessage outmsg = _client.CreateMessage();
                     // outmsg.Write((byte)PacketType.Connect);
                     outmsg.Write(_playername);
+                    _connecting = true;
                     _client.Connect(_server, 666, outmsg);
                 }
             }
@@ -150,37 +152,47 @@ namespace Gruppe22.Client
                         byte type = message.ReadByte();
                         ProcessMessage(type, message);
                         break;
+                    case NetIncomingMessageType.StatusChanged:
+                        switch ((NetConnectionStatus)message.ReadByte())
+                        {
+                            case NetConnectionStatus.None:
+                                _parent.HandleEvent(false, Backend.Events.ShowMessage, "Server not found.", Color.Red);
+                                _connecting = false;
+                                break;
+                            case NetConnectionStatus.InitiatedConnect:
+                                _parent.HandleEvent(false, Backend.Events.ShowMessage, "Asked for connection.", Color.Green);
+
+                                break;
+                            case NetConnectionStatus.RespondedConnect:
+                                _parent.HandleEvent(false, Backend.Events.ShowMessage, "Server responded to Connect Request.", Color.Green);
+
+                                break;
+                            case NetConnectionStatus.Disconnecting:
+                                _parent.HandleEvent(false, Backend.Events.ShowMessage, "Disconnecting.", Color.Red);
+
+
+                                break;
+                            case NetConnectionStatus.Connected:
+
+                                _parent.HandleEvent(false, Backend.Events.ShowMessage, "Connected.", Color.Green);
+                                _parent.HandleEvent(false, Backend.Events.Connect);
+
+                                _connecting = false;
+                                break;
+                            case NetConnectionStatus.Disconnected:
+                                _connecting = false;
+                                _parent.HandleEvent(false, Backend.Events.ShowMessage, "Disconnected." + message.ReadString(), Color.Red);
+
+                                _parent.HandleEvent(false, Backend.Events.Disconnect);
+                                _client.DiscoverLocalPeers(666);
+
+                                break;
+                        }
+                        break;
                 }
-            }
-            if ((_client != null) && (_lastStatus != _client.ConnectionStatus))
-            {
-                switch (_client.ConnectionStatus)
-                {
-                    case NetConnectionStatus.None:
-                        break;
-                    case NetConnectionStatus.InitiatedConnect:
-                        _parent.HandleEvent(false, Backend.Events.ShowMessage, "Asked for connection.", Color.Green);
 
-                        break;
-                    case NetConnectionStatus.RespondedConnect:
-                        _parent.HandleEvent(false, Backend.Events.ShowMessage, "Server responded to Connect Request.", Color.Green);
-
-                        break;
-                    case NetConnectionStatus.Connected:
-                        _parent.HandleEvent(false, Backend.Events.ShowMessage, "Connected.", Color.Green);
-                        break;
-                    case NetConnectionStatus.Disconnected:
-                        _parent.HandleEvent(false, Backend.Events.ShowMessage, "Disconnected.", Color.Red);
-                        _parent.HandleEvent(false, Backend.Events.Disconnect);
-
-                        _client.DiscoverLocalPeers(666);
-                        break;
-                }
-                _lastStatus = _client.ConnectionStatus;
 
             }
-
-
         }
 
         public void SendMessage(PacketType type, params object[] data)
@@ -242,7 +254,7 @@ namespace Gruppe22.Client
                     _parent.HandleEvent(false, Backend.Events.KillActor, message.ReadInt32(), new Coords(message.ReadInt32(), message.ReadInt32()), message.ReadInt32(), message.ReadInt32());
                     break;
                 case PacketType.PlaySound:
-                    _parent.HandleEvent(false, Backend.Events.PlaySound, message.ReadInt32(), (SoundFX)message.ReadInt32());
+                    _parent.HandleEvent(false, Backend.Events.PlaySound, (SoundFX)message.ReadInt32());
                     break;
                 case PacketType.Dialog:
                     //from, to, message, new Backend.DialogLine[] { new Backend.DialogLine("Goodbye", -1) }
@@ -261,6 +273,12 @@ namespace Gruppe22.Client
         {
             _config = new NetPeerConfiguration("DungeonCrawler");
             _config.EnableMessageType(NetIncomingMessageType.DiscoveryResponse);
+            _config.EnableMessageType(NetIncomingMessageType.ConnectionApproval);
+            _config.UseMessageRecycling = true;
+            _config.PingInterval = 90f;
+            _config.ConnectionTimeout = 90f;
+            _config.MaximumHandshakeAttempts = 3;
+            _config.ResendHandshakeInterval = 5; 
             _parent = parent;
             _servers = new Dictionary<string, string>();
             Start();

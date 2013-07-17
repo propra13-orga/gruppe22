@@ -48,15 +48,9 @@ namespace Gruppe22.Backend
         {
             foreach (Quest quest in _quests)
             {
-                if (quest.done) continue;
-                switch (quest.type)
+                if (quest.Completed(this))
                 {
-                    case Quest.QuestType.CollectItems:
-                        Quest.Reward reward = quest.TestTheGoal(_inventory.Count);
-                        exp += reward.RewardXP;
-                        break;
-                    case Quest.QuestType.KillEnemys:
-                        break;
+                    ;
                 }
             }
         }
@@ -67,21 +61,6 @@ namespace Gruppe22.Backend
         public void ClearQuests()
         {
             _quests.Clear();
-        }
-
-        /// <summary>
-        /// Remove all finished quests
-        /// </summary>
-        public void CleanupQuests()
-        {
-            for (int i = 0; i < quests.Length; ++i)
-            {
-                if (_quests[i].done)
-                {
-                    _quests.RemoveAt(i);
-                    i--;
-                }
-            }
         }
 
         /// <summary>

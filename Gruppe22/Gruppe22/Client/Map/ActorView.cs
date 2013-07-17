@@ -443,9 +443,9 @@ namespace Gruppe22.Client
             {
                 if (_textures[(int)_activity * 8 + (int)Math.Log((double)direction, 2)].NextAnimation())
                 {
-                    _parent.HandleEvent(false, Backend.Events.FinishedAnimation, _id, _activity);
                     if (_activity != Backend.Activity.Die)
                     {
+                        _parent.HandleEvent(false, Backend.Events.FinishedAnimation, _id, _activity);
                         this.activity = _playAfterMove;
                         if (_playAfterMove != Backend.Activity.Walk) _playAfterMove = Backend.Activity.Walk;
                         _lock = false;
@@ -455,6 +455,7 @@ namespace Gruppe22.Client
                     {
                         if (!_dead)
                         {
+                            _parent.HandleEvent(false, Backend.Events.FinishedAnimation, _id, _activity);
                             _dead = true;
                             _lock = false;
 

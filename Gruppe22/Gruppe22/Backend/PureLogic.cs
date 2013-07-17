@@ -27,12 +27,12 @@ namespace Gruppe22.Backend
         public override void ChangeMap(string filename, Coords pos)
         {
             map.Save("savedroom" + map.id + ".xml");
-            if (File.Exists("saved" + filename))
+            if (File.Exists("save\\auto\\saved" + filename))
                 map.Load("saved" + filename, pos, false);
             else
                 map.Load(filename, pos, false);
             map.Save("saved" + filename);
-            File.WriteAllText("GameData", filename);
+            File.WriteAllText("save\\auto\\GameData", filename);
         }
 
         public void ReassignPlayer()
@@ -60,6 +60,86 @@ namespace Gruppe22.Backend
                 _map.Update(gametime);
             }
         }
+
+        /// <summary>
+        /// Restore game progress from a saved state
+        /// </summary>
+        /// <param name="name">The directory where the gamestate is stored</param>
+        public void Restore(string name)
+        {
+            if (!System.IO.Directory.Exists("save"))
+            {
+                System.IO.Directory.CreateDirectory("save");
+            }
+            if (!System.IO.Directory.Exists("save\\auto"))
+            {
+                System.IO.Directory.CreateDirectory("save\\auto");
+            }
+            if (System.IO.Directory.Exists("save\\" + name))
+            {
+                if (Directory.Exists("save\\auto"))
+                {
+                    while (Directory.GetFiles("save\\auto\\", "*").Length > 0)
+                    {
+                        File.Delete(Directory.GetFiles("save\\auto\\", "*")[0]);
+                    }
+                }
+                foreach (string filename in System.IO.Directory.GetFiles("save\\" + name))
+                {
+                    System.IO.File.Copy(filename, "save\\auto\\" + System.IO.Path.GetFileName(filename));
+                }
+            }
+
+            string path = "room1.xml";
+            if (File.Exists("save\\auto\\GameData"))
+                path = File.ReadAllText("save\\auto\\GameData");
+            if (path.IndexOf(Environment.NewLine) > 0)
+            {
+                path = path.Substring(0, path.IndexOf(Environment.NewLine));
+            }
+            if (File.Exists("save\\auto\\saved" + (string)path))
+                _map.Load("saved" + (string)path, null, true);
+            else
+                _map.Load((string)path, null, true);
+            ReassignPlayer();
+
+        }
+
+        /// <summary>
+        /// Save the game to a new folder
+        /// </summary>
+        /// <param name="name">The directory to which the game should be saved</param>
+        public void Save(string name)
+        {
+            _map.Save("savedroom" + map.id + ".xml");
+            File.WriteAllText("save\\auto\\GameData", "room" + map.id.ToString() + ".xml");
+
+            if (Directory.Exists("save\\" + name))
+            {
+                while (Directory.GetFiles("save\\" + name, "*.*").Length > 0)
+                {
+                    File.Delete(Directory.GetFiles("save\\" + name, "*.*")[0]);
+                }
+            }
+
+            if (!System.IO.Directory.Exists("save"))
+            {
+                System.IO.Directory.CreateDirectory("save");
+            }
+            if (!System.IO.Directory.Exists("save\\" + name))
+            {
+                System.IO.Directory.CreateDirectory("save\\" + name);
+            }
+            System.IO.File.Copy("save\\screen.png", "save\\" + name + "\\screen.png");
+
+            foreach (string filename in System.IO.Directory.GetFiles("save\\auto"))
+            {
+                if (!filename.Contains("screen.png"))
+                    System.IO.File.Copy(filename, "save\\" + name + "\\" + System.IO.Path.GetFileName(filename));
+            }
+            //TODO: Zip all files (to save space)
+        }
+
         /// <summary>
         /// Pause / Unpause Game Logic
         /// </summary>
@@ -81,7 +161,7 @@ namespace Gruppe22.Backend
         public void Restart()
         {
             _DeleteSavedRooms();
-            map.Load("room1.xml");
+            map.Load("room1.xml", null, true);
         }
 
         /// <summary>
@@ -89,10 +169,13 @@ namespace Gruppe22.Backend
         /// </summary>
         private void _DeleteSavedRooms()
         {
-            if (File.Exists("GameData")) File.Delete("GameData");
-            while (Directory.GetFiles(".", "savedroom*.xml").Length > 0)
+            if (Directory.Exists("save\\auto"))
             {
-                File.Delete(Directory.GetFiles(".", "savedroom*.xml")[0]);
+                if (File.Exists("save\\auto\\GameData")) File.Delete("save\\auto\\GameData");
+                while (Directory.GetFiles("save\\auto\\", "savedroom*.xml").Length > 0)
+                {
+                    File.Delete(Directory.GetFiles("save\\auto\\", "savedroom*.xml")[0]);
+                }
             }
         }
 
@@ -178,7 +261,7 @@ namespace Gruppe22.Backend
                         }
                         else
                         {
-                            _parent.HandleEvent(false, Events.DamageActor, defender, _map.actors[defender].tile.coords, _map.actors[defender].health, damage+firedmg+frostdmg);
+                            _parent.HandleEvent(false, Events.DamageActor, defender, _map.actors[defender].tile.coords, _map.actors[defender].health, damage + firedmg + frostdmg);
                             _map.actors[defender].aggro = true;
                         }
 
@@ -406,7 +489,7 @@ namespace Gruppe22.Backend
 
                 case Backend.Events.EndGame:
                     map.Save("savedroom" + map.id + ".xml");
-                    File.WriteAllText("GameData", "room" + map.id.ToString() + ".xml");
+                    File.WriteAllText("save\\auto\\GameData", "room" + map.id.ToString() + ".xml");
                     break;
 
                 case Backend.Events.TileEntered:
@@ -451,24 +534,14 @@ namespace Gruppe22.Backend
                                         _map.actors[id].lives = 3;
                                     if (_map[target.x, target.y].checkpoint.bonuslife > 0)
                                         _map.actors[id].lives += (int)_map[target.x, target.y].checkpoint.bonuslife;
+                                    _map.actors[id].lastCheckpoint = _map.id;
+                                    _map.actors[id].checkPointCoords = new Coords(target.x, target.y);
                                     _map.Save("savedroom" + _map.id + ".xml");
                                     _parent.HandleEvent(false, Events.ActorText, _map[target].firstActor, target, "Checkpoint", Color.DarkOliveGreen);
-                                    File.WriteAllText("GameData", "room" + _map.id.ToString() + ".xml" + Environment.NewLine + _map.actors[id].lives.ToString());
-                                    File.WriteAllText("CheckPoint", _map.id.ToString());
                                     Regex regex = new Regex(@"\d+");
-                                    foreach (string file in Directory.GetFiles(".", "checkpoint*.xml"))
-                                    {
-                                        File.Delete(file);
-                                    }
-
-                                    foreach (string file in Directory.GetFiles(".", "savedroom*.xml"))
-                                    {
-                                        Match m = regex.Match(file);
-                                        File.Copy(file, "checkpoint" + m.Value + ".xml");
-                                    }
 
                                     _parent.HandleEvent(false, Events.ShowMessage, "Checkpoint reached (" + _map.actors[id].lives.ToString() + " lives remaining)");
-                                    _parent.HandleEvent(false, Events.Checkpoint);
+                                    _parent.HandleEvent(false, Events.Checkpoint, id);
                                 }
 
                                 // Trigger floor switches
@@ -554,9 +627,9 @@ namespace Gruppe22.Backend
                     if (player.quests.Length <= 0)
                     {
                         texttodisplay += "Welcome, hero. I offer you this quest:\n\n";
-                        Quest nq = new Quest(Quest.QuestType.CollectItems, "Find, buy or steal a new item!", 100, null, player.inventory.Count + 1);
-                        player.AddQuest(nq);
-                        texttodisplay += nq.text;
+                        // Quest nq = new Quest(Quest.QuestType.CollectItems, "Find, buy or steal a new item!", 100, null, player.inventory.Count + 1);
+                        // player.AddQuest(nq);
+                        //  texttodisplay += nq.text;
                     }
                     else
                     {
@@ -564,14 +637,14 @@ namespace Gruppe22.Backend
                         player.UpdateQuests(); //update quests and get reward
                         foreach (Quest q in player.quests)
                         {
-                            texttodisplay += q.text;
-                            if (q.done)
+                            texttodisplay += q.text; /*
+                            if (q.Completed)
                                 texttodisplay = "You successfully performed my quest. I grant you " + q.xp.ToString() + " experience points.";
                             else
                             {
                                 texttodisplay = "I am still waiting for you to perform my quest:\n\n" + q.text;
                                 queststodo++;
-                            }
+                            } */
                         }
                         if (player.exp - exp > 0)
                             _parent.HandleEvent(false, Events.ActorText, player.id, player.tile.coords, "+" + (player.exp - exp).ToString() + " Exp", Color.Gold); // Update data on client
@@ -581,7 +654,6 @@ namespace Gruppe22.Backend
                             player.LevelUp();
                             _parent.HandleEvent(false, Events.ChangeStats, player.id, player); // Update data on client
                         }
-                        player.CleanupQuests();
                     }
                     GenericDialog(((Actor)data[1]).id, ((Actor)data[0]).id, texttodisplay);
                     break;
@@ -978,19 +1050,19 @@ namespace Gruppe22.Backend
         public PureLogic(IHandleEvent parent, Map map = null, Random _random = null)
             : base(parent, map, _random)
         {
-            if (!System.IO.File.Exists("room1.xml"))
+            if (!System.IO.File.Exists("save\\auto\\room1.xml"))
             {
                 GenerateMaps();
             }
 
             string path = "room1.xml";
-            if (File.Exists("GameData"))
-                path = File.ReadAllText("GameData");
+            if (File.Exists("save\\auto\\GameData"))
+                path = File.ReadAllText("save\\auto\\GameData");
             if (path.IndexOf(Environment.NewLine) > 0)
             {
                 path = path.Substring(0, path.IndexOf(Environment.NewLine));
             }
-            if (File.Exists("saved" + (string)path))
+            if (File.Exists("save\\auto\\saved" + (string)path))
                 _map = new Map(this, "saved" + (string)path);
             else
                 _map = new Map(this, (string)path);

@@ -86,7 +86,46 @@ namespace Gruppe22.Client
                     case Keys.End:
                         _cursor = _text.Length - 1;
                         return true;
+                    case Keys.D0:
+                        _text = _text.Insert(_cursor++, "0");
 
+                        break;
+                    case Keys.D1:
+                        _text = _text.Insert(_cursor++, "1");
+
+                        break;
+
+                    case Keys.D2:
+                        _text = _text.Insert(_cursor++, "2");
+
+                        break;
+                    case Keys.D3:
+                        _text = _text.Insert(_cursor++, "3");
+                        break;
+                    case Keys.D4:
+                        _text = _text.Insert(_cursor++, "4");
+
+                        break;
+                    case Keys.D5:
+                        _text = _text.Insert(_cursor++, "5");
+
+                        break;
+                    case Keys.D6:
+                        _text = _text.Insert(_cursor++, "6");
+
+                        break;
+                    case Keys.D7:
+                        _text = _text.Insert(_cursor++, "7");
+
+                        break;
+                    case Keys.D8:
+                        _text = _text.Insert(_cursor++, "8");
+
+                        break;
+                    case Keys.D9:
+                        _text = _text.Insert(_cursor++, "9");
+
+                        break;
                     default:
                         if (k.ToString().Length == 1)
                         {

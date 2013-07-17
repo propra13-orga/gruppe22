@@ -138,6 +138,7 @@
     <Compile Include="Client\Network\Lobby.cs" />
     <Compile Include="Client\UI\Abilities.cs" />
     <Compile Include="Client\UI\AbilityChoice.cs" />
+    <Compile Include="Client\UI\Bubble.cs" />
     <Compile Include="Client\UI\Button.cs" />
     <Compile Include="Client\UI\CharacterWindow.cs" />
     <Compile Include="Client\UI\ClientData.cs" />
@@ -180,6 +181,7 @@
     </Reference>
     <Reference Include="MonoGame.Framework, Version=3.0.1.0, Culture=neutral, processorArchitecture=MSIL" />
     <Reference Include="OpenTK, Version=1.1.0.0, Culture=neutral, PublicKeyToken=bad199fe84eb3df4, processorArchitecture=MSIL" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Net" />
     <Reference Include="System.Net.Http, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="System.Net.Http.WebRequest, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
@@ -190,6 +192,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\bubble.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\changemap1.wav">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

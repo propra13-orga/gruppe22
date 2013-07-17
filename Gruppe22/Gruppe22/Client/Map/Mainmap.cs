@@ -27,7 +27,6 @@ namespace Gruppe22.Client
         private uint _fireCount = 0;
         private bool _noMove = true;
 
-
         private string _bigText = "";
         private string _smallText = "";
         private int _visibility = -100;
@@ -1301,7 +1300,7 @@ namespace Gruppe22.Client
             // 3. Moving entities (player, NPCs, enemies)
             _actors = new List<ActorView>();
             _effects = new List<MapEffect>();
-
+           
             resetActors();
             _floatnumbers = new List<FloatNumber>();
             _projectiles = new List<Projectile>();

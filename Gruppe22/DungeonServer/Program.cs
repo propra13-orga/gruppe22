@@ -145,70 +145,91 @@ namespace DungeonServer
                         }
                         break;
                     case NetIncomingMessageType.ConnectionApproval:
-                        message.SenderConnection.Approve();
-                        Log(message.SenderEndpoint + " approved.");
+                        {
+                            bool allow = true;
+
+                            if (_clients.ContainsKey(message.SenderEndpoint))
+                            {
+                                message.SenderConnection.Deny("Only one connection per IP is allowed.");
+                                Log(message.SenderEndpoint + " denied (IP in use).");
+
+                                allow = false;
+                                break;
+                            }
+                            string guid = "";
+                            if (message.SenderConnection.RemoteHailMessage != null)
+                            {
+                                guid = message.SenderConnection.RemoteHailMessage.ReadString();
+                            }
+                            if (guid != "")
+                            {
+                                for (int i = 0; i < _clients.Count; ++i)
+                                {
+                                    if (_clients.ElementAt(i).Value.guid == guid)
+                                        message.SenderConnection.Deny("The GUID is already in use.");
+                                    Log(message.SenderEndpoint + " denied (GUID in use).");
+
+                                    allow = false;
+                                    break;
+                                }
+                            }
+                            if (allow)
+                            {
+                                message.SenderConnection.Approve();
+
+                                ClientData newClient = new ClientData(message.SenderConnection, 0, guid);
+                                if (_pausedCount < 0)
+                                {
+                                    _pausedCount = 1;
+                                }
+                                else
+                                {
+                                    _pausedCount += 1;
+                                }
+                                newClient.actorID = _logic.map.AssignPlayer(guid);
+                                _clients.Add(message.SenderEndpoint, newClient);
+
+                                Log(message.SenderEndpoint + " approved.");
+                            }
+                        }
                         break;
                     case NetIncomingMessageType.Data:
                         byte type = message.ReadByte();
                         ProcessMessage(type, message);
                         break;
                     case NetIncomingMessageType.StatusChanged:
-                        Log("Status Changed", ConsoleColor.Magenta);
-                        NetConnectionStatus state = (NetConnectionStatus)message.ReadByte();
-                        switch (state)
                         {
-                            case NetConnectionStatus.Disconnected:
-                            case NetConnectionStatus.Disconnecting:
-                                if (!_clients.ContainsKey(message.SenderEndpoint))
+                            Log("Status Changed", ConsoleColor.Magenta);
+                            NetConnectionStatus state = (NetConnectionStatus)message.ReadByte();
+                            switch (state)
+                            {
+                                case NetConnectionStatus.Disconnected:
+                                case NetConnectionStatus.Disconnecting:
+                                    if (!_clients.ContainsKey(message.SenderEndpoint))
+                                        break;
+
+                                    if (_clients[message.SenderEndpoint].paused)
+                                    {
+                                        _pausedCount -= 1;
+                                    }
+                                    if (_clients.Count == 1)
+                                    {
+                                        _pausedCount = -1;
+                                        ResetActors();
+                                    }
+                                    _logic.map.actors[_clients[message.SenderEndpoint].actorID].online = false;
+                                    _clients.Remove(message.SenderEndpoint);
+                                    Log(message.SenderEndpoint + " disconnected!");
                                     break;
-
-                                if (_clients[message.SenderEndpoint].paused)
-                                {
-                                    _pausedCount -= 1;
-                                }
-                                if (_clients.Count == 1)
-                                {
-                                    _pausedCount = -1;
-                                    ResetActors();
-                                }
-                                _logic.map.actors[_clients[message.SenderEndpoint].actorID].online = false;
-                                _clients.Remove(message.SenderEndpoint);
-                                Log(message.SenderEndpoint + " disconnected!");
-                                break;
-                            case NetConnectionStatus.Connected:
-                                if (_clients.ContainsKey(message.SenderEndpoint)) break;
-                                string guid = "";
-                                if (message.SenderConnection.RemoteHailMessage != null)
-                                {
-                                    guid = message.SenderConnection.RemoteHailMessage.ReadString();
-                                }
-                                if (guid != "")
-                                {
-                                    for (int i = 0; i < _clients.Count; ++i)
+                                case NetConnectionStatus.Connected:
+                                    if (_clients.ContainsKey(message.SenderEndpoint))
                                     {
-                                        if (_clients.ElementAt(i).Value.guid == guid)
-                                            return;
+                                        SendMessage(PacketType.Connect, message.SenderConnection); // Send connect confirmation to client
+                                        Log("Sent Connect to " + _clients[message.SenderEndpoint].guid, ConsoleColor.Cyan);
                                     }
-                                    ClientData newClient = new ClientData(message.SenderConnection, 0, guid);
-                                    if (_pausedCount < 0)
-                                    {
-                                        _pausedCount = 1;
-                                    }
-                                    else
-                                    {
-                                        _pausedCount += 1;
-                                    }
-                                    newClient.actorID = _logic.map.AssignPlayer(guid);
-                                    _clients.Add(message.SenderEndpoint, newClient);
-                                    Log("Created client '" + guid + "!");
-                                    SendMessage(PacketType.Connect, message.SenderConnection, _logic.map.ToXML(), newClient.actorID); // Send map to client
-                                    Log("Sent Connect to " + newClient.guid, ConsoleColor.Cyan);
-
-                                    //Nun alle aktiven Clients informieren, dass ein neuer Client connected ist
-                                    Log(message.SenderEndpoint + " connected!");
-
-                                }
-                                break;
+                                    break;
+                            }
+                            break;
                         }
                         break;
                     default:
@@ -402,7 +423,7 @@ namespace DungeonServer
                         SendMessageToAll(PacketType.Animate, NetDeliveryMethod.ReliableOrdered, null, (int)data[0], (int)Activity.Attack, _logic.map.actors[(int)data[0]].moveIndex);
                         break;
                     case Events.ActorText:
-                        SendMessageToAll(PacketType.ActorText, NetDeliveryMethod.ReliableOrdered, null, ((Actor)data[0]).id,
+                        SendMessageToAll(PacketType.ActorText, NetDeliveryMethod.ReliableOrdered, null, ((int)data[0]),
                             ((Coords)data[1]).x, ((Coords)data[1]).y, ((string)data[2]));
 
                         // defender, _map.actors[defender].tile.coords, "Evade")
@@ -505,11 +526,16 @@ namespace DungeonServer
                 _config.EnableMessageType(NetIncomingMessageType.DiscoveryRequest);
                 _config.EnableMessageType(NetIncomingMessageType.ConnectionApproval);
                 _config.Port = 666;
+                _config.PingInterval = 10f;
+                _config.ConnectionTimeout = 90f;
+                _config.MaximumHandshakeAttempts = 3;
+                _config.ResendHandshakeInterval = 5; 
                 _config.UseMessageRecycling = true;
                 _config.EnableUPnP = true;
                 _config.AcceptIncomingConnections = false;
 
                 _server = new NetServer(_config);
+
                 _server.Start();
             }
             catch (Exception ex)

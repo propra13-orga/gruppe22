@@ -162,7 +162,9 @@ namespace Gruppe22.Backend
         ContinueGame = 0,
         Disconnect,
         Initialize,
+        Connect,
         EndGame,
+        SaveLoad,
         ResetGame,
         ChangeTrapState,
         RejectMove,
@@ -243,7 +245,9 @@ namespace Gruppe22.Backend
         Quit,
         StartServer,
         Connect,
-        Cancel
+        Cancel,
+        Save, 
+        Restore
     }
     public enum GameStatus
     {

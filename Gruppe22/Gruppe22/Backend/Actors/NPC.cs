@@ -18,6 +18,8 @@ namespace Gruppe22.Backend
         /// Verhältnis des NPC's zum Spieler. Bei 0 ist es neutral, negative Werte stellen ein schlechtes Verhältnis dar und positive ein gutes. Dabei haben vom Betrag größere Zahlen eine größere Auswirkung.
         /// </summary>
         private int _love = 0;
+        private int _id = 0;
+        private List<Quest> _quests;
 
         /// <summary>
         /// Determines if the NPC has a shop.
@@ -31,6 +33,54 @@ namespace Gruppe22.Backend
             set
             {
                 _hasShop = value;
+            }
+        }
+
+        public void HideQuest(int id)
+        {
+
+        }
+
+        /// <summary>
+        /// Reset the list of quests
+        /// </summary>
+        public void ClearQuests()
+        {
+            _quests.Clear();
+        }
+
+        /// <summary>
+        /// return all quests assigned to the player/// </summary>
+        /// <returns></returns>
+        public Quest[] quests
+        {
+            get
+            {
+                return _quests.ToArray();
+            }
+        }
+
+        /// <summary>
+        /// Add quest to the player. This shoud be used from NPC(dialog).
+        /// </summary>
+        /// <param name="q">The quest.</param>
+        public void AddQuest(Quest q)
+        {
+            _quests.Add(q);
+        }
+
+        /// <summary>
+        /// Return a game-wide unique ID for the NPC (needed for quests).
+        /// </summary>
+        public int id
+        {
+            get
+            {
+                return _id;
+            }
+            set
+            {
+                _id = value;
             }
         }
 
@@ -93,6 +143,7 @@ namespace Gruppe22.Backend
         public NPC(int health = 10, int armor = 0, int damage = 0, int maxHealth = 10, string name = "", Random r = null, int _level = 1, bool shop = false)
             : base(ActorType.NPC, health, armor, damage, maxHealth, name, r)
         {
+            _quests = new List<Quest>();
             _actorType = ActorType.NPC;
             if (shop) _animationFile = ".\\content\\luigi.xml";
             else

@@ -25,10 +25,13 @@ namespace Gruppe22.Backend
     {
         #region protected Fields
         /// <summary>
-        /// A random.
+        /// A random number generator
         /// </summary>
         protected Random _random;
-
+        /// <summary>
+        /// Coordinates of last checkpoint
+        /// </summary>
+        protected Coords _checkPointCoords = Coords.Zero;
         /// <summary>
         /// A unique identity used in online games
         /// </summary>
@@ -48,7 +51,7 @@ namespace Gruppe22.Backend
         protected string _name = "";
         protected List<Item> _inventory = null;
         //protected int _deadcounter = 0;
-        protected int _mana = 50;
+        protected int _mana = 100;
         protected int _evade = 0;
         protected int _block = 0;
         protected int _penetrate = 0;
@@ -73,10 +76,13 @@ namespace Gruppe22.Backend
         protected bool _friendly = false;
         protected int _resist = 0;
         protected int _exp = 0;
-        int regCounter = 0;
+        /// <summary>
+        /// Internal counter for regeneration of health or mana
+        /// </summary>
+        protected int _regCounter = 0;
         protected int _expNeeded = 0;
         protected int _maxhealth = 100;
-        protected int _health = 50;
+        protected int _health = 100;
         public List<int> _quicklist = null;
         protected int _armor = 40;
         protected int _abilityPoints = 0;
@@ -90,7 +96,7 @@ namespace Gruppe22.Backend
         protected List<Ability> _abilities = null;
         private bool _regenerating = false;
         protected int _lastCheckpoint = 1;
-        private int _moveIndex=0;
+        private int _moveIndex = 0;
         #endregion
 
         #region Public Fields
@@ -177,7 +183,7 @@ namespace Gruppe22.Backend
 
 
         /// <summary>
-        /// Number of current lives (read/write).
+        /// Room ID where most recent checkpoint is located (read/write).
         /// </summary>
         public int lastCheckpoint
         {
@@ -191,6 +197,21 @@ namespace Gruppe22.Backend
             }
         }
 
+
+        /// <summary>
+        /// Coordinates of most recent checkpoint (read/write).
+        /// </summary>
+        public Coords checkPointCoords
+        {
+            get
+            {
+                return _checkPointCoords;
+            }
+            set
+            {
+                _checkPointCoords = value;
+            }
+        }
         /// <summary>
         /// List of items which have changed since last viewing inventory.
         /// </summary>
@@ -229,15 +250,15 @@ namespace Gruppe22.Backend
             if (_regenerating == false)
             {
                 _regenerating = true;
-                regCounter += 1;
-                if (regCounter > 101)
-                    regCounter = 0;
-                if ((regCounter % (101 - _manaReg) == 0) && (regCounter / (101 - _manaReg) > 0))
+                _regCounter += 1;
+                if (_regCounter > 101)
+                    _regCounter = 0;
+                if ((_regCounter % (101 - _manaReg) == 0) && (_regCounter / (101 - _manaReg) > 0))
                 {
                     if (_mana < _maxMana)
                         _mana += 1;
                 }
-                if ((regCounter % (101 - _healthReg) == 0) && (regCounter / (101 - _healthReg) > 0))
+                if ((_regCounter % (101 - _healthReg) == 0) && (_regCounter / (101 - _healthReg) > 0))
                 {
                     if (_health < _maxhealth)
                         _health += 1;
@@ -1012,58 +1033,82 @@ namespace Gruppe22.Backend
                     writer.WriteStartElement("Actor");
                     break;
             }
+            if (_name != "")
+                writer.WriteAttributeString("name", _name);
+            if (_maxhealth != 100)
+                writer.WriteAttributeString("maxhp", Convert.ToString(_maxhealth));
+            if (_health != _maxhealth)
+                writer.WriteAttributeString("hp", Convert.ToString(_health));
+            if (_level != 0)
+                writer.WriteAttributeString("level", Convert.ToString(_level));
+            if (_mana != _maxMana)
+                writer.WriteAttributeString("mana", Convert.ToString(_mana));
+            if (_evade != 0)
+                writer.WriteAttributeString("evade", Convert.ToString(_evade));
+            if (_block != 0)
+                writer.WriteAttributeString("block", Convert.ToString(_block));
+            if (_penetrate != 0)
+                writer.WriteAttributeString("penetrate", Convert.ToString(_penetrate));
+            if (_animationFile != "")
+                writer.WriteAttributeString("file", Convert.ToString(_animationFile));
+            if (_healthReg != 0)
+                writer.WriteAttributeString("healthReg", Convert.ToString(_healthReg));
+            if (_skills != 0)
+                writer.WriteAttributeString("skills", Convert.ToString(_skills));
+            if (_abilityPoints != 0)
+                writer.WriteAttributeString("abilityPoints", Convert.ToString(_abilityPoints));
+            if (_armor != 0)
+                writer.WriteAttributeString("armor", Convert.ToString(_armor));
+            if (_stealHealth != 0) writer.WriteAttributeString("stealHealth", Convert.ToString(_stealHealth));
+            if (_stealMana != 0) writer.WriteAttributeString("stealMana", Convert.ToString(_stealMana));
+            if (_fireDamage != 0) writer.WriteAttributeString("fireDamage", Convert.ToString(_fireDamage));
+            if (_iceDamage != 0) writer.WriteAttributeString("iceDamage", Convert.ToString(_iceDamage));
+            if (_crazy) writer.WriteAttributeString("crazy", Convert.ToString(_crazy));
+            if (_ranged) writer.WriteAttributeString("ranged", Convert.ToString(_ranged));
+            if (_aggro) writer.WriteAttributeString("aggro", Convert.ToString(_aggro));
 
-            writer.WriteAttributeString("name", _name);
-            writer.WriteAttributeString("maxhp", Convert.ToString(_maxhealth));
-            writer.WriteAttributeString("hp", Convert.ToString(_health));
-            writer.WriteAttributeString("level", Convert.ToString(_level));
-            writer.WriteAttributeString("mana", Convert.ToString(_mana));
-            writer.WriteAttributeString("evade", Convert.ToString(_evade));
-            writer.WriteAttributeString("block", Convert.ToString(_block));
-            writer.WriteAttributeString("penetrate", Convert.ToString(_penetrate));
-            writer.WriteAttributeString("file", Convert.ToString(_animationFile));
-            writer.WriteAttributeString("healthReg", Convert.ToString(_healthReg));
-            writer.WriteAttributeString("skills", Convert.ToString(_skills));
-            writer.WriteAttributeString("abilityPoints", Convert.ToString(_abilityPoints));
-            writer.WriteAttributeString("armor", Convert.ToString(_armor));
-            writer.WriteAttributeString("stealHealth", Convert.ToString(_stealHealth));
-            writer.WriteAttributeString("stealMana", Convert.ToString(_stealMana));
-            writer.WriteAttributeString("fireDamage", Convert.ToString(_fireDamage));
-            writer.WriteAttributeString("iceDamage", Convert.ToString(_iceDamage));
-            writer.WriteAttributeString("crazy", Convert.ToString(_crazy));
-            writer.WriteAttributeString("ranged", Convert.ToString(_ranged));
-            writer.WriteAttributeString("aggro", Convert.ToString(_aggro));
-            writer.WriteAttributeString("friendly", Convert.ToString(_friendly));
             bool hasQuests = false;
             if (this is Player && (this as Player).quests.Length > 0)
             {
                 writer.WriteAttributeString("hasQuests", "1");
                 hasQuests = true;
-
             }
-
-            writer.WriteAttributeString("fireDefense", Convert.ToString(_fireDefense));
-            writer.WriteAttributeString("iceDefense", Convert.ToString(_iceDefense));
+            if (_fireDefense > 0)
+                writer.WriteAttributeString("fireDefense", Convert.ToString(_fireDefense));
+            if (_fireDamage > 0)
+                writer.WriteAttributeString("iceDefense", Convert.ToString(_iceDefense));
             writer.WriteAttributeString("expNeeded", Convert.ToString(_expNeeded));
             writer.WriteAttributeString("exp", Convert.ToString(_exp));
-            writer.WriteAttributeString("resist", Convert.ToString(_resist));
-            writer.WriteAttributeString("damage", Convert.ToString(_damage));
-            writer.WriteAttributeString("gold", Convert.ToString(_gold));
-            writer.WriteAttributeString("lastCheckpoint", Convert.ToString(_lastCheckpoint));
-            writer.WriteAttributeString("manaReg", Convert.ToString(_manaReg));
-            writer.WriteAttributeString("maxMana", Convert.ToString(_maxMana));
-            writer.WriteAttributeString("destroyWeapon", Convert.ToString(_destroyWeapon));
-            writer.WriteAttributeString("destroyArmor", Convert.ToString(_destroyArmor));
-            writer.WriteAttributeString("animation", Convert.ToString(_animationFile));
-            writer.WriteAttributeString("viewRange", Convert.ToString(_viewRange));
+            if (_resist > 0)
+                writer.WriteAttributeString("resist", Convert.ToString(_resist));
+            if (_damage > 0)
+                writer.WriteAttributeString("damage", Convert.ToString(_damage));
+            if (_gold > 0)
+                writer.WriteAttributeString("gold", Convert.ToString(_gold));
+            if ((this is Player && (_lives > 0) && (_lastCheckpoint > 0)))
+            {
+                writer.WriteAttributeString("lastCheckpoint", Convert.ToString(_lastCheckpoint));
+                writer.WriteAttributeString("cpX", _checkPointCoords.x.ToString());
+                writer.WriteAttributeString("cpY", _checkPointCoords.y.ToString());
+            }
+            if (_manaReg > 0)
+                writer.WriteAttributeString("manaReg", Convert.ToString(_manaReg));
+            if (_maxMana != 100)
+                writer.WriteAttributeString("maxMana", Convert.ToString(_maxMana));
+            if (_destroyWeapon != 0)
+                writer.WriteAttributeString("destroyWeapon", Convert.ToString(_destroyWeapon));
+            if (_destroyArmor != 0)
+                writer.WriteAttributeString("destroyArmor", Convert.ToString(_destroyArmor));
+            if (_viewRange != 4)
+                writer.WriteAttributeString("viewRange", Convert.ToString(_viewRange));
             if (_GUID != "") writer.WriteAttributeString("GUID", Convert.ToString(GUID));
             if (_stunned != 0) writer.WriteAttributeString("stunned", Convert.ToString(_stunned));
             if (_charmed != 0) writer.WriteAttributeString("charmed", Convert.ToString(_charmed));
             if (_lives != -1) writer.WriteAttributeString("lives", Convert.ToString(_lives));
             if (_direction != Direction.None) writer.WriteAttributeString("direction", Convert.ToString(direction));
 
-            if (_charmed != 0) _friendly = true;
-            writer.WriteAttributeString("scared", Convert.ToString(_scared));
+            if (_friendly) writer.WriteAttributeString("friendly", Convert.ToString(_friendly));
+            if (_scared != 0) writer.WriteAttributeString("scared", Convert.ToString(_scared));
 
             if (actorType == ActorType.NPC)
             {
@@ -1098,21 +1143,23 @@ namespace Gruppe22.Backend
 
                 foreach (Quest q in (this as Player).quests)
                 {
-                    if (!q.done)
-                    {
-                        writer.WriteStartElement("Quest");
-                        writer.WriteAttributeString("type", q.type.ToString());
-                        writer.WriteAttributeString("text", q.text.ToString());
-                        writer.WriteAttributeString("xp", q.xp.ToString());
-                        writer.WriteAttributeString("goal", q.goal.ToString());
-                        writer.WriteStartElement("Items");
-                        foreach (Item i in q.itemList)
-                        {
-                            i.Save(writer);
-                        }
-                        writer.WriteEndElement();
-                        writer.WriteEndElement();
-                    }
+                    //TODO: Rewrite saving / loading of quests
+                    /*                if (!q.done)
+                                    {
+                                        writer.WriteStartElement("Quest");
+                                        writer.WriteAttributeString("type", q.type.ToString());
+                                        writer.WriteAttributeString("text", q.text.ToString());
+                                        writer.WriteAttributeString("xp", q.xp.ToString());
+                                        writer.WriteAttributeString("goal", q.goal.ToString());
+                                        writer.WriteStartElement("Items");
+                                        foreach (Item i in q.itemList)
+                                        {
+                                            i.Save(writer);
+                                        }
+                                        writer.WriteEndElement();
+                                        writer.WriteEndElement();
+     
+                                    }*/
                 }
                 writer.WriteEndElement();
 
@@ -1161,7 +1208,7 @@ namespace Gruppe22.Backend
             if ((a is Player) && (this is Player))
             {
                 (this as Player).ClearQuests();
-     Quest[] myQuests = (a as Player).quests;
+                Quest[] myQuests = (a as Player).quests;
                 foreach (Quest q in myQuests)
                 {
                     (this as Player).AddQuest(q);
@@ -1232,40 +1279,41 @@ namespace Gruppe22.Backend
 
             _newItems = 0;
             _inventory.Clear();
-            _name = reader.GetAttribute("name");
-            _maxhealth = Convert.ToInt32(reader.GetAttribute("maxhp"));
-            if (reader.GetAttribute("file") != null) _animationFile = Convert.ToString("file");
+            if (reader.GetAttribute("name") != null) _name = reader.GetAttribute("name");
+            if (reader.GetAttribute("maxhp") != null) _maxhealth = Convert.ToInt32(reader.GetAttribute("maxhp"));
+            if (reader.GetAttribute("maxMana") != null) _maxMana = Convert.ToInt32(reader.GetAttribute("maxMana"));
+            if (reader.GetAttribute("file") != null) _animationFile = Convert.ToString(reader.GetAttribute("file"));
             if (reader.GetAttribute("viewRange") != null) _viewRange = Convert.ToInt32(reader.GetAttribute("viewRange"));
-            _health = Convert.ToInt32(reader.GetAttribute("hp"));
-            _level = Convert.ToInt32(reader.GetAttribute("level"));
-            _mana = Convert.ToInt32(reader.GetAttribute("mana"));
-            _evade = Convert.ToInt32(reader.GetAttribute("evade"));
+            if (reader.GetAttribute("hp") != null) _health = Convert.ToInt32(reader.GetAttribute("hp")); else _health = _maxhealth;
+            if (reader.GetAttribute("level") != null) _level = Convert.ToInt32(reader.GetAttribute("level"));
+            if (reader.GetAttribute("mana") != null) _mana = Convert.ToInt32(reader.GetAttribute("mana")); else _mana = maxMana;
+            if (reader.GetAttribute("evade") != null) _evade = Convert.ToInt32(reader.GetAttribute("evade"));
             if (reader.GetAttribute("GUID") != null) _GUID = reader.GetAttribute("GUID");
-            _block = Convert.ToInt32(reader.GetAttribute("block"));
-            _penetrate = Convert.ToInt32(reader.GetAttribute("penetrate"));
-            _healthReg = Convert.ToInt32(reader.GetAttribute("healthReg"));
-            _skills = Convert.ToInt32(reader.GetAttribute("skills"));
-            _abilityPoints = Convert.ToInt32(reader.GetAttribute("abilityPoints"));
-            _armor = Convert.ToInt32(reader.GetAttribute("armor"));
-            _stealHealth = Convert.ToInt32(reader.GetAttribute("stealHealth"));
-            _stealMana = Convert.ToInt32(reader.GetAttribute("stealMana"));
-            _fireDamage = Convert.ToInt32(reader.GetAttribute("fireDamage"));
-            _iceDamage = Convert.ToInt32(reader.GetAttribute("iceDamage"));
-            _fireDefense = Convert.ToInt32(reader.GetAttribute("fireDefense"));
-            _iceDefense = Convert.ToInt32(reader.GetAttribute("iceDefense"));
-            _expNeeded = Convert.ToInt32(reader.GetAttribute("expNeeded"));
-            _exp = Convert.ToInt32(reader.GetAttribute("exp"));
-            _resist = Convert.ToInt32(reader.GetAttribute("resist"));
-            _damage = Convert.ToInt32(reader.GetAttribute("damage"));
-            _level = Convert.ToInt32(reader.GetAttribute("level"));
-            _gold = Convert.ToInt32(reader.GetAttribute("gold"));
-            _manaReg = Convert.ToInt32(reader.GetAttribute("manaReg"));
-            _maxMana = Convert.ToInt32(reader.GetAttribute("maxMana"));
-            _destroyWeapon = Convert.ToInt32(reader.GetAttribute("destroyWeapon"));
-            _destroyArmor = Convert.ToInt32(reader.GetAttribute("destroyArmor"));
+            if (reader.GetAttribute("block") != null) _block = Convert.ToInt32(reader.GetAttribute("block"));
+            if (reader.GetAttribute("penetrate") != null) _penetrate = Convert.ToInt32(reader.GetAttribute("penetrate"));
+            if (reader.GetAttribute("healthReg") != null) _healthReg = Convert.ToInt32(reader.GetAttribute("healthReg"));
+            if (reader.GetAttribute("skills") != null) _skills = Convert.ToInt32(reader.GetAttribute("skills"));
+            if (reader.GetAttribute("abilityPoints") != null) _abilityPoints = Convert.ToInt32(reader.GetAttribute("abilityPoints"));
+            if (reader.GetAttribute("armor") != null) _armor = Convert.ToInt32(reader.GetAttribute("armor"));
+            if (reader.GetAttribute("stealHealth") != null) _stealHealth = Convert.ToInt32(reader.GetAttribute("stealHealth"));
+            if (reader.GetAttribute("stealMana") != null) _stealMana = Convert.ToInt32(reader.GetAttribute("stealMana"));
+            if (reader.GetAttribute("fireDamage") != null) _fireDamage = Convert.ToInt32(reader.GetAttribute("fireDamage"));
+            if (reader.GetAttribute("iceDamage") != null) _iceDamage = Convert.ToInt32(reader.GetAttribute("iceDamage"));
+            if (reader.GetAttribute("fireDefense") != null) _fireDefense = Convert.ToInt32(reader.GetAttribute("fireDefense"));
+            if (reader.GetAttribute("iceDefense") != null) _iceDefense = Convert.ToInt32(reader.GetAttribute("iceDefense"));
+            if (reader.GetAttribute("expNeeded") != null) _expNeeded = Convert.ToInt32(reader.GetAttribute("expNeeded"));
+            if (reader.GetAttribute("exp") != null) _exp = Convert.ToInt32(reader.GetAttribute("exp"));
+            if (reader.GetAttribute("resist") != null) _resist = Convert.ToInt32(reader.GetAttribute("resist"));
+            if (reader.GetAttribute("damage") != null) _damage = Convert.ToInt32(reader.GetAttribute("damage"));
+            if (reader.GetAttribute("level") != null) _level = Convert.ToInt32(reader.GetAttribute("level"));
+            if (reader.GetAttribute("gold") != null) _gold = Convert.ToInt32(reader.GetAttribute("gold"));
+            if (reader.GetAttribute("manaReg") != null) _manaReg = Convert.ToInt32(reader.GetAttribute("manaReg"));
+            if (reader.GetAttribute("destroyWeapon") != null) _destroyWeapon = Convert.ToInt32(reader.GetAttribute("destroyWeapon"));
+            if (reader.GetAttribute("destroyArmor") != null) _destroyArmor = Convert.ToInt32(reader.GetAttribute("destroyArmor"));
             if (reader.GetAttribute("lastCheckPoint") != null)
             {
                 _lastCheckpoint = Convert.ToInt32(reader.GetAttribute("lastCheckPoint"));
+                _checkPointCoords = new Coords(Convert.ToInt32(reader.GetAttribute("cpX")), Convert.ToInt32(reader.GetAttribute("cpY")));
             }
             if (reader.GetAttribute("lives") != null) _lives = Convert.ToInt32(reader.GetAttribute("lives"));
             if (reader.GetAttribute("direction") != null)
@@ -1278,7 +1326,6 @@ namespace Gruppe22.Backend
             if (reader.GetAttribute("friendly") != null) _friendly = Convert.ToBoolean(reader.GetAttribute("friendly"));
 
 
-            _animationFile = reader.GetAttribute("animation");
             if (reader.GetAttribute("stunned") != null)
                 _stunned = Convert.ToInt32(reader.GetAttribute("stunned"));
             if (reader.GetAttribute("charmed") != null)
@@ -1292,9 +1339,12 @@ namespace Gruppe22.Backend
                     NPC n = this as NPC;
                     if (n != null)
                     {
-                        n.love = Convert.ToInt32(reader.GetAttribute("love"));
-                        n.hasShop = Convert.ToBoolean(reader.GetAttribute("hasShop"));
-                        n.hasDialog = Convert.ToBoolean(reader.GetAttribute("hasDialogue"));
+                        if (reader.GetAttribute("love") != null) n.love = Convert.ToInt32(reader.GetAttribute("love"));
+                        if (reader.GetAttribute("hasShop") != null) n.hasShop = Convert.ToBoolean(reader.GetAttribute("hasShop"));
+                        if (reader.GetAttribute("hasDialogue") != null) n.hasDialog = Convert.ToBoolean(reader.GetAttribute("hasDialogue"));
+                        if (reader.GetAttribute("hasQuests") != null) hasQuests = true;
+                        n.ClearQuests();
+
 
                     }
                     break;
@@ -1359,34 +1409,34 @@ namespace Gruppe22.Backend
                         reader.Read();
                         while (reader.NodeType != XmlNodeType.EndElement)
                         {
-                            Quest.QuestType q1 = (Quest.QuestType)Enum.Parse(typeof(Quest.QuestType), reader.GetAttribute("type"));
-                            string text = Convert.ToString(reader.GetAttribute("text"));
-                            int xp = Convert.ToInt32(reader.GetAttribute("xp"));
-                            List<Item> itemList = new List<Item>();
-                            int goal = Convert.ToInt32(reader.GetAttribute("goal"));
-                            reader.Read();
-                            if (reader.IsEmptyElement)
-                            {
-                                reader.Read();
-                            }
-                            else
-                            {
-                                reader.Read();
-                                while (reader.NodeType != XmlNodeType.EndElement)
-                                {
-                                    Item item = new Item();
-                                    item.Load(reader);
-                                    item.owner = null;
-                                    item.tile = null;
-                                    itemList.Add(item);
-                                    reader.Read();
-                                }
-                                reader.ReadEndElement();
-                            }
+                            /*  Quest.QuestType q1 = (Quest.QuestType)Enum.Parse(typeof(Quest.QuestType), reader.GetAttribute("type"));
+                              string text = Convert.ToString(reader.GetAttribute("text"));
+                              int xp = Convert.ToInt32(reader.GetAttribute("xp"));
+                              List<Item> itemList = new List<Item>();
+                              int goal = Convert.ToInt32(reader.GetAttribute("goal"));
+                              reader.Read();
+                              if (reader.IsEmptyElement)
+                              {
+                                  reader.Read();
+                              }
+                              else
+                              {
+                                  reader.Read();
+                                  while (reader.NodeType != XmlNodeType.EndElement)
+                                  {
+                                      Item item = new Item();
+                                      item.Load(reader);
+                                      item.owner = null;
+                                      item.tile = null;
+                                      itemList.Add(item);
+                                      reader.Read();
+                                  }
+                                  reader.ReadEndElement();
+                              }
 
-                            Quest q = new Quest(q1, text, xp, itemList, goal);
-                            (this as Player).AddQuest(q);
-                            reader.Read();
+                              Quest q = new Quest(q1, text, xp, itemList, goal);
+                              (this as Player).AddQuest(q);
+                              reader.Read();*/
                         }
                         reader.ReadEndElement();
 

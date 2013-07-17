@@ -706,12 +706,21 @@ namespace Gruppe22.Backend
         /// <param name="filename"></param>
         /// <param name="targetCoords"></param>
         /// <param name="resetPlayer"></param>
-        public void Load(string filename, Backend.Coords targetCoords = null, bool resetPlayer = false)
+        public void Load(string filename, Backend.Coords targetCoords = null, bool resetPlayer = false, string subdir = "save\\auto\\")
         {
+            if (!System.IO.Directory.Exists("save"))
+            {
+                System.IO.Directory.CreateDirectory("save");
+            }
+            if (!System.IO.Directory.Exists(subdir))
+            {
+                System.IO.Directory.CreateDirectory(subdir);
+            }
+
             XmlReaderSettings settings = new XmlReaderSettings();
             settings.IgnoreWhitespace = true;
             settings.IgnoreComments = true;
-            XmlReader xmlr = XmlReader.Create(filename, settings);
+            XmlReader xmlr = XmlReader.Create(subdir + filename, settings);
             ReadXML(xmlr, targetCoords, resetPlayer);
             xmlr.Close();
         }
@@ -1179,9 +1188,17 @@ namespace Gruppe22.Backend
         /// Write the current map to a file
         /// </summary>
         /// <param name="filename">The filename to write to</param>
-        public virtual void Save(string filename)
+        public virtual void Save(string filename, string subdir = "save\\auto\\")
         {
-            XmlWriter xmlw = XmlWriter.Create(filename);
+            if (!System.IO.Directory.Exists("save"))
+            {
+                System.IO.Directory.CreateDirectory("save");
+            }
+            if (!System.IO.Directory.Exists(subdir))
+            {
+                System.IO.Directory.CreateDirectory(subdir);
+            }
+            XmlWriter xmlw = XmlWriter.Create(subdir + filename);
             xmlw.WriteStartDocument();
             xmlw.WriteStartElement("GameMap");
             xmlw.WriteAttributeString("width", _width.ToString());
