@@ -123,7 +123,7 @@ namespace Gruppe22.Backend
         public void Interact(Actor With)
         {
             if (_hasShop) ((Backend.IHandleEvent)_tile.parent).HandleEvent(false, Backend.Events.Shop, this, With);
-            if (_hasDialog) ((Backend.IHandleEvent)_tile.parent).HandleEvent(false, Backend.Events.Dialog, this, With);
+            if (_hasDialog) ((Backend.IHandleEvent)_tile.parent).HandleEvent(false, Backend.Events.Dialog, this, With, "");
         }
 
         /// <summary>

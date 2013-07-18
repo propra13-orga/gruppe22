@@ -39,6 +39,7 @@ namespace DungeonServer
         private Thread _serverThread;
         private PureLogic _logic;
         private Random _random;
+        public bool _paused = true;
         private bool _updating = true;
         private DateTime _lastUpdate = DateTime.Now;
         Microsoft.Xna.Framework.GameTime _gameTime;
@@ -77,7 +78,8 @@ namespace DungeonServer
                 if (client.Key != exclude)
                     Recipients.Add(client.Value.connection);
             }
-            _server.SendMessage(response, Recipients, method, 0);
+            if (Recipients.Count > 0)
+                _server.SendMessage(response, Recipients, method, 0);
 
 
         }
@@ -114,15 +116,31 @@ namespace DungeonServer
             NetIncomingMessage message;
             while (_serverThread.ThreadState != ThreadState.AbortRequested)
             {
-                if (_pausedCount == 0)
+                if (_paused)
                 {
-                    Update();
-                    _logic.paused = false;
+                    if (_pausedCount == 0)
+                    {
+                        _logic.paused = false;
+                        _lastUpdate = DateTime.Now;
+                        _paused = false;
+                        foreach (Actor a in _logic.map.actors)
+                        {
+                            a.locked = false;
+                        }
+                    }
                 }
                 else
                 {
-                    _lastUpdate = DateTime.Now;
-                    _logic.paused = true;
+                    if (_pausedCount != 0)
+                    {
+                        _paused = true;
+                        _logic.paused = true;
+
+                    }
+                    else
+                    {
+                        Update();
+                    }
                 }
                 if ((message = _server.ReadMessage()) == null)
                     continue;
@@ -290,7 +308,6 @@ namespace DungeonServer
                     if (actorID < _logic.map.actors.Count)
                     {
                         Direction dir = (Direction)message.ReadInt32();
-                        Log("Move to " + dir.ToString());
                         _logic.map.actors[actorID].moveIndex = message.ReadInt32();
                         _logic.map.PositionActor(_logic.map.actors[actorID], new Coords(message.ReadInt32(), message.ReadInt32()));
                         _logic.map.actors[actorID].locked = false;
@@ -418,6 +435,9 @@ namespace DungeonServer
                 // pass along to client
                 switch (eventID)
                 {
+                    case Events.TrapActivate:
+                        SendMessageToAll(PacketType.Trap, NetDeliveryMethod.ReliableOrdered, null, ((Coords)data[0]).x, ((Coords)data[0]).y, (int)data[1]);
+                        break;
                     case Events.RejectMove:
                         SendMessageToAll(PacketType.Move, NetDeliveryMethod.ReliableOrdered, null, (int)data[0], (int)((Direction)data[1]), _logic.map.actors[(int)data[0]].moveIndex, ((Coords)data[3]).x, ((Coords)data[3]).y, ((Coords)data[4]).x, ((Coords)data[4]).y);
                         break;
@@ -442,7 +462,7 @@ namespace DungeonServer
                     case Events.DamageActor:
                         _logic.map.actors[(int)data[0]].moveIndex += 1;
                         // , defender, _map.actors[defender].tile.coords, _map.actors[defender].health, damage);
-                        SendMessageToAll(PacketType.DamageActor, NetDeliveryMethod.ReliableOrdered, null, (int)data[0], ((Coords)data[1]).x, ((Coords)data[1]).y, ((int)data[3]), _logic.map.actors[(int)data[0]].moveIndex, (int)_logic.map.actors[(int)data[0]].direction);
+                        SendMessageToAll(PacketType.DamageActor, NetDeliveryMethod.ReliableOrdered, null, (int)data[0], ((Coords)data[1]).x, ((Coords)data[1]).y, ((int)data[2]), ((int)data[3]), _logic.map.actors[(int)data[0]].moveIndex, (int)_logic.map.actors[(int)data[0]].direction);
                         break;
                     case Events.KillActor:
                         _logic.map.actors[(int)data[0]].moveIndex += 1;
@@ -474,9 +494,30 @@ namespace DungeonServer
                         break;
                     case Events.Dialog:
                         //from, to, message, new Backend.DialogLine[] { new Backend.DialogLine("Goodbye", -1) }
-                        SendMessageToAll(PacketType.Dialog, NetDeliveryMethod.ReliableOrdered, null, (int)data[1], (string)data[2]);
+                        foreach (KeyValuePair<IPEndPoint, ClientData> client in _clients)
+                        {
+                            if ((client.Value.actorID == (int)(((Actor)data[0]).id)
+                                || (client.Value.actorID == (int)(((Actor)data[1]).id))))
+                            {
+                                client.Value.paused = true;
+                                _pausedCount += 1;
+                            }
+                        }
+
+
+                        SendMessageToAll(PacketType.Dialog, NetDeliveryMethod.ReliableOrdered, null, (int)(((Actor)data[0]).id), (int)(((Actor)data[1]).id), (string)data[2]);
                         break;
                     case Events.Shop:
+                        foreach (KeyValuePair<IPEndPoint, ClientData> client in _clients)
+                        {
+                            if ((client.Value.actorID == (int)(((Actor)data[0]).id)
+                                || (client.Value.actorID == (int)(((Actor)data[1]).id))))
+                            {
+                                client.Value.paused = true;
+                                _pausedCount += 1;
+                            }
+                        }
+
                         SendMessageToAll(PacketType.Shop, NetDeliveryMethod.ReliableOrdered, null, (int)(((Actor)data[0]).id), (int)(((Actor)data[1]).id));
                         break;
                     case Events.SetItemTiles:
@@ -506,10 +547,16 @@ namespace DungeonServer
                         // Todo: Remap actors / clients
                         foreach (KeyValuePair<IPEndPoint, ClientData> client in _clients)
                         {
+                            client.Value.paused = true;
+                            _pausedCount += 1;
                             client.Value.actorID = _logic.map.AssignPlayer(client.Value.guid);
                             _logic.map.actors[client.Value.actorID].online = true;
+                        }
+                        foreach (KeyValuePair<IPEndPoint, ClientData> client in _clients)
+                        {
                             SendMessage(PacketType.UpdateMap, client.Value.connection, _logic.map.ToXML(), client.Value.actorID);
                         }
+
                         break;
                 }
             }
@@ -523,6 +570,10 @@ namespace DungeonServer
             Log("Setting up server ..");
             _random = new Random(Guid.NewGuid().GetHashCode());
             _logic = new PureLogic(this, null, _random);
+            foreach (Actor a in _logic.map.actors)
+            {
+                a.online = false;
+            }
             _clients = new Dictionary<IPEndPoint, ClientData>();
             _gameTime = new Microsoft.Xna.Framework.GameTime();
 

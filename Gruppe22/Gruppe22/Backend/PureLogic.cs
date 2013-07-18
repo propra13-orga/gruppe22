@@ -37,14 +37,35 @@ namespace Gruppe22.Backend
 
         public void ReassignPlayer()
         {
-            int _playerID = 0;
+            int _playerID = -1;
             for (int i = 0; i < map.actors.Count; ++i)
             {
                 if (map.actors[i] is Player)
                 {
-                    _playerID = i;
-                    break;
+
+                    if ((_playerID == -1) && (map.actors[i].tile != null))
+                    {
+                        _playerID = i;
+                        map.actors[i].online = true;
+
+                    }
+                    else
+                    {
+                        map.actors[i].online = false;
+                    }
                 }
+            }
+            if (_playerID < 0)
+            {
+                new Backend.Coords(1, 1);
+                Player player = new Player(100, 0, 30);
+                player.id = _map.actors.Count;
+                ActorTile playerTile = new ActorTile(_map[1, 1], player);
+                player.tile = playerTile;
+                _map[1, 1].Add(playerTile);
+                player.online = true;
+                _playerID = _map.actors.Count;
+                map.actors.Add(player);
             }
             _parent.HandleEvent(true, Backend.Events.ChangeMap, _playerID);
         }
@@ -368,7 +389,7 @@ namespace Gruppe22.Backend
                             message = "If this were a real dungeon, someone might have a quest for you...";
                             break;
                     }
-                _parent.HandleEvent(false, Events.Dialog, from, to, message, new Backend.DialogLine[] { new Backend.DialogLine("Goodbye", -1) });
+                _parent.HandleEvent(false, Events.Dialog, _map.actors[from], _map.actors[to], message, new Backend.DialogLine[] { new Backend.DialogLine("Goodbye", -1) });
             }
         }
 
@@ -480,10 +501,12 @@ namespace Gruppe22.Backend
                 case Backend.Events.TrapActivate:
                     {
                         Backend.Coords coords = (Coords)data[0];
-                        if (((_map[coords].hasEnemy) || (_map[coords].hasPlayer)) && (!_map[coords].firstActor.isDead))
+                        if ((_map[coords].trap.status==TrapState.On)&&(((_map[coords].hasEnemy) || (_map[coords].hasPlayer)) && (!_map[coords].firstActor.isDead)))
                         {
                             _TrapDamage(coords);
                         }
+                        _parent.HandleEvent(false, Events.TrapActivate, coords, _map[coords].trap.status);
+
                     }
                     break;
 
@@ -556,7 +579,7 @@ namespace Gruppe22.Backend
                                 // Apply teleporter (move to next room)
                                 if (_map[target.x, target.y].hasTeleport)
                                 {
-                                    HandleEvent(true, Backend.Events.ChangeMap, ((TeleportTile)_map[target.x, target.y].overlay[0]).nextRoom, ((TeleportTile)_map[target.x, target.y].overlay[0]).nextPlayerPos);
+                                    HandleEvent(true, Backend.Events.ChangeMap, ((TeleportTile)_map[target.x, target.y].teleportTile).nextRoom, ((TeleportTile)_map[target.x, target.y].teleportTile).nextPlayerPos);
 
                                 }
                             }
@@ -593,7 +616,7 @@ namespace Gruppe22.Backend
                                 if (actor is Player)
                                 {
                                     _parent.HandleEvent(false, Events.FloatText, actor.tile.coords, damage.ToString(), Color.DarkRed);
-                                    _parent.HandleEvent(false, Events.DamageActor);
+                                    _parent.HandleEvent(false, Events.DamageActor, actor.id, actor.tile.coords, actor.health, damage);
                                 }
                             }
                         }
@@ -680,8 +703,13 @@ namespace Gruppe22.Backend
                             {
                                 (a as NPC).Interact(_map.actors[id]);
                             }
-                            if (((a is Enemy || a is Player) && !(_map.actors[id] is NPC))
-                                && ((a.id != id) && (!a.isDead)))
+                            if ((a is Enemy || a is Player) &&
+                                !(_map.actors[id] is NPC) //  NPCs do not attack
+                                && (a.id != id) // Do not attack yourself                                
+                                && (!a.isDead) // Do not attack dead opponents 
+                                && !((a is Player) && (!a.online)) // Do not attack offline players
+                                && !((a is Player) && (_map.actors[id] is Player)) // No Player vs Player
+                                )
                             {
                                 HandleEvent(true, Backend.Events.Attack, id, dir);
                             }

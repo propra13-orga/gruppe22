@@ -239,6 +239,10 @@ namespace Gruppe22.Client
                 case PacketType.Chat:
                     _parent.HandleEvent(false, Backend.Events.ShowMessage, message.ReadString(), Color.Pink);
                     break;
+                case PacketType.Trap:
+                    _parent.HandleEvent(false, Backend.Events.TrapActivate, new Coords(message.ReadInt32(), message.ReadInt32()), (TrapState)message.ReadInt32());
+
+                    break;
                 case PacketType.Move:
                     _parent.HandleEvent(false, Backend.Events.MoveActor, message.ReadInt32(), (Direction)message.ReadInt32(), message.ReadInt32(),
                         new Coords(message.ReadInt32(), message.ReadInt32()), new Coords(message.ReadInt32(), message.ReadInt32())
@@ -256,7 +260,7 @@ namespace Gruppe22.Client
                     break;
                 case PacketType.DamageActor:
                     // , defender, _map.actors[defender].tile.coords, _map.actors[defender].health, damage);
-                    _parent.HandleEvent(false, Backend.Events.DamageActor, message.ReadInt32(), new Coords(message.ReadInt32(), message.ReadInt32()), message.ReadInt32(), message.ReadInt32(), (Direction)message.ReadInt32());
+                    _parent.HandleEvent(false, Backend.Events.DamageActor, message.ReadInt32(), new Coords(message.ReadInt32(), message.ReadInt32()), message.ReadInt32(), message.ReadInt32(), message.ReadInt32(), (Direction)message.ReadInt32());
                     break;
                 case PacketType.KillActor:
                     _parent.HandleEvent(false, Backend.Events.KillActor, message.ReadInt32(), new Coords(message.ReadInt32(), message.ReadInt32()), message.ReadInt32(), message.ReadInt32(), (Direction)message.ReadInt32());
@@ -266,7 +270,7 @@ namespace Gruppe22.Client
                     break;
                 case PacketType.Dialog:
                     //from, to, message, new Backend.DialogLine[] { new Backend.DialogLine("Goodbye", -1) }
-                    _parent.HandleEvent(false, Backend.Events.Dialog, message.ReadInt32(), message.ReadString());
+                    _parent.HandleEvent(false, Backend.Events.Dialog, message.ReadInt32(), message.ReadInt32(), message.ReadString());
                     break;
                 case PacketType.Shop:
                     _parent.HandleEvent(false, Backend.Events.Shop, message.ReadInt32(), message.ReadInt32());

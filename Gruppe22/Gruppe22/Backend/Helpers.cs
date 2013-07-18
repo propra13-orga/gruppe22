@@ -25,6 +25,7 @@ namespace Gruppe22.Backend
         Connect,
         Disconnect,
         DisableActor,
+        Trap,
         Move,
         AddActor,
         UpdateMap,

@@ -420,7 +420,7 @@ namespace Gruppe22.Backend
             int x = -1;
             while (x == -1)
             {
-                x = 3 + r.Next(_width - 5);
+                x = 4 + r.Next(_width - 6);
                 if ((_tiles[0][x].hasTeleport) ||
                     (_tiles[0][x + 1].hasTeleport) ||
                     (_tiles[0][x - 1].hasTeleport))

@@ -59,6 +59,21 @@ namespace Gruppe22.Backend
             }
         }
 
+
+        /// <summary>
+        /// Method which returns a list of actors standing on this FloorTile.
+        /// </summary>
+        public TeleportTile teleportTile
+        {
+            get
+            {
+                foreach (Tile tile in _overlay)
+                {
+                    if (tile is TeleportTile) return (TeleportTile)tile;
+                }
+                return null;
+            }
+        }
         /// <summary>
         /// 
         /// </summary>
@@ -166,7 +181,7 @@ namespace Gruppe22.Backend
             {
                 foreach (Tile tile in _overlay)
                 {
-                    if ((tile is ActorTile) && (((ActorTile)tile).enabled))
+                    if ((tile is ActorTile) && (((ActorTile)tile).enabled) && (!(((ActorTile)tile).actor.actorType != ActorType.Player) || ((ActorTile)tile).actor.online) && (!((ActorTile)tile).actor.isDead))
                         return ((ActorTile)tile).actor;
                 }
                 return null;

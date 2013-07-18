@@ -80,6 +80,7 @@ namespace Gruppe22.Backend
                 switch (eventID)
                 {
                     case Events.ChangeMap:
+                        _map.actors.Clear();
                         _map.FromXML((string)data[0], null, true);
                         _parent.HandleEvent(true, Events.ChangeMap, (int)data[1]);
                         break;
@@ -121,6 +122,9 @@ namespace Gruppe22.Backend
 
                 switch (eventID)
                 {
+                    case Events.TrapActivate:
+                        _map[(Coords)data[0]].trap.status = (TrapState)data[1];
+                        break;
                     case Events.Disconnect:
                         _parent.HandleEvent(false, eventID, data);
                         break;
@@ -177,8 +181,14 @@ namespace Gruppe22.Backend
                             _map.actors[(int)data[0]].direction = (Direction)data[1];
 
                             _map.PositionActor(_map.actors[(int)data[0]], (Coords)data[3]);
-
-                            _parent.HandleEvent(false, Events.MoveActor, data);
+                            if ((Coords)data[3] != (Coords)data[4])
+                            {
+                                _parent.HandleEvent(false, Events.MoveActor, data);
+                            }
+                            else
+                            {
+                                _map.actors[(int)data[0]].locked = false;
+                            }
                         }
                         break;
 
@@ -186,10 +196,13 @@ namespace Gruppe22.Backend
 
 
                     case Events.AnimateActor:
-                        _map.actors[(int)data[0]].locked = true;
-                        _map.actors[(int)data[0]].moveIndex = (int)data[2];
-                        _map.actors[(int)data[0]].direction = (Direction)data[3];
-                        _parent.HandleEvent(false, Backend.Events.AnimateActor, (int)data[0], (Activity)data[1]);
+                        if ((int)data[0] < _map.actors.Count)
+                        {
+                            _map.actors[(int)data[0]].locked = true;
+                            _map.actors[(int)data[0]].moveIndex = (int)data[2];
+                            _map.actors[(int)data[0]].direction = (Direction)data[3];
+                            _parent.HandleEvent(false, Backend.Events.AnimateActor, (int)data[0], (Activity)data[1]);
+                        }
                         break;
                     case Events.ActorText:
                         _parent.HandleEvent(false, Backend.Events.ActorText, (int)data[0], data[1], data[2]);
@@ -198,10 +211,15 @@ namespace Gruppe22.Backend
                         // defender, _map.actors[defender].tile.coords, "Evade")
                         break;
                     case Events.DamageActor:
-                        _map.actors[(int)data[0]].locked = false;
-                        _map.actors[(int)data[0]].moveIndex = (int)data[3];
-                        // , defender, _map.actors[defender].tile.coords, _map.actors[defender].health, damage);
-                        _map.actors[(int)data[0]].direction = (Direction)data[4];
+                        if ((int)data[0] < _map.actors.Count)
+                        {
+                            _map.actors[(int)data[0]].locked = false;
+                            _map.actors[(int)data[0]].health = (int)data[2];
+                            _map.actors[(int)data[0]].moveIndex = (int)data[4];
+                            // , defender, _map.actors[defender].tile.coords, _map.actors[defender].health, damage);
+
+                            _map.actors[(int)data[0]].direction = (Direction)data[5];
+                        }
                         _parent.HandleEvent(false, Backend.Events.DamageActor, data);
                         break;
                     case Events.KillActor:
@@ -216,10 +234,11 @@ namespace Gruppe22.Backend
                         break;
                     case Events.Dialog:
                         //from, to, message, new Backend.DialogLine[] { new Backend.DialogLine("Goodbye", -1) }
-                        _parent.HandleEvent(false, Backend.Events.Dialog, data);
+                        _parent.HandleEvent(false, Backend.Events.Dialog, _map.actors[(int)data[0]], _map.actors[(int)data[1]], data[2]);
                         break;
                     case Events.Shop:
-                        _parent.HandleEvent(false, Backend.Events.Shop, data);
+                        if (((int)data[0] < _map.actors.Count) && ((int)data[1] < _map.actors.Count))
+                            _parent.HandleEvent(false, Backend.Events.Shop, _map.actors[(int)data[0]], _map.actors[(int)data[1]]);
                         break;
                     case Events.GameOver:
                         _parent.HandleEvent(false, Backend.Events.GameOver, data);

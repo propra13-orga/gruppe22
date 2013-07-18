@@ -164,25 +164,27 @@ namespace Gruppe22.Client
                     case Backend.Events.AnimateActor:
                         {
                             int id = (int)data[0];
-                            Backend.Activity activity = (Backend.Activity)data[1];
-                            bool delay = false;
-                            bool isLock = true;
-                            if (data.Length > 2) delay = (bool)data[2];
-                            if (data.Length > 3)
-                                _parent.HandleEvent(false, Backend.Events.MoveActor, id, (Backend.Direction)data[3], _map.actors[id].moveIndex, _map.actors[id].tile.coords);
-                            if ((activity == Backend.Activity.Die) || (activity == Backend.Activity.Hit))
+                            if (id < _map.actors.Count)
                             {
-                                _actors[id].effect = new MapEffect(_environment[2][1], new Backend.Coords(_actors[id].position.x + 7, _actors[id].position.y + 2));
+                                Backend.Activity activity = (Backend.Activity)data[1];
+                                bool delay = false;
+                                bool isLock = true;
+                                if (data.Length > 2) delay = (bool)data[2];
+                                if (data.Length > 3)
+                                    _parent.HandleEvent(false, Backend.Events.MoveActor, id, (Backend.Direction)data[3], _map.actors[id].moveIndex, _map.actors[id].tile.coords);
+                                if ((activity == Backend.Activity.Die) || (activity == Backend.Activity.Hit))
+                                {
+                                    _actors[id].effect = new MapEffect(_environment[2][1], new Backend.Coords(_actors[id].position.x + 7, _actors[id].position.y + 2));
+                                }
+                                if (delay)
+                                {
+                                    _actors[id].PlayNowOrAfterMove(activity, isLock);
+                                }
+                                else
+                                {
+                                    _actors[id].EndMoveAndPlay(activity, isLock);
+                                };
                             }
-                            if (delay)
-                            {
-                                _actors[id].PlayNowOrAfterMove(activity, isLock);
-                            }
-                            else
-                            {
-                                _actors[id].EndMoveAndPlay(activity, isLock);
-                            }
-                            ;
                             /*bool waitForAnim = (bool)data[2];*/
                         }
                         break;

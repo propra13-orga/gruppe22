@@ -1245,6 +1245,7 @@ namespace Gruppe22.Backend
             _damage = a.damage;
             _exp = a.exp;
             _expNeeded = a.expNeeded;
+            _GUID = a.GUID;
             _gold = a.gold;
             _health = a.health;
             _inventory = a.inventory;

@@ -251,7 +251,7 @@ namespace Gruppe22.Client
                                     _statusbox.focus = true;
                                     break;
                                 case Keys.Up:
-                                    HandleEvent(true, Backend.Events.MoveActor, _playerID, Backend.Direction.Up,_logic.map.actors[_playerID].moveIndex);
+                                    HandleEvent(true, Backend.Events.MoveActor, _playerID, Backend.Direction.Up, _logic.map.actors[_playerID].moveIndex);
                                     break;
                                 case Keys.Left:
                                     HandleEvent(true, Backend.Events.MoveActor, _playerID, Backend.Direction.Left, _logic.map.actors[_playerID].moveIndex);
@@ -839,7 +839,8 @@ namespace Gruppe22.Client
                         _mana.actor = _logic.map.actors[_playerID];
                         _toolbar.actor = _logic.map.actors[_playerID];
                         _mainmap1.resetActors();
-                        _minimap1.MoveCamera(_logic.map.actors[_playerID].tile.coords);
+                        if (_logic.map.actors[_playerID].tile != null)
+                            _minimap1.MoveCamera(_logic.map.actors[_playerID].tile.coords);
                         HandleEvent(false, Events.ShowMessage, "You entered " + _logic.map.name + ".");
                         _PlayMusic();
                         _status = Backend.GameStatus.Paused;
@@ -920,7 +921,7 @@ namespace Gruppe22.Client
                     case Backend.Events.Dialog:
                         //from, to, message, new Backend.DialogLine[] { new Backend.DialogLine("Goodbye", -1) }
                         _ShowTextBox((string)data[2]);
-                        HandleEvent(false, Events.ShowMessage, _logic.map.actors[(int)data[1]].name + ":" + (string)data[2]);
+                        HandleEvent(false, Events.ShowMessage, ((Actor)data[1]).name + "->" + ((Actor)data[0]).name + ":" + (string)data[2]);
                         break;
                     case Backend.Events.Shop:
                         _ShowShopWindow((Actor)data[0], (Actor)data[1]);

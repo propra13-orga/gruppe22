@@ -202,10 +202,11 @@ namespace Gruppe22.Backend
                     if (_state == TrapState.Off)
                     {
                         _state = TrapState.On;
-                        ((FloorTile)_parent).HandleEvent(false, Backend.Events.TrapActivate, coords);
                     }
                     else _state = TrapState.Off;
                 }
+                ((FloorTile)_parent).HandleEvent(false, Backend.Events.TrapActivate, coords);
+
             }
         }
 
