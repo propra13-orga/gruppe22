@@ -65,7 +65,7 @@ namespace Gruppe22.Client
 
         public bool connected
         {
-            get
+            get            
             {
                 return _client.ConnectionStatus == NetConnectionStatus.Connected;
             }
@@ -240,14 +240,13 @@ namespace Gruppe22.Client
                     _parent.HandleEvent(false, Backend.Events.ShowMessage, message.ReadString(), Color.Pink);
                     break;
                 case PacketType.Move:
-                    _parent.HandleEvent(false, Backend.Events.MoveActor, message.ReadInt32(),
-                        new Coords(message.ReadInt32(), message.ReadInt32()), (Direction)message.ReadInt32(), (int)message.ReadInt32()
-                        , new Coords(message.ReadInt32(), message.ReadInt32())
+                    _parent.HandleEvent(false, Backend.Events.MoveActor, message.ReadInt32(), (Direction)message.ReadInt32(), message.ReadInt32(),
+                        new Coords(message.ReadInt32(), message.ReadInt32()), new Coords(message.ReadInt32(), message.ReadInt32())
                         );
                     break;
 
                 case PacketType.Animate:
-                    _parent.HandleEvent(false, Backend.Events.AnimateActor, message.ReadInt32(), (Activity)message.ReadInt32(), message.ReadInt32());
+                    _parent.HandleEvent(false, Backend.Events.AnimateActor, message.ReadInt32(), (Activity)message.ReadInt32(), message.ReadInt32(), (Direction)message.ReadInt32());
                     break;
                 case PacketType.ActorText:
                     _parent.HandleEvent(false, Backend.Events.ActorText, message.ReadInt32(), new Coords(message.ReadInt32(), message.ReadInt32()), message.ReadString());
@@ -257,10 +256,10 @@ namespace Gruppe22.Client
                     break;
                 case PacketType.DamageActor:
                     // , defender, _map.actors[defender].tile.coords, _map.actors[defender].health, damage);
-                    _parent.HandleEvent(false, Backend.Events.DamageActor, message.ReadInt32(), new Coords(message.ReadInt32(), message.ReadInt32()), message.ReadInt32(), message.ReadInt32());
+                    _parent.HandleEvent(false, Backend.Events.DamageActor, message.ReadInt32(), new Coords(message.ReadInt32(), message.ReadInt32()), message.ReadInt32(), message.ReadInt32(), (Direction)message.ReadInt32());
                     break;
                 case PacketType.KillActor:
-                    _parent.HandleEvent(false, Backend.Events.KillActor, message.ReadInt32(), new Coords(message.ReadInt32(), message.ReadInt32()), message.ReadInt32(), message.ReadInt32());
+                    _parent.HandleEvent(false, Backend.Events.KillActor, message.ReadInt32(), new Coords(message.ReadInt32(), message.ReadInt32()), message.ReadInt32(), message.ReadInt32(), (Direction)message.ReadInt32());
                     break;
                 case PacketType.PlaySound:
                     _parent.HandleEvent(false, Backend.Events.PlaySound, (SoundFX)message.ReadInt32());
@@ -283,11 +282,12 @@ namespace Gruppe22.Client
             _config = new NetPeerConfiguration("DungeonCrawler");
             _config.EnableMessageType(NetIncomingMessageType.DiscoveryResponse);
             _config.EnableMessageType(NetIncomingMessageType.ConnectionApproval);
+
             _config.UseMessageRecycling = true;
-            _config.PingInterval = 90f;
-            _config.ConnectionTimeout = 90f;
+            _config.PingInterval = 0.25f;
+            _config.ConnectionTimeout = 20f;
             _config.MaximumHandshakeAttempts = 3;
-            _config.ResendHandshakeInterval = 5; 
+            _config.ResendHandshakeInterval = 5;
             _parent = parent;
             _servers = new Dictionary<string, string>();
             Start();

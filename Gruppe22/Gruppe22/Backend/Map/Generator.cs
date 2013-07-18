@@ -233,7 +233,10 @@ namespace Gruppe22.Backend
             {
                 System.IO.Directory.CreateDirectory(subdir);
             }
-
+            for (int i = 0; i < _actors.Count; ++i)
+            {
+                _actors[i].id = i;
+            }
 
             XmlWriter xmlw = XmlWriter.Create(subdir + filename);
             xmlw.WriteStartDocument();

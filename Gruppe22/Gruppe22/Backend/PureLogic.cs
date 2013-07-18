@@ -466,7 +466,7 @@ namespace Gruppe22.Backend
                                 }
                                 else
                                 {
-                                    _parent.HandleEvent(false, Events.KillActor, FinishedID);
+                                    _parent.HandleEvent(false, Events.KillActor, FinishedID, _map.actors[FinishedID].tile.coords, 0, 0);
                                 }
 
                                 break;
@@ -508,7 +508,7 @@ namespace Gruppe22.Backend
                                 _parent.HandleEvent(false, Events.PlaySound, SoundFX.Pickup); //SoundEffect pick items
                                 _parent.HandleEvent(false, Events.ShowMessage, ((_map.actors[id] is Player) ? "You found " : _map.actors[id].name + " found ") + _map[target.x, target.y].firstItem.item.name + " .");
                                 if (_map.actors[id] is Player)
-                                    _parent.HandleEvent(false, Events.ActorText, _map[target].firstActor, target, "Found " + _map[target.x, target.y].firstItem.item.name, Color.DarkGreen);
+                                    _parent.HandleEvent(false, Events.ActorText, _map[target].firstActor.id, target, "Found " + _map[target.x, target.y].firstItem.item.name, Color.DarkGreen);
                                 _map[target.x, target.y].firstItem.item.Pickup(_map.actors[id]);
                                 _map[target.x, target.y].Remove(_map[target.x, target.y].firstItem);
                             }
@@ -537,7 +537,7 @@ namespace Gruppe22.Backend
                                     _map.actors[id].lastCheckpoint = _map.id;
                                     _map.actors[id].checkPointCoords = new Coords(target.x, target.y);
                                     _map.Save("savedroom" + _map.id + ".xml");
-                                    _parent.HandleEvent(false, Events.ActorText, _map[target].firstActor, target, "Checkpoint", Color.DarkOliveGreen);
+                                    _parent.HandleEvent(false, Events.ActorText, _map[target].firstActor.id, target, "Checkpoint", Color.DarkOliveGreen);
                                     Regex regex = new Regex(@"\d+");
 
                                     _parent.HandleEvent(false, Events.ShowMessage, "Checkpoint reached (" + _map.actors[id].lives.ToString() + " lives remaining)");
@@ -703,11 +703,11 @@ namespace Gruppe22.Backend
                                 {
                                     Coords old = new Coords(_map.actors[id].tile.coords.x, _map.actors[id].tile.coords.y);
                                     _map.MoveActor(_map.actors[id], dir);
-                                    _parent.HandleEvent(false, Backend.Events.MoveActor, id, _map.actors[id].tile.coords, dir, old);
+                                    _parent.HandleEvent(false, Backend.Events.MoveActor, id, dir, _map.actors[id].moveIndex, _map.actors[id].tile.coords, old);
                                 }
                                 else
                                 {
-                                    _parent.HandleEvent(false, Backend.Events.RejectMove, id, _map.actors[id].tile.coords, dir);
+                                    _parent.HandleEvent(false, Backend.Events.RejectMove, id, dir, _map.actors[id].moveIndex, _map.actors[id].tile.coords, _map.actors[id].tile.coords);
                                     _map.actors[id].locked = false;
                                 }
                             }

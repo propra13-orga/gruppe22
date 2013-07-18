@@ -1039,6 +1039,7 @@ namespace Gruppe22.Backend
             settings.IgnoreWhitespace = true;
             settings.IgnoreComments = true;
             XmlReader xmlr = XmlReader.Create(new System.IO.StringReader(input));
+            xmlr.MoveToContent();//xml
             Load(xmlr);
             xmlr.Close();
             return this;
@@ -1069,8 +1070,14 @@ namespace Gruppe22.Backend
                     writer.WriteStartElement("Actor");
                     break;
             }
+
+            if (_id != -1)
+                writer.WriteAttributeString("id", _id.ToString());
             if (_name != "")
                 writer.WriteAttributeString("name", _name);
+            if (_online != false)
+                writer.WriteAttributeString("online", _online.ToString());
+
             if (_maxhealth != 100)
                 writer.WriteAttributeString("maxhp", Convert.ToString(_maxhealth));
             if (_health != _maxhealth)
@@ -1317,9 +1324,11 @@ namespace Gruppe22.Backend
             _inventory.Clear();
             if (reader.GetAttribute("name") != null) _name = reader.GetAttribute("name");
             if (reader.GetAttribute("maxhp") != null) _maxhealth = Convert.ToInt32(reader.GetAttribute("maxhp"));
+            if (reader.GetAttribute("id") != null) _id = Convert.ToInt32(reader.GetAttribute("id"));
             if (reader.GetAttribute("maxMana") != null) _maxMana = Convert.ToInt32(reader.GetAttribute("maxMana"));
             if (reader.GetAttribute("file") != null) _animationFile = Convert.ToString(reader.GetAttribute("file"));
             if (reader.GetAttribute("viewRange") != null) _viewRange = Convert.ToInt32(reader.GetAttribute("viewRange"));
+            if (reader.GetAttribute("online") != null) _online = Convert.ToBoolean(reader.GetAttribute("online"));
             if (reader.GetAttribute("hp") != null) _health = Convert.ToInt32(reader.GetAttribute("hp")); else _health = _maxhealth;
             if (reader.GetAttribute("level") != null) _level = Convert.ToInt32(reader.GetAttribute("level"));
             if (reader.GetAttribute("mana") != null) _mana = Convert.ToInt32(reader.GetAttribute("mana")); else _mana = maxMana;

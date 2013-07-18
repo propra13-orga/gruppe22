@@ -251,16 +251,16 @@ namespace Gruppe22.Client
                                     _statusbox.focus = true;
                                     break;
                                 case Keys.Up:
-                                    HandleEvent(true, Backend.Events.MoveActor, _playerID, Backend.Direction.Up);
+                                    HandleEvent(true, Backend.Events.MoveActor, _playerID, Backend.Direction.Up,_logic.map.actors[_playerID].moveIndex);
                                     break;
                                 case Keys.Left:
-                                    HandleEvent(true, Backend.Events.MoveActor, _playerID, Backend.Direction.Left);
+                                    HandleEvent(true, Backend.Events.MoveActor, _playerID, Backend.Direction.Left, _logic.map.actors[_playerID].moveIndex);
                                     break;
                                 case Keys.Right:
-                                    HandleEvent(true, Backend.Events.MoveActor, _playerID, Backend.Direction.Right);
+                                    HandleEvent(true, Backend.Events.MoveActor, _playerID, Backend.Direction.Right, _logic.map.actors[_playerID].moveIndex);
                                     break;
                                 case Keys.Down:
-                                    HandleEvent(true, Backend.Events.MoveActor, _playerID, Backend.Direction.Down);
+                                    HandleEvent(true, Backend.Events.MoveActor, _playerID, Backend.Direction.Down, _logic.map.actors[_playerID].moveIndex);
                                     break;
                                 case Keys.Space:
                                     HandleEvent(true, Backend.Events.MoveProjectile, null, _logic.map.actors[_playerID].tile.parent, _logic.map.actors[_playerID].direction);
@@ -558,11 +558,6 @@ namespace Gruppe22.Client
                                 if (_logic is NetLogic)
                                 {
                                     _logic = new PureLogic(this);
-                                    _health.actor = _logic.map.actors[_playerID];
-                                    _mana.actor = _logic.map.actors[_playerID];
-                                    _toolbar.actor = _logic.map.actors[_playerID];
-                                    _mainmap1.map = _logic.map;
-                                    _minimap1.map = _logic.map;
                                     _logic.HandleEvent(true, Events.Initialize);
                                     HandleEvent(true, Events.ContinueGame, true);
 
@@ -940,6 +935,9 @@ namespace Gruppe22.Client
                         break;
                     case Backend.Events.FinishedAnimation:
 
+                        break;
+                    case Backend.Events.AnimateActor:
+                        _mainmap1.HandleEvent(true, Events.AnimateActor, data);
                         break;
                     case Backend.Events.ShowMessage:
                         _AddMessage(data[0].ToString(), data.Length > 1 ? data[1] : null);

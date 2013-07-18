@@ -80,7 +80,7 @@ namespace Gruppe22.Backend
                 switch (eventID)
                 {
                     case Events.ChangeMap:
-                        _map.FromXML((string)data[0]);
+                        _map.FromXML((string)data[0], null, true);
                         _parent.HandleEvent(true, Events.ChangeMap, (int)data[1]);
                         break;
                     case Events.FinishedAnimation:
@@ -98,8 +98,10 @@ namespace Gruppe22.Backend
                             _map.actors[(int)data[0]].locked = true;
                             _network.SendMessage(PacketType.Move,
                                 (int)data[0], (int)(Direction)data[1],
+                                (int)data[2],
                                 (int)_map.actors[(int)data[0]].tile.coords.x,
-                                (int)_map.actors[(int)data[0]].tile.coords.y);
+                                (int)_map.actors[(int)data[0]].tile.coords.y
+                                );
                         }
                         break;
                     case Events.Chat:
@@ -107,6 +109,9 @@ namespace Gruppe22.Backend
                         break;
                     case Events.ContinueGame:
                         _network.SendMessage(PacketType.Pause, false);
+                        break;
+                    case Events.Pause:
+                        _network.SendMessage(PacketType.Pause, true);
                         break;
 
                 }
@@ -116,7 +121,9 @@ namespace Gruppe22.Backend
 
                 switch (eventID)
                 {
-
+                    case Events.Disconnect:
+                        _parent.HandleEvent(false, eventID, data);
+                        break;
                     case Events.RemovePlayer:
                         _map.actors[(int)data[0]].online = false;
                         _parent.HandleEvent(false, Events.AddPlayer);
@@ -124,21 +131,31 @@ namespace Gruppe22.Backend
                     case Events.AddPlayer:
                         Actor actor = (Actor)data[2];
                         actor.id = (int)data[0];
-                        if (_map.actors.Count < (int)data[0])
+                        ActorTile actortile = new ActorTile(_map[(Coords)data[1]], actor);
+                        actor.tile = actortile;
+                        actortile.enabled = (actor.health > 0);
+                        actortile.parent = _map[(Coords)data[1]];
+                        _map[(Coords)data[1]].Add(actortile);
+                        _map.updateTiles.Add((Coords)data[1]);
+
+
+                        if (_map.actors.Count <= (int)data[0])
                         {
-
-                            ActorTile actortile = new ActorTile(_map[(Coords)data[1]], actor);
-                            actor.tile = actortile;
-                            actortile.enabled = (actor.health > 0);
-                            actortile.parent = _map[(Coords)data[1]];
-                            _map[(Coords)data[1]].Add(actortile);
                             _map.actors.Add(actor);
-                            _map.updateTiles.Add((Coords)data[1]);
-
                         }
                         else
                         {
-                            _map.actors[(int)data[0]] = (Actor)data[2];
+                            if (_map.actors[(int)data[0]].tile != null)
+                            {
+                                Coords source = ((FloorTile)_map.actors[(int)data[0]].tile.parent).coords;
+                                ((FloorTile)_map.actors[(int)data[0]].tile.parent).Remove(_map.actors[(int)data[0]].tile);
+                                // Remove old tile from updatelist (if no other actor or trap)
+                                if (!((_map[source].hasEnemy)
+                    || (_map[source].hasPlayer)
+                    || (_map[source].hasTrap)))
+                                    _map.updateTiles.Remove(source);
+                            }
+                            _map.actors[(int)data[0]] = actor;
                         }
                         _map.actors[(int)data[0]].online = true;
                         _parent.HandleEvent(false, Events.AddPlayer);
@@ -156,11 +173,10 @@ namespace Gruppe22.Backend
                     case Events.MoveActor:
                         if ((int)data[0] < _map.actors.Count)
                         {
-                            _map.actors[(int)data[0]].moveIndex = (int)data[3];
-                            _map.actors[(int)data[0]].locked = false;
-                            _map.actors[(int)data[0]].direction = (Direction)data[2];
+                            _map.actors[(int)data[0]].moveIndex = (int)data[2];
+                            _map.actors[(int)data[0]].direction = (Direction)data[1];
 
-                            _map.PositionActor(_map.actors[(int)data[0]], (Coords)data[1]);
+                            _map.PositionActor(_map.actors[(int)data[0]], (Coords)data[3]);
 
                             _parent.HandleEvent(false, Events.MoveActor, data);
                         }
@@ -170,13 +186,13 @@ namespace Gruppe22.Backend
 
 
                     case Events.AnimateActor:
-                        _map.actors[(int)data[0]].locked = false;
+                        _map.actors[(int)data[0]].locked = true;
                         _map.actors[(int)data[0]].moveIndex = (int)data[2];
-
-                        _parent.HandleEvent(false, Backend.Events.AnimateActor, data);
+                        _map.actors[(int)data[0]].direction = (Direction)data[3];
+                        _parent.HandleEvent(false, Backend.Events.AnimateActor, (int)data[0], (Activity)data[1]);
                         break;
                     case Events.ActorText:
-                        _parent.HandleEvent(false, Backend.Events.ActorText, _map.actors[(int)data[0]], data[1], data[2]);
+                        _parent.HandleEvent(false, Backend.Events.ActorText, (int)data[0], data[1], data[2]);
 
 
                         // defender, _map.actors[defender].tile.coords, "Evade")
@@ -185,11 +201,14 @@ namespace Gruppe22.Backend
                         _map.actors[(int)data[0]].locked = false;
                         _map.actors[(int)data[0]].moveIndex = (int)data[3];
                         // , defender, _map.actors[defender].tile.coords, _map.actors[defender].health, damage);
+                        _map.actors[(int)data[0]].direction = (Direction)data[4];
                         _parent.HandleEvent(false, Backend.Events.DamageActor, data);
                         break;
                     case Events.KillActor:
                         _map.actors[(int)data[0]].locked = false;
                         _map.actors[(int)data[0]].moveIndex = (int)data[3];
+                        _map.actors[(int)data[0]].health = 0;
+                        _map.actors[(int)data[0]].direction = (Direction)data[4];
                         _parent.HandleEvent(false, Backend.Events.KillActor, data);
                         break;
                     case Events.PlaySound:

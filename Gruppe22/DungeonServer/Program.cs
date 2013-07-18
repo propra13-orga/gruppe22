@@ -285,16 +285,16 @@ namespace DungeonServer
                     SendMessageToAll(PacketType.Chat, NetDeliveryMethod.Unreliable, null, _logic.map.actors[_clients[message.SenderEndpoint].actorID].name + ": " + message.ReadString());
                     break;
 
-                case PacketType.Move: //0x0 steht für Positions-Informationen eines Clienten
+                case PacketType.Move:
                     int actorID = message.ReadInt32();
                     if (actorID < _logic.map.actors.Count)
                     {
                         Direction dir = (Direction)message.ReadInt32();
                         Log("Move to " + dir.ToString());
+                        _logic.map.actors[actorID].moveIndex = message.ReadInt32();
                         _logic.map.PositionActor(_logic.map.actors[actorID], new Coords(message.ReadInt32(), message.ReadInt32()));
-                        _logic.map.actors[actorID].moveIndex = 0;
                         _logic.map.actors[actorID].locked = false;
-                        _logic.HandleEvent(true, Events.MoveActor, actorID, dir);
+                        _logic.HandleEvent(true, Events.MoveActor, actorID, dir, _logic.map.actors[actorID].moveIndex, _logic.map.actors[actorID].tile.coords);
                     }
                     break;
                 case PacketType.FinishedMove:
@@ -319,6 +319,7 @@ namespace DungeonServer
                             if (message.ReadInt32() == _logic.map.actors[actor].moveIndex)
                             {
                                 _logic.HandleEvent(true, Events.FinishedAnimation, actor, activity);
+                                _logic.map.actors[actor].locked = false;
                             }
                         }
                     }
@@ -366,6 +367,12 @@ namespace DungeonServer
                     case "clear":
                         Console.Clear();
                         break;
+                    case "actors":
+                        for (int i = 0; i < _logic.map.actors.Count; ++i)
+                        {
+                            Console.WriteLine(i.ToString() + " " + _logic.map.actors[i].ToString() + " " + _logic.map.actors[i].id + ": " + _logic.map.actors[i].online);
+                        }
+                        break;
                     case "map":
                         Console.WriteLine("Displaying current map:");
                         Console.WriteLine(_logic.map.ToString());
@@ -376,15 +383,20 @@ namespace DungeonServer
                         break;
                     case "new":
                         _logic.GenerateMaps();
+                        foreach (KeyValuePair<IPEndPoint, ClientData> client in _clients)
+                        {
+                            client.Value.actorID = _logic.map.AssignPlayer(client.Value.guid);
+                            _logic.map.actors[client.Value.actorID].online = true;
+                            SendMessage(PacketType.UpdateMap, client.Value.connection, _logic.map.ToXML(), client.Value.actorID);
+                        }
                         Console.WriteLine("New Maps created.");
-                        // Karte laden!
-                        // Karte an Spieler pushen!
+                        // TODO: Karte laden!
+
                         break;
                     default:
                         Console.WriteLine("Unknown command.");
                         break;
                 }
-                Console.ReadLine();
             }
         }
         #endregion
@@ -407,19 +419,19 @@ namespace DungeonServer
                 switch (eventID)
                 {
                     case Events.RejectMove:
-                        SendMessageToAll(PacketType.Move, NetDeliveryMethod.ReliableOrdered, null, (int)data[0], ((Coords)data[1]).x, ((Coords)data[1]).y, (int)((Direction)data[2]), _logic.map.actors[(int)data[0]].moveIndex, ((Coords)data[1]).x, ((Coords)data[1]).y);
+                        SendMessageToAll(PacketType.Move, NetDeliveryMethod.ReliableOrdered, null, (int)data[0], (int)((Direction)data[1]), _logic.map.actors[(int)data[0]].moveIndex, ((Coords)data[3]).x, ((Coords)data[3]).y, ((Coords)data[4]).x, ((Coords)data[4]).y);
                         break;
                     case Events.MoveActor:
                         _logic.map.actors[(int)data[0]].moveIndex += 1;
                         //      if ((int)data[0] == 1)
-                        SendMessageToAll(PacketType.Move, NetDeliveryMethod.ReliableOrdered, null, (int)data[0], ((Coords)data[1]).x, ((Coords)data[1]).y, (int)((Direction)data[2]), _logic.map.actors[(int)data[0]].moveIndex, ((Coords)data[3]).x, ((Coords)data[3]).y);
+                        SendMessageToAll(PacketType.Move, NetDeliveryMethod.ReliableOrdered, null, (int)data[0], (int)((Direction)data[1]), _logic.map.actors[(int)data[0]].moveIndex, ((Coords)data[3]).x, ((Coords)data[3]).y, ((Coords)data[4]).x, ((Coords)data[4]).y);
                         break;
                     case Events.Disconnect:
                         HandleEvent(true, Events.Network);
                         break;
                     case Events.Attack:
                         _logic.map.actors[(int)data[0]].moveIndex += 1;
-                        SendMessageToAll(PacketType.Animate, NetDeliveryMethod.ReliableOrdered, null, (int)data[0], (int)Activity.Attack, _logic.map.actors[(int)data[0]].moveIndex);
+                        SendMessageToAll(PacketType.Animate, NetDeliveryMethod.ReliableOrdered, null, (int)data[0], (int)Activity.Attack, _logic.map.actors[(int)data[0]].moveIndex, (int)_logic.map.actors[(int)data[0]].direction);
                         break;
                     case Events.ActorText:
                         SendMessageToAll(PacketType.ActorText, NetDeliveryMethod.ReliableOrdered, null, ((int)data[0]),
@@ -430,11 +442,11 @@ namespace DungeonServer
                     case Events.DamageActor:
                         _logic.map.actors[(int)data[0]].moveIndex += 1;
                         // , defender, _map.actors[defender].tile.coords, _map.actors[defender].health, damage);
-                        SendMessageToAll(PacketType.DamageActor, NetDeliveryMethod.ReliableOrdered, null, (int)data[0], ((Coords)data[1]).x, ((Coords)data[1]).y, ((int)data[3]), _logic.map.actors[(int)data[0]].moveIndex);
+                        SendMessageToAll(PacketType.DamageActor, NetDeliveryMethod.ReliableOrdered, null, (int)data[0], ((Coords)data[1]).x, ((Coords)data[1]).y, ((int)data[3]), _logic.map.actors[(int)data[0]].moveIndex, (int)_logic.map.actors[(int)data[0]].direction);
                         break;
                     case Events.KillActor:
                         _logic.map.actors[(int)data[0]].moveIndex += 1;
-                        SendMessageToAll(PacketType.KillActor, NetDeliveryMethod.ReliableOrdered, null, (int)data[0], ((Coords)data[1]).x, ((Coords)data[1]).y, ((int)data[3]), _logic.map.actors[(int)data[0]].moveIndex);
+                        SendMessageToAll(PacketType.KillActor, NetDeliveryMethod.ReliableOrdered, null, (int)data[0], ((Coords)data[1]).x, ((Coords)data[1]).y, ((int)data[3]), _logic.map.actors[(int)data[0]].moveIndex, (int)_logic.map.actors[(int)data[0]].direction);
                         break;
                     case Events.ChangeStats:
                         break;
@@ -465,14 +477,14 @@ namespace DungeonServer
                         SendMessageToAll(PacketType.Dialog, NetDeliveryMethod.ReliableOrdered, null, (int)data[1], (string)data[2]);
                         break;
                     case Events.Shop:
-                        SendMessageToAll(PacketType.Shop, NetDeliveryMethod.ReliableOrdered, null, (int)(((Actor)data[1]).id), (int)(((Actor)data[2]).id));
+                        SendMessageToAll(PacketType.Shop, NetDeliveryMethod.ReliableOrdered, null, (int)(((Actor)data[0]).id), (int)(((Actor)data[1]).id));
                         break;
                     case Events.SetItemTiles:
                         break;
                     case Events.Checkpoint:
                         break;
                     case Events.GameOver:
-                        SendMessageToAll(PacketType.GameOver, NetDeliveryMethod.ReliableOrdered, null);
+                        SendMessageToAll(PacketType.GameOver, NetDeliveryMethod.ReliableOrdered, null, null);
                         break;
                     case Events.FinishedAnimation:
                         break;
@@ -525,17 +537,21 @@ namespace DungeonServer
                 _config.EnableMessageType(NetIncomingMessageType.DiscoveryRequest);
                 _config.EnableMessageType(NetIncomingMessageType.ConnectionApproval);
                 _config.Port = 666;
-                _config.PingInterval = 90f;
-                _config.ConnectionTimeout = 90f;
+                _config.PingInterval = 0.25f;
+                _config.ConnectionTimeout = 20f;
+
                 _config.MaximumHandshakeAttempts = 3;
                 _config.ResendHandshakeInterval = 5;
                 _config.UseMessageRecycling = true;
                 _config.EnableUPnP = true;
                 _config.AcceptIncomingConnections = false;
 
+
                 _server = new NetServer(_config);
 
                 _server.Start();
+                _server.UPnP.ForwardPort(666, "Dungeon Crawler");
+
             }
             catch (Exception ex)
             {

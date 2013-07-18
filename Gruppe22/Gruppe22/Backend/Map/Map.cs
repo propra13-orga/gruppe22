@@ -975,6 +975,11 @@ namespace Gruppe22.Backend
                                                 actor.Load(xmlr);
                                                 break;
                                         }
+                                        while (actor.id > _actors.Count - 1)
+                                        {
+                                            _actors.Add(new Player());
+                                            _actors[_actors.Count - 1].id = _actors.Count - 1;
+                                        }
 
                                         if (!(actor is Player))
                                         {
@@ -982,17 +987,25 @@ namespace Gruppe22.Backend
                                             actor.tile = tile2;
                                             tile2.enabled = (actor.health > 0);
                                             tile.Add(tile2);
-                                            _actors.Add(actor);
+                                            _actors[actor.id] = actor;
                                             _updateTiles.Add(tile.coords);
                                         }
                                         else
                                         {
                                             if (players.Count > 0)
                                             {
-                                                if (!resetPlayer)
-                                                    actor.copyFrom(players[0]);
-                                                players.RemoveAt(0);
-
+                                                bool found = false;
+                                                for (int i = 0; i < players.Count; ++i)
+                                                {
+                                                    if (players[i].GUID == actor.GUID)
+                                                    {
+                                                        if (!resetPlayer)
+                                                            actor.copyFrom(players[0]);
+                                                        players.RemoveAt(i);
+                                                        found = true;
+                                                        break;
+                                                    }
+                                                }
                                             }
 
                                             if (!resetPlayer)
@@ -1006,10 +1019,9 @@ namespace Gruppe22.Backend
                                                 actortile.enabled = (actor.health > 0);
                                                 actortile.parent = this[targetCoords];
                                                 this[targetCoords].Add(actortile);
-
-                                                _actors.Add(actor);
-
+                                                _actors[actor.id] = actor;
                                                 _updateTiles.Add(targetCoords);
+                                                Uncover(actors[actor.id].tile.coords, actors[actor.id].viewRange);
                                             }
                                             else
                                             {
@@ -1022,8 +1034,9 @@ namespace Gruppe22.Backend
                                                 actortile.enabled = (actor.health > 0);
                                                 actortile.parent = tile;
                                                 tile.Add(actortile);
-                                                _actors.Add(actor);
+                                                _actors[actor.id] = actor;
                                                 _updateTiles.Add(tile.coords);
+                                                Uncover(actors[actor.id].tile.coords, actors[actor.id].viewRange);
                                             }
 
                                         }
@@ -1048,24 +1061,15 @@ namespace Gruppe22.Backend
             }
             while (players.Count > 0)
             {
-
                 ActorTile actortile = new ActorTile(this[targetCoords], players[0]);
                 players[0].tile = actortile;
+                players[0].id = _actors.Count;
                 actortile.enabled = (players[0].health > 0);
                 actortile.parent = this[targetCoords];
                 this[targetCoords].Add(actortile);
-
                 _actors.Add(players[0]);
-
                 _updateTiles.Add(targetCoords);
                 players.RemoveAt(0);
-            }
-
-            for (int i = 0; i < _actors.Count; ++i)
-            {
-                _actors[i].id = i;
-                if (_actors[i] is Player) Uncover(actors[i].tile.coords, actors[i].viewRange);
-
             }
         }
 
@@ -1136,6 +1140,7 @@ namespace Gruppe22.Backend
             }
             Player temp = new Player();
             _actors.Add(temp);
+            temp.id = _actors.Count - 1;
             int newID = _actors.Count - 1;
             temp.online = true;
             temp.tile = new ActorTile(this[1, 1], temp);

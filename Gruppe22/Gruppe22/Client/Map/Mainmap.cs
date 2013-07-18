@@ -139,9 +139,9 @@ namespace Gruppe22.Client
                     case Backend.Events.MoveActor:
                         {
                             int id = (int)data[0];
-                            Backend.Coords coords = (Backend.Coords)data[1];
-                            if((data.Length>3)&&(data[3] is Backend.Coords))
-                                _actors[id].position = _map2screen((Backend.Coords)data[3]); // Teleport user
+                            Backend.Coords coords = (Backend.Coords)data[3];
+                            if ((data.Length > 4) && (data[4] is Backend.Coords))
+                                _actors[id].position = _map2screen((Backend.Coords)data[4]); // Teleport user
                             _actors[id].target = _map2screen(coords);
                         };
                         break;
@@ -169,7 +169,7 @@ namespace Gruppe22.Client
                             bool isLock = true;
                             if (data.Length > 2) delay = (bool)data[2];
                             if (data.Length > 3)
-                                _parent.HandleEvent(false, Backend.Events.MoveActor, id, _map.actors[id].tile.coords, (Backend.Direction)data[3]);
+                                _parent.HandleEvent(false, Backend.Events.MoveActor, id, (Backend.Direction)data[3], _map.actors[id].moveIndex, _map.actors[id].tile.coords);
                             if ((activity == Backend.Activity.Die) || (activity == Backend.Activity.Hit))
                             {
                                 _actors[id].effect = new MapEffect(_environment[2][1], new Backend.Coords(_actors[id].position.x + 7, _actors[id].position.y + 2));
@@ -1176,7 +1176,7 @@ namespace Gruppe22.Client
                         {
                             if (!_actors[_playerID].isMoving)
                             {
-                                _parent.HandleEvent(true, Backend.Events.MoveActor, _playerID, Backend.Map.WhichWayIs(_highlightedTile, _map.actors[_playerID].tile.coords));
+                                _parent.HandleEvent(true, Backend.Events.MoveActor, _playerID, Backend.Map.WhichWayIs(_highlightedTile, _map.actors[_playerID].tile.coords), _map.actors[_playerID].moveIndex, _map.actors[_playerID].tile.coords);
                             }
                         }
 
@@ -1302,7 +1302,7 @@ namespace Gruppe22.Client
             // 3. Moving entities (player, NPCs, enemies)
             _actors = new List<ActorView>();
             _effects = new List<MapEffect>();
-           
+
             resetActors();
             _floatnumbers = new List<FloatNumber>();
             _projectiles = new List<Projectile>();
