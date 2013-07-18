@@ -140,6 +140,8 @@ namespace Gruppe22.Client
                         {
                             int id = (int)data[0];
                             Backend.Coords coords = (Backend.Coords)data[1];
+                            if((data.Length>3)&&(data[3] is Backend.Coords))
+                                _actors[id].position = _map2screen((Backend.Coords)data[3]); // Teleport user
                             _actors[id].target = _map2screen(coords);
                         };
                         break;

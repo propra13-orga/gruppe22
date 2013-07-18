@@ -1009,6 +1009,42 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
+        /// Write all data as an XML-string
+        /// </summary>
+        /// <returns></returns>
+        public string ToXML()
+        {
+            StringBuilder output = new StringBuilder("");
+            XmlWriter xmlw = XmlWriter.Create(output);
+            xmlw.WriteStartDocument();
+            Save(xmlw);
+            xmlw.WriteEndDocument();
+            xmlw.Close();
+            string result = output.ToString();
+            result = result.Trim();
+            result = result.Replace("  ", " ");
+            result = result.Replace(Environment.NewLine, " ");
+            result = result.Replace('\0', ' ');
+            return result;
+        }
+
+
+        /// <summary>
+        /// Get character data from an XML-string
+        /// </summary>
+        /// <param name="xml"></param>
+        public Actor FromXML(string input)
+        {
+            XmlReaderSettings settings = new XmlReaderSettings();
+            settings.IgnoreWhitespace = true;
+            settings.IgnoreComments = true;
+            XmlReader xmlr = XmlReader.Create(new System.IO.StringReader(input));
+            Load(xmlr);
+            xmlr.Close();
+            return this;
+        }
+
+        /// <summary>
         /// Method to save an actor in an XML-file.
         /// Just writes every property to the file.
         /// </summary>

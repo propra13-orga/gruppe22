@@ -71,12 +71,14 @@ namespace DungeonServer
                         response.Write(element.ToString());
                 }
             }
-
+            List<NetConnection> Recipients = new List<NetConnection>();
             foreach (KeyValuePair<IPEndPoint, ClientData> client in _clients)
             {
                 if (client.Key != exclude)
-                    _server.SendMessage(response, client.Value.connection, method);
+                    Recipients.Add(client.Value.connection);
             }
+            _server.SendMessage(response, Recipients, method, 0);
+
 
         }
 
@@ -148,14 +150,6 @@ namespace DungeonServer
                         {
                             bool allow = true;
 
-                            if (_clients.ContainsKey(message.SenderEndpoint))
-                            {
-                                message.SenderConnection.Deny("Only one connection per IP is allowed.");
-                                Log(message.SenderEndpoint + " denied (IP in use).");
-
-                                allow = false;
-                                break;
-                            }
                             string guid = "";
                             if (message.SenderConnection.RemoteHailMessage != null)
                             {
@@ -166,10 +160,12 @@ namespace DungeonServer
                                 for (int i = 0; i < _clients.Count; ++i)
                                 {
                                     if (_clients.ElementAt(i).Value.guid == guid)
+                                    {
                                         message.SenderConnection.Deny("The GUID is already in use.");
-                                    Log(message.SenderEndpoint + " denied (GUID in use).");
+                                        Log(message.SenderEndpoint + " denied (GUID in use).");
 
-                                    allow = false;
+                                        allow = false;
+                                    }
                                     break;
                                 }
                             }
@@ -188,6 +184,7 @@ namespace DungeonServer
                                 }
                                 newClient.actorID = _logic.map.AssignPlayer(guid);
                                 _clients.Add(message.SenderEndpoint, newClient);
+                                SendMessageToAll(PacketType.AddActor, NetDeliveryMethod.ReliableOrdered, message.SenderEndpoint, newClient.actorID, _logic.map.actors[newClient.actorID].tile.coords.x, _logic.map.actors[newClient.actorID].tile.coords.y, _logic.map.actors[newClient.actorID].ToXML());
 
                                 Log(message.SenderEndpoint + " approved.");
                             }
@@ -218,6 +215,8 @@ namespace DungeonServer
                                         ResetActors();
                                     }
                                     _logic.map.actors[_clients[message.SenderEndpoint].actorID].online = false;
+                                    SendMessageToAll(PacketType.DisableActor, NetDeliveryMethod.ReliableOrdered, message.SenderEndpoint, _clients[message.SenderEndpoint].actorID);
+
                                     _clients.Remove(message.SenderEndpoint);
                                     Log(message.SenderEndpoint + " disconnected!");
                                     break;
@@ -526,10 +525,10 @@ namespace DungeonServer
                 _config.EnableMessageType(NetIncomingMessageType.DiscoveryRequest);
                 _config.EnableMessageType(NetIncomingMessageType.ConnectionApproval);
                 _config.Port = 666;
-                _config.PingInterval = 10f;
+                _config.PingInterval = 90f;
                 _config.ConnectionTimeout = 90f;
                 _config.MaximumHandshakeAttempts = 3;
-                _config.ResendHandshakeInterval = 5; 
+                _config.ResendHandshakeInterval = 5;
                 _config.UseMessageRecycling = true;
                 _config.EnableUPnP = true;
                 _config.AcceptIncomingConnections = false;

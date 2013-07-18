@@ -229,7 +229,10 @@ namespace Gruppe22.Client
 
             if ((_status == GameStatus.Running) || (_logic is NetLogic))
                 _logic.Update(gameTime);
-
+            if ((MediaPlayer.State == MediaState.Paused) || ((MediaPlayer.State == MediaState.Stopped)))
+            {
+                MediaPlayer.Play(_backMusic);
+            }
             if (_status != GameStatus.NoRedraw)
             {
                 if ((_logic.map.actors[_playerID].health < 1) && (_status != Backend.GameStatus.GameOver))
@@ -854,6 +857,12 @@ namespace Gruppe22.Client
                 // Backend to Frontend (received)
                 switch (eventID)
                 {
+                    case Backend.Events.AddPlayer:
+                        _mainmap1.resetActors();
+                        break;
+                    case Backend.Events.RemovePlayer:
+                        _mainmap1.resetActors();
+                        break;
                     case Backend.Events.Disconnect:
                         HandleEvent(true, Events.Network);
                         break;
@@ -958,11 +967,28 @@ namespace Gruppe22.Client
         /// </summary>
         private void _PlayMusic()
         {
-            MediaPlayer.IsRepeating = true;
-            _backMusic = Content.Load<Song>(_logic.map.music); // Todo: *.mp3
-            MediaPlayer.Play(_backMusic);
-            MediaPlayer.IsRepeating = true;
+            MediaPlayer.IsRepeating = false;
+            Song _tmp = Content.Load<Song>(_logic.map.music); // Todo: *.mp3
+
+            if (_tmp != _backMusic)
+            {
+                MediaPlayer.Stop();
+                _backMusic = _tmp;
+                MediaPlayer.Play(_backMusic);
+                MediaPlayer.MediaStateChanged += MediaPlayer_MediaStateChanged;
+            }
+            else MediaPlayer.Resume();
+            MediaPlayer.IsRepeating = false;
+
             MediaPlayer.Volume = (float)0.3;
+        }
+
+        void MediaPlayer_MediaStateChanged(object sender, EventArgs e)
+        {
+            if ((MediaPlayer.State == MediaState.Paused) || ((MediaPlayer.State == MediaState.Stopped)))
+            {
+                MediaPlayer.Play(_backMusic);
+            }
         }
 
 

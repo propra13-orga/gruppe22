@@ -117,6 +117,32 @@ namespace Gruppe22.Backend
                 switch (eventID)
                 {
 
+                    case Events.RemovePlayer:
+                        _map.actors[(int)data[0]].online = false;
+                        _parent.HandleEvent(false, Events.AddPlayer);
+                        break;
+                    case Events.AddPlayer:
+                        Actor actor = (Actor)data[2];
+                        actor.id = (int)data[0];
+                        if (_map.actors.Count < (int)data[0])
+                        {
+
+                            ActorTile actortile = new ActorTile(_map[(Coords)data[1]], actor);
+                            actor.tile = actortile;
+                            actortile.enabled = (actor.health > 0);
+                            actortile.parent = _map[(Coords)data[1]];
+                            _map[(Coords)data[1]].Add(actortile);
+                            _map.actors.Add(actor);
+                            _map.updateTiles.Add((Coords)data[1]);
+
+                        }
+                        else
+                        {
+                            _map.actors[(int)data[0]] = (Actor)data[2];
+                        }
+                        _map.actors[(int)data[0]].online = true;
+                        _parent.HandleEvent(false, Events.AddPlayer);
+                        break;
                     case Events.ContinueGame:
                         _parent.HandleEvent(true, Backend.Events.ContinueGame, true);
                         break;

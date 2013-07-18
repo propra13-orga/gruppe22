@@ -179,6 +179,7 @@ namespace Gruppe22.Client
 
                                 _connecting = false;
                                 break;
+
                             case NetConnectionStatus.Disconnected:
                                 _connecting = false;
                                 _parent.HandleEvent(false, Backend.Events.ShowMessage, "Disconnected." + message.ReadString(), Color.Red);
@@ -221,6 +222,14 @@ namespace Gruppe22.Client
             PacketType x = (PacketType)type;
             switch (x)
             {
+                case PacketType.DisableActor:
+                    _parent.HandleEvent(false, Backend.Events.RemovePlayer, message.ReadInt32());
+
+                    break;
+
+                case PacketType.AddActor:
+                    _parent.HandleEvent(false, Backend.Events.AddPlayer, (int)message.ReadInt32(), new Coords(message.ReadInt32(), message.ReadInt32()), new Player().FromXML(message.ReadString()));
+                    break;
                 case PacketType.UpdateMap: //Client connected
                     string map = message.ReadString();
                     int addClientId = message.ReadInt16();

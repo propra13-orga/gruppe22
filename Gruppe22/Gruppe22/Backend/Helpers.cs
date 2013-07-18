@@ -24,7 +24,9 @@ namespace Gruppe22.Backend
         Pause,
         Connect,
         Disconnect,
+        DisableActor,
         Move,
+        AddActor,
         UpdateMap,
         AddItem,
         RemoveItem,
@@ -160,6 +162,8 @@ namespace Gruppe22.Backend
     {
         // Central Game Events
         ContinueGame = 0,
+        AddPlayer,
+        RemovePlayer,
         Disconnect,
         Initialize,
         Connect,
