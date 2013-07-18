@@ -99,8 +99,45 @@ namespace Gruppe22.Client
                         _parent.HandleEvent(true, Backend.Events.Settings);
                         break;
                     case Backend.Events.ShowMessage:
+                        if ((((string)data[0]).ToLower().Contains("guid")) && (((string)data[0]).ToLower().Contains("disconnected")))
+                        {
+                            foreach (UIElement child in _children)
+                            {
+                                child.Visible = false;
+                            }
+                            _children.Add(new YesNoDialog(this, _spriteBatch, _content, _displayRect, "Every client needs a unique GUID.\nYour GUID is already in use.\n Generate a new GUID?"));
+                        }
                         _listPlayers.AddLine(data[0].ToString(), data.Length > 1 ? data[1] : null);
                         return;
+                }
+            }
+            else
+            {
+                switch (eventID)
+                {
+                    case Backend.Events.ButtonPressed:
+                        switch ((Backend.Buttons)data[0])
+                        {
+                            case Backend.Buttons.Yes:
+                                _children.RemoveAt(_children.Count - 1);
+                                foreach (UIElement child in _children)
+                                {
+                                    child.Visible = true;
+                                }
+                                _playerName.text = Guid.NewGuid().ToString();
+                                HandleEvent(false, Backend.Events.ButtonPressed, Backend.Buttons.Connect);
+                                
+                                return;
+                            case Backend.Buttons.No:
+                                _children.RemoveAt(_children.Count - 1);
+                                foreach (UIElement child in _children)
+                                {
+                                    child.Visible = true;
+                                }
+                                return;
+
+                        }
+                        break;
                 }
             }
             base.HandleEvent(DownStream, eventID, data);

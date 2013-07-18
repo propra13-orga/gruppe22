@@ -238,6 +238,8 @@ namespace Gruppe22.Backend
     {
         Close,
         TwoPlayers,
+        Yes,
+        No,
         SinglePlayer,
         Settings,
         Restart,
