@@ -370,7 +370,7 @@ namespace Gruppe22.Client
                             _modify.Show();
 
                             _selected2 = _top2 + clicked - 1;
-                            if (_seller.gold > _buyer.inventory[_selected2].value)
+                            if ((_seller.gold > _buyer.inventory[_selected2].value) && (_buyer.inventory[_selected2].value != 0))
                                 _sell.Show();
                             else
                                 _sell.Hide();
@@ -403,7 +403,7 @@ namespace Gruppe22.Client
                     switch ((ShopButtons)(int)data[0])
                     {
                         case ShopButtons.Sell:
-                            if (_selected2 > -1)
+                            if ((_selected2 > -1) && (_buyer.inventory[_selected2].value != 0))
                             {
                                 Backend.Item tmp = _buyer.inventory[_selected2];
                                 _buyer.gold += tmp.value;
@@ -443,7 +443,7 @@ namespace Gruppe22.Client
                             }
                             break;
                         case ShopButtons.Buy:
-                            if (_selected1 > -1)
+                            if ((_selected1 > -1) && _seller.inventory[_selected1].value != 0)
                             {
                                 Backend.Item tmp = _seller.inventory[_selected1];
                                 _buyer.gold -= tmp.value;

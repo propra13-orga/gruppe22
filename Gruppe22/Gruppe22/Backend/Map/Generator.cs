@@ -157,7 +157,7 @@ namespace Gruppe22.Backend
                 {
                     ClearTile(srcCoords.x + x, srcCoords.y + y);
 
-                    if ((x < 2) && (y < 2) && (y > -2) && (x > -2))
+                    if (!up && (x < 2) && (y < 2) && (y > -2) && (x > -2))
                         _tiles[srcCoords.y + y][srcCoords.x + x].overlay.Add(new WallTile(_tiles[srcCoords.y + y][srcCoords.x + x], r));
                 }
             }
@@ -169,11 +169,12 @@ namespace Gruppe22.Backend
             if (!up)
             {
                 ClearTile(srcCoords.x - 1, srcCoords.y);
-
                 _tiles[srcCoords.y][srcCoords.x - 1].overlay.Add(new DoorTile(_tiles[srcCoords.y][srcCoords.x - 1], true, _level));
             }
             else
             {
+                ClearTile(srcCoords.x - 1, srcCoords.y);
+
                 ClearTile(srcCoords.x + 1, srcCoords.y);
             }
 

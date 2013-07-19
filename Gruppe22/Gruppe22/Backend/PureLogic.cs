@@ -928,7 +928,7 @@ namespace Gruppe22.Backend
                 LevelStart = rooms.Count();
 
                 // Phase 1: Generate maze like rooms
-                int totalRooms = _random.Next(10) + 3;
+                int totalRooms = _random.Next(3) + 3;
                 string _name = null;
                 for (int i = 0; i < totalRooms; ++i)
                 {

@@ -845,10 +845,12 @@ namespace Gruppe22.Client
                         if (_map[x, y].teleport.down)
                         {
                             _spriteBatch.Draw(_environment[0][12].animationTexture, new Rectangle(_map2screen(x, y).x, _map2screen(x, y).y - 92, _environment[0][12].animationRect.Width, _environment[0][12].animationRect.Height), _environment[0][12].animationRect, ((y == (int)_highlightedTile.y) && (x == (int)_highlightedTile.x)) ? Color.Red : Color.White);
-                        }
-                        else
+                        };
+
+                    if ((x != _map.width - 2) && (y != _map.height - 2) && (_map[x + 1, y + 1].hasTeleport))
+                        if (!_map[x + 1, y + 1].teleport.down)
                         {
-                            _spriteBatch.Draw(_environment[0][18].animationTexture, new Rectangle(_map2screen(x, y).x - 16, _map2screen(x, y).y - 32, _environment[0][18].animationRect.Width, _environment[0][18].animationRect.Height), _environment[0][18].animationRect, ((y == (int)_highlightedTile.y) && (x == (int)_highlightedTile.x)) ? Color.Red : Color.White);
+                            _spriteBatch.Draw(_environment[0][14].animationTexture, new Rectangle(_map2screen(x + 1, y + 1).x - 16, _map2screen(x + 1, y + 1).y - 32, _environment[0][14].animationRect.Width, _environment[0][14].animationRect.Height), _environment[0][14].animationRect, ((y == (int)_highlightedTile.y) && (x == (int)_highlightedTile.x)) ? Color.Red : Color.White);
                         }
 
                     // show special objects
