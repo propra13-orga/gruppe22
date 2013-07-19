@@ -207,7 +207,7 @@ namespace Gruppe22.Client
                         case ButtonStatus.downon:
                             _spriteBatch.Draw(_background, _displayRect, new Rectangle(39, 6, 1, 1), Color.Black);
                             _spriteBatch.Draw(_background, new Rectangle(_displayRect.X + 1, _displayRect.Y + 1, _displayRect.Width - 2, _displayRect.Height - 2), new Rectangle(39, 6, 1, 1), _focus ? Color.Blue : Color.White);
-                            _spriteBatch.DrawString(_font, _label, new Vector2(_displayRect.Left + (_displayRect.Width - _textPos.X) / 2, _displayRect.Top + (_displayRect.Height - _textPos.Y) / 2), Color.Black);
+                            _spriteBatch.DrawString(_font, _label, new Vector2(_displayRect.Left + (_displayRect.Width - _textPos.X) / 2, _displayRect.Top + (_displayRect.Height - _textPos.Y) / 2), _focus ? Color.White: Color.Black);
                             break;
                         default:
                             _spriteBatch.Draw(_background, _displayRect, new Rectangle(39, 6, 1, 1), _focus ? Color.Blue : Color.White);
@@ -278,7 +278,8 @@ namespace Gruppe22.Client
             : base(parent, spriteBatch, content, displayRect)
         {
             _background = _content.Load<Texture2D>("Minimap");
-            _font = _content.Load<SpriteFont>("font");
+            _displayRect.Height = 32;
+            _font = _content.Load<SpriteFont>("smallfont");
             _label = label;
             _id = id;
             _bstat = ButtonStatus.normal;

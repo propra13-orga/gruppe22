@@ -80,7 +80,7 @@ namespace Gruppe22.Backend
                 switch (eventID)
                 {
                     case Events.ChangeMap:
-                        _map.actors.Clear();
+                        _map.ClearActors();
                         _map.FromXML((string)data[0], null, true);
                         _parent.HandleEvent(true, Events.ChangeMap, (int)data[1]);
                         break;

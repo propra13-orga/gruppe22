@@ -109,7 +109,13 @@ namespace Gruppe22.Client
                         }
                         _listPlayers.AddLine(data[0].ToString(), data.Length > 1 ? data[1] : null);
                         return;
+                    case Backend.Events.TextEntered:
+                        if (_focusID == 0) ChangeFocus();
+                        else HandleEvent(false, Backend.Events.ButtonPressed, Backend.Buttons.Connect);
+                        break;
                 }
+
+
             }
             else
             {
@@ -126,7 +132,7 @@ namespace Gruppe22.Client
                                 }
                                 _playerName.text = Guid.NewGuid().ToString();
                                 HandleEvent(false, Backend.Events.ButtonPressed, Backend.Buttons.Connect);
-                                
+
                                 return;
                             case Backend.Buttons.No:
                                 _children.RemoveAt(_children.Count - 1);
@@ -158,20 +164,13 @@ namespace Gruppe22.Client
                 Properties.Settings.Default.guid = myGUID;
                 Properties.Settings.Default.Save();
             }
-            _ipEntry = new TextInput(this, spriteBatch, content, new Rectangle(_displayRect.Left + 5, _displayRect.Top + 5, _displayRect.Width - 250, 30), "Server:", "localhost", "Enter a server to connect to or localhost to test locally", -1, true);
-            _playerName = new TextInput(this, spriteBatch, content, new Rectangle(_displayRect.Left + 5, _displayRect.Top + 50, _displayRect.Width - 250, 30), "Computer-ID:", myGUID, "Enter a unique ID for your computer", -1, true);
-            _listPlayers = new Statusbox(this, spriteBatch, content, new Rectangle(_displayRect.Left + 5, _displayRect.Top + 100, _displayRect.Width - 10, _displayRect.Height - 160), true, true);
+            AddChild(_ipEntry = new TextInput(this, spriteBatch, content, new Rectangle(_displayRect.Left + 5, _displayRect.Top + 5, _displayRect.Width - 250, 30), "Server:", "localhost", "Enter a server to connect to or localhost to test locally", -1, true));
+            AddChild(_playerName = new TextInput(this, spriteBatch, content, new Rectangle(_displayRect.Left + 5, _displayRect.Top + 50, _displayRect.Width - 250, 30), "Computer-ID:", myGUID, "Enter a unique ID for your computer", -1, true));
+            AddChild(_listPlayers = new Statusbox(this, spriteBatch, content, new Rectangle(_displayRect.Left + 5, _displayRect.Top + 100, _displayRect.Width - 10, _displayRect.Height - 160), true, true));
             //_ok = new Button(this, spriteBatch, content, new Rectangle(_displayRect.Right - 90, _displayRect.Bottom - 50, 80, 40), "Ok", (int)Backend.Buttons.Close);
-            _launchServer = new Button(this, spriteBatch, content, new Rectangle(_displayRect.Right - 210, _displayRect.Top + 5, 200, 40), "Launch Server", (int)Backend.Buttons.StartServer);
-            _cancel = new Button(this, spriteBatch, content, new Rectangle(_displayRect.Left + 10, _displayRect.Bottom - 50, 80, 40), "Cancel", (int)Backend.Buttons.Cancel);
-            _connect = new Button(this, spriteBatch, content, new Rectangle(_displayRect.Right - 160, _displayRect.Top + 50, 150, 40), "Connect", (int)Backend.Buttons.Connect);
-            _children.Add(_ipEntry);
-            _children.Add(_launchServer);
-            _children.Add(_playerName);
-            _children.Add(_connect);
-            _children.Add(_listPlayers);
-            // _children.Add(_ok);
-            _children.Add(_cancel);
+            AddChild(_launchServer = new Button(this, spriteBatch, content, new Rectangle(_displayRect.Right - 210, _displayRect.Top + 5, 200, 40), "Launch Server", (int)Backend.Buttons.StartServer));
+            AddChild(_cancel = new Button(this, spriteBatch, content, new Rectangle(_displayRect.Left + 10, _displayRect.Bottom - 50, 80, 40), "Cancel", (int)Backend.Buttons.Cancel));
+            AddChild(_connect = new Button(this, spriteBatch, content, new Rectangle(_displayRect.Right - 160, _displayRect.Top + 50, 150, 40), "Connect", (int)Backend.Buttons.Connect));
             if (netplayer == null)
             {
                 _network = new NetPlayer(this);

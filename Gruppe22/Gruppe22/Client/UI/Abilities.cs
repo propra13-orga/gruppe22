@@ -33,7 +33,8 @@ namespace Gruppe22.Client
             {
                 y -= _displayRect.Top;
                 y = y / (_height + 3);
-                result = y + (_page * _rows);
+                if (y >= 0)
+                    result = y + (_page * _rows);
             }
             if ((x > _displayRect.Right - 30) || (result > _actor.abilities.Count)) return -1;
 

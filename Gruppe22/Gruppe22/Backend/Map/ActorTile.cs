@@ -88,6 +88,10 @@ namespace Gruppe22.Backend
                 actor.Save(xmlw);
                 xmlw.WriteEndElement();
             }
+            else
+            {
+                System.Diagnostics.Debug.WriteLine("ERROR");
+            }
         }
 
 
@@ -270,7 +274,8 @@ namespace Gruppe22.Backend
                     if (selected != Direction.None)
                     {
                         _lastDir = selected;
-                        ((Backend.IHandleEvent)parent).HandleEvent(false, Backend.Events.MoveActor, actor.id, selected);
+                        if (enabled)
+                            ((Backend.IHandleEvent)parent).HandleEvent(false, Backend.Events.MoveActor, actor.id, selected);
                     }
                     _working = false;
 

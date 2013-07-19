@@ -229,7 +229,7 @@ namespace Gruppe22.Client
 
             if ((_status == GameStatus.Running) || (_logic is NetLogic))
                 _logic.Update(gameTime);
-            if ((MediaPlayer.State == MediaState.Paused) || ((MediaPlayer.State == MediaState.Stopped)))
+            if ((_backMusic != null) && ((MediaPlayer.State == MediaState.Paused) || ((MediaPlayer.State == MediaState.Stopped))))
             {
                 MediaPlayer.Play(_backMusic);
             }
@@ -567,7 +567,13 @@ namespace Gruppe22.Client
                             }
                         }
                         break;
-
+                    case Events.Initialize:
+                        if (_logic is PureLogic)
+                        {
+                            _logic.HandleEvent(true, Events.Initialize);
+                            _logic.HandleEvent(true, Events.ContinueGame);
+                        }
+                        break;
                     case Events.TileEntered:
                         _logic.HandleEvent(true, Events.TileEntered, data);
                         break;
@@ -1039,8 +1045,6 @@ namespace Gruppe22.Client
             stat.AddLine(message);
             _messagebox.AddChild(stat);
             _messagebox.AddChild(new Client.Button(_messagebox, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width) / 2.0f) - 65, (int)(GraphicsDevice.Viewport.Height / 2.0f) + 30, 130, 40), "Goodbye!", (int)Backend.Buttons.Close));
-            //  _mainMenu.AddChild(new ProgressBar(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) + 80, 300, 30), ProgressStyle.Block,100,2));
-
             _interfaceElements.Add(_messagebox);
             _messagebox.ChangeFocus();
             _focus = _interfaceElements[_interfaceElements.Count - 1];
@@ -1135,6 +1139,16 @@ _graphics.GraphicsDevice.PresentationParameters.BackBufferHeight);
 
         }
 
+        public static Rectangle center(Rectangle ViewPort, int width = 200, int height = 400, int top = -1)
+        {
+            return new Rectangle(ViewPort.Left + (ViewPort.Width - width) / 2, ViewPort.Top + ((top != -1) ? top : ((ViewPort.Height - height) / 2)), width, height);
+        }
+
+
+        public static Rectangle inner(Rectangle outer, int padding = 10)
+        {
+            return new Rectangle(outer.Left + 10, outer.Top + 10, outer.Width - 20, outer.Height - 20);
+        }
 
 
         /// <summary>
@@ -1143,14 +1157,17 @@ _graphics.GraphicsDevice.PresentationParameters.BackBufferHeight);
         private void _ShowMenu()
         {
             _status = Backend.GameStatus.Paused;
-            Window _mainMenu = new Window(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 180) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) - 250, 320, 500));
+            Rectangle rect = center(GraphicsDevice.Viewport.Bounds, 300, 300);
+            Window _mainMenu = new Window(this, _spriteBatch, Content, rect);
+            rect = inner(rect);
             if (!(_logic is NetLogic))
             {
-                _mainMenu.AddChild(new Button(_mainMenu, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) - 240, 300, 60), "Continue", (int)Backend.Buttons.Close));
-                _mainMenu.AddChild(new Button(_mainMenu, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) - 170, 140, 60), "Restart", (int)Backend.Buttons.Restart));
-                _mainMenu.AddChild(new Button(_mainMenu, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f) + 160, (int)(GraphicsDevice.Viewport.Height / 2.0f) - 170, 140, 60), "New Maps", (int)Backend.Buttons.NewMap));
+                _mainMenu.AddChild(new Button(_mainMenu, _spriteBatch, Content, center(rect, 280, 32, 0), "Continue", (int)Backend.Buttons.Close));
+                _mainMenu.AddChild(new Button(_mainMenu, _spriteBatch, Content, center(rect, 280, 32, 50), "Restart", (int)Backend.Buttons.Restart));
 
-                _mainMenu.AddChild(new Button(_mainMenu, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) - 100, 140, 60), "Save", (int)Backend.Buttons.Save));
+                _mainMenu.AddChild(new Button(_mainMenu, _spriteBatch, Content, center(rect, 280, 32, 90), "New Maps", (int)Backend.Buttons.NewMap));
+
+                _mainMenu.AddChild(new Button(_mainMenu, _spriteBatch, Content, new Rectangle(rect.Left, rect.Top + 130, 135, 32), "Save", (int)Backend.Buttons.Save));
                 bool hasSave = false;
                 foreach (string dir in Directory.GetDirectories(".\\save"))
                 {
@@ -1162,18 +1179,18 @@ _graphics.GraphicsDevice.PresentationParameters.BackBufferHeight);
                     }
                 }
                 if (hasSave)
-                    _mainMenu.AddChild(new Button(_mainMenu, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f) + 160, (int)(GraphicsDevice.Viewport.Height / 2.0f) - 100, 140, 60), "Restore", (int)Backend.Buttons.Restore));
+                    _mainMenu.AddChild(new Button(_mainMenu, _spriteBatch, Content, new Rectangle(rect.Right - 135, rect.Top + 130, 135, 32), "Restore", (int)Backend.Buttons.Restore));
                 /*
                             _mainMenu.AddChild(new Button(_mainMenu, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) - 30, 140, 60), "Local", (int)Buttons.Local, !_lan));
                             */
             }
-            _mainMenu.AddChild(new Button(_mainMenu, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) - 30, 300, 60), "LAN " + ((_logic is NetLogic) ? "(online)" : "(offline)"), (int)Backend.Buttons.LAN, _lan));
+            _mainMenu.AddChild(new Button(_mainMenu, _spriteBatch, Content, center(rect, 280, 146, 170), "Multiplayer " + ((_logic is NetLogic) ? "(online)" : "(offline)"), (int)Backend.Buttons.LAN, _lan));
             /*
             _mainMenu.AddChild(new Button(_mainMenu, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) + 40, 300, 60), "Settings", (int)Buttons.Settings));
 */
 
-            _mainMenu.AddChild(new Button(_mainMenu, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) + 110, 300, 60), "Credits", (int)Backend.Buttons.Credits));
-            _mainMenu.AddChild(new Button(_mainMenu, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) + 180, 300, 60), "Quit", (int)Backend.Buttons.Quit));
+            _mainMenu.AddChild(new Button(_mainMenu, _spriteBatch, Content, center(rect, 280, 186, 210), "Credits", (int)Backend.Buttons.Credits));
+            _mainMenu.AddChild(new Button(_mainMenu, _spriteBatch, Content, center(rect, 280, 226, 250), "Quit", (int)Backend.Buttons.Quit));
 
             //  _mainMenu.AddChild(new ProgressBar(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) + 80, 300, 30), ProgressStyle.Block,100,2));
 
@@ -1241,19 +1258,41 @@ _graphics.GraphicsDevice.PresentationParameters.BackBufferHeight);
             }
             _status = Backend.GameStatus.GameOver;
             //            _logic.map.Save("savedroom" + _logic.map.id + ".xml");
-            Window _gameOver = new Window(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width) / 2.0f) - 300, (int)(GraphicsDevice.Viewport.Height / 2.0f) - 100, 600, 200));
-            Statusbox stat = new Statusbox(_gameOver, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width) / 2.0f) - 300 + 10, (int)(GraphicsDevice.Viewport.Height / 2.0f) - 70, 590, 110), false, true);
-            stat.AddLine(title + "\n \n" + message);
-            _gameOver.AddChild(stat);
-            _gameOver.AddChild(new Button(_gameOver, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width) / 2.0f) - 300 + 10, (int)(GraphicsDevice.Viewport.Height / 2.0f) + 30, 130, 40), "New Maps", (int)Backend.Buttons.NewMap));
-
-            if (_logic.map.actors[_playerID].lives > 0)
+            Rectangle rect = center(GraphicsDevice.Viewport.Bounds, 500, 150);
+            Window _gameOver = new Window(this, _spriteBatch, Content, rect);
+            Statusbox stat;
+            rect = inner(rect);
+            if (_logic is PureLogic)
             {
-                _gameOver.AddChild(new Button(_gameOver, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width) / 2.0f) - 300 + 170, (int)(GraphicsDevice.Viewport.Height / 2.0f) + 30, 160, 40), "Restore (" + _logic.map.actors[_playerID].lives.ToString() + " left)", (int)Backend.Buttons.Load));
+                _gameOver.AddChild(new Button(_gameOver, _spriteBatch, Content, new Rectangle(rect.Left, rect.Bottom - 40, 80, 32), "New Maps", (int)Backend.Buttons.NewMap));
+
+                if (_logic.map.actors[_playerID].lives > 0)
+                {
+                    _gameOver.AddChild(new Button(_gameOver, _spriteBatch, Content, new Rectangle(rect.Left + 90, rect.Bottom - 40, 150, 32), "Respawn (" + _logic.map.actors[_playerID].lives.ToString() + " left)", (int)Backend.Buttons.Load));
+                }
+                bool hasSave = false;
+                foreach (string dir in Directory.GetDirectories(".\\save"))
+                {
+                    string tmp = dir.ToLower().Trim();
+                    if (tmp.Substring(tmp.LastIndexOf('\\') + 1) != "auto")
+                    {
+                        hasSave = true;
+                        break;
+                    }
+                }
+                if (hasSave)
+                    _gameOver.AddChild(new Button(_gameOver, _spriteBatch, Content, new Rectangle(rect.Right - 215, rect.Bottom - 40, 65, 32), "Restore", (int)Backend.Buttons.Restore));
+                _gameOver.AddChild(new Button(_gameOver, _spriteBatch, Content, new Rectangle(rect.Right - 140, rect.Bottom - 40, 65, 32), "Restart", (int)Backend.Buttons.Restart));
+                _gameOver.AddChild(new Button(_gameOver, _spriteBatch, Content, new Rectangle(rect.Right - 65, rect.Bottom - 40, 65, 32), "Quit", (int)Backend.Buttons.Quit));
             }
-            _gameOver.AddChild(new Button(_gameOver, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width) / 2.0f) - 300 + 600 - 190, (int)(GraphicsDevice.Viewport.Height / 2.0f) + 30, 100, 40), "Restart", (int)Backend.Buttons.Restart));
-            _gameOver.AddChild(new Button(_gameOver, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width) / 2.0f) - 300 + 600 - 80, (int)(GraphicsDevice.Viewport.Height / 2.0f) + 30, 70, 40), "Quit", (int)Backend.Buttons.Quit));
-            //  _mainMenu.AddChild(new ProgressBar(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) + 80, 300, 30), ProgressStyle.Block,100,2));
+            else
+            {
+                _gameOver.AddChild(new Button(_gameOver, _spriteBatch, Content, new Rectangle(rect.Left, rect.Bottom - 40, 80, 32), "Resurrect", (int)Backend.Buttons.Load));
+                _gameOver.AddChild(new Button(_gameOver, _spriteBatch, Content, new Rectangle(rect.Right - 170, rect.Bottom - 40, 80, 32), "Disconnect", (int)Backend.Buttons.Connect));
+                _gameOver.AddChild(new Button(_gameOver, _spriteBatch, Content, new Rectangle(rect.Right - 80, rect.Bottom - 40, 80, 32), "Quit", (int)Backend.Buttons.Quit));
+            }
+            _gameOver.AddChild(stat = new Statusbox(_gameOver, _spriteBatch, Content, center(rect, 450, 200, 0), false, true));
+            stat.AddLine(title + "\n \n" + message);
 
             _interfaceElements.Add(_gameOver);
             _focus = _interfaceElements[_interfaceElements.Count - 1];
@@ -1272,19 +1311,20 @@ _graphics.GraphicsDevice.PresentationParameters.BackBufferHeight);
                 _status = Backend.GameStatus.Running;
             }
             _status = Backend.GameStatus.Paused;
-            Window _about = new Window(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width) / 2.0f) - 300, (int)(GraphicsDevice.Viewport.Height / 2.0f) - 200, 600, 400));
-
-            _about.AddChild(new Button(_about, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width) / 2.0f) - 80, (int)(GraphicsDevice.Viewport.Height / 2.0f) + 140, 160, 40), "Ok", (int)Backend.Buttons.Close));
+            Rectangle rect = center(GraphicsDevice.Viewport.Bounds, 600, 300);
+            Window _about = new Window(this, _spriteBatch, Content, rect);
+            rect = inner(rect);
+            _about.AddChild(new Button(_about, _spriteBatch, Content, new Rectangle(rect.Left + 45, rect.Bottom - 42, rect.Width - 90, 32), "Ok", (int)Backend.Buttons.Close));
 
             //  _mainMenu.AddChild(new ProgressBar(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width - 160) / 2.0f), (int)(GraphicsDevice.Viewport.Height / 2.0f) + 80, 300, 30), ProgressStyle.Block,100,2));
-            Statusbox stat = new Statusbox(_about, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width) / 2.0f) - 300, (int)(GraphicsDevice.Viewport.Height / 2.0f) - 180, 600, 380), false, true);
+            Statusbox stat;
+            _about.AddChild(stat = new Statusbox(_about, _spriteBatch, Content, new Rectangle(rect.Left, rect.Top, rect.Width, rect.Height - 50), false, true));
             stat.AddLine("Dungeon Crawler 2013\n\n Developed by Group 22\n\n" +
                 "*********************************\n\n" +
                 "Music: Video Dungeon Crawl by Kevin MacLeod is licensed under a CC Attribution 3.0\n\n" +
                 "http://incompetech.com/music/royalty-free/index.html?collection=029\n\n" +
                 "Graphics: Tile Graphics by Reiner Prokein\n\n" +
                 "http://www.reinerstilesets.de/de/lizenz/ ");
-            _about.AddChild(stat);
             _interfaceElements.Add(_about);
             _focus = _interfaceElements[_interfaceElements.Count - 1];
 
@@ -1305,7 +1345,7 @@ _graphics.GraphicsDevice.PresentationParameters.BackBufferHeight);
             }
             _status = Backend.GameStatus.Paused;
             _screenshot();
-            FileDialog _fileDialog = new FileDialog(this, _spriteBatch, Content, new Rectangle((int)((GraphicsDevice.Viewport.Width) / 2.0f) - 300, (int)(GraphicsDevice.Viewport.Height / 2.0f) - 200, 600, 400), save);
+            FileDialog _fileDialog = new FileDialog(this, _spriteBatch, Content, center(GraphicsDevice.Viewport.Bounds, 600, 390), save);
             _interfaceElements.Add(_fileDialog);
             _focus = _interfaceElements[_interfaceElements.Count - 1];
 

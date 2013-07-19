@@ -18,9 +18,9 @@ namespace Gruppe22.Client
         public YesNoDialog(Backend.IHandleEvent parent, SpriteBatch spriteBatch, ContentManager content, Rectangle displayRect, string question = "Quit?", string yes = "Yes", string no = "No")
             : base(parent, spriteBatch, content, displayRect)
         {
-            _children.Add(_yes = new Button(this, _spriteBatch, _content, new Rectangle(_displayRect.Right - 85, _displayRect.Bottom - 35, 85, 30), yes, (int)Backend.Buttons.Yes));
-            _children.Add(_no = new Button(this, _spriteBatch, _content, new Rectangle(_displayRect.Left + 5, _displayRect.Bottom - 35, 85, 30), no, (int)Backend.Buttons.No));
-            _children.Add(_question = new Statusbox(this, _spriteBatch, _content, new Rectangle(_displayRect.Left + 10, _displayRect.Top + 10, _displayRect.Width - 20, _displayRect.Height - 60), false, true));
+            AddChild(_yes = new Button(this, _spriteBatch, _content, new Rectangle(_displayRect.Right - 85, _displayRect.Bottom - 35, 85, 30), yes, (int)Backend.Buttons.Yes));
+            AddChild(_no = new Button(this, _spriteBatch, _content, new Rectangle(_displayRect.Left + 5, _displayRect.Bottom - 35, 85, 30), no, (int)Backend.Buttons.No));
+            AddChild(_question = new Statusbox(this, _spriteBatch, _content, new Rectangle(_displayRect.Left + 10, _displayRect.Top + 10, _displayRect.Width - 20, _displayRect.Height - 60), false, true));
             _question.AddLine(question);
             ChangeFocus();
         }

@@ -93,9 +93,9 @@ namespace Gruppe22.Client
                         null,
                         rstate,
                         null);
-            if (_hasBorder)
+            if (_hasBorder || _focus)
             {
-                _spriteBatch.Draw(_background, _displayRect, new Rectangle(39, 6, 1, 1), Color.White);
+                _spriteBatch.Draw(_background, _displayRect, new Rectangle(39, 6, 1, 1), _focus ? Color.Blue : Color.White);
                 _spriteBatch.Draw(_background, new Rectangle(_displayRect.X + 2, _displayRect.Y + 1, _displayRect.Width - 3, _displayRect.Height - 2), new Rectangle(39, 6, 1, 1), Color.Black);
             }
             //_startPos = 2;

@@ -66,7 +66,7 @@ namespace Gruppe22.Client
                         return true;
 
                     case Keys.Enter:
-                        base.OnKeyDown(Microsoft.Xna.Framework.Input.Keys.Tab);
+                        _parent.HandleEvent(false, Backend.Events.TextEntered);
                         return true;
 
                     case Keys.Left:
@@ -266,6 +266,7 @@ namespace Gruppe22.Client
 
             _label = label;
             _text = text;
+            _cursor = text.Length;
             _tooltip = toolTip;
             _canEdit = canEdit;
             _font = _content.Load<SpriteFont>("SmallFont");

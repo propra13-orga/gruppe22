@@ -786,14 +786,16 @@ namespace Gruppe22.Backend
 
                 case Backend.Events.NewMap:
                     HandleEvent(false, Backend.Events.Pause);
+                    _map.ClearActors();
                     GenerateMaps();
                     map.Load("room1.xml", null, true);
                     HandleEvent(false, Backend.Events.ContinueGame, true);
                     break;
                 case Backend.Events.ResetGame:
                     _DeleteSavedRooms();
+                    _map.ClearActors();
                     _map.Load("room1.xml", null, true);
-                    HandleEvent(false, Events.ContinueGame, true);
+                    HandleEvent(false, Events.Initialize, true);
                     break;
             }
         }
@@ -917,6 +919,7 @@ namespace Gruppe22.Backend
         /// </summary>
         public override void GenerateMaps()
         {
+
             _DeleteSavedRooms();
             List<Generator> rooms = new List<Generator>();
             int maxLevel = 3;

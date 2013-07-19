@@ -383,22 +383,25 @@ namespace Gruppe22.Backend
         /// <param name="dir">Direction to move to</param>
         public void MoveActor(Actor actor, Direction dir)
         {
-            Backend.Coords source = actor.tile.coords;
-            Backend.Coords target = DirectionTile(actor.tile.coords, dir);
-            if (this[target].coords.x > -1)
+            if ((actor.tile != null) && (actor.tile.enabled))
             {
-                // Remove ActorTile from current tile
-                ((FloorTile)actor.tile.parent).Remove(actor.tile);
-                // Add ActorTile to new Tile
-                _tiles[target.y][target.x].Add(actor.tile);
-                actor.tile.parent = _tiles[target.y][target.x];
-                // Remove old tile from updatelist (if no other actor or trap)
-                if (!((_tiles[source.y][source.x].hasEnemy)
-                    || (_tiles[source.y][source.x].hasPlayer)
-                    || (_tiles[source.y][source.x].hasTrap)))
-                    _updateTiles.Remove(source);
-                // Add new tile to updatelist
-                _updateTiles.Add(target);
+                Backend.Coords source = actor.tile.coords;
+                Backend.Coords target = DirectionTile(actor.tile.coords, dir);
+                if (this[target].coords.x > -1)
+                {
+                    // Remove ActorTile from current tile
+                    ((FloorTile)actor.tile.parent).Remove(actor.tile);
+                    // Add ActorTile to new Tile
+                    _tiles[target.y][target.x].Add(actor.tile);
+                    actor.tile.parent = _tiles[target.y][target.x];
+                    // Remove old tile from updatelist (if no other actor or trap)
+                    if (!((_tiles[source.y][source.x].hasEnemy)
+                        || (_tiles[source.y][source.x].hasPlayer)
+                        || (_tiles[source.y][source.x].hasTrap)))
+                        _updateTiles.Remove(source);
+                    // Add new tile to updatelist
+                    _updateTiles.Add(target);
+                }
             }
         }
 
@@ -410,22 +413,25 @@ namespace Gruppe22.Backend
         /// <param name="dir">Direction to move to</param>
         public void PositionActor(Actor actor, Coords coords)
         {
-            Backend.Coords source = actor.tile.coords;
-            Backend.Coords target = coords;
-            if (this[target].coords.x > -1)
+            if ((actor.tile != null) && (actor.tile.enabled))
             {
-                // Remove ActorTile from current tile
-                ((FloorTile)actor.tile.parent).Remove(actor.tile);
-                // Add ActorTile to new Tile
-                _tiles[target.y][target.x].Add(actor.tile);
-                actor.tile.parent = _tiles[target.y][target.x];
-                // Remove old tile from updatelist (if no other actor or trap)
-                if (!((_tiles[source.y][source.x].hasEnemy)
-                    || (_tiles[source.y][source.x].hasPlayer)
-                    || (_tiles[source.y][source.x].hasTrap)))
-                    _updateTiles.Remove(source);
-                // Add new tile to updatelist
-                _updateTiles.Add(target);
+                Backend.Coords source = actor.tile.coords;
+                Backend.Coords target = coords;
+                if (this[target].coords.x > -1)
+                {
+                    // Remove ActorTile from current tile
+                    ((FloorTile)actor.tile.parent).Remove(actor.tile);
+                    // Add ActorTile to new Tile
+                    _tiles[target.y][target.x].Add(actor.tile);
+                    actor.tile.parent = _tiles[target.y][target.x];
+                    // Remove old tile from updatelist (if no other actor or trap)
+                    if (!((_tiles[source.y][source.x].hasEnemy)
+                        || (_tiles[source.y][source.x].hasPlayer)
+                        || (_tiles[source.y][source.x].hasTrap)))
+                        _updateTiles.Remove(source);
+                    // Add new tile to updatelist
+                    _updateTiles.Add(target);
+                }
             }
         }
 
@@ -755,6 +761,8 @@ namespace Gruppe22.Backend
             {
                 for (int i = 0; i < _actors.Count; ++i)
                 {
+                    if (_actors[i].tile != null)
+                        _actors[i].tile.enabled = false;
                     if (_actors[i] is Player)
                     {
                         players.Add(_actors[i] as Player);
@@ -763,10 +771,9 @@ namespace Gruppe22.Backend
                     }
                 }
             }
-
+            ClearActors();
 
             _tiles.Clear();
-            _actors.Clear();
             _updateTiles.Clear();
             xmlr.MoveToContent();//xml
             _width = int.Parse(xmlr.GetAttribute("width"));
@@ -1012,7 +1019,7 @@ namespace Gruppe22.Backend
                                             }
                                             if (!resetPlayer)
                                             {
-                                               
+
                                                 ActorTile actortile = new ActorTile(this[targetCoords], actor);
                                                 actor.tile = actortile;
                                                 actortile.enabled = (actor.health > 0);
@@ -1078,7 +1085,7 @@ namespace Gruppe22.Backend
                 {
                     foreach (Actor a in _actors)
                     {
-                        if (a.GUID == "")
+                        if ((a is Player) && (a.GUID == ""))
                         {
                             found = true;
                             a.copyFrom(players[0]);
@@ -1271,7 +1278,17 @@ namespace Gruppe22.Backend
             xmlw.Close();
         }
 
-
+        public void ClearActors()
+        {
+            foreach (Actor a in _actors)
+            {
+                if (a.tile != null)
+                {
+                    a.tile.enabled = false;
+                }
+            }
+            _actors.Clear();
+        }
         #endregion
 
         #region Constructor
@@ -1310,6 +1327,7 @@ namespace Gruppe22.Backend
         /// </summary>
         public virtual void Dispose()
         {
+            ClearActors();
             while (_tiles.Count > 0)
             {
                 while (_tiles[0].Count > 0)
@@ -1322,7 +1340,6 @@ namespace Gruppe22.Backend
             }
             _tiles.Clear();
             _updateTiles.Clear();
-            _actors.Clear();
         }
         #endregion
 

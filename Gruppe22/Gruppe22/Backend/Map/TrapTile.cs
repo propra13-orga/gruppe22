@@ -204,8 +204,8 @@ namespace Gruppe22.Backend
                         _state = TrapState.On;
                     }
                     else _state = TrapState.Off;
+                    ((FloorTile)_parent).HandleEvent(false, Backend.Events.TrapActivate, coords);
                 }
-                ((FloorTile)_parent).HandleEvent(false, Backend.Events.TrapActivate, coords);
 
             }
         }

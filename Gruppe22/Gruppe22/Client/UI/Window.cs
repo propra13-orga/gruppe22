@@ -102,6 +102,7 @@ namespace Gruppe22.Client
 
         public void AddChild(UIElement child)
         {
+            if (_children.Count == _focusID) child.focus = true;
             _children.Add(child);
         }
 

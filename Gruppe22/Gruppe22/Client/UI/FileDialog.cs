@@ -117,7 +117,7 @@ namespace Gruppe22.Client
         public FileInfo(DateTime dateTime, Texture2D screenshot = null, string name = "")
             : this(screenshot, name)
         {
-            _dateTime = DateTime.Now;
+            _dateTime = System.IO.File.GetCreationTime(System.IO.Directory.GetCurrentDirectory() + "\\" + name + "\\screen.png");
         }
     }
     public class FileDialog : Window, Backend.IHandleEvent
@@ -161,14 +161,14 @@ namespace Gruppe22.Client
                 int y = Mouse.GetState().Y;
                 _totalPages = (int)Math.Ceiling((float)_files.Count / (float)_rows);
 
-                if (new Rectangle(_displayRect.Right - 35, _displayRect.Top + 30, 22, 22).Contains(new Point(x, y)))
+                if (new Rectangle(_displayRect.Right - 35, _displayRect.Top + 20, 35, 50).Contains(new Point(x, y)))
                 {
                     if (_page > 0)
                         _page -= 1;
                     return true;
                 }
 
-                if (new Rectangle(_displayRect.Right - 35, _displayRect.Top + 30 + _height * 3 - 22, 22, 22).Contains(new Point(x, y)))
+                if (new Rectangle(_displayRect.Right - 35, _displayRect.Top + 30 + _height * 3 - 40, 35, 50).Contains(new Point(x, y)))
                 {
                     if (_page < _totalPages)
                         _page += 1;
@@ -197,7 +197,8 @@ namespace Gruppe22.Client
             {
                 y -= (_displayRect.Top + 30);
                 y = y / (_height + 3);
-                result = y + (_page * _rows);
+                if (y >= 0)
+                    result = y + (_page * _rows);
             }
             if ((x > _displayRect.Right - 30) || (result > _files.Count - 1)) return -1;
 
@@ -219,15 +220,15 @@ namespace Gruppe22.Client
 
                 for (int y = 0; y < _rows; ++y)
                 {
-                    _spriteBatch.Draw(_background, new Rectangle(_displayRect.Left + 5, _displayRect.Top + 30 + y * (_height + 3), _displayRect.Width - 30, _height + 2), new Rectangle(39, 6, 1, 1), Color.White);
+                    _spriteBatch.Draw(_background, new Rectangle(_displayRect.Left + 10, _displayRect.Top + 30 + y * (_height + 5), _displayRect.Width - 40, _height + 2), new Rectangle(39, 6, 1, 1), Color.White);
                     if (icon != _selected)
-                        _spriteBatch.Draw(_background, new Rectangle(_displayRect.Left + 6, _displayRect.Top + y * (_height + 3) + 31, _displayRect.Width - 32, _height), new Rectangle(39, 6, 1, 1), (_checked == icon) ? Color.Blue: Color.Black);
+                        _spriteBatch.Draw(_background, new Rectangle(_displayRect.Left + 11, _displayRect.Top + y * (_height + 5) + 31, _displayRect.Width - 42, _height), new Rectangle(39, 6, 1, 1), (_checked == icon) ? Color.Blue : Color.Black);
 
 
 
                     if ((icon < _files.Count) && (_files[icon].screenshot != null))
                     {
-                        _spriteBatch.Draw(_files[icon].screenshot, new Rectangle(_displayRect.Left + 7, _displayRect.Top + y * (_height + 3) + 35, 90, 90), new Rectangle(0, 0, 200, 200), Color.White);
+                        _spriteBatch.Draw(_files[icon].screenshot, new Rectangle(_displayRect.Left + 15, _displayRect.Top + y * (_height + 5) + 35, 90, 90), new Rectangle(0, 0, 200, 200), Color.White);
                         _spriteBatch.DrawString(_font, _files[icon].name + " " + _files[icon].dateTime, new Vector2(_displayRect.Left + _height + 20, _displayRect.Top + y * (_height + 3) + 56), Color.Black);
                         _spriteBatch.DrawString(_font, _files[icon].name + " " + _files[icon].dateTime, new Vector2(_displayRect.Left + _height + 21, _displayRect.Top + y * (_height + 3) + 57), Color.White);
 
@@ -237,8 +238,10 @@ namespace Gruppe22.Client
 
                 if (_totalPages > 1)
                 {
-                    _spriteBatch.Draw(_arrows, new Rectangle(_displayRect.Right - 35, _displayRect.Top + 30, 22, 22), new Rectangle(32, 0, 28, 28), Color.White);
-                    _spriteBatch.Draw(_arrows, new Rectangle(_displayRect.Right - 35, _displayRect.Top + 30 + _height * 3 - 22, 22, 22), new Rectangle(0, 0, 28, 28), Color.White);
+                    if (_page > 0)
+                        _spriteBatch.Draw(_arrows, new Rectangle(_displayRect.Right - 27, _displayRect.Top + 30, 22, 22), new Rectangle(32, 0, 28, 28), Color.White);
+                    if (_page < _totalPages - 1)
+                        _spriteBatch.Draw(_arrows, new Rectangle(_displayRect.Right - 27, _displayRect.Top + 30 + _height * 3 - 22, 22, 22), new Rectangle(0, 0, 28, 28), Color.White);
                 }
                 _spriteBatch.End();
 
@@ -249,17 +252,24 @@ namespace Gruppe22.Client
 
         public override void HandleEvent(bool DownStream, Backend.Events eventID, params object[] data)
         {
-            if (eventID == Backend.Events.ButtonPressed)
+            switch (eventID)
             {
-                switch ((Backend.Buttons)(int)data[0])
-                {
-                    case Backend.Buttons.Close:
-                        _parent.HandleEvent(true, Backend.Events.SaveLoad, _save, _filename.text);
-                        break;
-                    case Backend.Buttons.Cancel:
-                        _parent.HandleEvent(true, Backend.Events.ContinueGame);
-                        break;
-                }
+                case Backend.Events.ButtonPressed:
+                    {
+                        switch ((Backend.Buttons)(int)data[0])
+                        {
+                            case Backend.Buttons.Close:
+                                _parent.HandleEvent(true, Backend.Events.SaveLoad, _save, _filename.text);
+                                break;
+                            case Backend.Buttons.Cancel:
+                                _parent.HandleEvent(true, Backend.Events.ContinueGame);
+                                break;
+                        }
+                    }
+                    break;
+                case Backend.Events.TextEntered:
+                    _parent.HandleEvent(true, Backend.Events.SaveLoad, _save, _filename.text);
+                    break;
             }
             base.HandleEvent(DownStream, eventID, data);
         }
@@ -269,9 +279,9 @@ namespace Gruppe22.Client
         {
             _save = save;
             _BuildList();
-            _children.Add(_filename = new TextInput(this, _spriteBatch, _content, new Rectangle(_displayRect.Left + 5, _displayRect.Top + 5, _displayRect.Width - 10, 20), "Name:", ((save) ? "Savegame" : _files[0].name), "Enter a name for your savegame", 20, save));
-            _children.Add(_ok = new Button(this, _spriteBatch, _content, new Rectangle(_displayRect.Right - 85, _displayRect.Bottom - 35, 85, 30), ((save) ? "Save" : "Restore"), (int)Backend.Buttons.Close));
-            _children.Add(_cancel = new Button(this, _spriteBatch, _content, new Rectangle(_displayRect.Left + 5, _displayRect.Bottom - 35, 85, 30), "Cancel", (int)Backend.Buttons.Cancel));
+            AddChild(_filename = new TextInput(this, _spriteBatch, _content, new Rectangle(_displayRect.Left + 10, _displayRect.Top + 5, _displayRect.Width - 40, 20), "Name:", ((save) ? "Savegame" : _files[0].name), "Enter a name for your savegame", 20, save));
+            AddChild(_ok = new Button(this, _spriteBatch, _content, new Rectangle(_displayRect.Right - 115, _displayRect.Bottom - 40, 85, 30), ((save) ? "Save" : "Restore"), (int)Backend.Buttons.Close));
+            AddChild(_cancel = new Button(this, _spriteBatch, _content, new Rectangle(_displayRect.Left + 10, _displayRect.Bottom - 40, 85, 30), "Cancel", (int)Backend.Buttons.Cancel));
             _background = _content.Load<Texture2D>("Minimap");
             _arrows = _content.Load<Texture2D>("Arrows");
             _font = _content.Load<SpriteFont>("SmallFont");

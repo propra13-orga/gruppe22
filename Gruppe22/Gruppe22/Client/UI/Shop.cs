@@ -483,7 +483,7 @@ namespace Gruppe22.Client
                         case ShopButtons.Modify:
                             if (_selected2 > -1)
                             {
-                                _children.Add(new ModifyWindow(this, _spriteBatch, _content, new Rectangle(0, 0, 200, 100), _buyer.inventory[_selected2]));
+                                AddChild(new ModifyWindow(this, _spriteBatch, _content, new Rectangle(0, 0, 200, 100), _buyer.inventory[_selected2]));
                             }
                             break;
 
@@ -539,21 +539,13 @@ namespace Gruppe22.Client
             _arrows = _content.Load<Texture2D>("Arrows");
             _rows = (int)((_displayRect.Height - 65) / (_height + 3));
             _font = _content.Load<SpriteFont>("SmallFont");
-            _steal = new Button(this, _spriteBatch, _content, new Rectangle(_displayRect.Left + 5, _displayRect.Bottom - 35, 80, 30), "Steal", (int)ShopButtons.Steal, false);
-            _buy = new Button(this, _spriteBatch, _content, new Rectangle(_displayRect.Left + 90, _displayRect.Bottom - 35, 80, 30), "Buy", (int)ShopButtons.Buy, false);
-            _sell = new Button(this, _spriteBatch, _content, new Rectangle(_displayRect.Right - 170, _displayRect.Bottom - 35, 80, 30), "Sell", (int)ShopButtons.Sell, false);
-            _modify = new Button(this, _spriteBatch, _content, new Rectangle(_displayRect.Right - 85, _displayRect.Bottom - 35, 80, 30), "Modify", (int)ShopButtons.Modify, false);
-            _sellergold = new NumberEntry(this, _spriteBatch, _content, new Rectangle(_displayRect.Left + (_displayRect.Width - 80) / 2 - 70, _displayRect.Top + 12, 102, 20), "Gold", _seller.gold, "Seller's gold", 3, false);
-            _buyergold = new NumberEntry(this, _spriteBatch, _content, new Rectangle(_displayRect.Left + (_displayRect.Width - 107), _displayRect.Top + 12, 102, 20), "Gold", _buyer.gold, "Buyer's gold", 3, false);
-            _leave = new Button(this, _spriteBatch, _content, new Rectangle(_displayRect.Left + (_displayRect.Width - 80) / 2, _displayRect.Bottom - 35, 80, 30), "Leave", (int)ShopButtons.Leave, false);
-
-            _children.Add(_steal);
-            _children.Add(_buy);
-            _children.Add(_sell);
-            _children.Add(_modify);
-            _children.Add(_sellergold);
-            _children.Add(_buyergold);
-            _children.Add(_leave);
+            AddChild(_steal = new Button(this, _spriteBatch, _content, new Rectangle(_displayRect.Left + 5, _displayRect.Bottom - 35, 80, 30), "Steal", (int)ShopButtons.Steal, false));
+            AddChild(_buy = new Button(this, _spriteBatch, _content, new Rectangle(_displayRect.Left + 90, _displayRect.Bottom - 35, 80, 30), "Buy", (int)ShopButtons.Buy, false));
+            AddChild(_sell = new Button(this, _spriteBatch, _content, new Rectangle(_displayRect.Right - 170, _displayRect.Bottom - 35, 80, 30), "Sell", (int)ShopButtons.Sell, false));
+            AddChild(_modify = new Button(this, _spriteBatch, _content, new Rectangle(_displayRect.Right - 85, _displayRect.Bottom - 35, 80, 30), "Modify", (int)ShopButtons.Modify, false));
+            AddChild(_sellergold = new NumberEntry(this, _spriteBatch, _content, new Rectangle(_displayRect.Left + (_displayRect.Width - 80) / 2 - 70, _displayRect.Top + 12, 102, 20), "Gold", _seller.gold, "Seller's gold", 3, false));
+            AddChild(_buyergold = new NumberEntry(this, _spriteBatch, _content, new Rectangle(_displayRect.Left + (_displayRect.Width - 107), _displayRect.Top + 12, 102, 20), "Gold", _buyer.gold, "Buyer's gold", 3, false));
+            AddChild(_leave = new Button(this, _spriteBatch, _content, new Rectangle(_displayRect.Left + (_displayRect.Width - 80) / 2, _displayRect.Bottom - 35, 80, 30), "Leave", (int)ShopButtons.Leave, false));
             _buy.Hide();
             _sell.Hide();
             _modify.Hide();

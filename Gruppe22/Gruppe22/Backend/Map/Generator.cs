@@ -155,25 +155,26 @@ namespace Gruppe22.Backend
             {
                 for (int x = -2; x < 2; ++x)
                 {
-                    _tiles[srcCoords.y + y][srcCoords.x + x].overlay.Clear();
+                    ClearTile(srcCoords.x + x, srcCoords.y + y);
+
                     if ((x < 2) && (y < 2) && (y > -2) && (x > -2))
                         _tiles[srcCoords.y + y][srcCoords.x + x].overlay.Add(new WallTile(_tiles[srcCoords.y + y][srcCoords.x + x], r));
                 }
             }
 
-            _tiles[srcCoords.y][srcCoords.x].overlay.Clear();
+            ClearTile(srcCoords.x , srcCoords.y );
             _tiles[srcCoords.y][srcCoords.x].overlay.Add(new TeleportTile(_tiles[srcCoords.y][srcCoords.x], "room" + targetRoom.ToString() + ".xml", targetCoords, false, false, true, up));
 
 
             if (!up)
             {
-                _tiles[srcCoords.y][srcCoords.x - 1].overlay.Clear();
+                ClearTile(srcCoords.x - 1, srcCoords.y );
 
                 _tiles[srcCoords.y][srcCoords.x - 1].overlay.Add(new DoorTile(_tiles[srcCoords.y][srcCoords.x - 1], true, _level));
             }
             else
             {
-                _tiles[srcCoords.y][srcCoords.x + 1].overlay.Clear();
+                ClearTile(srcCoords.x + 1, srcCoords.y );
             }
 
         }
@@ -233,9 +234,16 @@ namespace Gruppe22.Backend
             {
                 System.IO.Directory.CreateDirectory(subdir);
             }
+
+            int count = 0;
             for (int i = 0; i < _actors.Count; ++i)
             {
-                _actors[i].id = i;
+                if ((_actors[i].tile != null) && (_actors[i].tile.coords.x > -1))
+                {
+                    _actors[i].id = count;
+                    ++count;
+
+                }
             }
 
             XmlWriter xmlw = XmlWriter.Create(subdir + filename);
@@ -367,6 +375,20 @@ namespace Gruppe22.Backend
         }
 
         /// <summary>
+        /// Remove all elements from a tile
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        public void ClearTile(int x, int y)
+        {
+            foreach(Actor actor in _tiles[y][x].actors){
+                _actors.Remove(actor);
+            }
+            _tiles[y][x].overlay.Clear();
+
+        }
+
+        /// <summary>
         /// Method to add a boss enemy to a room.
         /// A boss is more powerful than a normal enemy
         /// and the room gets a special sound if there is a boss in it.
@@ -378,7 +400,9 @@ namespace Gruppe22.Backend
                 for (int y = 0; y < _height; ++y)
                 {
                     if ((_tiles[y][x].hasEnemy) || (_tiles[y][x].hasNPC) || (_tiles[y][x].hasTreasure))
-                        _tiles[y][x].overlay.Clear();
+                    {
+                        ClearTile(x, y);
+                    }
 
                 }
             }
@@ -388,7 +412,7 @@ namespace Gruppe22.Backend
             {
                 for (int y = -1; y < 2; ++y)
                 {
-                    _tiles[pos.y + y][pos.x + x].overlay.Clear();
+                    ClearTile(pos.x + x, pos.y + y);
 
                 }
             }
@@ -426,12 +450,12 @@ namespace Gruppe22.Backend
                     (_tiles[0][x - 1].hasTeleport))
                     x = -1;
             }
-            _tiles[2][x + 1].overlay.Clear();
-            _tiles[2][x].overlay.Clear();
-            _tiles[2][x - 1].overlay.Clear();
-            _tiles[1][x].overlay.Clear();
-            _tiles[1][x - 1].overlay.Clear();
-            _tiles[1][x + 1].overlay.Clear();
+            ClearTile(x - 1, 2);
+
+            ClearTile(x + 1, 2);
+            ClearTile(x - 1, 1);
+            ClearTile(x, 1);
+            ClearTile(x + 1, 1);
 
             NPC npc = new NPC(-1, -1, -1, -1, "", r, _level, true);
             npc.gold = 50000;
@@ -446,13 +470,13 @@ namespace Gruppe22.Backend
             _tiles[2][x].Add(NPCTile);
             _actors.Add(npc);
 
-            _tiles[2][x + 1].Add(new ReservedTile(this, ".\\Content\\shop.xml", 0));
+            _tiles[2][x + 1].Add(new ReservedTile(_tiles[2][x + 1], ".\\Content\\shop.xml", 0));
             // 448, 192, 64, 64));
             //_tiles[2][pos.x - 1].Add(new ReservedTile(this, ".\\Content\\shop.xml", 1));
             // 354, 509, 64, 96)
-            _tiles[2][x - 1].Add(new ReservedTile(this, ".\\Content\\shop.xml", 2));
+            _tiles[2][x - 1].Add(new ReservedTile(_tiles[2][x - 1], ".\\Content\\shop.xml", 2));
             // 195, 256, 64, 64
-            _tiles[1][x].Add(new ReservedTile(this, ".\\Content\\shop.xml", 3));
+            _tiles[1][x].Add(new ReservedTile(_tiles[1][x], ".\\Content\\shop.xml", 3));
             // 0, 512, 96, 128
 
 
@@ -510,16 +534,15 @@ namespace Gruppe22.Backend
             {
                 for (int x = -2; x < 2; ++x)
                 {
-                    _tiles[srcCoords.y + y][srcCoords.x + x].overlay.Clear();
+                    ClearTile(srcCoords.x + x, srcCoords.y + y);
                     if ((x < 2) && (y < 2) && (y > -2) && (x > -2))
                         _tiles[srcCoords.y + y][srcCoords.x + x].overlay.Add(new WallTile(_tiles[srcCoords.y + y][srcCoords.x + x], r));
                 }
             }
-
-            _tiles[srcCoords.y][srcCoords.x].overlay.Clear();
+            ClearTile(srcCoords.x, srcCoords.y);
             _tiles[srcCoords.y][srcCoords.x].overlay.Add(new TargetTile(_tiles[srcCoords.y][srcCoords.x]));
 
-            _tiles[srcCoords.y][srcCoords.x - 1].overlay.Clear();
+            ClearTile(srcCoords.x - 1, srcCoords.y);
             _tiles[srcCoords.y][srcCoords.x - 1].overlay.Add(new DoorTile(_tiles[srcCoords.y][srcCoords.x - 1], true, _level));
 
         }
@@ -621,27 +644,27 @@ namespace Gruppe22.Backend
                 case Direction.Up:
                     {
                         Backend.Coords tmp = new Backend.Coords(1 + r.Next((_width - 1) / 2) * 2, 0);
-                        _tiles[1][tmp.x].overlay.Clear();
+                        ClearTile(tmp.x, 1);
                         return tmp;
                     }
 
                 case Direction.Down:
                     {
                         Backend.Coords tmp = new Backend.Coords(1 + r.Next((_width - 1) / 2) * 2, _height - 1);
-                        _tiles[tmp.y - 1][tmp.x].overlay.Clear();
+                        ClearTile(tmp.x, tmp.y - 1);
                         return tmp;
                     }
 
                 case Direction.Left:
                     {
                         Backend.Coords tmp = new Backend.Coords(0, 1 + r.Next((_height - 1) / 2) * 2);
-                        _tiles[tmp.y][1].overlay.Clear();
+                        ClearTile(1, tmp.y);
                         return tmp;
                     }
                 case Direction.Right:
                     {
                         Backend.Coords tmp = new Backend.Coords(_width - 1, 1 + r.Next((_height - 1) / 2) * 2);
-                        _tiles[tmp.y][tmp.x - 1].overlay.Clear();
+                        ClearTile(tmp.x - 1, tmp.y);
                         return tmp;
                     }
             }
@@ -657,8 +680,8 @@ namespace Gruppe22.Backend
         public void ConnectTo(Coords from, int Room, Backend.Coords to, bool isTeleport = false)
         {
             // TODO: Umgebung "freisprengen", insb. in Diagonalen
-            _tiles[from.y][from.x].overlay.Clear();
-            _tiles[from.y][from.x].overlay.Add(new TeleportTile(this, "room" + (Room + 1).ToString() + ".xml", to, isTeleport));
+            ClearTile(from.x,from.y);
+            _tiles[from.y][from.x].overlay.Add(new TeleportTile(_tiles[from.y][from.x], "room" + (Room + 1).ToString() + ".xml", to, isTeleport));
         }
 
         /// <summary>

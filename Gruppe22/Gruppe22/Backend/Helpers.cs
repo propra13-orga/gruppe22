@@ -163,6 +163,7 @@ namespace Gruppe22.Backend
     {
         // Central Game Events
         ContinueGame = 0,
+        TextEntered,
         AddPlayer,
         RemovePlayer,
         Disconnect,
