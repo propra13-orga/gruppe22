@@ -889,22 +889,6 @@ namespace Gruppe22.Backend
                 _resist = value;
             }
         }
-
-        /// <summary>
-        /// The max amount of health the actor has.
-        /// </summary>
-        public int maxhealth
-        {
-            get
-            {
-                return _maxhealth;
-            }
-            set
-            {
-                _maxhealth = value;
-            }
-        }
-
         /// <summary>
         /// The points an actor has left to spend on abilities or skills.
         /// </summary>
@@ -1296,6 +1280,8 @@ namespace Gruppe22.Backend
             _stunned = a.stunned;
             _charmed = a.charmed;
             _quicklist = a.quickList;
+            _checkPointCoords = a.checkPointCoords;
+            _lastCheckpoint = a.lastCheckpoint;
             _abilities = a.abilities;
             _lives = a.lives;
             _direction = a.direction;
@@ -1334,7 +1320,6 @@ namespace Gruppe22.Backend
             if (reader.GetAttribute("level") != null) _level = Convert.ToInt32(reader.GetAttribute("level"));
             if (reader.GetAttribute("mana") != null) _mana = Convert.ToInt32(reader.GetAttribute("mana")); else _mana = maxMana;
             if (reader.GetAttribute("evade") != null) _evade = Convert.ToInt32(reader.GetAttribute("evade"));
-            if (reader.GetAttribute("GUID") != null) _GUID = reader.GetAttribute("GUID");
             if (reader.GetAttribute("block") != null) _block = Convert.ToInt32(reader.GetAttribute("block"));
             if (reader.GetAttribute("penetrate") != null) _penetrate = Convert.ToInt32(reader.GetAttribute("penetrate"));
             if (reader.GetAttribute("healthReg") != null) _healthReg = Convert.ToInt32(reader.GetAttribute("healthReg"));
@@ -1356,22 +1341,28 @@ namespace Gruppe22.Backend
             if (reader.GetAttribute("manaReg") != null) _manaReg = Convert.ToInt32(reader.GetAttribute("manaReg"));
             if (reader.GetAttribute("destroyWeapon") != null) _destroyWeapon = Convert.ToInt32(reader.GetAttribute("destroyWeapon"));
             if (reader.GetAttribute("destroyArmor") != null) _destroyArmor = Convert.ToInt32(reader.GetAttribute("destroyArmor"));
-            if (reader.GetAttribute("lastCheckPoint") != null)
-            {
-                _lastCheckpoint = Convert.ToInt32(reader.GetAttribute("lastCheckPoint"));
-                _checkPointCoords = new Coords(Convert.ToInt32(reader.GetAttribute("cpX")), Convert.ToInt32(reader.GetAttribute("cpY")));
-            }
-            if (reader.GetAttribute("lives") != null) _lives = Convert.ToInt32(reader.GetAttribute("lives"));
+            
             if (reader.GetAttribute("direction") != null)
                 _direction = (Direction)Enum.Parse(typeof(Direction), reader.GetAttribute("direction"));
             if (_direction == Direction.None) _direction = Direction.Up;
+            if (!(this is Player))
+            {
+                if (reader.GetAttribute("crazy") != null) _crazy = Convert.ToBoolean(reader.GetAttribute("crazy"));
+                if (reader.GetAttribute("ranged") != null) _ranged = Convert.ToBoolean(reader.GetAttribute("ranged"));
+                if (reader.GetAttribute("aggro") != null) _aggro = Convert.ToBoolean(reader.GetAttribute("aggro"));
+                if (reader.GetAttribute("friendly") != null) _friendly = Convert.ToBoolean(reader.GetAttribute("friendly"));
+            }
+            else
+            {
+                if (reader.GetAttribute("lives") != null) _lives = Convert.ToInt32(reader.GetAttribute("lives"));
+                if (reader.GetAttribute("GUID") != null) _GUID = reader.GetAttribute("GUID");
+                if (reader.GetAttribute("lastCheckpoint") != null)
+                {
+                    _lastCheckpoint = Convert.ToInt32(reader.GetAttribute("lastCheckpoint"));
+                    _checkPointCoords = new Coords(Convert.ToInt32(reader.GetAttribute("cpX")), Convert.ToInt32(reader.GetAttribute("cpY")));
+                }
 
-            if (reader.GetAttribute("crazy") != null) _crazy = Convert.ToBoolean(reader.GetAttribute("crazy"));
-            if (reader.GetAttribute("ranged") != null) _ranged = Convert.ToBoolean(reader.GetAttribute("ranged"));
-            if (reader.GetAttribute("aggro") != null) _aggro = Convert.ToBoolean(reader.GetAttribute("aggro"));
-            if (reader.GetAttribute("friendly") != null) _friendly = Convert.ToBoolean(reader.GetAttribute("friendly"));
-
-
+            }
             if (reader.GetAttribute("stunned") != null)
                 _stunned = Convert.ToInt32(reader.GetAttribute("stunned"));
             if (reader.GetAttribute("charmed") != null)

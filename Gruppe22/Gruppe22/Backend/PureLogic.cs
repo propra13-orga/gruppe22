@@ -501,7 +501,7 @@ namespace Gruppe22.Backend
                 case Backend.Events.TrapActivate:
                     {
                         Backend.Coords coords = (Coords)data[0];
-                        if ((_map[coords].trap.status==TrapState.On)&&(((_map[coords].hasEnemy) || (_map[coords].hasPlayer)) && (!_map[coords].firstActor.isDead)))
+                        if ((_map[coords].trap.status == TrapState.On) && (((_map[coords].hasEnemy) || (_map[coords].hasPlayer)) && (!_map[coords].firstActor.isDead)))
                         {
                             _TrapDamage(coords);
                         }
@@ -551,7 +551,7 @@ namespace Gruppe22.Backend
                                 {
                                     _parent.HandleEvent(false, Events.PlaySound, SoundFX.Checkpoint);//SoundEffect checkpoint
                                     _map[target.x, target.y].checkpoint.visited = true;
-                                    _map.actors[id].health = _map.actors[id].maxhealth;
+                                    _map.actors[id].health = _map.actors[id].maxHealth;
                                     _map.actors[id].mana = _map.actors[id].maxMana;
                                     if (_map.actors[id].lives == -1)
                                         _map.actors[id].lives = 3;
@@ -760,22 +760,19 @@ namespace Gruppe22.Backend
 
                 case Backend.Events.LoadFromCheckPoint:
                     HandleEvent(false, Backend.Events.Pause);
-                    string lastCheck = File.ReadAllText("CheckPoint");
-                    while (Directory.GetFiles(".", "savedroom*.xml").Length > 0)
-                    {
-                        File.Delete(Directory.GetFiles(".", "savedroom*.xml")[0]);
-                    }
-                    Regex re = new Regex(@"\d+");
-                    foreach (string file in Directory.GetFiles(".", "checkpoint*.xml"))
-                    {
-                        Match m = re.Match(file);
-                        File.Copy(file, "savedroom" + m.Value + ".xml");
-                    }
-                    map.Load("savedroom" + lastCheck + ".xml", null, true);
+                    map.Save("room" + map.id + ".xml");
+                    Coords targetCoords = map.actors[(int)data[0]].checkPointCoords;
                     map.actors[(int)data[0]].lives--;
-                    map.Save("savedroom" + lastCheck + ".xml");
-                    map.Save("checkpoint" + lastCheck + ".xml");
-                    HandleEvent(false, Backend.Events.ContinueGame, true);
+                    map.actors[(int)data[0]].health = map.actors[(int)data[0]].maxHealth;
+
+                    if (map.id != map.actors[(int)data[0]].lastCheckpoint)
+                    {
+                        ChangeMap("room" + map.actors[(int)data[0]].lastCheckpoint.ToString() + ".xml", targetCoords);
+                        map.Save("room" + map.id + ".xml");
+                    }
+                    else
+                        map.PositionActor(map.actors[(int)data[0]], targetCoords);
+                    HandleEvent(false, Backend.Events.Initialize, true);
                     break;
 
                 case Backend.Events.ChangeMap: // Load another map

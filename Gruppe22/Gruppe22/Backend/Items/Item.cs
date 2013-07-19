@@ -238,7 +238,7 @@ namespace Gruppe22.Backend
                     case ItemProperty.Health:
                         if (enable)
                         {
-                            _owner.health = Math.Min(_owner.health + effect.effect, _owner.maxhealth);
+                            _owner.health = Math.Min(_owner.health + effect.effect, _owner.maxHealth);
                         }
                         else
                         {

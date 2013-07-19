@@ -109,15 +109,17 @@ namespace Gruppe22.Client
         public FileInfo(Texture2D screenshot = null, string name = "")
         {
             _screenshot = screenshot;
-
             _name = name;
+            string f = System.IO.Directory.GetCurrentDirectory() + "\\" + name + "\\screen.png";
+            _dateTime = System.IO.File.GetCreationTime(System.IO.Directory.GetCurrentDirectory() + "\\" + name + "\\screen.png");
+
         }
 
 
         public FileInfo(DateTime dateTime, Texture2D screenshot = null, string name = "")
             : this(screenshot, name)
         {
-            _dateTime = System.IO.File.GetCreationTime(System.IO.Directory.GetCurrentDirectory() + "\\" + name + "\\screen.png");
+            _dateTime = dateTime;
         }
     }
     public class FileDialog : Window, Backend.IHandleEvent
@@ -175,18 +177,21 @@ namespace Gruppe22.Client
                     return true;
                 }
                 int selected = Pos2Tile(x, y);
-                if ((selected > -1) && (selected < _files.Count))
-                {
-                    _filename.text = _files[selected].name;
-                    if (!_save)
+                if (y > _displayRect.Bottom - 50)
+                    selected = -1;
+
+                    if ((selected > -1) && (selected < _files.Count))
                     {
-                        HandleEvent(true, Backend.Events.ButtonPressed, Backend.Buttons.Close);
+                        _filename.text = _files[selected].name;
+                        if (!_save)
+                        {
+                            HandleEvent(true, Backend.Events.ButtonPressed, Backend.Buttons.Close);
+                        }
+                        else
+                        {
+                            _checked = selected;
+                        }
                     }
-                    else
-                    {
-                        _checked = selected;
-                    }
-                }
             }
             return base.OnMouseDown(button);
         }

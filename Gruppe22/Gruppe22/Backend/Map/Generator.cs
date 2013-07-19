@@ -162,19 +162,19 @@ namespace Gruppe22.Backend
                 }
             }
 
-            ClearTile(srcCoords.x , srcCoords.y );
+            ClearTile(srcCoords.x, srcCoords.y);
             _tiles[srcCoords.y][srcCoords.x].overlay.Add(new TeleportTile(_tiles[srcCoords.y][srcCoords.x], "room" + targetRoom.ToString() + ".xml", targetCoords, false, false, true, up));
 
 
             if (!up)
             {
-                ClearTile(srcCoords.x - 1, srcCoords.y );
+                ClearTile(srcCoords.x - 1, srcCoords.y);
 
                 _tiles[srcCoords.y][srcCoords.x - 1].overlay.Add(new DoorTile(_tiles[srcCoords.y][srcCoords.x - 1], true, _level));
             }
             else
             {
-                ClearTile(srcCoords.x + 1, srcCoords.y );
+                ClearTile(srcCoords.x + 1, srcCoords.y);
             }
 
         }
@@ -381,7 +381,8 @@ namespace Gruppe22.Backend
         /// <param name="y"></param>
         public void ClearTile(int x, int y)
         {
-            foreach(Actor actor in _tiles[y][x].actors){
+            foreach (Actor actor in _tiles[y][x].actors)
+            {
                 _actors.Remove(actor);
             }
             _tiles[y][x].overlay.Clear();
@@ -679,8 +680,15 @@ namespace Gruppe22.Backend
         /// <param name="to">Coordinates in target room</param>
         public void ConnectTo(Coords from, int Room, Backend.Coords to, bool isTeleport = false)
         {
-            // TODO: Umgebung "freisprengen", insb. in Diagonalen
-            ClearTile(from.x,from.y);
+            for (int x = -1; x < 2; ++x)
+            {
+                for (int y = -1; y < 2; ++y)
+                    if ((x > 1) && (y < 1) && (x < _width - 1) && (y < _height - 1))
+                    {
+                        ClearTile(from.x + x, from.y + y);
+                    }
+            }
+            ClearTile(from.x, from.y);
             _tiles[from.y][from.x].overlay.Add(new TeleportTile(_tiles[from.y][from.x], "room" + (Room + 1).ToString() + ".xml", to, isTeleport));
         }
 

@@ -235,7 +235,7 @@ namespace Gruppe22.Client
             }
             if (_status != GameStatus.NoRedraw)
             {
-                if ((_logic.map.actors[_playerID].health < 1) && (_status != Backend.GameStatus.GameOver))
+                if ((_logic.map.actors[_playerID].health < 1) && (_status != Backend.GameStatus.GameOver) && (_status != Backend.GameStatus.Paused))
                 {
                     _status = Backend.GameStatus.GameOver;
                     _ShowEndGame();
@@ -1341,9 +1341,8 @@ _graphics.GraphicsDevice.PresentationParameters.BackBufferHeight);
                 _focus.Dispose();
                 _interfaceElements.Remove(_focus);
                 _toolbar.HandleEvent(true, Backend.Events.ContinueGame, 13);
-                _status = Backend.GameStatus.Running;
+                _status = Backend.GameStatus.Paused;
             }
-            _status = Backend.GameStatus.Paused;
             _screenshot();
             FileDialog _fileDialog = new FileDialog(this, _spriteBatch, Content, center(GraphicsDevice.Viewport.Bounds, 600, 390), save);
             _interfaceElements.Add(_fileDialog);

@@ -339,7 +339,7 @@ namespace Gruppe22.Client
 
             AddChild(_expNeeded = new NumberEntry(this, _spriteBatch, _content, new Rectangle(_displayRect.Left + 5, _displayRect.Top + 305, (_displayRect.Width - 10) / 2 - 10, 25), "Exp needed:", _actor.expNeeded, "This is the amount of experience needed for the next level.", 2, false));
             AddChild(_maxhealth = new NumberEntry(this, _spriteBatch, _content, new Rectangle(_displayRect.Left
-                + (_displayRect.Width - 10) / 2 + 10, _displayRect.Top + 305, (_displayRect.Width - 10) / 2 - 10, 25), "Max. Health:", _actor.maxhealth, "This is the maximum amount of health achievable by healing.", 2, false));
+                + (_displayRect.Width - 10) / 2 + 10, _displayRect.Top + 305, (_displayRect.Width - 10) / 2 - 10, 25), "Max. Health:", _actor.maxHealth, "This is the maximum amount of health achievable by healing.", 2, false));
 
             AddChild(_health = new NumberEntry(this, _spriteBatch, _content, new Rectangle(_displayRect.Left + 5, _displayRect.Top + 335, (_displayRect.Width - 10) / 2 - 10, 25), "Health:", _actor.health, "This is your current health (reduced when taking damage).", 2, false));
             AddChild(_mana = new NumberEntry(this, _spriteBatch, _content, new Rectangle(_displayRect.Left
